@@ -429,6 +429,7 @@
 
         /* ─── DARK MODE ─── */
         body.dark { --bg:#0d1117; --bg2:#161b22; --bg3:#21262d; --border:#30363d; --gray:#8b949e; --gray2:#6e7681; background:#0d1117; color:#e6edf3; }
+        .ht-bubble-hs{background:var(--bg2);color:var(--black);} body.dark .ht-bubble-hs{background:#21262d;color:#e6edf3;}
         body.dark img.mt-eq { filter: invert(1) brightness(1.35); } /* công thức WMF vẽ màu cố định #1e293b -> đảo màu cho rõ trên nền tối */
         body.dark .navbar { background:rgba(13,17,23,0.95); border-color:#30363d; }
         body.dark .nav-logo { color:#e6edf3; }
@@ -3779,7 +3780,8 @@ function htOpenThread(id) {
         const m = snap.val();
         const div = document.createElement('div');
         const isAdmin = m.from === 'admin';
-        div.style.cssText = 'max-width:75%;margin-bottom:8px;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;' + (isAdmin ? 'margin-left:auto;background:var(--blue);color:#fff' : 'background:var(--bg2);color:var(--black)');
+        div.className = isAdmin ? '' : 'ht-bubble-hs';
+        div.style.cssText = 'max-width:75%;margin-bottom:8px;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;' + (isAdmin ? 'margin-left:auto;background:var(--blue);color:#fff' : '');
         div.textContent = m.text;
         body.appendChild(div);
         body.scrollTop = body.scrollHeight;
