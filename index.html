@@ -3245,7 +3245,7 @@ function guessMucDo(q){
 
 function classifyTaxonomy(q){
     const loai=q.loai||'TN', mucdo=(q.mucDo||'').toUpperCase(), ch=(q.question||'').toLowerCase();
-    const opts=((q.optA||'')+(q.optB||'')+(q.optC||'')+(q.optD||'')).toLowerCase();
+    const opts=(String(q.optA==null?'':q.optA)+String(q.optB==null?'':q.optB)+String(q.optC==null?'':q.optC)+String(q.optD==null?'':q.optD)).toLowerCase();
     const hasNum=/\d/.test(opts.slice(0,120));
     const calcKw=['tính','bằng bao nhiêu','giá trị','xấp xỉ','gần nhất','kết quả','lít','kg','mol','cm','mm','pa ','atm','nhiệt lượng','thể tích nước','khối lượng','số mol','lực từ','cảm ứng từ','chu kì','tần số','vận tốc','năng lượng','hoạt độ','bán kính','khoảng cách'];
     const isCalc=calcKw.some(k=>ch.includes(k));
