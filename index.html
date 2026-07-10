@@ -2294,12 +2294,56 @@ function filterScores(q){
        mốc "Câu 0." giả để bộ nhận diện câu hỏi bắt được ranh giới câu mới (số thật không quan
        trọng vì hệ thống tự đánh lại id theo thứ tự). */
     function hasQuestionNumPr(p){ const pPr=firstChild(p,'pPr'); if(!pPr) return false; const numPr=firstChild(pPr,'numPr'); if(!numPr) return false; const ilvl=firstChild(numPr,'ilvl'); const lvl=ilvl?attr(ilvl,'w:val'):'0'; return (lvl==null||lvl==='0'); }
-    function docToLines(doc,rM,mM){ const body=firstChild(doc.documentElement,'body')||doc.documentElement; const ps=elemChildren(body).filter(c=>localName(c)==='p'); const lines=[];
-        ps.forEach(p=>{ const toks=paraTokens(p,rM,mM); if(!toks.length)return; let ch='',ct='',pb=false,st=false;
+    /* Nhieu file GV tieng Viet dat CA cau Dung/Sai (4 y a-d + cot Dung/Sai) va bang "Dap an: X"
+       cua cau tra loi ngan trong <w:tbl> (bang Word) thay vi go thang trong doan van -- docToLines
+       ban dau chi doc <w:p> con truc tiep cua body nen bo sot hoan toan noi dung trong bang.
+       cellPTokens/cellText doc cac <w:p> ben trong 1 o <w:tc> (giu nguyen dinh dang/cong thuc qua paraTokens). */
+    function cellPTokens(tc,rM,mM){ let out=[]; elemChildren(tc).filter(c=>localName(c)==='p').forEach(p=>{out=out.concat(paraTokens(p,rM,mM));}); return out; }
+    function cellText(tc){ return cellPTokens(tc,{},{}).map(t=>t.text).join('').trim(); }
+    /* Bang "Phat bieu | Dung | Sai" 4 cot, hang dau la tieu de, 4 hang sau la a/b/c/d
+       -> tra ve mang line {html,text} dang "*a) noi dung" (neu cot Dung khong rong) hoac "a) noi dung". */
+    function tblToDsLines(tbl,rM,mM){
+        const trs=elemChildren(tbl).filter(c=>localName(c)==='tr'); if(trs.length<2) return null;
+        const rows=trs.map(tr=>elemChildren(tr).filter(c=>localName(c)==='tc'));
+        if(!rows.every(r=>r.length===4)) return null;
+        const head=rows[0].map(tc=>cellText(tc)).join(' ').toLowerCase();
+        if(!/đúng/.test(head)||!/sai/.test(head)) return null;
+        const dataRows=rows.slice(1).filter(r=>/^[a-d]$/i.test(cellText(r[0])));
+        if(dataRows.length<2) return null;
+        const out=[];
+        dataRows.forEach(r=>{
+            const label=cellText(r[0]).toLowerCase();
+            const correct=!!cellText(r[2]); // cot "Dung" khong rong = y nay dung
+            const stmtToks=cellPTokens(r[1],rM,mM);
+            const html=stmtToks.map(t=>t.html).join(''), text=stmtToks.map(t=>t.text).join('');
+            out.push({html:(correct?'*':'')+label+') '+html, text:(correct?'*':'')+label+') '+text});
+        });
+        return out;
+    }
+    /* Bang 2 cot dang "Dap an: | gia tri" (thuong dung cho cau tra loi ngan, Word tach so/dau phay
+       thanh nhieu o rieng) -> tra ve 1 line "Dap an: <noi dung cac o con lai noi lien>". */
+    function tblToAnswerLine(tbl,rM,mM){
+        const trs=elemChildren(tbl).filter(c=>localName(c)==='tr'); if(!trs.length) return null;
+        const tcs=elemChildren(trs[0]).filter(c=>localName(c)==='tc'); if(tcs.length<2) return null;
+        if(!/^\s*đáp\s*án\s*[:：]?\s*$/i.test(cellText(tcs[0]))) return null;
+        let html='',text='';
+        tcs.slice(1).forEach(tc=>{const toks=cellPTokens(tc,rM,mM);html+=toks.map(t=>t.html).join('');text+=toks.map(t=>t.text).join('');});
+        html=html.trim(); text=text.trim(); if(!text) return null;
+        return [{html:'Đáp án: '+html, text:'Đáp án: '+text}];
+    }
+    function docToLines(doc,rM,mM){ const body=firstChild(doc.documentElement,'body')||doc.documentElement; const kids=elemChildren(body).filter(c=>{const n=localName(c);return n==='p'||n==='tbl';}); const lines=[];
+        kids.forEach(node=>{
+            if(localName(node)==='tbl'){
+                const ds=tblToDsLines(node,rM,mM); if(ds){lines.push(...ds);return;}
+                const ans=tblToAnswerLine(node,rM,mM); if(ans){lines.push(...ans);return;}
+                return; /* bang khac (vi du bang ly thuyet/so sanh) -- khong phai cau hoi, bo qua co y thuc */
+            }
+            const p=node; const toks=paraTokens(p,rM,mM); if(!toks.length)return; let ch='',ct='',pb=false,st=false;
             const flush=()=>{if(ch.trim()||/<img|<math/i.test(ch))lines.push({html:ch.trim(),text:ct.trim()});ch='';ct='';};
             flush();
             if(hasQuestionNumPr(p)){ ch='Câu 0. '; ct='Câu 0. '; }
-            toks.forEach(tk=>{if(tk.type==='run'&&tk.bold&&!pb&&st)flush();ch+=tk.html;ct+=tk.text;if(tk.type==='run')pb=tk.bold;else if(tk.type!=='tab'&&tk.type!=='br')pb=false;st=true;}); flush(); });
+            toks.forEach(tk=>{if(tk.type==='run'&&tk.bold&&!pb&&st)flush();ch+=tk.html;ct+=tk.text;if(tk.type==='run')pb=tk.bold;else if(tk.type!=='tab'&&tk.type!=='br')pb=false;st=true;}); flush();
+        });
         return lines; }
     function buildQuestions(lines){
         const rePart=/^\s*ph[âầ]n\s+(i{1,3})\b/i,reQ=/^\s*câu\s*\d+\s*[:.)]/i,reO=/^\s*(\*?)\s*([A-D])\s*[.)]/,reSub=/^\s*(\*?)\s*([a-d])\s*\)/,reAns=/^\s*(đáp\s*án|trả\s*lời\s*ngắn)\s*[:：]/i,reCtx=/^\s*sử\s*dụng\s*thông\s*tin/i,reGiai=/^\s*(hướng\s*dẫn\s*giải|hướng\s*dẫn|lời\s*giải\s*chi\s*tiết|lời\s*giải|giải\s*chi\s*tiết)\s*[:：]?\s*/i;
@@ -2344,6 +2388,16 @@ function filterScores(q){
                Chặn reO/reSub tái kích hoạt trong lúc đang gom lời giải, tránh dòng kiểu "A = 5..."
                trong lời giải bị hiểu nhầm thành đáp án mới ghi đè lên đáp án thật. */
             if(reGiai.test(t)){ const rest=sG(line.html).trim(); cur.giaiThich=(cur.giaiThich?cur.giaiThich+' ':'')+rest; mode='giai'; return; }
+            /* Nhieu file GV "chuyen de" (khong chia PHAN I/II/III kieu de thi chinh thuc) khong co
+               mốc chuyển part -> cau hoi mac dinh giu nguyen kieu cua part truoc do (co the sai).
+               Neu chua chot dap an/tuy chon nao (con o mode 'question'), doi chieu voi cau truc THAT
+               cua dong hien tai (co A-D? co a-d? co "Dap an:"?) de tu sua lai kieu cau cho dung,
+               uu tien cau truc that hon la gia dinh ban dau. */
+            if(mode==='question'){
+                if(cur.type!=='mc' && reO.test(t)) cur.type='mc';
+                else if(cur.type!=='tf' && reSub.test(t) && !reO.test(t)){ cur.type='tf'; tf={A:false,B:false,C:false,D:false}; }
+                else if(cur.type!=='short' && reAns.test(t)) cur.type='short';
+            }
             if(mode!=='giai'){
                 if(cur.type==='mc'){const m=t.match(reO);if(m){const inl=extInline(t);if(inl.length>1){inl.forEach(o=>{if(cur.options[o.L]!==undefined){cur.options[o.L]=o.text;if(o.iC)cur.correct=o.L;}});mode=inl[inl.length-1].L;}else{const L=m[2].toUpperCase();cur.options[L]=sO(line.html).trim();if(m[1]==='*')cur.correct=L;mode=L;}return;}}
                 else if(cur.type==='tf'){const s=t.match(reSub);if(s){const L=sM[s[2].toLowerCase()];if(L){cur.options[L]=sS(line.html).trim();if(s[1]==='*'&&tf)tf[L]=true;mode=L;}return;}}
