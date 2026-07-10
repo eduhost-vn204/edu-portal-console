@@ -2327,7 +2327,6 @@ function filterScores(q){
         lines.forEach(line=>{ const t=line.text; const pm=t.match(rePart);
             if(pm){fin();const r=pm[1].toLowerCase();part=r==='iii'?'short':r==='ii'?'tf':'mc';ctx='';ctxRemain=0;return;}
             if(reCtx.test(t)){fin();ctx=line.html;ctxSeq++;ctxTotal=parseCtxCount(t);ctxRemain=ctxTotal;return;}
-            if(reSkip.test(t))return;
             if(reQ.test(t)){
                 fin();
                 let q=sQ(line.html).trim();
