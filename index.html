@@ -9,6 +9,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/wmf@1.0.2/dist/wmf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -873,6 +874,26 @@
                         <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
                     </button>
                     <button class="btn-publish" id="nh2-publish-btn" style="width:100%;margin-top:8px" onclick="bankDocxPublish()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
+                    </button>
+                </div>
+            </div>
+            <div class="nh-card" style="border-color:var(--blue)">
+                <h3><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Tải đề .pdf — tự bóc tách (thử nghiệm)</h3>
+                <div class="dropzone" id="nh3-dropzone" style="padding:28px 16px">
+                    <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <h3 style="font-size:15px">Thả file PDF (.pdf) vào đây</h3>
+                    <p style="font-size:13px">Tự dựng lại bố cục &amp; tách câu hỏi, ảnh. PDF đề gốc thường KHÔNG đánh dấu sẵn đáp án đúng — cần tự chọn tay sau khi đọc xong.</p>
+                    <div class="btn-browse" style="font-size:13px;padding:9px 18px"><i class="fa-solid fa-folder-open"></i> Chọn file</div>
+                    <input type="file" id="nh3-file-input" accept=".pdf" style="display:none">
+                </div>
+                <div class="nh-up-status" id="nh3-status"></div>
+                <div id="nh3-preview-zone" style="display:none">
+                    <div class="nh-preview-list" id="nh3-preview-list" style="max-height:520px;overflow:auto;padding-right:4px"></div>
+                    <button class="btn-new" id="nh3-remove-incomplete-btn" style="width:100%;margin-top:12px;background:var(--bg2);color:var(--red);border:1.5px solid var(--red)" onclick="bankPdfRemoveIncomplete()">
+                        <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
+                    </button>
+                    <button class="btn-publish" id="nh3-publish-btn" style="width:100%;margin-top:8px" onclick="bankPdfPublish()">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
                     </button>
                 </div>
@@ -2318,7 +2339,128 @@ function filterScores(q){
             else if(cur.type==='short'){if(reAns.test(t)){cur.correct=sA(t).trim();mode='answered';return;}}
             if(mode==='question')cur.question+=' '+line.html;else if(mode&&cur.options[mode]!==undefined)cur.options[mode]+=' '+line.html; });
         fin(); qs.forEach((q,i)=>q.id=i+1); return qs; }
-    global.DocxEngine={ parse:(docDoc,rDoc,mM)=>buildQuestions(docToLines(docDoc,buildRelsMap(rDoc),mM)) };
+    global.DocxEngine={ parse:(docDoc,rDoc,mM)=>buildQuestions(docToLines(docDoc,buildRelsMap(rDoc),mM)), buildQuestions };
+})(window);
+
+/* ══════════════════════════════════════════════════════════
+   PdfEngine — bóc tách câu hỏi từ file PDF (thử nghiệm)
+   Dùng lại buildQuestions() của DocxEngine (cùng định dạng "lines" {html,text}).
+   PDF không có cấu trúc đoạn văn như .docx nên phải tự:
+   1) Gom các mảnh chữ theo toạ độ (x,y) thành từng dòng (line clustering)
+   2) Phát hiện khoảng trống lớn giữa 2 dòng có "mực" (ink) trên trang đã render -> cắt làm ảnh
+   3) Nếu file có nhiều hơn 1 mã đề (nhãn "PHẦN I" lặp lại) -> chỉ lấy mã đề đầu, tránh trùng câu
+   4) Cảnh báo các vị trí nghi là công thức phân số (PDF vẽ tử/mẫu rời trên 2 dòng riêng,
+      không thể dựng lại chính xác 100% chỉ từ text thuần) để thầy tự kiểm tra tay
+══════════════════════════════════════════════════════════ */
+;(function(global){
+    if(typeof pdfjsLib!=='undefined' && pdfjsLib.GlobalWorkerOptions){
+        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    }
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function cropRegionAsImage(canvas,yTop,yBot){
+        yTop=Math.max(0,Math.floor(yTop)); yBot=Math.min(canvas.height,Math.ceil(yBot));
+        const h=yBot-yTop; if(h<24) return null;
+        const c=document.createElement('canvas'); c.width=canvas.width; c.height=h;
+        c.getContext('2d').drawImage(canvas,0,yTop,canvas.width,h,0,0,canvas.width,h);
+        let cropped=c;
+        try{ cropped=cropCanvasInk(c,6)||null; }catch(e){}
+        if(!cropped||cropped.width<20||cropped.height<20) return null;
+        return '<img src="'+cropped.toDataURL('image/png')+'" style="max-width:100%;border-radius:6px;margin:6px 0;display:block" />';
+    }
+
+    async function pdfToLines(pdfDoc){
+        const lines=[];
+        const numPages=pdfDoc.numPages;
+        for(let pn=1; pn<=numPages; pn++){
+            const page=await pdfDoc.getPage(pn);
+            const scale=2;
+            const viewport=page.getViewport({scale});
+            let canvas=null;
+            try{
+                canvas=document.createElement('canvas');
+                canvas.width=Math.ceil(viewport.width); canvas.height=Math.ceil(viewport.height);
+                await page.render({canvasContext:canvas.getContext('2d'), viewport}).promise;
+            }catch(e){ canvas=null; }
+
+            const tc=await page.getTextContent();
+            const items=tc.items.filter(it=>it.str!==undefined && it.str!=='').map(it=>{
+                const x=it.transform[4], y=it.transform[5];
+                const h=Math.hypot(it.transform[2],it.transform[3])||it.height||10;
+                let vy=null,vyBot=null;
+                if(canvas){ const p1=viewport.convertToViewportPoint(x,y), p2=viewport.convertToViewportPoint(x,y+h); vy=Math.min(p1[1],p2[1]); vyBot=Math.max(p1[1],p2[1]); }
+                return {str:it.str, x, y, w:it.width||0, h, vy, vyBot};
+            });
+            if(!items.length) continue;
+            const heights=items.map(i=>i.h).sort((a,b)=>a-b);
+            const medH=heights[Math.floor(heights.length/2)]||10;
+            const tol=medH*0.4;
+            items.sort((a,b)=> b.y-a.y || a.x-b.x);
+            const clustered=[];
+            items.forEach(it=>{
+                let bucket=clustered.find(c=>Math.abs(c.y-it.y)<=tol);
+                if(!bucket){ bucket={y:it.y, items:[], vyTop:it.vy, vyBot:it.vyBot}; clustered.push(bucket); }
+                bucket.items.push(it);
+                if(it.vy!=null){ bucket.vyTop=bucket.vyTop==null?it.vy:Math.min(bucket.vyTop,it.vy); bucket.vyBot=bucket.vyBot==null?it.vyBot:Math.max(bucket.vyBot,it.vyBot); }
+            });
+            clustered.sort((a,b)=>b.y-a.y);
+            let prevVyBot=0;
+            clustered.forEach(c=>{
+                c.items.sort((a,b)=>a.x-b.x);
+                let text='',lastEnd=null;
+                c.items.forEach(it=>{
+                    if(lastEnd!==null && it.x-lastEnd>medH*0.3 && !text.endsWith(' ')) text+=' ';
+                    text+=it.str; lastEnd=it.x+it.w;
+                });
+                text=text.replace(/\s+/g,' ').trim();
+                if(canvas && c.vyTop!=null){
+                    const gapTop=prevVyBot, gapBot=c.vyTop;
+                    if(gapBot-gapTop > medH*scale*1.8){
+                        const img=cropRegionAsImage(canvas,gapTop,gapBot);
+                        if(img) lines.push({html:img, text:''});
+                    }
+                }
+                if(text) lines.push({html:esc(text), text});
+                if(c.vyBot!=null) prevVyBot=Math.max(prevVyBot,c.vyBot);
+            });
+        }
+        return lines;
+    }
+
+    function truncateAtDuplicateMaDe(lines){
+        const rePart=/^\s*ph[âầ]n\s+(i{1,3})\b/i;
+        let seenI=0;
+        for(let i=0;i<lines.length;i++){
+            const m=lines[i].text.match(rePart);
+            if(m && m[1].toLowerCase()==='i'){
+                seenI++;
+                if(seenI===2) return {lines:lines.slice(0,i), truncated:true};
+            }
+        }
+        return {lines, truncated:false};
+    }
+
+    function countFractionRisk(lines){
+        const markerRe=/^\s*(câu\s*\d+|ph[âầ]n\s+i{1,3}|[a-d]\s*\)|[A-D]\s*[.)]|đáp\s*án|sử\s*dụng\s*thông\s*tin)/i;
+        let cnt=0;
+        lines.forEach(l=>{
+            const t=(l.text||'').trim();
+            if(!t) return;
+            if(markerRe.test(t)) return;
+            if(t.length>0 && t.length<=6 && !/[.:?!]$/.test(t)) cnt++;
+        });
+        return cnt;
+    }
+
+    global.PdfEngine={
+        async parse(pdfDoc){
+            const rawLines=await pdfToLines(pdfDoc);
+            const {lines, truncated}=truncateAtDuplicateMaDe(rawLines);
+            const fractionRiskCount=countFractionRisk(lines);
+            const qs=global.DocxEngine.buildQuestions(lines);
+            return {qs, maDeTruncated:truncated, fractionRiskCount};
+        }
+    };
 })(window);
 
 /* ── File drag/drop ── */
@@ -3235,6 +3377,180 @@ nh2File.addEventListener('change',e=>{if(e.target.files.length)handleFileBank(e.
 ['dragenter','dragover'].forEach(ev=>nh2Drop.addEventListener(ev,e=>{e.preventDefault();nh2Drop.classList.add('dragover');}));
 ['dragleave','drop'].forEach(ev=>nh2Drop.addEventListener(ev,e=>{e.preventDefault();nh2Drop.classList.remove('dragover');}));
 nh2Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleFileBank(f);});
+
+/* ══════════════════════════════════════════════════════════
+   NẠP CÂU HỎI TỪ FILE .PDF VÀO NGÂN HÀNG (thử nghiệm)
+   Dùng PdfEngine (xem phía trên) — kết quả cùng shape với DocxEngine,
+   nên phần preview/publish gần như sao chép lại từ khối .docx ở trên,
+   chỉ đổi biến/id để 2 luồng không đụng nhau.
+══════════════════════════════════════════════════════════ */
+let bankPdfParsed=[];
+
+function nh3Status(html,isErr){
+    const s=document.getElementById('nh3-status');
+    s.innerHTML=html; s.style.color=isErr?'var(--red)':'var(--blue)';
+}
+
+async function handleFileBankPdf(file){
+    document.getElementById('nh3-preview-zone').style.display='none'; bankPdfParsed=[];
+    if(!file.name.toLowerCase().endsWith('.pdf')){nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> Chỉ hỗ trợ file <b>.pdf</b>',true);return;}
+    if(typeof pdfjsLib==='undefined'||typeof PdfEngine==='undefined'){nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> Chưa tải được thư viện đọc PDF. Tải lại trang (F5).',true);return;}
+    nh3Status('<i class="fa-solid fa-spinner fa-spin"></i> Đang đọc & bóc tách file PDF... (có thể mất 10-30 giây vì phải tự dựng lại bố cục trang)');
+    try{
+        const buf=await file.arrayBuffer();
+        const pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;
+        const {qs, maDeTruncated, fractionRiskCount}=await PdfEngine.parse(pdfDoc);
+        const total=qs.length;
+        const qsF=qs.filter(q=>{if(q.type==='mc')return['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;if(q.type==='tf')return['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;if(q.type==='short')return(q.question||'').trim().length>0;return false;});
+        const skipped=total-qsF.length;
+        const bankGroupPrefix='GP'+Date.now().toString(36);
+        bankPdfParsed=qsF.map(q=>{
+            let question=q.question, nhomId='', deBaiChung='';
+            if(q.groupId){
+                nhomId=bankGroupPrefix+'-'+q.groupId;
+                if(q.groupFirst){
+                    const m=question.match(/^<div class="q-context">([\s\S]*?)<\/div>/);
+                    if(m){ deBaiChung=m[1]; question=question.slice(m[0].length); }
+                }
+            }
+            const obj={
+                loai:BANK_LOAI_BY_TYPE[q.type]||'TN', mon:'Vật Lý 12', chuong:'', mucDo:'',
+                nhomId, deBaiChung, question,
+                optA:q.options.A||'', optB:q.options.B||'', optC:q.options.C||'', optD:q.options.D||'',
+                correct:q.correct||'', hinhAnh:'', giaiThich:''
+            };
+            obj.chuong=guessChuong(obj);
+            obj.mucDo=guessMucDo(obj);
+            return obj;
+        });
+        if(!bankPdfParsed.length){nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy câu hỏi. File PDF cần có cấu trúc rõ "Câu 1:", "A./B./C./D.".',true);return;}
+        let warn='';
+        if(maDeTruncated) warn+='<div style="margin-top:8px;padding:10px 12px;background:rgba(11,132,243,.08);border:1px solid rgba(11,132,243,.25);border-radius:8px;font-size:12.5px;color:var(--blue);line-height:1.6"><i class="fa-solid fa-circle-info"></i> File có nhiều hơn 1 mã đề (câu hỏi lặp lại) — hệ thống chỉ lấy <b>mã đề đầu tiên</b> để tránh trùng câu trong ngân hàng.</div>';
+        if(fractionRiskCount>0) warn+='<div style="margin-top:8px;padding:10px 12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;font-size:12.5px;color:#b45309;line-height:1.6"><i class="fa-solid fa-triangle-exclamation"></i> Phát hiện khoảng <b>'+fractionRiskCount+'</b> vị trí nghi là công thức dạng phân số/kí hiệu đặc biệt — PDF vẽ tử số/mẫu số rời trên các dòng riêng nên hệ thống có thể ghép sai hoặc thiếu chữ. Vui lòng rà lại các câu có phân số, Φ, căn... trước khi nạp (hạn chế riêng của PDF, file .docx không gặp lỗi này).</div>';
+        nh3Status('<i class="fa-solid fa-circle-check"></i> Đọc được <b>'+bankPdfParsed.length+'</b> câu từ '+nhEsc(file.name)+(skipped?' — bỏ qua '+skipped+' mục không nhận dạng được.':'')+warn);
+        renderBankPdfPreview();
+    }catch(err){console.error(err);nh3Status('<i class="fa-solid fa-bug"></i> Lỗi: '+err.message,true);}
+}
+
+function renderBankPdfPreview(){
+    const chuongOptions=[...new Set([...Object.keys(CHUONG_KEYWORDS),...bankData.map(q=>q.chuong).filter(Boolean),...bankPdfParsed.map(q=>q.chuong).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'vi'));
+    const list=document.getElementById('nh3-preview-list');
+    list.innerHTML=bankPdfParsed.map((q,idx)=>{
+        const kb=((q.question+q.optA+q.optB+q.optC+q.optD+q.correct).length/1024).toFixed(0);
+        let optsHtml='';
+        if(q.loai==='TN'){
+            optsHtml=['A','B','C','D'].map(L=>{const val=q['opt'+L];if(!val)return '';const isC=(q.correct||'')===L;
+                return `<label class="opt-row ${isC?'correct':''}"><input type="radio" name="bpdf-${idx}" value="${L}" ${isC?'checked':''} onchange="bankPdfSetCorrect(${idx},'${L}')"><span class="opt-letter">${L}.</span><span class="opt-body">${val}</span></label>`;}).join('');
+            if(!q.correct)optsHtml+=`<div class="no-correct"><i class="fa-solid fa-circle-exclamation"></i> Chưa nhận diện đáp án — bấm chọn 1 đáp án.</div>`;
+        }else if(q.loai==='DS'){
+            const corr=(q.correct||'SSSS').padEnd(4,'S');
+            optsHtml=['A','B','C','D'].map((L,i)=>{const val=q['opt'+L];if(!val)return '';const v=corr[i]||'S';
+                return `<div class="tf-row"><span class="tf-letter">${SL[L]}</span><span class="tf-stmt">${val}</span><div class="tf-choice"><span class="tf-btn ${v==='Đ'?'sel-d':''}" onclick="bankPdfSetTf(${idx},${i},'Đ',this)">Đúng</span><span class="tf-btn ${v==='S'?'sel-s':''}" onclick="bankPdfSetTf(${idx},${i},'S',this)">Sai</span></div></div>`;}).join('');
+        }else{
+            optsHtml=`<div class="short-ans"><i class="fa-solid fa-pen" style="color:var(--green)"></i> Đáp án: <input type="text" maxlength="20" value="${nhEsc(q.correct||'')}" oninput="bankPdfParsed[${idx}].correct=this.value.trim()"></div>`;
+            if(!q.correct)optsHtml+=`<div class="no-correct"><i class="fa-solid fa-circle-exclamation"></i> Chưa có đáp số.</div>`;
+        }
+        const groupBadge=q.nhomId?`<span class="nh-badge b-nhom" title="Câu chùm dữ kiện — liên kết với nhóm ${nhEsc(q.nhomId)}, luôn đi cùng nhau"><i class="fa-solid fa-link"></i> ${q.deBaiChung?'Đầu cụm':'Liên kết'}</span>`:'';
+        const ctxBox=q.deBaiChung?`<div class="nh-context">${nhSafe(q.deBaiChung)}</div>`:'';
+        return `<div class="q-card" id="bpdf-card-${idx}">
+            <div class="q-top"><span class="q-num">Câu ${idx+1}<span class="q-type-tag t-${q.loai==='TN'?'mc':q.loai==='DS'?'tf':'short'}">${NH_LOAI_TEN[q.loai]}</span>${groupBadge}</span><span class="size-tag">${kb}KB</span></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+                <select style="font-size:12px;padding:4px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg)" onchange="bankPdfParsed[${idx}].mon=this.value">
+                    <option ${q.mon==='Vật Lý 10'?'selected':''}>Vật Lý 10</option>
+                    <option ${q.mon==='Vật Lý 11'?'selected':''}>Vật Lý 11</option>
+                    <option ${q.mon==='Vật Lý 12'?'selected':''}>Vật Lý 12</option>
+                </select>
+                <select style="font-size:12px;padding:4px 8px;border-radius:6px;border:1.5px solid var(--border);flex:1;min-width:120px;background:var(--bg);color:inherit" onchange="bankPdfParsed[${idx}].chuong=this.value">
+                    <option value="" ${!q.chuong?'selected':''}>-- Chọn chương --</option>
+                    ${chuongOptions.map(c=>`<option value="${nhEsc(c)}" ${q.chuong===c?'selected':''}>${nhEsc(c)}</option>`).join('')}
+                </select>
+                <select style="font-size:12px;padding:4px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg)" onchange="bankPdfParsed[${idx}].mucDo=this.value">
+                    <option value="NB" ${q.mucDo==='NB'?'selected':''}>Nhận biết</option>
+                    <option value="TH" ${q.mucDo==='TH'?'selected':''}>Thông hiểu</option>
+                    <option value="VD" ${q.mucDo==='VD'?'selected':''}>Vận dụng</option>
+                    <option value="VDC" ${q.mucDo==='VDC'?'selected':''}>Vận dụng cao</option>
+                </select>
+            </div>
+            ${ctxBox}
+            <div class="q-text">${q.question}</div>
+            ${optsHtml}
+        </div>`;
+    }).join('');
+    document.getElementById('nh3-preview-zone').style.display='';
+    nhKatex(list);
+    document.getElementById('nh3-preview-zone').scrollIntoView({behavior:'smooth'});
+}
+
+function bankPdfSetCorrect(idx,L){
+    bankPdfParsed[idx].correct=L;
+    const card=document.getElementById('bpdf-card-'+idx);
+    card.querySelectorAll('.opt-row').forEach(r=>r.classList.remove('correct'));
+    const inp=card.querySelector('input[value="'+L+'"]'); if(inp)inp.closest('.opt-row').classList.add('correct');
+    const w=card.querySelector('.no-correct'); if(w)w.remove();
+}
+function bankPdfSetTf(idx,pos,v,btn){
+    let arr=(bankPdfParsed[idx].correct||'SSSS').split(''); while(arr.length<4)arr.push('S');
+    arr[pos]=v; bankPdfParsed[idx].correct=arr.join('');
+    const row=btn.closest('.tf-row');
+    row.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('sel-d','sel-s'));
+    btn.classList.add(v==='Đ'?'sel-d':'sel-s');
+}
+
+function bankPdfQuestionErrors(q,n){
+    const errs=[];
+    if(!q.chuong)errs.push('Câu '+n+': thiếu Chương.');
+    if(q.loai==='TN'&&!q.correct)errs.push('Câu '+n+': chưa chọn đáp án.');
+    if(q.loai==='DS'&&(q.correct||'').length!==4)errs.push('Câu '+n+': chưa chọn đủ đáp án Đúng/Sai.');
+    if(q.loai==='TLN'&&!q.correct)errs.push('Câu '+n+': chưa có đáp số.');
+    return errs;
+}
+function bankPdfRemoveIncomplete(){
+    if(!bankPdfParsed.length)return;
+    const before=bankPdfParsed.length;
+    const kept=bankPdfParsed.filter((q,i)=>bankPdfQuestionErrors(q,i+1).length===0);
+    const removed=before-kept.length;
+    if(!removed){ toast('Không có câu nào chưa hoàn chỉnh để xoá','ok'); return; }
+    bankPdfParsed=kept;
+    if(!bankPdfParsed.length){
+        document.getElementById('nh3-preview-zone').style.display='none';
+        nh3Status('<i class="fa-solid fa-circle-check"></i> Đã xoá '+removed+' câu chưa hoàn chỉnh. Không còn câu nào.');
+        return;
+    }
+    renderBankPdfPreview();
+    nh3Status('<i class="fa-solid fa-circle-check"></i> Đã xoá '+removed+' câu chưa hoàn chỉnh. Còn lại '+bankPdfParsed.length+' câu.');
+    toast('<i class="fa-solid fa-broom"></i> Đã xoá '+removed+' câu chưa hoàn chỉnh','ok');
+}
+async function bankPdfPublish(){
+    if(!bankPdfParsed.length)return;
+    let errs=[];
+    bankPdfParsed.forEach((q,i)=>{ errs=errs.concat(bankPdfQuestionErrors(q,i+1)); });
+    if(errs.length){
+        nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> Còn '+errs.length+' câu chưa hoàn chỉnh:<br>'+errs.slice(0,8).map(nhEsc).join('<br>')+(errs.length>8?'<br>...':'')+'<br><br>Có thể bấm nút <b>"Xoá câu chưa hoàn chỉnh"</b> để loại các câu này rồi nạp phần còn lại.',true);
+        return;
+    }
+    const btn=document.getElementById('nh3-publish-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
+    try{
+        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankPdfParsed})});
+        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankPdfParsed.length+' câu vào ngân hàng!','ok');
+        bankPdfParsed=[];
+        document.getElementById('nh3-preview-zone').style.display='none';
+        document.getElementById('nh3-file-input').value='';
+        nh3Status('');
+        await loadBank(true);
+    }catch(e){
+        toast('Lỗi: '+e.message,'err');
+    }finally{
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    }
+}
+
+const nh3Drop=document.getElementById('nh3-dropzone'), nh3File=document.getElementById('nh3-file-input');
+nh3Drop.addEventListener('click',()=>nh3File.click());
+nh3File.addEventListener('change',e=>{if(e.target.files.length)handleFileBankPdf(e.target.files[0]);});
+['dragenter','dragover'].forEach(ev=>nh3Drop.addEventListener(ev,e=>{e.preventDefault();nh3Drop.classList.add('dragover');}));
+['dragleave','drop'].forEach(ev=>nh3Drop.addEventListener(ev,e=>{e.preventDefault();nh3Drop.classList.remove('dragover');}));
+nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleFileBankPdf(f);});
 
 </script>
 
