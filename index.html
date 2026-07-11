@@ -257,6 +257,23 @@
         .bpm-foot { padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:10px; }
         .bpm-foot .bpm-count { font-size:13px; color:var(--gray2); flex:1; }
         .bpm-empty { text-align:center; padding:40px; color:var(--gray2); font-size:14px; }
+        /* Edit question modal */
+        #nh-edit-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2100; align-items:center; justify-content:center; }
+        #nh-edit-overlay.show { display:flex; }
+        #nh-edit-modal { background:var(--card); border-radius:16px; width:min(720px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.4); border:1px solid var(--line); }
+        .nhe-head { padding:18px 20px 12px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
+        .nhe-head h3 { margin:0; font-size:16px; flex:1; }
+        .nhe-body { overflow-y:auto; flex:1; padding:16px 20px; display:flex; flex-direction:column; gap:14px; }
+        .nhe-row { display:flex; gap:10px; flex-wrap:wrap; }
+        .nhe-field { flex:1; min-width:140px; display:flex; flex-direction:column; gap:5px; }
+        .nhe-field label { font-size:11.5px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.3px; }
+        .nhe-field textarea,.nhe-field input,.nhe-field select { padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text); font-size:13.5px; font-family:inherit; resize:vertical; }
+        .nhe-field textarea { min-height:60px; }
+        .nhe-opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .nhe-foot { padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:10px; justify-content:flex-end; }
+        .nh-edit-btn { background:none; border:none; color:var(--gray2); cursor:pointer; font-size:14px; padding:6px; transition:color .15s; }
+        .nh-edit-btn:hover { color:var(--blue); }
+
         .qb-card { background:var(--bg2); border:1.5px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px; }
         .qb-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
         .qb-num { font-size:12px; font-weight:700; color:var(--blue); font-family:'DM Mono',monospace; flex:1; }
@@ -3137,7 +3154,10 @@ function bankRowHtml(q,withCheck){
             <div class="nh-opts">${opts}</div>
             ${q.giaiThich?`<details class="nh-giai"><summary><i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết</summary><div class="nh-giai-body">${nhSafe(q.giaiThich)}</div></details>`:''}
         </div>
-        ${withCheck?`<button class="nh-del-btn" title="Xóa câu này" onclick="bankDeleteOne('${nhEsc(q.id)}')"><i class="fa-solid fa-trash"></i></button>`:''}
+        ${withCheck?`<div style="display:flex;flex-direction:column;gap:2px">
+            <button class="nh-edit-btn" title="Sửa câu này" onclick="bankEditOpen('${nhEsc(q.id)}')"><i class="fa-solid fa-pen"></i></button>
+            <button class="nh-del-btn" title="Xóa câu này" onclick="bankDeleteOne('${nhEsc(q.id)}')"><i class="fa-solid fa-trash"></i></button>
+        </div>`:''}
     </div>`;
 }
 function renderBankList(){
@@ -3148,6 +3168,97 @@ function renderBankList(){
     if(!rows.length){ list.innerHTML='<div class="loading-row" style="padding:30px;font-size:14px;color:var(--gray)">Không có câu nào khớp bộ lọc.</div>'; return; }
     list.innerHTML=rows.map(q=>bankRowHtml(q,true)).join('');
     nhKatex(list);
+}
+
+/* ── Sửa câu hỏi trong ngân hàng ── */
+let _nheCurrentId=null;
+function bankEditOpen(id){
+    const q=bankData.find(x=>x.id===id);
+    if(!q){ toast('Không tìm thấy câu hỏi','err'); return; }
+    _nheCurrentId=id;
+    document.getElementById('nhe-id-label').textContent=id;
+    document.getElementById('nhe-loai').value=(q.loai||'TN').toUpperCase();
+    document.getElementById('nhe-mucdo').value=(q.mucDo||'TH').toUpperCase();
+    const chuongs=[...new Set([...Object.keys(CHUONG_KEYWORDS),...bankData.map(x=>x.chuong).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'vi'));
+    document.getElementById('nhe-chuong').innerHTML=chuongs.map(c=>`<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
+    document.getElementById('nhe-chuong').value=q.chuong||chuongs[0]||'';
+    document.getElementById('nhe-debai').value=q.deBaiChung||'';
+    document.getElementById('nhe-question').value=q.question||'';
+    document.getElementById('nhe-giaithich').value=q.giaiThich||'';
+    bankEditRenderOpts(q);
+    document.getElementById('nhe-status').textContent='';
+    document.getElementById('nhe-save-btn').disabled=false;
+    document.getElementById('nhe-save-btn').innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
+    document.getElementById('nh-edit-overlay').classList.add('show');
+}
+function bankEditRenderOpts(qPrefill){
+    const loai=document.getElementById('nhe-loai').value;
+    const q=qPrefill||bankData.find(x=>x.id===_nheCurrentId)||{};
+    const wrap=document.getElementById('nhe-opts-wrap');
+    if(loai==='TN'){
+        const corr=(q.correct||'').toString().trim().toUpperCase();
+        wrap.innerHTML=`<div class="nhe-field"><label>Đáp án đúng</label>
+                <select id="nhe-correct-tn"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div>
+            <div class="nhe-opts-grid">
+                ${['A','B','C','D'].map(L=>`<div class="nhe-field"><label>Phương án ${L}</label><textarea id="nhe-opt${L}">${esc(q['opt'+L]||'')}</textarea></div>`).join('')}
+            </div>`;
+        document.getElementById('nhe-correct-tn').value=['A','B','C','D'].includes(corr)?corr:'A';
+    }else if(loai==='DS'){
+        const corr=(q.correct||'').toString().replace(/[^ĐSđs]/g,'').toUpperCase();
+        wrap.innerHTML=`<div class="nhe-opts-grid">
+            ${['A','B','C','D'].map((L,i)=>`<div class="nhe-field"><label>Ý ${String.fromCharCode(97+i)}) — nội dung &amp; Đúng/Sai</label>
+                <textarea id="nhe-opt${L}">${esc(q['opt'+L]||'')}</textarea>
+                <select id="nhe-corr${L}" style="margin-top:4px"><option value="Đ">Đúng</option><option value="S">Sai</option></select>
+            </div>`).join('')}
+        </div>`;
+        ['A','B','C','D'].forEach((L,i)=>{ const v=corr[i]==='S'?'S':'Đ'; document.getElementById('nhe-corr'+L).value=v; });
+    }else{
+        wrap.innerHTML=`<div class="nhe-field"><label>Đáp án</label><input id="nhe-correct-tln" value="${esc(q.correct||'')}"></div>`;
+    }
+}
+function bankEditClose(){
+    document.getElementById('nh-edit-overlay').classList.remove('show');
+    _nheCurrentId=null;
+}
+async function bankEditSave(){
+    if(!_nheCurrentId) return;
+    const loai=document.getElementById('nhe-loai').value;
+    const question=document.getElementById('nhe-question').value.trim();
+    if(!question){ toast('Câu hỏi không được để trống','err'); return; }
+    const q={
+        loai, mucDo:document.getElementById('nhe-mucdo').value, chuong:document.getElementById('nhe-chuong').value,
+        deBaiChung:document.getElementById('nhe-debai').value.trim(),
+        question,
+        giaiThich:document.getElementById('nhe-giaithich').value.trim()
+    };
+    if(loai==='TN'){
+        ['A','B','C','D'].forEach(L=>q['opt'+L]=document.getElementById('nhe-opt'+L).value.trim());
+        q.correct=document.getElementById('nhe-correct-tn').value;
+    }else if(loai==='DS'){
+        ['A','B','C','D'].forEach(L=>q['opt'+L]=document.getElementById('nhe-opt'+L).value.trim());
+        q.correct=['A','B','C','D'].map(L=>document.getElementById('nhe-corr'+L).value).join('');
+    }else{
+        q.correct=(document.getElementById('nhe-correct-tln').value||'').trim();
+        q.optA=q.optB=q.optC=q.optD='';
+    }
+    const btn=document.getElementById('nhe-save-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+    document.getElementById('nhe-status').textContent='';
+    try{
+        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'updatenganhang',id:_nheCurrentId,q})});
+        await new Promise(r=>setTimeout(r,900));
+        const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
+        if(idx>-1){
+            bankData[idx]={...bankData[idx],...q};
+            bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
+        }
+        renderBankStats(); fillBankFilters(); renderBankList();
+        toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
+        bankEditClose();
+    }catch(e){
+        document.getElementById('nhe-status').textContent='Lỗi: '+e.message;
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
+    }
 }
 
 /* ── Chọn câu ── */
@@ -4311,6 +4422,44 @@ async function htResetDevice(deviceId) {
             <span class="bpm-count" id="bpm-count-label"></span>
             <button onclick="closeBankPicker()" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer">Huỷ</button>
             <button id="bpm-add-btn" onclick="addFromBankPicker()" style="padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-plus"></i> Thêm vào bài</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════ EDIT QUESTION MODAL ══════ -->
+<div id="nh-edit-overlay">
+    <div id="nh-edit-modal">
+        <div class="nhe-head">
+            <i class="fa-solid fa-pen-to-square" style="color:var(--blue);font-size:18px"></i>
+            <h3>Sửa câu hỏi <span id="nhe-id-label" style="color:var(--gray2);font-weight:400;font-size:13px"></span></h3>
+            <button onclick="bankEditClose()" style="background:none;border:none;font-size:18px;color:var(--gray2);cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nhe-body">
+            <div class="nhe-row">
+                <div class="nhe-field"><label>Loại câu</label>
+                    <select id="nhe-loai" onchange="bankEditRenderOpts()">
+                        <option value="TN">Trắc nghiệm</option><option value="DS">Đúng/Sai</option><option value="TLN">Trả lời ngắn</option>
+                    </select>
+                </div>
+                <div class="nhe-field"><label>Mức độ</label>
+                    <select id="nhe-mucdo">
+                        <option value="NB">Nhận biết</option><option value="TH">Thông hiểu</option>
+                        <option value="VD">Vận dụng</option><option value="VDC">Vận dụng cao</option>
+                    </select>
+                </div>
+                <div class="nhe-field"><label>Chương</label>
+                    <select id="nhe-chuong"></select>
+                </div>
+            </div>
+            <div class="nhe-field"><label>Đề bài chung (chỉ dùng cho câu chùm)</label><textarea id="nhe-debai" style="min-height:44px"></textarea></div>
+            <div class="nhe-field"><label>Nội dung câu hỏi</label><textarea id="nhe-question" style="min-height:80px"></textarea></div>
+            <div id="nhe-opts-wrap"></div>
+            <div class="nhe-field"><label>Lời giải chi tiết</label><textarea id="nhe-giaithich" style="min-height:100px"></textarea></div>
+        </div>
+        <div class="nhe-foot">
+            <span id="nhe-status" style="font-size:12.5px;color:var(--gray2);flex:1"></span>
+            <button onclick="bankEditClose()" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer">Huỷ</button>
+            <button id="nhe-save-btn" onclick="bankEditSave()" style="padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-check"></i> Lưu thay đổi</button>
         </div>
     </div>
 </div>
