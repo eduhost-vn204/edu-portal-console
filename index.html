@@ -551,7 +551,12 @@
         body.dark .ch-btn.edit:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .ch-btn.del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.12); }
 
-    </style>
+    
+        /* ═══ CÂU HỎI TRONG VIDEO ═══ */
+        .vq-time { width:88px; padding:6px 8px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--black); font-size:13px; font-weight:700; text-align:center; }
+        .vq-hint { font-size:12px; color:var(--gray2); margin:4px 0 8px; }
+        #vq-list .qb-card { border-left:3px solid var(--blue); }
+</style>
 </head>
 <body>
 
@@ -701,6 +706,17 @@
                         <div class="form-field">
                             <label>Link PDF Bài Tập <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ)</span></label>
                             <input id="f-pdf" placeholder="https://drive.google.com/file/d/...">
+                        </div>
+                        <div class="form-field" id="vq-section">
+                            <div class="quiz-section-head">
+                                <label>Câu hỏi trong video <span style="font-weight:400;color:var(--gray2)">(video dừng tại mốc ⏱, HS trả lời đúng mới xem tiếp — chỉ áp dụng video YouTube)</span></label>
+                                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                                    <button class="btn-from-bank" onclick="openBankPicker('video')"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
+                                    <button class="btn-add-q" onclick="vqAddManual()"><i class="fa-solid fa-plus"></i> Nhập tay</button>
+                                </div>
+                            </div>
+                            <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> Nhập mốc thời gian dạng <b>mm:ss</b> (ví dụ 12:35) — nên đặt ngay TRƯỚC đoạn thầy chữa câu đó.</div>
+                            <div id="vq-list"></div>
                         </div>
                         <div class="form-field">
                             <div class="quiz-section-head">
@@ -1174,7 +1190,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1923,6 +1939,7 @@ function openNewForm(){
     document.getElementById('f-motabai').value='';
     document.getElementById('f-pdf').value='';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
+    vqReset();
     document.getElementById('quiz-builder').innerHTML='';
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
@@ -1958,6 +1975,7 @@ function openEditForm(key){
     qCount=0;
     let baitapArr=[]; try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){}
     baitapArr.forEach(q=>addQuestion(q));
+    vqReset(); vqLoadFromGAS(key);
     document.getElementById('btn-save-lesson').disabled=false;
     document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
@@ -2003,10 +2021,111 @@ function addQuestion(q={}){
 
 function removeQuestion(qi){ document.getElementById('qcard-'+qi)?.remove(); }
 
+/* ════ CÂU HỎI TRONG VIDEO (video dừng tại mốc, HS trả lời mới xem tiếp) ════ */
+let vqItems=[]; // {t:giây, nhId, q, A, B, C, D, ans}
+window._vqTouched=false;
+
+function vqReset(){ vqItems=[]; window._vqTouched=false; renderVQ(); }
+
+function vqFmtTime(s){
+    s=Math.max(0,Math.round(Number(s)||0));
+    const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+    const p=n=>String(n).padStart(2,'0');
+    return h? h+':'+p(m)+':'+p(sec) : m+':'+p(sec);
+}
+function vqParseTime(str){
+    const parts=String(str||'').trim().split(':').map(x=>parseInt(x,10));
+    if(!parts.length||parts.some(isNaN)) return NaN;
+    return parts.reduce((a,b)=>a*60+b,0);
+}
+function vqUpd(i,f,v){
+    if(!vqItems[i]) return;
+    window._vqTouched=true;
+    if(f==='t'){
+        const s=vqParseTime(v);
+        if(isNaN(s)){ toast('Th\u1eddi gian kh\u00f4ng h\u1ee3p l\u1ec7 \u2014 d\u00f9ng d\u1ea1ng mm:ss (v\u00ed d\u1ee5 12:35)','err'); renderVQ(); return; }
+        vqItems[i].t=s; renderVQ(); return;
+    }
+    vqItems[i][f]=v;
+}
+function vqDel(i){ vqItems.splice(i,1); window._vqTouched=true; renderVQ(); }
+function vqAddManual(){
+    vqItems.push({t:0,nhId:'',q:'',A:'',B:'',C:'',D:'',ans:''});
+    window._vqTouched=true;
+    renderVQ();
+}
+function renderVQ(){
+    const box=document.getElementById('vq-list'); if(!box) return;
+    if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o cho video n\u00e0y.</div>'; return; }
+    box.innerHTML=vqItems.map((it,i)=>{
+        const src=it.nhId
+            ? `<span class="nh-badge b-ch" style="font-size:10px">Ng\u00e2n h\u00e0ng \u00b7 ${nhEsc(it.nhId)}</span>`
+            : '<span class="nh-badge" style="font-size:10px">Nh\u1eadp tay</span>';
+        let body='';
+        if(it.nhId){
+            const opts=['A','B','C','D'].filter(L=>it[L]).map(L=>`<span style="margin-right:10px;font-size:12px"><b style="color:${it.ans===L?'var(--green)':'inherit'}">${L}.</b> ${nhSafe(it[L])}</span>`).join('');
+            body=`<div style="font-size:13px;margin:8px 0 5px">${nhSafe(it.q)}</div><div>${opts}</div>`;
+        } else {
+            body=`<textarea class="qb-question" placeholder="N\u1ed9i dung c\u00e2u h\u1ecfi..." onchange="vqUpd(${i},'q',this.value)">${esc(it.q||'')}</textarea>
+                ${['A','B','C','D'].map(L=>`
+                <div class="qb-opt">
+                    <input type="radio" name="vqc-${i}" value="${L}" ${it.ans===L?'checked':''} onchange="vqUpd(${i},'ans',this.value)" title="Ch\u1ecdn l\u00e0m \u0111\u00e1p \u00e1n \u0111\u00fang">
+                    <span class="qb-letter">${L}</span>
+                    <input type="text" placeholder="\u0110\u00e1p \u00e1n ${L}..." value="${esc(it[L]||'')}" onchange="vqUpd(${i},'${L}',this.value)">
+                </div>`).join('')}`;
+        }
+        return `<div class="qb-card">
+            <div class="qb-head" style="gap:8px;flex-wrap:wrap">
+                <span class="qb-num">M\u1ed0C ${i+1}</span>
+                <span style="font-size:11px;color:var(--gray2);font-weight:700">\u23f1</span>
+                <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="mm:ss" title="M\u1ed1c th\u1eddi gian trong video, d\u1ea1ng mm:ss">
+                ${src}
+                <button class="qb-del" onclick="vqDel(${i})" style="margin-left:auto"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            ${body}
+        </div>`;
+    }).join('');
+    nhKatex(box);
+}
+function vqValidate(){
+    for(let i=0;i<vqItems.length;i++){
+        const it=vqItems[i];
+        if(isNaN(Number(it.t))||Number(it.t)<0) return `M\u1ed1c ${i+1}: th\u1eddi gian kh\u00f4ng h\u1ee3p l\u1ec7 (d\u00f9ng d\u1ea1ng mm:ss)`;
+        if(!(it.q||'').toString().trim()) return `M\u1ed1c ${i+1}: ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi`;
+        if(['A','B','C','D'].indexOf(it.ans)<0) return `M\u1ed1c ${i+1}: ch\u01b0a ch\u1ecdn \u0111\u00e1p \u00e1n \u0111\u00fang`;
+        if(!(it[it.ans]||'').toString().trim()) return `M\u1ed1c ${i+1}: \u0111\u00e1p \u00e1n \u0111\u00fang (${it.ans}) \u0111ang \u0111\u1ec3 tr\u1ed1ng`;
+    }
+    const ts=vqItems.map(x=>Number(x.t));
+    if(new Set(ts).size!==ts.length) return 'C\u00f3 2 m\u1ed1c tr\u00f9ng th\u1eddi gian \u2014 m\u1ed7i m\u1ed1c c\u1ea7n th\u1eddi \u0111i\u1ec3m kh\u00e1c nhau';
+    return '';
+}
+async function vqLoadFromGAS(key){
+    const box=document.getElementById('vq-list');
+    if(box) box.innerHTML='<div style="color:var(--gray2);font-size:13px;padding:6px 0"><i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea3i c\u00e2u h\u1ecfi trong video...</div>';
+    try{
+        const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(key)+'&t='+Date.now());
+        const j=await r.json();
+        vqItems=(j&&j.data||[])
+            .filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key)
+            .map(rw=>({t:Number(rw.thoiGian)||0,nhId:(rw.nhId||'').toString(),q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim()}));
+        if(vqItems.length) window._vqTouched=true;
+    }catch(e){ vqItems=[]; }
+    renderVQ();
+}
+async function vqSaveToGAS(newKey, origKey){
+    if(!window._vqTouched && !vqItems.length) return; // b\u00e0i kh\u00f4ng d\u00f9ng t\u00ednh n\u0103ng n\u00e0y
+    const items=vqItems.slice().sort((a,b)=>Number(a.t)-Number(b.t))
+        .map(it=>({t:Number(it.t)||0,nhId:it.nhId||'',q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||''}));
+    await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items})});
+}
+
 /* ════ BANK PICKER ════ */
 let _bpmSel = new Set(); // IDs câu đã chọn trong modal
 
-function openBankPicker(){
+let _bpmTarget='quiz';
+function openBankPicker(target){
+    _bpmTarget=(target==='video')?'video':'quiz';
     _bpmSel.clear();
     document.getElementById('bank-picker-overlay').classList.add('show');
     document.getElementById('bpm-search').value='';
@@ -2074,6 +2193,17 @@ function updateBpmCount(){
 function addFromBankPicker(){
     if(!_bpmSel.size){ toast('Chưa chọn câu nào!','err'); return; }
     const chosen=bankData.filter(q=>_bpmSel.has(q.id)&&q.loai==='TN');
+    if(_bpmTarget==='video'){
+        chosen.forEach(q=>{
+            vqItems.push({ t:0, nhId:(q.id||'').toString(), q:q.question||'', A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
+        });
+        window._vqTouched=true;
+        renderVQ();
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${chosen.length} câu — nhớ nhập mốc thời gian ⏱ cho từng câu!`,'ok');
+        closeBankPicker();
+        document.getElementById('vq-section')?.scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+    }
     chosen.forEach(q=>{
         addQuestion({ q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
     });
@@ -2114,6 +2244,8 @@ async function saveLessonForm(){
     const qs=getQuestionsFromForm();
     const badQ=qs.filter(q=>!q.ans);
     if(badQ.length){ toast(`<i class="fa-solid fa-triangle-exclamation"></i> ${badQ.length} câu chưa chọn đáp án đúng!`,'err'); return; }
+    const vqErr=vqValidate();
+    if(vqErr){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Câu hỏi trong video — '+vqErr,'err'); return; }
     const payload={
         action:'saveBaiHoc',
         originalKey:document.getElementById('f-original-key').value,
@@ -2135,6 +2267,7 @@ async function saveLessonForm(){
             return;
         }
         invalidateCache();
+        try{ await vqSaveToGAS(`${khoa}|||${chuong}|||${tenbai}`, document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRONG VIDEO lưu lỗi: '+e.message,'err'); }
         toast('<i class="fa-solid fa-circle-check"></i> Đã lưu bài giảng lên Google Sheets!','ok');
         showSyncBadge();
         closeForm();
