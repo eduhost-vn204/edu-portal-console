@@ -2127,19 +2127,24 @@ function vqToggleTranscriptBox(){
     w.style.display=(w.style.display==='none'?'':'none');
 }
 function vqParseTranscriptPaste(raw){
-    const lines=String(raw||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-    const tsRe=/^(\d{1,2}(?::\d{2}){1,2})\b[\s:.\-]*(.*)$/;
-    const segs=[]; let cur=null;
-    lines.forEach(line=>{
-        const m=line.match(tsRe);
-        if(m){
-            if(cur) segs.push(cur);
-            cur={ start: vqParseTime(m[1]), text: m[2]||'' };
-        } else if(cur){
-            cur.text=(cur.text? cur.text+' ':'')+line;
-        }
-    });
-    if(cur) segs.push(cur);
+    // YouTube đôi khi kèm nhãn đọc bằng chữ cho mốc (vd "37 phút, 54 giây") dính liền ngay sau
+    // mốc số mm:ss khi dán không có xuống dòng rõ ràng (bug đã gặp thực tế 17/7) — xoá nhãn
+    // trùng lặp này trước, rồi quét TOÀN VĂN tìm mọi mốc mm:ss/h:mm:ss ở BẤT KỲ đâu (không bắt
+    // buộc phải ở đầu dòng) để không phụ thuộc cách trình duyệt tách dòng khi copy.
+    let text=String(raw||'');
+    text=text.replace(/(\d{1,2})\s*gi[oờ]\s*,?\s*(\d{1,2})\s*ph[uú]t\s*,?\s*(\d{1,2})\s*gi[aâ]y/gi,' ');
+    text=text.replace(/(\d{1,2})\s*ph[uú]t\s*,?\s*(\d{1,2})\s*gi[aâ]y/gi,' ');
+    const tsRe=/(\d{1,2}(?::\d{2}){1,2})(?!\d|:)/g;
+    const marks=[]; let m;
+    while((m=tsRe.exec(text))){ marks.push({idx:m.index, len:m[0].length, ts:m[1]}); }
+    if(!marks.length) return [];
+    const segs=[];
+    for(let i=0;i<marks.length;i++){
+        const start=marks[i].idx+marks[i].len;
+        const end=(i+1<marks.length)?marks[i+1].idx:text.length;
+        const chunk=text.slice(start,end).replace(/\s+/g,' ').trim();
+        segs.push({ start: vqParseTime(marks[i].ts), text: chunk });
+    }
     return segs;
 }
 function _vqNormalize(s){
@@ -2158,7 +2163,7 @@ function vqMatchTranscript(i){
     if(!raw.trim()){ toast('D\u00e1n ph\u1ee5 \u0111\u1ec1 video v\u00e0o \u00f4 \u1edf tr\u00ean tr\u01b0\u1edbc \u0111\u00e3 nh\u00e9 (b\u1ea5m "D\u00e1n ph\u1ee5 \u0111\u1ec1 \u0111\u1ec3 t\u1ef1 d\u00f2 m\u1ed1c")','err'); return; }
     if(!(it.q||'').trim()){ toast('M\u1ed1c n\u00e0y ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi','err'); return; }
     const segs=vqParseTranscriptPaste(raw);
-    if(!segs.length){ toast('Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c m\u1ed1c th\u1eddi gian trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 m\u1ed7i d\u00f2ng c\u1ea7n c\u00f3 mm:ss \u1edf \u0111\u1ea7u','err'); return; }
+    if(!segs.length){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ed1c mm:ss n\u00e0o trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 ki\u1ec3m tra l\u1ea1i n\u1ed9i dung \u0111\u00e3 copy','err'); return; }
     const qWords=_vqWordSet((it.q||'')+' '+(it[it.ans]||''));
     if(!qWords.size){ toast('N\u1ed9i dung c\u00e2u h\u1ecfi qu\u00e1 ng\u1eafn \u0111\u1ec3 so kh\u1edbp','err'); return; }
     const WIN=4;
