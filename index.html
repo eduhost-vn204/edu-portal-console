@@ -1653,7 +1653,7 @@ async function moveLessonOrder(khoa, chuong, key, dir){
     });
     items.sort((a,b) => (a.ttb===null?999999:a.ttb) - (b.ttb===null?999999:b.ttb));
     let seq = 1;
-    items.forEach(it => { if(it.ttb===null) it.ttb = seq; else seq = it.ttb + 1; });
+    items.forEach(it => { if(it.ttb===null){ it.ttb = seq; seq++; } else { seq = it.ttb + 1; } });
     const idx = items.findIndex(it => it.key === key);
     if(idx < 0) return;
     const swapIdx = idx + dir;
