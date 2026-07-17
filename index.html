@@ -1640,8 +1640,9 @@ async function moveCourseOrder(fullName, dir){
 }
 
 // Đổi thứ tự hiển thị của 1 bài trong cùng chương (lưu vào cột ThuTuBai trên Sheet BaiHoc).
-// Bài chưa từng có ThuTuBai được gán số thứ tự tuần tự theo vị trí hiện tại trước khi đổi chỗ,
-// y hệt cách moveCourseOrder() làm với thứ tự khóa học.
+// QUAN TRỌNG: phải ghi lại ThuTuBai cho TẤT CẢ bài trong chương (không chỉ 2 bài đổi chỗ) —
+// nếu chỉ ghi 2 bài, các bài còn lại vẫn "chưa có ThuTuBai" (null) nên lần đổi chỗ sau sẽ luôn
+// bị coi là "chưa sắp xếp" và tự nhảy xuống cuối, gây rối thứ tự thay vì chỉ dịch đúng 1 bài.
 async function moveLessonOrder(khoa, chuong, key, dir){
     const rows = allLessons.filter(r => (khoaOf(r))===khoa && (r.Chuong||r.chuong||r.chapter||'')===chuong);
     if(!rows.length) return;
@@ -1651,16 +1652,15 @@ async function moveLessonOrder(khoa, chuong, key, dir){
         const ten = r.TenBai||r.tenbai||r.title||r.ten||'';
         return { row:r, ttb, key: khoa+'|||'+chuong+'|||'+ten };
     });
+    // Thứ tự hiệu lực hiện tại: theo ThuTuBai đã có, bài chưa có giữ nguyên vị trí cũ (sort ổn định)
     items.sort((a,b) => (a.ttb===null?999999:a.ttb) - (b.ttb===null?999999:b.ttb));
-    let seq = 1;
-    items.forEach(it => { if(it.ttb===null){ it.ttb = seq; seq++; } else { seq = it.ttb + 1; } });
     const idx = items.findIndex(it => it.key === key);
     if(idx < 0) return;
     const swapIdx = idx + dir;
     if(swapIdx < 0 || swapIdx >= items.length) return;
-    const tmp = items[idx].ttb;
-    items[idx].ttb = items[swapIdx].ttb;
-    items[swapIdx].ttb = tmp;
+    // Đổi VỊ TRÍ trong mảng (không chỉ đổi số), rồi đánh số lại 1..N cho TẤT CẢ để không còn bài nào null
+    const tmp = items[idx]; items[idx] = items[swapIdx]; items[swapIdx] = tmp;
+    items.forEach((it, i) => { it.ttb = i + 1; });
     const buildPayload = (it) => {
         const r = it.row;
         return {
@@ -1679,11 +1679,8 @@ async function moveLessonOrder(khoa, chuong, key, dir){
             ThuTuBai: it.ttb
         };
     };
-    const ok = await Promise.all([
-        postAdminWrite(buildPayload(items[idx])),
-        postAdminWrite(buildPayload(items[swapIdx]))
-    ]);
-    if(ok.some(x=>!x)){ toast('⚠️ Đổi thứ tự lỗi, thầy thử lại nhé','err'); }
+    const results = await Promise.all(items.map(it => postAdminWrite(buildPayload(it))));
+    if(results.some(x=>!x)){ toast('⚠️ Đổi thứ tự lỗi, thầy thử lại nhé','err'); }
     invalidateCache();
     await loadLessons();
 }
