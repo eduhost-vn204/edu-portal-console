@@ -704,8 +704,16 @@
                             <textarea id="f-motabai" placeholder="Tóm tắt ngắn về nội dung bài giảng..."></textarea>
                         </div>
                         <div class="form-field">
+                            <label>Link PDF Lý Thuyết <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ)</span></label>
+                            <input id="f-pdflt" placeholder="https://drive.google.com/file/d/...">
+                        </div>
+                        <div class="form-field">
                             <label>Link PDF Bài Tập <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ)</span></label>
                             <input id="f-pdf" placeholder="https://drive.google.com/file/d/...">
+                        </div>
+                        <div class="form-field">
+                            <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
+                            <input id="f-thoigian" type="number" min="1" step="1" placeholder="VD: 15">
                         </div>
                         <div class="form-field" id="vq-section">
                             <div class="quiz-section-head">
@@ -1947,6 +1955,8 @@ function openNewForm(){
     document.getElementById('f-videogiai').value='';
     document.getElementById('f-motabai').value='';
     document.getElementById('f-pdf').value='';
+    document.getElementById('f-pdflt').value='';
+    document.getElementById('f-thoigian').value='';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
     document.getElementById('quiz-builder').innerHTML='';
@@ -1976,6 +1986,8 @@ function openEditForm(key){
     document.getElementById('f-videogiai').value=row.VideoGiai||row.videogiai||row.videochua||'';
     document.getElementById('f-motabai').value=row.MoTaBai||row.motabai||row.desc||'';
     document.getElementById('f-pdf').value=row.PDF||row.pdf||'';
+    document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
+    document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
     const nd=row.NgayDang||row.ngaydang||row.date||'';
     document.getElementById('f-ngaydang').value=nd;
     document.getElementById('quiz-builder').innerHTML='';
@@ -2364,6 +2376,8 @@ async function saveLessonForm(){
         VideoGiai:document.getElementById('f-videogiai').value.trim(),
         MoTaBai:document.getElementById('f-motabai').value.trim(),
         PDF:document.getElementById('f-pdf').value.trim(),
+        PDFLyThuyet:document.getElementById('f-pdflt').value.trim(),
+        ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
         BaiTap:qs.length?JSON.stringify(qs):''
     };
@@ -2385,7 +2399,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         updateChuongList(); renderLessonList();
     }catch(err){
