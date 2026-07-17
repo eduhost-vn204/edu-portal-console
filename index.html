@@ -712,6 +712,8 @@
                                 <label>Câu hỏi trong video <span style="font-weight:400;color:var(--gray2)">(video dừng tại mốc ⏱, HS trả lời đúng mới xem tiếp — chỉ áp dụng video YouTube)</span></label>
                                 <div style="display:flex;gap:6px;flex-wrap:wrap">
                                     <button class="btn-from-bank" onclick="openBankPicker('video')"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
+                                    <button class="btn-add-q" onclick="document.getElementById('vq-file-input').click()"><i class="fa-solid fa-file-word"></i> Tải file Word</button>
+                                    <input type="file" id="vq-file-input" accept=".docx" style="display:none">
                                     <button class="btn-add-q" onclick="vqAddManual()"><i class="fa-solid fa-plus"></i> Nhập tay</button>
                                 </div>
                             </div>
@@ -2054,6 +2056,46 @@ function vqAddManual(){
     window._vqTouched=true;
     renderVQ();
 }
+/* ── Tải file Word (.docx) để nạp hàng loạt câu hỏi vào mốc video ──
+   Dùng lại DocxEngine (đã dùng cho Soạn Đề / nạp Ngân hàng) — chỉ lấy
+   câu trắc nghiệm (mc, có ≥2 phương án A-D), KHÔNG kèm mốc thời gian.
+   Mỗi câu được thêm vào vqItems với t=0 ở dạng "Nhập tay" để thầy tự
+   xem/sửa nội dung và điền mốc thời gian cho từng câu. */
+async function vqHandleDocxFile(file){
+    if(!file.name.toLowerCase().endsWith('.docx')){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Chỉ hỗ trợ file <b>.docx</b>','err'); return; }
+    if(typeof JSZip==='undefined'){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa tải được thư viện. Tải lại trang (F5).','err'); return; }
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang đọc file Word...','ok');
+    try{
+        const zip=await JSZip.loadAsync(await file.arrayBuffer());
+        const dF=zip.file("word/document.xml"); if(!dF){ toast('<i class="fa-solid fa-bug"></i> File Word không hợp lệ.','err'); return; }
+        const dX=await dF.async("string");
+        const rF=zip.file("word/_rels/document.xml.rels");
+        const rX=rF?await rF.async("string"):null;
+        const mM={},mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif'};
+        for(const p of Object.keys(zip.files)){if(/^word\/media\//i.test(p)){const ext=p.split('.').pop().toLowerCase();let u=null;if(mime[ext]){const b64=await zip.file(p).async("base64");u='data:'+mime[ext]+';base64,'+b64;}else if(ext==='wmf'){u=wmfToDataUri(await zip.file(p).async("uint8array"));}if(u){if(typeof u!=='object'){u=await compressUri(u);}mM[p.replace(/^.*\//,'')]=u;}}}
+        const parser=new DOMParser();
+        const dD=parser.parseFromString(dX,"application/xml");
+        const rD=rX?parser.parseFromString(rX,"application/xml"):null;
+        const qs=DocxEngine.parse(dD,rD,mM);
+        const mc=qs.filter(q=>q.type==='mc' && ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2);
+        const skipped=qs.length-mc.length;
+        if(!mc.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy câu trắc nghiệm A/B/C/D nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C."...','err'); return; }
+        mc.forEach(q=>{
+            vqItems.push({t:0, nhId:'', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim()});
+        });
+        window._vqTouched=true;
+        renderVQ();
+        const missingAns=mc.filter(q=>!q.correct).length;
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${mc.length} câu từ file Word — nhớ nhập mốc thời gian ⏱ cho từng câu!`
+            +(skipped?` (bỏ qua ${skipped} mục không phải trắc nghiệm A/B/C/D)`:'')
+            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án đúng, cần chọn tay</span>`:''),'ok');
+        document.getElementById('vq-section')?.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(err){
+        console.error(err);
+        toast('<i class="fa-solid fa-bug"></i> Lỗi đọc file: '+err.message,'err');
+    }
+}
+document.getElementById('vq-file-input')?.addEventListener('change', e=>{ if(e.target.files.length){ vqHandleDocxFile(e.target.files[0]); e.target.value=''; } });
 function renderVQ(){
     const box=document.getElementById('vq-list'); if(!box) return;
     if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o cho video n\u00e0y.</div>'; return; }
