@@ -2168,13 +2168,17 @@ function vqMatchTranscript(i){
     if(!qWords.size){ toast('N\u1ed9i dung c\u00e2u h\u1ecfi qu\u00e1 ng\u1eafn \u0111\u1ec3 so kh\u1edbp','err'); return; }
     const WIN=4;
     let best={score:0,start:0};
+    // Duyệt tới cuối và dùng >= (không phải >) để khi nhiều cửa sổ liên tiếp cùng đạt điểm
+    // cao nhất (rất hay xảy ra vì các đoạn phụ đề rất ngắn), ta giữ lại cửa sổ SAU CÙNG —
+    // tức là cửa sổ có mốc gần nhất với đoạn thực sự chứa nội dung câu hỏi, thay vì mốc
+    // sớm hơn vài đoạn phía trước (fix 18/7: gợi ý mốc bị lệch sớm ~20s so với thực tế).
     for(let k=0;k<segs.length;k++){
         const windowText=segs.slice(k,k+WIN).map(s=>s.text).join(' ');
         const wWords=_vqWordSet(windowText);
         if(!wWords.size) continue;
         let common=0; qWords.forEach(w=>{ if(wWords.has(w)) common++; });
         const score=common/qWords.size;
-        if(score>best.score) best={score,start:segs[k].start};
+        if(score>=best.score) best={score,start:segs[k].start};
     }
     if(best.score<0.2){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y \u0111o\u1ea1n kh\u1edbp r\u00f5 trong ph\u1ee5 \u0111\u1ec1 (kh\u1edbp ~'+Math.round(best.score*100)+'%) \u2014 th\u1ea7y n\u00ean t\u1ef1 ki\u1ec3m tra/nh\u1eadp tay m\u1ed1c n\u00e0y.','err'); return; }
     vqUpd(i,'t',vqFmtTime(Math.max(0,Math.round(best.start))));
