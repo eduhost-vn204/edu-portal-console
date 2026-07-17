@@ -199,6 +199,9 @@
         .li-btn.star { color:var(--gray2); }
         .li-btn.star:hover { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,.06); }
         .li-btn.star.active { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,.12); }
+        .li-btn.order { color:var(--gray); font-size:11px; }
+        .li-btn.order:hover:not(:disabled) { border-color:var(--blue); color:var(--blue); background:rgba(11,132,243,.05); }
+        .li-btn.order:disabled { opacity:.35; cursor:default; }
         .lesson-item.teaching { background:rgba(245,158,11,.05); border-left:3px solid #f59e0b; }
         .li-teaching-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px;
             background:rgba(245,158,11,.15); color:#f59e0b; white-space:nowrap; }
@@ -547,6 +550,7 @@
         body.dark .li-btn { border-color:#484f58; color:#8b949e; background:#21262d; }
         body.dark .li-btn.edit:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .li-btn.del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.12); }
+        body.dark .li-btn.order:hover:not(:disabled) { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .ch-btn { border-color:#484f58; color:#8b949e; background:#21262d; }
         body.dark .ch-btn.edit:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .ch-btn.del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.12); }
@@ -1635,6 +1639,55 @@ async function moveCourseOrder(fullName, dir){
     renderLessonList();
 }
 
+// Đổi thứ tự hiển thị của 1 bài trong cùng chương (lưu vào cột ThuTuBai trên Sheet BaiHoc).
+// Bài chưa từng có ThuTuBai được gán số thứ tự tuần tự theo vị trí hiện tại trước khi đổi chỗ,
+// y hệt cách moveCourseOrder() làm với thứ tự khóa học.
+async function moveLessonOrder(khoa, chuong, key, dir){
+    const rows = allLessons.filter(r => (khoaOf(r))===khoa && (r.Chuong||r.chuong||r.chapter||'')===chuong);
+    if(!rows.length) return;
+    const items = rows.map(r => {
+        const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
+        const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
+        const ten = r.TenBai||r.tenbai||r.title||r.ten||'';
+        return { row:r, ttb, key: khoa+'|||'+chuong+'|||'+ten };
+    });
+    items.sort((a,b) => (a.ttb===null?999999:a.ttb) - (b.ttb===null?999999:b.ttb));
+    let seq = 1;
+    items.forEach(it => { if(it.ttb===null) it.ttb = seq; else seq = it.ttb + 1; });
+    const idx = items.findIndex(it => it.key === key);
+    if(idx < 0) return;
+    const swapIdx = idx + dir;
+    if(swapIdx < 0 || swapIdx >= items.length) return;
+    const tmp = items[idx].ttb;
+    items[idx].ttb = items[swapIdx].ttb;
+    items[swapIdx].ttb = tmp;
+    const buildPayload = (it) => {
+        const r = it.row;
+        return {
+            action:'saveBaiHoc',
+            originalKey: it.key,
+            KhoaHoc: khoa, Chuong: chuong,
+            TenBai: r.TenBai||r.tenbai||r.title||r.ten||'',
+            Video: r.Video||r.video||r.link||'',
+            VideoGiai: r.VideoGiai||r.videogiai||r.videochua||'',
+            MoTaBai: r.MoTaBai||r.motabai||r.desc||'',
+            PDF: r.PDF||r.pdf||'',
+            PDFLyThuyet: r.PDFLyThuyet||r.pdflythuyet||r.pdflt||'',
+            ThoiGianLamBai: r.ThoiGianLamBai||r.thoigianlambai||'',
+            NgayDang: r.NgayDang||r.ngaydang||r.date||'',
+            BaiTap: r.BaiTap||r.baitap||'',
+            ThuTuBai: it.ttb
+        };
+    };
+    const ok = await Promise.all([
+        postAdminWrite(buildPayload(items[idx])),
+        postAdminWrite(buildPayload(items[swapIdx]))
+    ]);
+    if(ok.some(x=>!x)){ toast('⚠️ Đổi thứ tự lỗi, thầy thử lại nhé','err'); }
+    invalidateCache();
+    await loadLessons();
+}
+
 async function loadLessons(){
     const CKEY = 'vlxt_admin_baihoc';
     const cached = aCache(CKEY);
@@ -1684,13 +1737,28 @@ function groupLessons(rows){
         const baitap = r.BaiTap || r.baitap || '';
         const motabai = r.MoTaBai || r.motabai || r.desc || '';
         const ngaydang = r.NgayDang || r.ngaydang || r.date || '';
+        const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
+        const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
         const sc = extractSC(khoa);
         const subj = sc.subject || khoa;
         const cname = sc.courseName || khoa; // tên khóa hiển thị
         if(!subjects[subj]) subjects[subj]={name:subj, courses:{}};
         if(!subjects[subj].courses[khoa]) subjects[subj].courses[khoa]={name:cname, fullName:khoa, chapters:{}};
         if(!subjects[subj].courses[khoa].chapters[chuong]) subjects[subj].courses[khoa].chapters[chuong]=[];
-        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang});
+        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb});
+    });
+    // Sắp xếp bài trong từng chương theo ThuTuBai (thầy tự kéo lên/xuống bằng nút mũi tên).
+    // Bài chưa từng được sắp xếp (ttb=null) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
+    Object.values(subjects).forEach(subj=>{
+        Object.values(subj.courses).forEach(course=>{
+            Object.values(course.chapters).forEach(lessons=>{
+                lessons.sort((a,b)=>{
+                    const ta = (a.ttb===null||a.ttb===undefined) ? 999999 : a.ttb;
+                    const tb = (b.ttb===null||b.ttb===undefined) ? 999999 : b.ttb;
+                    return ta - tb;
+                });
+            });
+        });
     });
     return subjects;
 }
@@ -1758,13 +1826,16 @@ function renderCourseBlock(course){
             <button class="ch-btn edit" title="Đổi tên chương" onclick="editChapter('${esc(course.fullName).replace(/'/g,"&#39;")}','${esc(chName).replace(/'/g,"&#39;")}')"><i class="fa-solid fa-pen"></i></button>
             <button class="ch-btn del" title="Xóa chương" onclick="deleteChapter('${esc(course.fullName).replace(/'/g,"&#39;")}','${esc(chName).replace(/'/g,"&#39;")}')"><i class="fa-solid fa-trash"></i></button>
         </div>`;
-        lessons.forEach(l=>{
+        const safeChuong = esc(chName).replace(/'/g,"&#39;");
+        lessons.forEach((l,lIdx)=>{
             const hasVid=!!ytId(l.video)||!!(l.video&&l.video.includes('drive.google.com'));
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
             const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
             const isTeaching = (currentTeachingLesson === key);
             const safeKey = esc(key).replace(/'/g,"&#39;");
+            const isFirstLesson = lIdx===0;
+            const isLastLesson = lIdx===lessons.length-1;
             html+=`<div class="lesson-item${isTeaching?' teaching':''}">
                 <div class="li-name">${esc(l.ten)}</div>
                 <div class="li-badges">
@@ -1774,6 +1845,8 @@ function renderCourseBlock(course){
                     ${baitapArr.length?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${baitapArr.length} câu</span>`:''}
                 </div>
                 <div class="li-actions">
+                    <button class="li-btn order" title="Lên trên" ${isFirstLesson?'disabled':''} onclick="moveLessonOrder('${fn}','${safeChuong}','${safeKey}',-1)"><i class="fa-solid fa-chevron-up"></i></button>
+                    <button class="li-btn order" title="Xuống dưới" ${isLastLesson?'disabled':''} onclick="moveLessonOrder('${fn}','${safeChuong}','${safeKey}',1)"><i class="fa-solid fa-chevron-down"></i></button>
                     <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeKey}')">⭐</button>
                     <button class="li-btn edit" title="Sửa bài" onclick="openEditForm('${safeKey}')"><i class="fa-solid fa-pen"></i></button>
                     <button class="li-btn del" title="Xóa bài" onclick="confirmDelete('${safeKey}')"><i class="fa-solid fa-trash"></i></button>
