@@ -498,7 +498,7 @@
         /* Forms & inputs */
         body.dark input, body.dark select, body.dark textarea { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark input::placeholder, body.dark textarea::placeholder { color:#6e7681; }
-        body.dark .field-input, body.dark .qb-question, body.dark .qb-opt input[type=text] { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .field-input, body.dark .qb-question, body.dark .qb-opt input[type=text], body.dark #vq-transcript-paste { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark .qb-card { background:#161b22; border-color:#30363d; }
         body.dark .qb-letter { background:#30363d; color:#8b949e; }
         body.dark .hint-bar { background:#161b22; border-color:#30363d; color:#8b949e; }
@@ -718,6 +718,13 @@
                                 </div>
                             </div>
                             <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> Nhập mốc thời gian dạng <b>mm:ss</b> (ví dụ 12:35) — nên đặt ngay TRƯỚC đoạn thầy chữa câu đó.</div>
+                            <div class="vq-transcript-box">
+                                <button type="button" class="btn-add-q" style="font-size:12px" onclick="vqToggleTranscriptBox()"><i class="fa-solid fa-closed-captioning"></i> Dán phụ đề để tự dò mốc (tuỳ chọn)</button>
+                                <div id="vq-transcript-wrap" style="display:none;margin-top:8px">
+                                    <div class="vq-hint" style="margin-top:0"><i class="fa-solid fa-circle-info"></i> Vào video YouTube → dưới video bấm "..." → <b>Hiện bản ghi</b> (Show transcript) → copy toàn bộ rồi dán vào đây. Sau đó bấm nút <i class="fa-solid fa-wand-magic-sparkles"></i> ở mỗi mốc để hệ thống tự so khớp nội dung câu hỏi và gợi ý giờ — không gửi dữ liệu ra ngoài, chỉ so khớp ngay trên máy.</div>
+                                    <textarea id="vq-transcript-paste" placeholder="Dán phụ đề video vào đây..." style="width:100%;min-height:110px;padding:9px 12px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-family:'Inter',sans-serif;font-size:13px;outline:none;resize:vertical"></textarea>
+                                </div>
+                            </div>
                             <div id="vq-list"></div>
                         </div>
                         <div class="form-field">
@@ -2096,6 +2103,66 @@ async function vqHandleDocxFile(file){
     }
 }
 document.getElementById('vq-file-input')?.addEventListener('change', e=>{ if(e.target.files.length){ vqHandleDocxFile(e.target.files[0]); e.target.value=''; } });
+
+/* ── D\u00f2 m\u1ed1c t\u1eeb ph\u1ee5 \u0111\u1ec1 d\u00e1n tay (kh\u00f4ng g\u1ecdi m\u1ea1ng, kh\u1edbp cục b\u1ed9 tr\u00ean tr\u00ecnh duy\u1ec7t) ──
+   Th\u1ea7y copy ph\u1ee5 \u0111\u1ec1 t\u1eeb n\u00fat "Hi\u1ec7n b\u1ea3n ghi" c\u1ee7a YouTube d\u00e1n v\u00e0o \u00f4 vq-transcript-paste,
+   h\u1ec7 th\u1ed1ng t\u1ef1 t\u00e1ch th\u00e0nh c\u00e1c \u0111o\u1ea1n (mốc + n\u1ed9i dung) r\u1ed3i so kh\u1edbp v\u1edbi
+   n\u1ed9i dung c\u00e2u h\u1ecfi \u0111\u1ec3 g\u1ee3i \u00fd gi\u1eddi ─ kh\u00f4ng ch\u00ednh x\u00e1c tuy\u1ec7t \u0111\u1ed1i, thầy n\u00ean xem l\u1ea1i video
+   tr\u01b0\u1edbc khi l\u01b0u. */
+function vqToggleTranscriptBox(){
+    const w=document.getElementById('vq-transcript-wrap');
+    if(!w) return;
+    w.style.display=(w.style.display==='none'?'':'none');
+}
+function vqParseTranscriptPaste(raw){
+    const lines=String(raw||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const tsRe=/^(\d{1,2}(?::\d{2}){1,2})\b[\s:.\-]*(.*)$/;
+    const segs=[]; let cur=null;
+    lines.forEach(line=>{
+        const m=line.match(tsRe);
+        if(m){
+            if(cur) segs.push(cur);
+            cur={ start: vqParseTime(m[1]), text: m[2]||'' };
+        } else if(cur){
+            cur.text=(cur.text? cur.text+' ':'')+line;
+        }
+    });
+    if(cur) segs.push(cur);
+    return segs;
+}
+function _vqNormalize(s){
+    return String(s||'')
+        .replace(/<[^>]+>/g,' ')
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/\u0111/g,'d')
+        .replace(/[^a-z0-9\s]/g,' ')
+        .replace(/\s+/g,' ').trim();
+}
+function _vqWordSet(s){ return new Set(_vqNormalize(s).split(' ').filter(w=>w.length>1)); }
+function vqMatchTranscript(i){
+    const it=vqItems[i]; if(!it) return;
+    const raw=document.getElementById('vq-transcript-paste')?.value||'';
+    if(!raw.trim()){ toast('D\u00e1n ph\u1ee5 \u0111\u1ec1 video v\u00e0o \u00f4 \u1edf tr\u00ean tr\u01b0\u1edbc \u0111\u00e3 nh\u00e9 (b\u1ea5m "D\u00e1n ph\u1ee5 \u0111\u1ec1 \u0111\u1ec3 t\u1ef1 d\u00f2 m\u1ed1c")','err'); return; }
+    if(!(it.q||'').trim()){ toast('M\u1ed1c n\u00e0y ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi','err'); return; }
+    const segs=vqParseTranscriptPaste(raw);
+    if(!segs.length){ toast('Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c m\u1ed1c th\u1eddi gian trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 m\u1ed7i d\u00f2ng c\u1ea7n c\u00f3 mm:ss \u1edf \u0111\u1ea7u','err'); return; }
+    const qWords=_vqWordSet((it.q||'')+' '+(it[it.ans]||''));
+    if(!qWords.size){ toast('N\u1ed9i dung c\u00e2u h\u1ecfi qu\u00e1 ng\u1eafn \u0111\u1ec3 so kh\u1edbp','err'); return; }
+    const WIN=4;
+    let best={score:0,start:0};
+    for(let k=0;k<segs.length;k++){
+        const windowText=segs.slice(k,k+WIN).map(s=>s.text).join(' ');
+        const wWords=_vqWordSet(windowText);
+        if(!wWords.size) continue;
+        let common=0; qWords.forEach(w=>{ if(wWords.has(w)) common++; });
+        const score=common/qWords.size;
+        if(score>best.score) best={score,start:segs[k].start};
+    }
+    if(best.score<0.2){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y \u0111o\u1ea1n kh\u1edbp r\u00f5 trong ph\u1ee5 \u0111\u1ec1 (kh\u1edbp ~'+Math.round(best.score*100)+'%) \u2014 th\u1ea7y n\u00ean t\u1ef1 ki\u1ec3m tra/nh\u1eadp tay m\u1ed1c n\u00e0y.','err'); return; }
+    vqUpd(i,'t',vqFmtTime(Math.max(0,Math.round(best.start))));
+    toast('\u0110\u00e3 g\u1ee3i \u00fd m\u1ed1c '+vqFmtTime(best.start)+' (kh\u1edbp ~'+Math.round(best.score*100)+'%) \u2014 xem l\u1ea1i video \u0111\u1ec3 ch\u1eafc ch\u1eafn tr\u01b0\u1edbc khi l\u01b0u!','ok');
+}
 function renderVQ(){
     const box=document.getElementById('vq-list'); if(!box) return;
     if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o cho video n\u00e0y.</div>'; return; }
@@ -2121,6 +2188,7 @@ function renderVQ(){
                 <span class="qb-num">M\u1ed0C ${i+1}</span>
                 <span style="font-size:11px;color:var(--gray2);font-weight:700">\u23f1</span>
                 <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="mm:ss" title="M\u1ed1c th\u1eddi gian trong video, d\u1ea1ng mm:ss">
+                <button type="button" class="qb-del" style="color:var(--blue)" onclick="vqMatchTranscript(${i})" title="D\u00f2 m\u1ed1c t\u1eeb ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
                 ${src}
                 <button class="qb-del" onclick="vqDel(${i})" style="margin-left:auto"><i class="fa-solid fa-xmark"></i></button>
             </div>
