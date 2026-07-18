@@ -712,8 +712,12 @@
                             <input id="f-pdflt" placeholder="https://drive.google.com/file/d/...">
                         </div>
                         <div class="form-field">
-                            <label>Link PDF Bài Tập <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ)</span></label>
+                            <label>Link PDF Bài Tập <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ — bài tập áp dụng trong video)</span></label>
                             <input id="f-pdf" placeholder="https://drive.google.com/file/d/...">
+                        </div>
+                        <div class="form-field">
+                            <label>Link PDF Luyện Tập Thêm <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ — tách riêng khỏi bài tập trong video)</span></label>
+                            <input id="f-pdfluyentap" placeholder="https://drive.google.com/file/d/...">
                         </div>
                         <div class="form-field">
                             <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
@@ -1673,6 +1677,7 @@ async function moveLessonOrder(khoa, chuong, key, dir){
             MoTaBai: r.MoTaBai||r.motabai||r.desc||'',
             PDF: r.PDF||r.pdf||'',
             PDFLyThuyet: r.PDFLyThuyet||r.pdflythuyet||r.pdflt||'',
+            PDFLuyenTap: r.PDFLuyenTap||r.pdfluyentap||'',
             ThoiGianLamBai: r.ThoiGianLamBai||r.thoigianlambai||'',
             NgayDang: r.NgayDang||r.ngaydang||r.date||'',
             BaiTap: r.BaiTap||r.baitap||'',
@@ -2026,6 +2031,7 @@ function openNewForm(){
     document.getElementById('f-motabai').value='';
     document.getElementById('f-pdf').value='';
     document.getElementById('f-pdflt').value='';
+    document.getElementById('f-pdfluyentap').value='';
     document.getElementById('f-thoigian').value='';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
@@ -2057,6 +2063,7 @@ function openEditForm(key){
     document.getElementById('f-motabai').value=row.MoTaBai||row.motabai||row.desc||'';
     document.getElementById('f-pdf').value=row.PDF||row.pdf||'';
     document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
+    document.getElementById('f-pdfluyentap').value=row.PDFLuyenTap||row.pdfluyentap||'';
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
     const nd=row.NgayDang||row.ngaydang||row.date||'';
     document.getElementById('f-ngaydang').value=nd;
@@ -2456,6 +2463,7 @@ async function saveLessonForm(){
         MoTaBai:document.getElementById('f-motabai').value.trim(),
         PDF:document.getElementById('f-pdf').value.trim(),
         PDFLyThuyet:document.getElementById('f-pdflt').value.trim(),
+        PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
         BaiTap:qs.length?JSON.stringify(qs):''
@@ -2478,7 +2486,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         updateChuongList(); renderLessonList();
     }catch(err){
