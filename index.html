@@ -739,6 +739,7 @@
                                 <div id="vq-transcript-wrap" style="display:none;margin-top:8px">
                                     <div class="vq-hint" style="margin-top:0"><i class="fa-solid fa-circle-info"></i> Vào video YouTube → dưới video bấm "..." → <b>Hiện bản ghi</b> (Show transcript) → copy toàn bộ rồi dán vào đây. Sau đó bấm nút <i class="fa-solid fa-wand-magic-sparkles"></i> ở mỗi mốc để hệ thống tự so khớp nội dung câu hỏi và gợi ý giờ — không gửi dữ liệu ra ngoài, chỉ so khớp ngay trên máy.</div>
                                     <textarea id="vq-transcript-paste" placeholder="Dán phụ đề video vào đây..." style="width:100%;min-height:110px;padding:9px 12px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-family:'Inter',sans-serif;font-size:13px;outline:none;resize:vertical"></textarea>
+                                    <button type="button" class="btn-add-q" style="font-size:12px;margin-top:8px" onclick="vqMatchAllTranscript()"><i class="fa-solid fa-wand-magic-sparkles"></i> Đồng bộ tất cả các mốc (1 lượt)</button>
                                 </div>
                             </div>
                             <div id="vq-list"></div>
@@ -748,6 +749,8 @@
                                 <label>Bài tập trắc nghiệm <span style="font-weight:400;color:var(--gray2)">(tùy chọn)</span></label>
                                 <div style="display:flex;gap:6px;flex-wrap:wrap">
                                     <button class="btn-from-bank" onclick="openBankPicker()"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
+                                    <button class="btn-add-q" onclick="document.getElementById('q-file-input').click()"><i class="fa-solid fa-file-word"></i> Tải file Word</button>
+                                    <input type="file" id="q-file-input" accept=".docx" style="display:none">
                                     <button class="btn-add-q" onclick="addQuestion()"><i class="fa-solid fa-plus"></i> Thêm tay</button>
                                 </div>
                             </div>
@@ -2144,6 +2147,44 @@ function addQuestion(q={}){
 
 function removeQuestion(qi){ document.getElementById('qcard-'+qi)?.remove(); }
 
+/* Tải file Word (.docx) để nạp hàng loạt câu vào Bài tập trắc nghiệm luyện tập —
+   dùng lại DocxEngine.parse giống hệt vqHandleDocxFile() ở mục Câu hỏi trong video,
+   chỉ khác là gọi addQuestion() để thêm thẳng vào quiz-builder (không có mốc thời gian). */
+async function qHandleDocxFile(file){
+    if(!file.name.toLowerCase().endsWith('.docx')){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Chỉ hỗ trợ file <b>.docx</b>','err'); return; }
+    if(typeof JSZip==='undefined'){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa tải được thư viện. Tải lại trang (F5).','err'); return; }
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang đọc file Word...','ok');
+    try{
+        const zip=await JSZip.loadAsync(await file.arrayBuffer());
+        const dF=zip.file("word/document.xml"); if(!dF){ toast('<i class="fa-solid fa-bug"></i> File Word không hợp lệ.','err'); return; }
+        const dX=await dF.async("string");
+        const rF=zip.file("word/_rels/document.xml.rels");
+        const rX=rF?await rF.async("string"):null;
+        const mM={},mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif'};
+        for(const p of Object.keys(zip.files)){if(/^word\/media\//i.test(p)){const ext=p.split('.').pop().toLowerCase();let u=null;if(mime[ext]){const b64=await zip.file(p).async("base64");u='data:'+mime[ext]+';base64,'+b64;}else if(ext==='wmf'){u=wmfToDataUri(await zip.file(p).async("uint8array"));}if(u){if(typeof u!=='object'){u=await compressUri(u);}mM[p.replace(/^.*\//,'')]=u;}}}
+        const parser=new DOMParser();
+        const dD=parser.parseFromString(dX,"application/xml");
+        const rD=rX?parser.parseFromString(rX,"application/xml"):null;
+        const qs=DocxEngine.parse(dD,rD,mM);
+        const mc=qs.filter(q=>q.type==='mc' && ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2);
+        const skipped=qs.length-mc.length;
+        if(!mc.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy câu trắc nghiệm A/B/C/D nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C."...','err'); return; }
+        mc.forEach(q=>{
+            addQuestion({ q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim() });
+        });
+        const missingAns=mc.filter(q=>!q.correct).length;
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${mc.length} câu từ file Word vào Bài tập trắc nghiệm!`
+            +(skipped?` (bỏ qua ${skipped} mục không phải trắc nghiệm A/B/C/D)`:'')
+            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án đúng, cần chọn tay</span>`:''),'ok');
+        document.getElementById('quiz-builder')?.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(err){
+        console.error(err);
+        toast('<i class="fa-solid fa-bug"></i> Lỗi đọc file: '+err.message,'err');
+    }
+}
+document.getElementById('q-file-input')?.addEventListener('change', e=>{ if(e.target.files.length){ qHandleDocxFile(e.target.files[0]); e.target.value=''; } });
+
+
 /* ════ CÂU HỎI TRONG VIDEO (video dừng tại mốc, HS trả lời mới xem tiếp) ════ */
 let vqItems=[]; // {t:giây, nhId, q, A, B, C, D, ans}
 window._vqTouched=false;
@@ -2259,15 +2300,9 @@ function _vqNormalize(s){
         .replace(/\s+/g,' ').trim();
 }
 function _vqWordSet(s){ return new Set(_vqNormalize(s).split(' ').filter(w=>w.length>1)); }
-function vqMatchTranscript(i){
-    const it=vqItems[i]; if(!it) return;
-    const raw=document.getElementById('vq-transcript-paste')?.value||'';
-    if(!raw.trim()){ toast('D\u00e1n ph\u1ee5 \u0111\u1ec1 video v\u00e0o \u00f4 \u1edf tr\u00ean tr\u01b0\u1edbc \u0111\u00e3 nh\u00e9 (b\u1ea5m "D\u00e1n ph\u1ee5 \u0111\u1ec1 \u0111\u1ec3 t\u1ef1 d\u00f2 m\u1ed1c")','err'); return; }
-    if(!(it.q||'').trim()){ toast('M\u1ed1c n\u00e0y ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi','err'); return; }
-    const segs=vqParseTranscriptPaste(raw);
-    if(!segs.length){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ed1c mm:ss n\u00e0o trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 ki\u1ec3m tra l\u1ea1i n\u1ed9i dung \u0111\u00e3 copy','err'); return; }
+function _vqBestMatch(it, segs){
     const qWords=_vqWordSet((it.q||'')+' '+(it[it.ans]||''));
-    if(!qWords.size){ toast('N\u1ed9i dung c\u00e2u h\u1ecfi qu\u00e1 ng\u1eafn \u0111\u1ec3 so kh\u1edbp','err'); return; }
+    if(!qWords.size) return {score:0,start:0};
     const WIN=4;
     let best={score:0,start:0};
     // Duyệt tới cuối và dùng >= (không phải >) để khi nhiều cửa sổ liên tiếp cùng đạt điểm
@@ -2282,10 +2317,47 @@ function vqMatchTranscript(i){
         const score=common/qWords.size;
         if(score>=best.score) best={score,start:segs[k].start};
     }
+    return best;
+}
+function vqMatchTranscript(i){
+    const it=vqItems[i]; if(!it) return;
+    const raw=document.getElementById('vq-transcript-paste')?.value||'';
+    if(!raw.trim()){ toast('D\u00e1n ph\u1ee5 \u0111\u1ec1 video v\u00e0o \u00f4 \u1edf tr\u00ean tr\u01b0\u1edbc \u0111\u00e3 nh\u00e9 (b\u1ea5m "D\u00e1n ph\u1ee5 \u0111\u1ec1 \u0111\u1ec3 t\u1ef1 d\u00f2 m\u1ed1c")','err'); return; }
+    if(!(it.q||'').trim()){ toast('M\u1ed1c n\u00e0y ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi','err'); return; }
+    const segs=vqParseTranscriptPaste(raw);
+    if(!segs.length){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ed1c mm:ss n\u00e0o trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 ki\u1ec3m tra l\u1ea1i n\u1ed9i dung \u0111\u00e3 copy','err'); return; }
+    const qWords=_vqWordSet((it.q||'')+' '+(it[it.ans]||''));
+    if(!qWords.size){ toast('N\u1ed9i dung c\u00e2u h\u1ecfi qu\u00e1 ng\u1eafn \u0111\u1ec3 so kh\u1edbp','err'); return; }
+    const best=_vqBestMatch(it, segs);
     if(best.score<0.2){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y \u0111o\u1ea1n kh\u1edbp r\u00f5 trong ph\u1ee5 \u0111\u1ec1 (kh\u1edbp ~'+Math.round(best.score*100)+'%) \u2014 th\u1ea7y n\u00ean t\u1ef1 ki\u1ec3m tra/nh\u1eadp tay m\u1ed1c n\u00e0y.','err'); return; }
     vqUpd(i,'t',vqFmtTime(Math.max(0,Math.round(best.start))));
     toast('\u0110\u00e3 g\u1ee3i \u00fd m\u1ed1c '+vqFmtTime(best.start)+' (kh\u1edbp ~'+Math.round(best.score*100)+'%) \u2014 xem l\u1ea1i video \u0111\u1ec3 ch\u1eafc ch\u1eafn tr\u01b0\u1edbc khi l\u01b0u!','ok');
 }
+/* Đồng bộ tất cả các mốc trong 1 lượt — chạy _vqBestMatch cho TOÀN BỘ vqItems
+   thay vì phải bấm đũa phép từng câu một. */
+function vqMatchAllTranscript(){
+    const raw=document.getElementById('vq-transcript-paste')?.value||'';
+    if(!raw.trim()){ toast('D\u00e1n ph\u1ee5 \u0111\u1ec1 video v\u00e0o \u00f4 \u1edf tr\u00ean tr\u01b0\u1edbc \u0111\u00e3 nh\u00e9 (b\u1ea5m "D\u00e1n ph\u1ee5 \u0111\u1ec1 \u0111\u1ec3 t\u1ef1 d\u00f2 m\u1ed1c")','err'); return; }
+    if(!vqItems.length){ toast('Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o \u0111\u1ec3 \u0111\u1ed3ng b\u1ed9','err'); return; }
+    const segs=vqParseTranscriptPaste(raw);
+    if(!segs.length){ toast('Kh\u00f4ng t\u00ecm th\u1ea5y m\u1ed1c mm:ss n\u00e0o trong ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n \u2014 ki\u1ec3m tra l\u1ea1i n\u1ed9i dung \u0111\u00e3 copy','err'); return; }
+    let done=0, skipped=0;
+    vqItems.forEach(it=>{
+        if(!(it.q||'').trim()){ skipped++; return; }
+        const qWords=_vqWordSet((it.q||'')+' '+(it[it.ans]||''));
+        if(!qWords.size){ skipped++; return; }
+        const best=_vqBestMatch(it, segs);
+        if(best.score<0.2){ skipped++; return; }
+        it.t=Math.max(0,Math.round(best.start));
+        done++;
+    });
+    window._vqTouched=true;
+    renderVQ();
+    toast(`<i class="fa-solid fa-circle-check"></i> \u0110\u00e3 t\u1ef1 \u0111i\u1ec1n m\u1ed1c cho ${done}/${vqItems.length} c\u00e2u`
+        +(skipped?` (${skipped} c\u00e2u kh\u00f4ng kh\u1edbp r\u00f5/thi\u1ebfu n\u1ed9i dung \u2014 c\u1ea7n ki\u1ec3m tra ho\u1eb7c nh\u1eadp tay)`:'')
+        +' \u2014 xem l\u1ea1i video \u0111\u1ec3 ch\u1eafc ch\u1eafn tr\u01b0\u1edbc khi l\u01b0u!','ok');
+}
+
 function renderVQ(){
     const box=document.getElementById('vq-list'); if(!box) return;
     if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o cho video n\u00e0y.</div>'; return; }
