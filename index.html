@@ -167,6 +167,9 @@
         .course-action-btn.order-btn { background:rgba(107,114,128,.07); color:var(--gray); border-color:var(--border); padding:4px 9px; }
         .course-action-btn.order-btn:hover { border-color:var(--blue); color:var(--blue); }
         .course-order-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--bg3); color:var(--gray); border:1px solid var(--border); border-radius:6px; font-size:11px; font-weight:700; min-width:24px; height:22px; padding:0 6px; margin-left:2px; }
+        .course-action-btn.toggle-tier { background:rgba(107,114,128,.07); color:var(--gray); border-color:var(--border); }
+        .course-action-btn.toggle-tier.tier-vip { background:rgba(217,119,6,.08); color:#d97706; border-color:rgba(217,119,6,.3); }
+        .course-action-btn.toggle-tier.tier-premium { background:rgba(124,58,237,.08); color:#7c3aed; border-color:rgba(124,58,237,.3); }
         .course-action-btn.edit:hover { background:rgba(11,132,243,.15); }
         .course-action-btn.del { background:rgba(239,68,68,.07); color:#ef4444; border-color:rgba(239,68,68,.25); }
         .course-action-btn.del:hover { background:rgba(239,68,68,.15); }
@@ -1618,6 +1621,23 @@ async function toggleKhaiGiang(fullName){
     if(ok){ renderLessonList(); toast(newVal ? '🟢 Đã đánh dấu Khai giảng' : '⏸ Đã huỷ Khai giảng', 'ok'); }
 }
 
+// Đối tượng được học khoá này: free (tất cả) -> vip (VIP trở lên) -> premium (chỉ Premium) -> quay lại free
+const TIER_CYCLE = ['free,vip,premium', 'vip,premium', 'premium'];
+function tierLabelAdmin(loaiTK){
+    const v = loaiTK || 'free,vip,premium';
+    if(v === 'premium') return { text:'💎 Chỉ Premium', cls:'tier-premium' };
+    if(v === 'vip,premium' || v === 'vip') return { text:'⭐ VIP trở lên', cls:'tier-vip' };
+    return { text:'🆓 Tất cả tài khoản', cls:'' };
+}
+async function cycleLoaiTK(fullName){
+    const cur = ADMIN_KHOACONFIG[fullName] || { hienThi:true, thuTu:999, daKhaiGiang:false, loaiTK:'free,vip,premium' };
+    const curVal = cur.loaiTK || 'free,vip,premium';
+    const idx = TIER_CYCLE.indexOf(curVal);
+    const newVal = TIER_CYCLE[(idx + 1) % TIER_CYCLE.length];
+    const ok = await saveKhoaConfigField(fullName, 'loaiTK', newVal);
+    if(ok){ renderLessonList(); toast('Đã đặt đối tượng: ' + tierLabelAdmin(newVal).text, 'ok'); }
+}
+
 async function moveCourseOrder(fullName, dir){
     // Chỉ thao tác khoá trong cùng môn học (subject)
     const targetSubject = extractSC(fullName).subject || fullName;
@@ -1844,6 +1864,9 @@ function renderCourseBlock(course){
             </button>
             <button class="course-action-btn toggle-khaigiang ${!_cfg.daKhaiGiang?'not-started':''}" id="btn-kg-${fn}" onclick="toggleKhaiGiang('${fn}')">
                 <i class="fa-solid ${_cfg.daKhaiGiang?'fa-circle-play':'fa-clock'}"></i> ${_cfg.daKhaiGiang?'Đã khai giảng':'Chưa khai giảng'}
+            </button>
+            <button class="course-action-btn toggle-tier ${tierLabelAdmin(_cfg.loaiTK).cls}" id="btn-tier-${fn}" title="Bấm để đổi đối tượng được học (Tất cả → VIP trở lên → Chỉ Premium)" onclick="cycleLoaiTK('${fn}')">
+                ${tierLabelAdmin(_cfg.loaiTK).text}
             </button>
             <span class="course-order-badge" title="Thứ tự hiển thị">#${_cfg.thuTu===999?'–':_cfg.thuTu}</span>
             <button class="course-action-btn order-btn" title="Lên trên" onclick="moveCourseOrder('${fn}',-1)"><i class="fa-solid fa-chevron-up"></i></button>
