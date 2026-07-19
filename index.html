@@ -2002,16 +2002,25 @@ async function deleteCourse(fullName){
     toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa '+lessons.length+' bài…');
     let ok=0, fail=0;
     for(const l of lessons){
-        const key=(l.KhoaHoc||'')+'|||'+(l.Chuong||l.chuong||'')+'|||'+(l.TenBai||l.tenbai||'');
-        if(await postAdminWrite({action:'deleteBaiHoc',key})) ok++; else fail++;
+        const khoaV=l.KhoaHoc||'', chuongV=l.Chuong||l.chuong||'', tenBaiV=l.TenBai||l.tenbai||'';
+        const key=khoaV+'|||'+chuongV+'|||'+tenBaiV;
+        const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoaV, Chuong:chuongV, TenBai:tenBaiV};
+        if(await postAdminWrite(payload)) ok++; else fail++;
     }
-    if(fail>0){
+    // Xác minh thật: XOÁ CACHE rồi tải lại danh sách bài THẲNG từ server (không phải
+    // đọc lại cache 5 phút) và kiểm tra khóa này còn bài nào không — KHÔNG tin suông
+    // vào {ok:true} của GAS (đã có tiền lệ backend trả ok:true dù không xóa được gì).
+    invalidateCache();
+    await loadLessons();
+    const stillThere = allLessons.filter(r=>(khoaOf(r))===fullName).length;
+    if(stillThere > 0){
+        toast('⚠️ Xóa KHÔNG thành công — vẫn còn '+stillThere+' bài của khóa "'+cName+'" trên server. Thầy thử lại hoặc báo lỗi này.','err');
+    } else if(fail>0){
         toast('⚠️ Đã xóa '+ok+'/'+lessons.length+' bài, '+fail+' bài LỖI (thầy nhấn F5 để kiểm tra lại)','err');
     } else {
         toast('✅ Đã xóa '+ok+'/'+lessons.length+' bài','ok');
     }
-    invalidateCache();
-    await loadLessons();
+    renderLessonList();
 }
 
 // Thêm bài mới với subject được chọn sẵn
