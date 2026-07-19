@@ -1126,6 +1126,13 @@
                 <input class="field-input" id="lf-time" type="time">
             </div>
             <div>
+                <label class="field-label">Loại lịch *</label>
+                <select class="field-input" id="lf-loai">
+                    <option value="live">📡 Lịch Live (TikTok)</option>
+                    <option value="hoc">📅 Lịch học</option>
+                </select>
+            </div>
+            <div>
                 <label class="field-label">Khối lớp</label>
                 <select class="field-input" id="lf-grade">
                     <option value="Vật Lý 12">Vật Lý 12</option>
@@ -1398,6 +1405,7 @@ function renderLiveList(){
             <div class="ll-body">
                 <div class="ll-title">${esc(s.title)}</div>
                 <div class="ll-meta">
+                    <span style="font-weight:700;color:${s.loai==='hoc' ? 'var(--gray)' : 'var(--blue)'}">${s.loai==='hoc' ? '📅 Lịch học' : '📡 Lịch Live TikTok'}</span>
                     <span><i class="fa-regular fa-clock"></i> ${esc(s.time||'')}</span>
                     <span><i class="fa-solid fa-graduation-cap"></i> ${esc(s.grade||'')}</span>
                     ${s.desc ? `<span style="color:var(--gray2)">${esc(s.desc).substring(0,80)}${s.desc.length>80?'…':''}</span>` : ''}
@@ -1431,6 +1439,7 @@ function openLiveForm(id){
         const now = new Date();
         document.getElementById('lf-date').value = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
         document.getElementById('lf-time').value = '20:00';
+        document.getElementById('lf-loai').value = 'live';
         document.getElementById('lf-grade').value = 'Vật Lý 12';
         document.getElementById('lf-done').checked = false;
     } else {
@@ -1441,6 +1450,7 @@ function openLiveForm(id){
         document.getElementById('lf-title').value = s.title||'';
         document.getElementById('lf-date').value = vnToYmd(s.date||'');
         document.getElementById('lf-time').value = s.time||'';
+        document.getElementById('lf-loai').value = (s.loai==='hoc') ? 'hoc' : 'live';
         document.getElementById('lf-grade').value = s.grade||'Vật Lý 12';
         document.getElementById('lf-desc').value = s.desc||'';
         document.getElementById('lf-doc').value = s.docUrl||'';
@@ -1468,6 +1478,7 @@ async function saveLive(){
         title,
         date,
         time,
+        loai: document.getElementById('lf-loai').value,
         grade: document.getElementById('lf-grade').value,
         desc:  document.getElementById('lf-desc').value.trim(),
         docUrl: document.getElementById('lf-doc').value.trim(),
