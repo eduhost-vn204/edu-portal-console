@@ -2086,6 +2086,7 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
 
 /* ── Form helpers ── */
 let qCount=0;
+let lmListScrollY=null; // ghi nhớ vị trí cuộn của danh sách bài học trước khi mở/đóng form sửa
 
 function openNewForm(){
     document.getElementById('fp-empty').style.display='none';
@@ -2112,6 +2113,7 @@ function openNewForm(){
     qCount=0;
     document.getElementById('btn-save-lesson').disabled=false;
     document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
 
@@ -2147,12 +2149,24 @@ function openEditForm(key){
     vqReset(); vqLoadFromGAS(key);
     document.getElementById('btn-save-lesson').disabled=false;
     document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
 
 function closeForm(){
     document.getElementById('fp-empty').style.display='block';
     document.getElementById('fp-form').style.display='none';
+    restoreListScrollY();
+}
+
+// Đóng form sửa/thêm bài thường làm cột phải co lại đột ngột, khiến trình duyệt
+// tự kéo cuộn trang xuống cuối (vì trang trước đó cao hơn). Khôi phục lại đúng
+// vị trí đang đứng trước khi mở form, để thầy không bị "văng" xuống cuối danh sách.
+function restoreListScrollY(){
+    if(lmListScrollY===null) return;
+    const y=lmListScrollY;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ window.scrollTo({top:y, behavior:'auto'}); }));
+    lmListScrollY=null;
 }
 
 function previewVid(inputId,previewId){
@@ -2639,6 +2653,7 @@ async function saveLessonForm(){
 let pendingDelete='';
 function confirmDelete(key){
     pendingDelete=key;
+    lmListScrollY=window.scrollY;
     const name=pendingDelete.split('|||')[2]||'bài này';
     document.getElementById('confirm-msg').textContent=`Xóa bài "${name}"? Không thể hoàn tác.`;
     document.getElementById('confirm-overlay').classList.add('show');
@@ -2659,6 +2674,7 @@ async function doDelete(){
             return k!==keyToDelete;
         });
         renderLessonList();
+        restoreListScrollY();
         toast('<i class="fa-solid fa-circle-check"></i> Đã xóa bài giảng!','ok');
     }catch(e){ toast('<i class="fa-solid fa-bug"></i> Lỗi xóa: '+e.message,'err'); }
 }
@@ -4425,6 +4441,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
           <th style="padding:10px 14px;text-align:left;font-weight:700">Lớp</th>
           <th style="padding:10px 14px;text-align:left;font-weight:700">Trạng thái</th>
           <th style="padding:10px 14px;text-align:left;font-weight:700">Hết hạn</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700">Ngày tạo</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700">Thao tác</th>
         </tr>
       </thead>
@@ -4520,7 +4537,7 @@ let tkEditSdt = null;
 
 async function loadTaiKhoan(force) {
   if (!force && tkLoaded) return;
-  document.getElementById('tk-list').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--gray2)">Đang tải...</td></tr>';
+  document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gray2)">Đang tải...</td></tr>';
   try {
     const url = GAS_URL + '?type=danhsachtaikhoan&adminKey=' + encodeURIComponent(ADMIN_KEY);
     const r = await fetch(url);
@@ -4529,7 +4546,7 @@ async function loadTaiKhoan(force) {
     tkLoaded = true;
     renderTK(allTK);
   } catch(e) {
-    document.getElementById('tk-list').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
+    document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
   }
 }
 
@@ -4537,6 +4554,27 @@ function filterTK() {
   const q = document.getElementById('tk-search').value.toLowerCase().trim();
   const filtered = q ? allTK.filter(r => (r.hoten||'').toLowerCase().includes(q) || (r.sdt||'').includes(q)) : allTK;
   renderTK(filtered);
+}
+
+// Định dạng ngày tạo tài khoản (ngayDK là chuỗi ISO hoặc Date do Sheets tự chuyển)
+function tkFmtNgayTao(v) {
+  if (!v) return '—';
+  try {
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+  } catch(e) { return '—'; }
+}
+
+async function deleteTK(sdt, hoten) {
+  if (!confirm(`⚠️ Xoá vĩnh viễn tài khoản "${hoten}" (SĐT ${sdt})?\nHọc sinh sẽ mất toàn bộ tiến độ, điểm số đã lưu theo tài khoản này. Không thể hoàn tác.`)) return;
+  try {
+    const r = await fetch(GAS_URL, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'deleteaccount', adminKey: ADMIN_KEY, sdt }) });
+    const d = await r.json();
+    toast(d.msg || (d.ok ? 'Đã xoá tài khoản!' : 'Lỗi!'), d.ok ? 'ok' : 'err');
+    if (d.ok) loadTaiKhoan(true);
+  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
 }
 
 function renderTK(list) {
@@ -4566,8 +4604,10 @@ function renderTK(list) {
         <td style="padding:10px 14px">${esc(r.lop||'—')}</td>
         <td style="padding:10px 14px">${badge}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${expTxt}</td>
-        <td style="padding:10px 14px;text-align:center">
+        <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${tkFmtNgayTao(r.ngayDK)}</td>
+        <td style="padding:10px 14px;text-align:center;white-space:nowrap">
           <button onclick="openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
+          <button onclick="deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
         </td>
       </tr>`;
     }).join('');
