@@ -4451,6 +4451,53 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
   <div id="tk-empty" style="display:none;text-align:center;padding:40px;color:var(--gray2)">Chưa có tài khoản nào</div>
 </div>
 
+<!-- Modal chi tiết tài khoản -->
+<div id="tk-detail" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);align-items:center;justify-content:center">
+  <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:16px;padding:24px;width:780px;max-width:96vw;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.35)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 id="tkd-name" style="font-size:18px;font-weight:800"></h3>
+          <span id="tkd-badge"></span>
+        </div>
+        <div id="tkd-sdt" style="font-size:13px;color:var(--gray);font-family:'DM Mono',monospace;margin-top:3px"></div>
+      </div>
+      <button onclick="closeTkDetail()" style="background:none;border:none;font-size:20px;color:var(--gray);cursor:pointer;padding:4px 8px"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gray);margin-bottom:4px">Lớp</div>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="tkd-lop" style="width:100%;min-width:0;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;font-weight:700;background:var(--bg);color:var(--black);outline:none">
+          <button onclick="tkdSaveLop()" title="Lưu lớp" style="padding:5px 9px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0"><i class="fa-solid fa-check"></i></button>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gray);margin-bottom:4px">Ngày tạo</div>
+        <div id="tkd-ngaytao" style="font-size:13px;font-weight:700"></div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gray);margin-bottom:4px">Hết hạn</div>
+        <div id="tkd-hethan" style="font-size:13px;font-weight:700"></div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px">
+        <div style="font-size:11px;color:var(--gray);margin-bottom:4px">Điểm LP</div>
+        <div id="tkd-lp" style="font-size:13px;font-weight:700"></div>
+      </div>
+    </div>
+
+    <h4 style="font-size:14px;font-weight:800;margin-bottom:8px"><i class="fa-solid fa-clock-rotate-left" style="color:var(--blue)"></i> Hoạt động gần đây</h4>
+    <div id="tkd-act" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;max-height:220px;overflow-y:auto;margin-bottom:16px;font-size:12.5px"></div>
+
+    <h4 style="font-size:14px;font-weight:800;margin-bottom:8px"><i class="fa-solid fa-book-open" style="color:#16a34a"></i> Bài học đã hoàn thành</h4>
+    <div id="tkd-tiendo" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;max-height:180px;overflow-y:auto;margin-bottom:16px;font-size:12.5px"></div>
+
+    <h4 style="font-size:14px;font-weight:800;margin-bottom:8px"><i class="fa-solid fa-file-pen" style="color:#d97706"></i> Kết quả thi</h4>
+    <div id="tkd-diem" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;max-height:180px;overflow-y:auto;font-size:12.5px"></div>
+  </div>
+</div>
+
 <!-- Modal nâng cấp -->
 <div id="tk-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center">
   <div style="background:var(--bg);border-radius:16px;padding:28px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3)">
@@ -4598,7 +4645,7 @@ function renderTK(list) {
       else if (loai === 'vip' && msLeft > 0) { badge = '<span style="background:rgba(217,119,6,.1);color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">⭐ VIP Trial</span>'; nVip++; expTxt = dLeft + ' ngày còn lại'; }
       else { badge = '<span style="background:rgba(107,114,128,.1);color:#888;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">🆓 Free</span>'; nFree++; expTxt = loai==='vip' ? 'Đã hết hạn' : '—'; }
 
-      return `<tr style="border-bottom:1px solid var(--border);transition:background .1s" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
+      return `<tr style="border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer" title="Bấm để xem chi tiết" onclick="openTkDetail('${esc(r.sdt)}')" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
         <td style="padding:10px 14px;font-weight:600">${esc(r.hoten||'—')}</td>
         <td style="padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px">${esc(r.sdt||'—')}</td>
         <td style="padding:10px 14px">${esc(r.lop||'—')}</td>
@@ -4606,8 +4653,8 @@ function renderTK(list) {
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${expTxt}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${tkFmtNgayTao(r.ngayDK)}</td>
         <td style="padding:10px 14px;text-align:center;white-space:nowrap">
-          <button onclick="openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
-          <button onclick="deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
+          <button onclick="event.stopPropagation();openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
+          <button onclick="event.stopPropagation();deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
         </td>
       </tr>`;
     }).join('');
@@ -4636,6 +4683,119 @@ async function confirmSetVip() {
     const d = await r.json();
     if (d.ok) { toast(d.msg || 'Đã cập nhật!', 'ok'); closeTkModal(); loadTaiKhoan(true); }
     else toast(d.msg || 'Lỗi!', 'err');
+  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
+}
+
+/* ════ CHI TIẾT TÀI KHOẢN + LỊCH SỬ HOẠT ĐỘNG ════ */
+let tkdSdt = null;
+
+function tkdBadgeHtml(r, now) {
+  const loai = r.loaiTK || 'vip';
+  const exp  = r.trialExpiry ? Number(r.trialExpiry) : 0;
+  if (loai === 'premium') return '<span style="background:rgba(124,58,237,.1);color:#7c3aed;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">💎 Premium</span>';
+  if (loai === 'vip' && exp > now) return '<span style="background:rgba(217,119,6,.1);color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">⭐ VIP Trial</span>';
+  return '<span style="background:rgba(107,114,128,.1);color:#888;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px">🆓 Free</span>';
+}
+
+function openTkDetail(sdt) {
+  const r = allTK.find(x => String(x.sdt) === String(sdt));
+  if (!r) return;
+  tkdSdt = sdt;
+  const now = Date.now();
+  const exp = r.trialExpiry ? Number(r.trialExpiry) : 0;
+  document.getElementById('tkd-name').textContent = r.hoten || '—';
+  document.getElementById('tkd-badge').innerHTML = tkdBadgeHtml(r, now);
+  document.getElementById('tkd-sdt').textContent = r.sdt || '—';
+  document.getElementById('tkd-lop').value = (r.lop && r.lop !== 'Google') ? r.lop : '';
+  document.getElementById('tkd-lop').placeholder = (r.lop === 'Google') ? 'Chưa có — nhập lớp' : 'Nhập lớp';
+  document.getElementById('tkd-ngaytao').textContent = tkFmtNgayTao(r.ngayDK);
+  document.getElementById('tkd-hethan').textContent = (r.loaiTK === 'premium') ? 'Vĩnh viễn'
+    : (exp > now ? Math.ceil((exp - now)/86400000) + ' ngày còn lại' : (r.loaiTK === 'vip' ? 'Đã hết hạn' : '—'));
+  document.getElementById('tkd-lp').textContent = r.lpTotal || 0;
+  const loading = '<div style="padding:16px;text-align:center;color:var(--gray2)">Đang tải...</div>';
+  document.getElementById('tkd-act').innerHTML = loading;
+  document.getElementById('tkd-tiendo').innerHTML = loading;
+  document.getElementById('tkd-diem').innerHTML = loading;
+  document.getElementById('tk-detail').style.display = 'flex';
+  tkdLoadAct(sdt); tkdLoadTienDo(sdt); tkdLoadDiem(sdt);
+}
+function closeTkDetail() { document.getElementById('tk-detail').style.display = 'none'; }
+document.getElementById('tk-detail').addEventListener('click', function(e){ if (e.target === this) closeTkDetail(); });
+
+function tkdFmtTime(v) {
+  if (!v) return '—';
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+}
+function tkdSameSdt(a, b) {
+  a = String(a||'').trim().toLowerCase(); b = String(b||'').trim().toLowerCase();
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const da = a.replace(/\D/g,'').replace(/^0+/,''), db = b.replace(/\D/g,'').replace(/^0+/,'');
+  return da !== '' && da === db;
+}
+
+async function tkdLoadAct(sdt) {
+  const el = document.getElementById('tkd-act');
+  try {
+    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(ADMIN_KEY) + '&hs=' + encodeURIComponent(sdt));
+    const d = await r.json();
+    if (tkdSdt !== sdt) return;
+    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu — cần cập nhật Apps Script (v50) rồi thử lại.</div>'; return; }
+    if (!d.data.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa ghi nhận hoạt động nào. (Chỉ ghi từ khi web được cập nhật tính năng này)</div>'; return; }
+    el.innerHTML = d.data.map(a => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
+      <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(a.thoigian)}</span>
+      <span style="font-weight:700;white-space:nowrap">${esc(a.hanhdong||'')}</span>
+      <span style="color:var(--gray)">${esc(a.chitiet||'')}</span>
+    </div>`).join('');
+  } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
+}
+
+async function tkdLoadTienDo(sdt) {
+  const el = document.getElementById('tkd-tiendo');
+  try {
+    const r = await fetch(GAS_URL + '?type=tiendo&hs=' + encodeURIComponent(sdt));
+    const rows = await r.json();
+    if (tkdSdt !== sdt) return;
+    const list = Array.isArray(rows) ? rows : [];
+    if (!list.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa hoàn thành bài học nào.</div>'; return; }
+    el.innerHTML = list.slice().reverse().map(t => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
+      <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(t.ngay)}</span>
+      <span>${esc(String(t.lesson||'').replace(/\|/g,' · '))}</span>
+      <span style="color:var(--gray)">${esc(t.khoa||'')}</span>
+    </div>`).join('');
+  } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
+}
+
+async function tkdLoadDiem(sdt) {
+  const el = document.getElementById('tkd-diem');
+  try {
+    const r = await fetch(GAS_URL + '?type=diemthi');
+    const rows = await r.json();
+    if (tkdSdt !== sdt) return;
+    const list = (Array.isArray(rows) ? rows : []).filter(x => tkdSameSdt(x.phone, sdt));
+    if (!list.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa có lượt thi nào.</div>'; return; }
+    el.innerHTML = list.slice().reverse().map(x => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
+      <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(x.timestamp)}</span>
+      <span style="font-weight:800;color:var(--blue);white-space:nowrap">${esc(String(x.score||''))}</span>
+      <span style="color:var(--gray)">${esc(x.name||'')} · ${esc(x.studentClass||'')}</span>
+    </div>`).join('');
+  } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
+}
+
+async function tkdSaveLop() {
+  const lop = document.getElementById('tkd-lop').value.trim();
+  if (!lop) { toast('Nhập lớp trước đã!', 'err'); return; }
+  try {
+    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt: tkdSdt, lop }) });
+    const d = await r.json();
+    if (d.ok) {
+      toast('Đã lưu lớp!', 'ok');
+      const row = allTK.find(x => String(x.sdt) === String(tkdSdt));
+      if (row) { row.lop = lop; filterTK(); }
+    } else toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script v50)', 'err');
   } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
 }
 </script>
