@@ -2934,7 +2934,28 @@ function filterScores(q){
     function descendants(el,name){ const out=[]; (function rec(n){ for(const c of elemChildren(n)){ if(localName(c)===name) out.push(c); rec(c);} })(el); return out; }
     function attr(el,qname){ let v=el.getAttribute&&el.getAttribute(qname); if(v!=null&&v!=='') return v; const ln=qname.replace(/^.*:/,''); if(el.attributes){ for(let i=0;i<el.attributes.length;i++){ const a=el.attributes[i]; if((a.localName||a.name.replace(/^.*:/,''))===ln) return a.value; } } return null; }
     /* OOXML m:oMath -> LaTeX (rendered via KaTeX $...$, robust to esc()/innerHTML unlike raw MathML) */
-    function texEsc(text){ let out=''; for(const c of text){ if(c===' '||c==='\t') out+='\\ '; else if(c==='\\') out+='\\backslash '; else if('{}%&#_$'.includes(c)) out+='\\'+c; else out+=c; } return out; }
+    /* Bug thật phát hiện 22/7 khi lần đầu có câu Đúng/Sai đi qua (trước đây bị lọc bỏ hết nên
+       không lộ ra): công thức trong Word (m:oMath, ví dụ "$t_{nc} > t_{đđ}$" hay cả câu chữ
+       tiếng Việt lọt vào bên trong ô Equation Editor của thầy cô) từng cho thẳng chữ có dấu vào
+       chế độ toán (font KaTeX_Math không có glyph chữ có dấu -> console báo "No character
+       metrics for 'ố'..." và chữ không hiện đúng/mất chữ). Fix: cụm nào chứa chữ có dấu tiếng
+       Việt thì bọc bằng \text{} (KaTeX chuyển sang font chữ thường có đủ glyph) thay vì để
+       nguyên trong chế độ toán; cụm thuần ký hiệu/biến số/số (đại đa số công thức cũ, đã chạy
+       đúng cho hàng nghìn câu) thì giữ nguyên logic cũ, không đổi hành vi. */
+    const VN_DIACRITIC_RE = /[àáạảãăằắặẳẵâầấậẩẫèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ]/;
+    function texEsc(text){
+        if(VN_DIACRITIC_RE.test(text)){
+            let out='', buf='';
+            const flushWord=()=>{ if(buf){ out+='\\text{'+buf.replace(/\\/g,'\\backslash ').replace(/[{}%&#_$]/g,m=>'\\'+m)+'}'; buf=''; } };
+            for(const c of text){
+                if(/[\p{L}\p{N} ]/u.test(c)){ buf+=c; }
+                else { flushWord(); if(c==='\\') out+='\\backslash '; else if('{}%&#_$'.includes(c)) out+='\\'+c; else out+=c; }
+            }
+            flushWord();
+            return out;
+        }
+        let out=''; for(const c of text){ if(c===' '||c==='\t') out+='\\ '; else if(c==='\\') out+='\\backslash '; else if('{}%&#_$'.includes(c)) out+='\\'+c; else out+=c; } return out;
+    }
     function texRow(s){ return '{'+(s||'')+'}'; }
     function texChildren(el){ let s=''; for(const c of elemChildren(el)) s+=texElem(c); return s; }
     const FUNC_TEX={sin:'\\sin',cos:'\\cos',tan:'\\tan',cot:'\\cot',sec:'\\sec',csc:'\\csc',ln:'\\ln',log:'\\log',lim:'\\lim',exp:'\\exp',min:'\\min',max:'\\max',arcsin:'\\arcsin',arccos:'\\arccos',arctan:'\\arctan'};
