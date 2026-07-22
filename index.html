@@ -4694,6 +4694,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
           <th style="padding:10px 14px;text-align:left;font-weight:700">Trạng thái</th>
           <th style="padding:10px 14px;text-align:left;font-weight:700">Hết hạn</th>
           <th style="padding:10px 14px;text-align:left;font-weight:700">Ngày tạo</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700" title="Học sinh đã học trong lớp/khoá của thầy + đã xem live rồi &#8594; không cần bắt xem video/câu áp dụng trong bài, chỉ cần &#8805;90% Luyện tập trắc nghiệm là qua bài">Miễn ĐK video</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700">Thao tác</th>
         </tr>
       </thead>
@@ -4904,6 +4905,9 @@ function renderTK(list) {
         <td style="padding:10px 14px">${badge}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${expTxt}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${tkFmtNgayTao(r.ngayDK)}</td>
+        <td style="padding:10px 14px;text-align:center" onclick="event.stopPropagation()">
+          <input type="checkbox" ${r.mienVideo?'checked':''} onchange="tkToggleMienVideo('${esc(r.sdt)}', this.checked, this)" title="Miễn điều kiện xem video/câu áp dụng, chỉ cần ≥90% Luyện tập trắc nghiệm" style="width:16px;height:16px;cursor:pointer">
+        </td>
         <td style="padding:10px 14px;text-align:center;white-space:nowrap">
           <button onclick="event.stopPropagation();openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
           <button onclick="event.stopPropagation();deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
@@ -4936,6 +4940,30 @@ async function confirmSetVip() {
     if (d.ok) { toast(d.msg || 'Đã cập nhật!', 'ok'); closeTkModal(); loadTaiKhoan(true); }
     else toast(d.msg || 'Lỗi!', 'err');
   } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
+}
+
+// Bật/tắt "Miễn điều kiện video/câu áp dụng" cho 1 học sinh (đã học trong lớp thầy + đã xem live
+// rồi thì không cần ép xem lại video/làm câu áp dụng trên web — chỉ cần ≥90% Luyện tập trắc nghiệm).
+async function tkToggleMienVideo(sdt, checked, cb) {
+  if (cb) cb.disabled = true;
+  try {
+    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, mienVideo: checked }) });
+    const d = await r.json();
+    if (d.ok) {
+      toast(checked ? 'Đã miễn điều kiện video cho học sinh này!' : 'Đã bỏ miễn điều kiện video.', 'ok');
+      const row = allTK.find(x => String(x.sdt) === String(sdt));
+      if (row) row.mienVideo = checked;
+    } else {
+      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      if (cb) cb.checked = !checked;
+    }
+  } catch(e) {
+    toast('Lỗi: ' + e.message, 'err');
+    if (cb) cb.checked = !checked;
+  } finally {
+    if (cb) cb.disabled = false;
+  }
 }
 
 /* ════ CHI TIẾT TÀI KHOẢN + LỊCH SỬ HOẠT ĐỘNG ════ */
