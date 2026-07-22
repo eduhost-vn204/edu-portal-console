@@ -1557,6 +1557,7 @@ async function confirmDeleteLive(){
    TAB 1: QUẢN LÝ BÀI HỌC
 ════════════════════════════════════ */
 let allLessons = [];
+let _qbCounts = null; // { baiKey: soCau } tu sheet BaiTapTracNghiem, null = chua tai xong
 let currentFilter = 'all';
 let currentTeachingLesson = ''; // key "KhoaHoc|||Chuong|||TenBai" của bài thầy đang dạy
 let ADMIN_KHOACONFIG = {}; // { fullCourseName: { hienThi, thuTu, daKhaiGiang, loaiTK } }
@@ -1791,6 +1792,25 @@ async function loadLessons(){
     }
     updateChuongList();
     renderLessonList();
+    loadQbCounts();
+}
+
+// Tai 1 lan toan bo sheet BaiTapTracNghiem de dem so cau/bai cho huy hieu trong
+// danh sach bai giang (khong the doc tu cot BaiTap cu nua vi da chuyen sang sheet
+// rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
+async function loadQbCounts(){
+    try{
+        const r = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
+        const j = await r.json();
+        const map = {};
+        (j&&j.data||[]).forEach(rw=>{
+            const k = String(rw&&rw.baiKey||'');
+            if(!k) return;
+            map[k] = (map[k]||0) + 1;
+        });
+        _qbCounts = map;
+        renderLessonList();
+    }catch(e){ if(_qbCounts===null) _qbCounts={}; }
 }
 
 function updateChuongList(){
@@ -1917,6 +1937,7 @@ function renderCourseBlock(course){
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
             const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
+            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
             const isTeaching = (currentTeachingLesson === key);
             const safeKey = esc(key).replace(/'/g,"&#39;");
             html+=`<div class="lesson-item${isTeaching?' teaching':''}" draggable="true" data-key="${esc(key)}"
@@ -1927,7 +1948,7 @@ function renderCourseBlock(course){
                     ${isTeaching?'<span class="li-teaching-badge">⭐ Đang dạy</span>':''}
                     ${hasVid?'<span class="li-badge li-vid"><i class="fa-solid fa-play" style="font-size:9px"></i> Video</span>':'<span class="li-badge li-novid">Chưa có video</span>'}
                     ${hasGiai?'<span class="li-badge li-vid"><i class="fa-solid fa-lightbulb" style="font-size:9px"></i> Chữa</span>':''}
-                    ${baitapArr.length?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${baitapArr.length} câu</span>`:''}
+                    ${qbCount?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${qbCount} câu</span>`:''}
                 </div>
                 <div class="li-actions">
                     <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeKey}')">⭐</button>
@@ -2137,7 +2158,7 @@ function openNewForm(){
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
 
-function openEditForm(key){
+async function openEditForm(key){
     const parts=key.split('|||');
     const row=allLessons.find(r=>(khoaOf(r))===(parts[0]||'') && (r.Chuong||r.chuong||r.chapter||'')===(parts[1]||'') && (r.TenBai||r.tenbai||r.title||r.ten||'')===(parts[2]||''));
     if(!row){ toast('Không tìm thấy bài này!','err'); return; }
@@ -2164,7 +2185,8 @@ function openEditForm(key){
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    let baitapArr=[]; try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){}
+    let baitapArr = await qbLoadFromGAS(key);
+    if(baitapArr===null){ try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){baitapArr=[];} }
     baitapArr.forEach(q=>addQuestion(q));
     vqReset(); vqLoadFromGAS(key);
     document.getElementById('btn-save-lesson').disabled=false;
@@ -2622,6 +2644,36 @@ async function vqSaveToGAS(newKey, origKey){
         body:JSON.stringify({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items})});
 }
 
+/* ── Bài tập trắc nghiệm: lưu vào sheet riêng BaiTapTracNghiem (1 hàng/câu, không
+   còn giới hạn 50.000 ký tự/ô như cột BaiTap cũ trong sheet BaiHoc) — cùng cơ chế
+   với Câu hỏi trong video ở trên. Cột BaiTap cũ chỉ còn dùng làm fallback đọc cho
+   các bài CŨ chưa từng được lưu lại bằng bản này (xem openEditForm/saveLessonForm). */
+async function qbLoadFromGAS(key){
+    try{
+        const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(key)+'&t='+Date.now());
+        const j = await r.json();
+        const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key);
+        if(rows.length){
+            rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
+            return rows.map(rw=>({
+                type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                q:(rw.question||'').toString(),
+                A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
+                C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
+                ans:String(rw.correct||'').toUpperCase().trim(),
+                correct:(rw.correct||'').toString()
+            }));
+        }
+    }catch(e){ /* rơi xuống fallback đọc cột BaiTap cũ ở nơi gọi */ }
+    return null; // null = sheet mới chưa có dữ liệu cho bài này, nơi gọi tự fallback
+}
+async function qbSaveToGAS(newKey, origKey){
+    const qs = getQuestionsFromForm();
+    await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'savebaitaptracnghiem',baiKey:newKey,originalKey:origKey||'',items:qs})});
+    if(_qbCounts){ _qbCounts[newKey]=qs.length; if(origKey&&origKey!==newKey) delete _qbCounts[origKey]; }
+}
+
 /* ════ BANK PICKER ════ */
 let _bpmSel = new Set(); // IDs câu đã chọn trong modal
 
@@ -2794,7 +2846,7 @@ async function saveLessonForm(){
         PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
-        BaiTap:qs.length?JSON.stringify(qs):''
+        BaiTap:'' // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
     };
     const btn=document.getElementById('btn-save-lesson');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
@@ -2806,6 +2858,7 @@ async function saveLessonForm(){
             return;
         }
         invalidateCache();
+        try{ await qbSaveToGAS(`${khoa}|||${chuong}|||${tenbai}`, document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRẮC NGHIỆM lưu lỗi: '+e.message,'err'); }
         try{ await vqSaveToGAS(`${khoa}|||${chuong}|||${tenbai}`, document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRONG VIDEO lưu lỗi: '+e.message,'err'); }
         toast('<i class="fa-solid fa-circle-check"></i> Đã lưu bài giảng lên Google Sheets!','ok');
         showSyncBadge();
