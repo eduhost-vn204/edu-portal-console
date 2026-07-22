@@ -294,6 +294,10 @@
         .qb-opt input[type=text] { flex:1; padding:8px 10px; border-radius:6px; border:1.5px solid var(--border); background:var(--bg); color:var(--black); font-family:'Inter',sans-serif; font-size:13px; outline:none; }
         .qb-opt input[type=text]:focus { border-color:var(--blue); }
         .qb-opt input[type=radio]:checked ~ .qb-letter { background:rgba(22,163,74,.15); color:var(--green); }
+        .qb-preview { background:var(--bg); border:1.5px dashed var(--border); border-radius:8px; padding:10px 12px; margin-bottom:10px; }
+        .qb-preview-tag { font-size:11px; font-weight:700; color:var(--gray2); margin-bottom:6px; display:flex; align-items:center; gap:5px; }
+        .qb-preview img { max-width:100%; height:auto; margin:4px 0; border-radius:6px; background:#fff; border:1px solid var(--border); }
+        .qb-tf-input { flex:1; border:none; background:transparent; font-size:14px; color:var(--black); outline:none; font-family:'Inter',sans-serif; }
 
         /* Form footer */
         .fp-foot { padding:16px 20px; border-top:1.5px solid var(--border); display:flex; gap:10px; background:var(--bg2); }
@@ -506,6 +510,7 @@
         body.dark input::placeholder, body.dark textarea::placeholder { color:#6e7681; }
         body.dark .field-input, body.dark .qb-question, body.dark .qb-opt input[type=text], body.dark #vq-transcript-paste { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark .qb-card { background:#161b22; border-color:#30363d; }
+        body.dark .qb-preview { background:#0d1117; border-color:#30363d; }
         body.dark .qb-letter { background:#30363d; color:#8b949e; }
         body.dark .hint-bar { background:#161b22; border-color:#30363d; color:#8b949e; }
         body.dark .hint-bar strong { color:#e6edf3; }
@@ -754,7 +759,12 @@
                                     <button class="btn-from-bank" onclick="openBankPicker()"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
                                     <button class="btn-add-q" onclick="document.getElementById('q-file-input').click()"><i class="fa-solid fa-file-word"></i> Tải file Word</button>
                                     <input type="file" id="q-file-input" accept=".docx" style="display:none">
-                                    <button class="btn-add-q" onclick="addQuestion()"><i class="fa-solid fa-plus"></i> Thêm tay</button>
+                                    <select id="q-add-type" style="padding:6px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:12px">
+                                        <option value="mc">Trắc nghiệm A/B/C/D</option>
+                                        <option value="tf">Đúng/Sai</option>
+                                        <option value="short">Trả lời ngắn</option>
+                                    </select>
+                                    <button class="btn-add-q" onclick="addQuestion({type:document.getElementById('q-add-type').value})"><i class="fa-solid fa-plus"></i> Thêm tay</button>
                                 </div>
                             </div>
                             <div id="quiz-builder"></div>
@@ -2182,24 +2192,70 @@ function previewVid(inputId,previewId){
     }
 }
 
-/* ── Quiz builder ── */
+/* ── Quiz builder (hỗ trợ 3 loại: mc/tf/short — cùng cấu trúc với Ngân hàng/Soạn Đề,
+   để ảnh + công thức tải từ file Word hiển thị đúng ngay khi xem trước, thay vì
+   chỉ nhận trắc nghiệm A/B/C/D như trước. TL/SL dùng lại đúng 2 hằng số đã khai báo
+   sẵn cho Soạn Đề (khai báo sau trong cùng 1 <script>, nhưng chỉ được đọc lúc hàm
+   này CHẠY — tức sau khi toàn bộ script đã parse xong — nên an toàn). */
+function qbPreviewHtml(q,type){
+    const parts=[q.q||q.question||''];
+    if(type!=='short') ['A','B','C','D'].forEach(L=>parts.push(q[L]||q[L.toLowerCase()]||''));
+    if(!/<img|\$|<sup|<sub/.test(parts.join(' '))) return '';
+    let body=`<div class="q-text" style="margin-bottom:6px">${q.q||q.question||''}</div>`;
+    if(type==='mc') body+=['A','B','C','D'].map(L=>{const v=q[L]||q[L.toLowerCase()]||'';return v?`<div class="opt-body" style="margin-bottom:4px"><b>${L}.</b> ${v}</div>`:'';}).join('');
+    else if(type==='tf') body+=['A','B','C','D'].map(L=>{const v=q[L]||q[L.toLowerCase()]||'';return v?`<div class="opt-body" style="margin-bottom:4px"><b>${SL[L]}</b> ${v}</div>`:'';}).join('');
+    return `<div class="qb-preview"><div class="qb-preview-tag"><i class="fa-solid fa-eye"></i> Xem trước ảnh/công thức</div>${body}</div>`;
+}
 function addQuestion(q={}){
     qCount++;
     const qi=qCount;
-    const html=`<div class="qb-card" id="qcard-${qi}">
-        <div class="qb-head">
-            <span class="qb-num">CÂU ${qi}</span>
-            <button class="qb-del" onclick="removeQuestion(${qi})"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <textarea class="qb-question" placeholder="Nội dung câu hỏi..." id="qq-${qi}">${esc(q.q||'')}</textarea>
+    const type=(q.type==='tf'||q.type==='short')?q.type:'mc';
+    let inner='';
+    if(type==='mc'){
+        inner=`<textarea class="qb-question" placeholder="Nội dung câu hỏi..." id="qq-${qi}">${esc(q.q||q.question||'')}</textarea>
         ${['A','B','C','D'].map(L=>`
         <div class="qb-opt">
             <input type="radio" name="qcorrect-${qi}" value="${L}" ${(q.ans===L||q.correct===L)?'checked':''} title="Chọn làm đáp án đúng">
             <span class="qb-letter">${L}</span>
             <input type="text" id="qopt-${qi}-${L}" placeholder="Đáp án ${L}..." value="${esc(q[L]||q[L.toLowerCase()]||'')}">
-        </div>`).join('')}
+        </div>`).join('')}`;
+    } else if(type==='tf'){
+        const corr=(q.correct||'').toString();
+        inner=`<textarea class="qb-question" placeholder="Nội dung câu hỏi (Đúng/Sai)..." id="qq-${qi}">${esc(q.q||q.question||'')}</textarea>
+        ${['A','B','C','D'].map((L,li)=>{
+            const v=corr[li];
+            return `<div class="tf-row" id="qtf-${qi}-${L}">
+                <span class="tf-letter">${SL[L]}</span>
+                <input type="text" class="qb-tf-input" id="qopt-${qi}-${L}" placeholder="Ý ${SL[L]}..." value="${esc(q[L]||q[L.toLowerCase()]||'')}">
+                <div class="tf-choice">
+                    <span class="tf-btn ${v==='Đ'?'sel-d':''}" onclick="qbTfSet(${qi},'${L}',true,this)">Đúng</span>
+                    <span class="tf-btn ${v==='S'?'sel-s':''}" onclick="qbTfSet(${qi},'${L}',false,this)">Sai</span>
+                </div>
+                <input type="hidden" id="qans-${qi}-${L}" value="${v==='Đ'?'Đ':(v==='S'?'S':'')}">
+            </div>`;
+        }).join('')}`;
+    } else {
+        inner=`<textarea class="qb-question" placeholder="Nội dung câu hỏi (trả lời ngắn)..." id="qq-${qi}">${esc(q.q||q.question||'')}</textarea>
+        <div class="short-ans"><i class="fa-solid fa-pen" style="color:var(--green)"></i> Đáp án: <input type="text" id="qopt-${qi}-short" maxlength="12" placeholder="VD: 2.5" value="${esc(q.correct||q.ans||'')}"></div>`;
+    }
+    const preview=qbPreviewHtml(q,type);
+    const html=`<div class="qb-card" id="qcard-${qi}" data-type="${type}">
+        <div class="qb-head">
+            <span class="qb-num">CÂU ${qi}</span>
+            <span class="q-type-tag t-${type}">${TL[type]}</span>
+            <button class="qb-del" onclick="removeQuestion(${qi})"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        ${preview}
+        ${inner}
     </div>`;
     document.getElementById('quiz-builder').insertAdjacentHTML('beforeend',html);
+    if(preview) nhKatex(document.getElementById('qcard-'+qi));
+}
+function qbTfSet(qi,L,isD,el){
+    document.getElementById('qans-'+qi+'-'+L).value=isD?'Đ':'S';
+    const row=document.getElementById('qtf-'+qi+'-'+L);
+    row.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('sel-d','sel-s'));
+    el.classList.add(isD?'sel-d':'sel-s');
 }
 
 function removeQuestion(qi){ document.getElementById('qcard-'+qi)?.remove(); }
@@ -2223,16 +2279,27 @@ async function qHandleDocxFile(file){
         const dD=parser.parseFromString(dX,"application/xml");
         const rD=rX?parser.parseFromString(rX,"application/xml"):null;
         const qs=DocxEngine.parse(dD,rD,mM);
-        const mc=qs.filter(q=>q.type==='mc' && ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2);
-        const skipped=qs.length-mc.length;
-        if(!mc.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy câu trắc nghiệm A/B/C/D nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C."...','err'); return; }
-        mc.forEach(q=>{
-            addQuestion({ q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim() });
+        /* Dùng ĐÚNG bộ lọc như Ngân hàng/Soạn Đề (chấp nhận cả 3 loại: mc/tf/short) —
+           trước đây chỉ giữ loại 'mc' nên câu Đúng/Sai và Trả lời ngắn bị âm thầm
+           loại bỏ hết, kể cả khi file có đủ ảnh/công thức đúng định dạng. */
+        const ok=qs.filter(q=>{
+            if(q.type==='mc') return ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;
+            if(q.type==='tf') return ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;
+            if(q.type==='short') return (q.question||'').trim().length>0;
+            return false;
         });
-        const missingAns=mc.filter(q=>!q.correct).length;
-        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${mc.length} câu từ file Word vào Bài tập trắc nghiệm!`
-            +(skipped?` (bỏ qua ${skipped} mục không phải trắc nghiệm A/B/C/D)`:'')
-            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án đúng, cần chọn tay</span>`:''),'ok');
+        const skipped=qs.length-ok.length;
+        if(!ok.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không nhận diện được câu hỏi nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C.", "a)"...','err'); return; }
+        ok.forEach(q=>{
+            if(q.type==='mc') addQuestion({ type:'mc', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim() });
+            else if(q.type==='tf') addQuestion({ type:'tf', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', correct:(q.correct||'').toString().toUpperCase().trim() });
+            else addQuestion({ type:'short', q:q.question||'', correct:(q.correct||'').toString().trim() });
+        });
+        const nM=ok.filter(q=>q.type==='mc').length,nT=ok.filter(q=>q.type==='tf').length,nS=ok.filter(q=>q.type==='short').length;
+        const missingAns=ok.filter(q=>!q.correct).length;
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${ok.length} câu (${nM} A/B/C/D · ${nT} Đúng/Sai · ${nS} trả lời ngắn) vào Bài tập trắc nghiệm!`
+            +(skipped?` (bỏ qua ${skipped} mục không nhận dạng được)`:'')
+            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án, cần chọn/nhập tay</span>`:''),'ok');
         document.getElementById('quiz-builder')?.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(err){
         console.error(err);
@@ -2296,18 +2363,28 @@ async function vqHandleDocxFile(file){
         const dD=parser.parseFromString(dX,"application/xml");
         const rD=rX?parser.parseFromString(rX,"application/xml"):null;
         const qs=DocxEngine.parse(dD,rD,mM);
-        const mc=qs.filter(q=>q.type==='mc' && ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2);
-        const skipped=qs.length-mc.length;
-        if(!mc.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không tìm thấy câu trắc nghiệm A/B/C/D nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C."...','err'); return; }
-        mc.forEach(q=>{
-            vqItems.push({t:0, nhId:'', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim()});
+        /* Cùng bộ lọc 3-loại như quiz-builder (xem qHandleDocxFile) — trước đây chỉ
+           giữ 'mc' nên câu Đúng/Sai và Trả lời ngắn bị bỏ qua hoàn toàn. */
+        const ok=qs.filter(q=>{
+            if(q.type==='mc') return ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;
+            if(q.type==='tf') return ['A','B','C','D'].filter(L=>q.options[L]&&q.options[L].trim()).length>=2;
+            if(q.type==='short') return (q.question||'').trim().length>0;
+            return false;
+        });
+        const skipped=qs.length-ok.length;
+        if(!ok.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không nhận diện được câu hỏi nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C.", "a)"...','err'); return; }
+        ok.forEach(q=>{
+            if(q.type==='mc') vqItems.push({t:0, nhId:'', type:'mc', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim()});
+            else if(q.type==='tf') vqItems.push({t:0, nhId:'', type:'tf', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', correct:(q.correct||'').toString().toUpperCase().trim()});
+            else vqItems.push({t:0, nhId:'', type:'short', q:q.question||'', correct:(q.correct||'').toString().trim()});
         });
         window._vqTouched=true;
         renderVQ();
-        const missingAns=mc.filter(q=>!q.correct).length;
-        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${mc.length} câu từ file Word — nhớ nhập mốc thời gian ⏱ cho từng câu!`
-            +(skipped?` (bỏ qua ${skipped} mục không phải trắc nghiệm A/B/C/D)`:'')
-            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án đúng, cần chọn tay</span>`:''),'ok');
+        const nM=ok.filter(q=>q.type==='mc').length,nT=ok.filter(q=>q.type==='tf').length,nS=ok.filter(q=>q.type==='short').length;
+        const missingAns=ok.filter(q=>!q.correct).length;
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${ok.length} câu (${nM} A/B/C/D · ${nT} Đúng/Sai · ${nS} trả lời ngắn) — nhớ nhập mốc thời gian ⏱ cho từng câu!`
+            +(skipped?` (bỏ qua ${skipped} mục không nhận dạng được)`:'')
+            +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án, cần chọn/nhập tay</span>`:''),'ok');
         document.getElementById('vq-section')?.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(err){
         console.error(err);
@@ -2417,30 +2494,56 @@ function vqMatchAllTranscript(){
 
 function renderVQ(){
     const box=document.getElementById('vq-list'); if(!box) return;
-    if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Ch\u01b0a c\u00f3 m\u1ed1c c\u00e2u h\u1ecfi n\u00e0o cho video n\u00e0y.</div>'; return; }
+    if(!vqItems.length){ box.innerHTML='<div style="color:var(--gray2);font-size:12.5px;padding:4px 0">Chưa có mốc câu hỏi nào cho video này.</div>'; return; }
     box.innerHTML=vqItems.map((it,i)=>{
+        const type=(it.type==='tf'||it.type==='short')?it.type:'mc';
         const src=it.nhId
-            ? `<span class="nh-badge b-ch" style="font-size:10px">Ng\u00e2n h\u00e0ng \u00b7 ${nhEsc(it.nhId)}</span>`
-            : '<span class="nh-badge" style="font-size:10px">Nh\u1eadp tay</span>';
+            ? `<span class="nh-badge b-ch" style="font-size:10px">Ngân hàng · ${nhEsc(it.nhId)}</span>`
+            : '<span class="nh-badge" style="font-size:10px">Nhập tay</span>';
         let body='';
         if(it.nhId){
-            const opts=['A','B','C','D'].filter(L=>it[L]).map(L=>`<span style="margin-right:10px;font-size:12px"><b style="color:${it.ans===L?'var(--green)':'inherit'}">${L}.</b> ${nhSafe(it[L])}</span>`).join('');
-            body=`<div style="font-size:13px;margin:8px 0 5px">${nhSafe(it.q)}</div><div>${opts}</div>`;
+            if(type==='tf'){
+                const corr=(it.correct||'').toString();
+                const rows=['A','B','C','D'].filter(L=>it[L]).map(L=>{const li={A:0,B:1,C:2,D:3}[L];const d=corr[li]==='Đ';
+                    return `<div style="font-size:12px;margin-top:3px"><b>${SL[L]}</b> ${nhSafe(it[L])} — <span style="color:${d?'var(--green)':'var(--red)'}">${d?'Đúng':'Sai'}</span></div>`;}).join('');
+                body=`<div style="font-size:13px;margin:8px 0 5px">${nhSafe(it.q)}</div>${rows}`;
+            } else if(type==='short'){
+                body=`<div style="font-size:13px;margin:8px 0 5px">${nhSafe(it.q)}</div><div style="font-size:12px"><b>Đáp án:</b> ${nhSafe(it.correct||'')}</div>`;
+            } else {
+                const opts=['A','B','C','D'].filter(L=>it[L]).map(L=>`<span style="margin-right:10px;font-size:12px"><b style="color:${it.ans===L?'var(--green)':'inherit'}">${L}.</b> ${nhSafe(it[L])}</span>`).join('');
+                body=`<div style="font-size:13px;margin:8px 0 5px">${nhSafe(it.q)}</div><div>${opts}</div>`;
+            }
+        } else if(type==='tf'){
+            const corr=(it.correct||'').toString();
+            body=`<textarea class="qb-question" placeholder="Nội dung câu hỏi (Đúng/Sai)..." onchange="vqUpd(${i},'q',this.value)">${esc(it.q||'')}</textarea>
+                ${['A','B','C','D'].map((L,li)=>{const v=corr[li];
+                    return `<div class="tf-row" id="vqtf-${i}-${L}">
+                        <span class="tf-letter">${SL[L]}</span>
+                        <input type="text" class="qb-tf-input" placeholder="Ý ${SL[L]}..." value="${esc(it[L]||'')}" onchange="vqUpd(${i},'${L}',this.value)">
+                        <div class="tf-choice">
+                            <span class="tf-btn ${v==='Đ'?'sel-d':''}" onclick="vqTfSet(${i},'${L}',true)">Đúng</span>
+                            <span class="tf-btn ${v==='S'?'sel-s':''}" onclick="vqTfSet(${i},'${L}',false)">Sai</span>
+                        </div>
+                    </div>`;}).join('')}`;
+        } else if(type==='short'){
+            body=`<textarea class="qb-question" placeholder="Nội dung câu hỏi (trả lời ngắn)..." onchange="vqUpd(${i},'q',this.value)">${esc(it.q||'')}</textarea>
+                <div class="short-ans"><i class="fa-solid fa-pen" style="color:var(--green)"></i> Đáp án: <input type="text" maxlength="12" value="${esc(it.correct||'')}" onchange="vqUpd(${i},'correct',this.value)"></div>`;
         } else {
-            body=`<textarea class="qb-question" placeholder="N\u1ed9i dung c\u00e2u h\u1ecfi..." onchange="vqUpd(${i},'q',this.value)">${esc(it.q||'')}</textarea>
+            body=`<textarea class="qb-question" placeholder="Nội dung câu hỏi..." onchange="vqUpd(${i},'q',this.value)">${esc(it.q||'')}</textarea>
                 ${['A','B','C','D'].map(L=>`
                 <div class="qb-opt">
-                    <input type="radio" name="vqc-${i}" value="${L}" ${it.ans===L?'checked':''} onchange="vqUpd(${i},'ans',this.value)" title="Ch\u1ecdn l\u00e0m \u0111\u00e1p \u00e1n \u0111\u00fang">
+                    <input type="radio" name="vqc-${i}" value="${L}" ${it.ans===L?'checked':''} onchange="vqUpd(${i},'ans',this.value)" title="Chọn làm đáp án đúng">
                     <span class="qb-letter">${L}</span>
-                    <input type="text" placeholder="\u0110\u00e1p \u00e1n ${L}..." value="${esc(it[L]||'')}" onchange="vqUpd(${i},'${L}',this.value)">
+                    <input type="text" placeholder="Đáp án ${L}..." value="${esc(it[L]||'')}" onchange="vqUpd(${i},'${L}',this.value)">
                 </div>`).join('')}`;
         }
-        return `<div class="qb-card">
+        return `<div class="qb-card" data-type="${type}">
             <div class="qb-head" style="gap:8px;flex-wrap:wrap">
-                <span class="qb-num">M\u1ed0C ${i+1}</span>
-                <span style="font-size:11px;color:var(--gray2);font-weight:700">\u23f1</span>
-                <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="mm:ss" title="M\u1ed1c th\u1eddi gian trong video, d\u1ea1ng mm:ss">
-                <button type="button" class="qb-del" style="color:var(--blue)" onclick="vqMatchTranscript(${i})" title="D\u00f2 m\u1ed1c t\u1eeb ph\u1ee5 \u0111\u1ec1 \u0111\u00e3 d\u00e1n"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                <span class="qb-num">MỐC ${i+1}</span>
+                <span class="q-type-tag t-${type}">${TL[type]}</span>
+                <span style="font-size:11px;color:var(--gray2);font-weight:700">⏱</span>
+                <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="mm:ss" title="Mốc thời gian trong video, dạng mm:ss">
+                <button type="button" class="qb-del" style="color:var(--blue)" onclick="vqMatchTranscript(${i})" title="Dò mốc từ phụ đề đã dán"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
                 ${src}
                 <button class="qb-del" onclick="vqDel(${i})" style="margin-left:auto"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -2449,16 +2552,33 @@ function renderVQ(){
     }).join('');
     nhKatex(box);
 }
+function vqTfSet(i,L,isD){
+    if(!vqItems[i]) return;
+    window._vqTouched=true;
+    const corr=(vqItems[i].correct||'SSSS').split(''); while(corr.length<4) corr.push('S');
+    const pos={A:0,B:1,C:2,D:3}[L];
+    corr[pos]=isD?'Đ':'S';
+    vqItems[i].correct=corr.join('');
+    vqItems[i].type='tf';
+    renderVQ();
+}
 function vqValidate(){
     for(let i=0;i<vqItems.length;i++){
         const it=vqItems[i];
-        if(isNaN(Number(it.t))||Number(it.t)<0) return `M\u1ed1c ${i+1}: th\u1eddi gian kh\u00f4ng h\u1ee3p l\u1ec7 (d\u00f9ng d\u1ea1ng mm:ss)`;
-        if(!(it.q||'').toString().trim()) return `M\u1ed1c ${i+1}: ch\u01b0a c\u00f3 n\u1ed9i dung c\u00e2u h\u1ecfi`;
-        if(['A','B','C','D'].indexOf(it.ans)<0) return `M\u1ed1c ${i+1}: ch\u01b0a ch\u1ecdn \u0111\u00e1p \u00e1n \u0111\u00fang`;
-        if(!(it[it.ans]||'').toString().trim()) return `M\u1ed1c ${i+1}: \u0111\u00e1p \u00e1n \u0111\u00fang (${it.ans}) \u0111ang \u0111\u1ec3 tr\u1ed1ng`;
+        const type=(it.type==='tf'||it.type==='short')?it.type:'mc';
+        if(isNaN(Number(it.t))||Number(it.t)<0) return `Mốc ${i+1}: thời gian không hợp lệ (dùng dạng mm:ss)`;
+        if(!(it.q||'').toString().trim()) return `Mốc ${i+1}: chưa có nội dung câu hỏi`;
+        if(type==='mc'){
+            if(['A','B','C','D'].indexOf(it.ans)<0) return `Mốc ${i+1}: chưa chọn đáp án đúng`;
+            if(!(it[it.ans]||'').toString().trim()) return `Mốc ${i+1}: đáp án đúng (${it.ans}) đang để trống`;
+        } else if(type==='tf'){
+            if(!/^[ĐS]{4}$/.test((it.correct||'').toString())) return `Mốc ${i+1}: chưa chọn đủ Đúng/Sai cho cả 4 ý`;
+        } else if(type==='short'){
+            if(!(it.correct||'').toString().trim()) return `Mốc ${i+1}: chưa có đáp số`;
+        }
     }
     const ts=vqItems.map(x=>Number(x.t));
-    if(new Set(ts).size!==ts.length) return 'C\u00f3 2 m\u1ed1c tr\u00f9ng th\u1eddi gian \u2014 m\u1ed7i m\u1ed1c c\u1ea7n th\u1eddi \u0111i\u1ec3m kh\u00e1c nhau';
+    if(new Set(ts).size!==ts.length) return 'Có 2 mốc trùng thời gian — mỗi mốc cần thời điểm khác nhau';
     return '';
 }
 async function vqLoadFromGAS(key){
@@ -2469,15 +2589,22 @@ async function vqLoadFromGAS(key){
         const j=await r.json();
         vqItems=(j&&j.data||[])
             .filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key)
-            .map(rw=>({t:Number(rw.thoiGian)||0,nhId:(rw.nhId||'').toString(),q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim()}));
+            .map(rw=>({t:Number(rw.thoiGian)||0,nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
         if(vqItems.length) window._vqTouched=true;
     }catch(e){ vqItems=[]; }
     renderVQ();
 }
 async function vqSaveToGAS(newKey, origKey){
     if(!window._vqTouched && !vqItems.length) return; // b\u00e0i kh\u00f4ng d\u00f9ng t\u00ednh n\u0103ng n\u00e0y
+    // Gửi kèm 'type' + 'correct' (chuỗi 4 ký tự Đ/S cho tf, đáp số cho short) — GAS cần
+    // lưu thêm cột 'loai' trong sheet VideoCauHoi mới đọc/ghi đủ 2 loại câu mới này,
+    // nếu backend chưa có cột đó thì các trường thừa này bị bỏ qua vô hại (không lỗi).
     const items=vqItems.slice().sort((a,b)=>Number(a.t)-Number(b.t))
-        .map(it=>({t:Number(it.t)||0,nhId:it.nhId||'',q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||''}));
+        .map(it=>{
+            const type=(it.type==='tf'||it.type==='short')?it.type:'mc';
+            const correct=type==='mc'?(it.ans||''):(it.correct||'');
+            return {t:Number(it.t)||0,nhId:it.nhId||'',type,q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||'',correct};
+        });
     await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items})});
 }
@@ -2504,7 +2631,7 @@ function openBankPicker(target){
 }
 
 function _fillBpmChuong(){
-    const chuongs=[...new Set(bankData.filter(q=>q.loai==='TN').map(q=>q.chuong).filter(Boolean))].sort();
+    const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
     const sel=document.getElementById('bpm-chuong');
     sel.innerHTML='<option value="">Tất cả chương</option>'+chuongs.map(c=>`<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
 }
@@ -2512,27 +2639,38 @@ function _fillBpmChuong(){
 function renderBPM(){
     const q=(document.getElementById('bpm-search').value||'').toLowerCase();
     const ch=document.getElementById('bpm-chuong').value;
-    // Chỉ hiện câu TN (A/B/C/D) vì bài học chỉ hỗ trợ loại này
+    // Cả 3 loại câu (TN/DS/TLN) — bài học giờ đã hỗ trợ đủ như Ngân hàng/Soạn Đề
     const filtered=bankData.filter(item=>
-        item.loai==='TN' &&
         (!ch||item.chuong===ch) &&
         (!q||(item.question||'').toLowerCase().includes(q))
     );
     const body=document.getElementById('bpm-body');
-    document.getElementById('bpm-count-label').textContent=filtered.length+' câu (chỉ A/B/C/D)';
+    document.getElementById('bpm-count-label').textContent=filtered.length+' câu';
     if(!filtered.length){ body.innerHTML='<div class="bpm-empty">Không tìm thấy câu nào.</div>'; return; }
     body.innerHTML=filtered.slice(0,80).map(item=>{
         const sel=_bpmSel.has(item.id);
-        const opts=['A','B','C','D'].filter(L=>item['opt'+L]).map(L=>`<span style="margin-right:10px;font-size:12px"><b style="color:${(item.correct||'').trim().toUpperCase()===L?'var(--green)':'inherit'}">${L}.</b> ${nhEsc(item['opt'+L]||'')}</span>`).join('');
+        const typ=item.loai==='DS'?'tf':(item.loai==='TLN'?'short':'mc');
+        let inner='';
+        if(typ==='mc'){
+            const opts=['A','B','C','D'].filter(L=>item['opt'+L]).map(L=>`<span style="margin-right:10px;font-size:12px"><b style="color:${(item.correct||'').trim().toUpperCase()===L?'var(--green)':'inherit'}">${L}.</b> ${nhEsc(item['opt'+L]||'')}</span>`).join('');
+            inner=`<div style="margin-bottom:5px">${nhSafe(item.question)}</div><div>${opts}</div>`;
+        } else if(typ==='tf'){
+            const corr=(item.correct||'').toString();
+            const rows=['A','B','C','D'].filter(L=>item['opt'+L]).map(L=>{const li={A:0,B:1,C:2,D:3}[L];const d=corr[li]==='Đ';
+                return `<div style="font-size:12px;margin-top:2px"><b>${SL[L]}</b> ${nhEsc(item['opt'+L]||'')} — <span style="color:${d?'var(--green)':'var(--red)'}">${d?'Đúng':'Sai'}</span></div>`;}).join('');
+            inner=`<div style="margin-bottom:5px">${nhSafe(item.question)}</div>${rows}`;
+        } else {
+            inner=`<div style="margin-bottom:5px">${nhSafe(item.question)}</div><div style="font-size:12px"><b>Đáp án:</b> ${nhEsc(item.correct||'')}</div>`;
+        }
         return `<label class="bpm-item ${sel?'selected':''}" id="bpm-r-${nhEsc(item.id)}" style="display:flex;cursor:pointer">
             <input type="checkbox" ${sel?'checked':''} onchange="bpmToggle('${nhEsc(item.id)}',this.checked)" onclick="event.stopPropagation()">
             <div class="bpm-q-text">
                 <div class="bpm-q-meta">
+                    <span class="q-type-tag t-${typ}" style="font-size:10px">${TL[typ]}</span>
                     ${item.chuong?`<span class="nh-badge b-ch" style="font-size:10px">${nhEsc(item.chuong)}</span>`:''}
                     ${item.mucDo?`<span class="nh-badge" style="font-size:10px">${nhEsc(item.mucDo)}</span>`:''}
                 </div>
-                <div style="margin-bottom:5px">${nhSafe(item.question)}</div>
-                <div>${opts}</div>
+                ${inner}
             </div>
         </label>`;
     }).join('');
@@ -2554,10 +2692,13 @@ function updateBpmCount(){
 
 function addFromBankPicker(){
     if(!_bpmSel.size){ toast('Chưa chọn câu nào!','err'); return; }
-    const chosen=bankData.filter(q=>_bpmSel.has(q.id)&&q.loai==='TN');
+    const chosen=bankData.filter(q=>_bpmSel.has(q.id));
     if(_bpmTarget==='video'){
         chosen.forEach(q=>{
-            vqItems.push({ t:0, nhId:(q.id||'').toString(), q:q.question||'', A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
+            const typ=q.loai==='DS'?'tf':(q.loai==='TLN'?'short':'mc');
+            if(typ==='mc') vqItems.push({ t:0, nhId:(q.id||'').toString(), type:'mc', q:q.question||'', A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
+            else if(typ==='tf') vqItems.push({ t:0, nhId:(q.id||'').toString(), type:'tf', q:q.question||'', A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', correct:(q.correct||'').trim().toUpperCase() });
+            else vqItems.push({ t:0, nhId:(q.id||'').toString(), type:'short', q:q.question||'', correct:(q.correct||'').trim() });
         });
         window._vqTouched=true;
         renderVQ();
@@ -2567,7 +2708,10 @@ function addFromBankPicker(){
         return;
     }
     chosen.forEach(q=>{
-        addQuestion({ q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
+        const typ=q.loai==='DS'?'tf':(q.loai==='TLN'?'short':'mc');
+        if(typ==='mc') addQuestion({ type:'mc', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
+        else if(typ==='tf') addQuestion({ type:'tf', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', correct:(q.correct||'').trim().toUpperCase() });
+        else addQuestion({ type:'short', q:q.question, correct:(q.correct||'').trim() });
     });
     toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${chosen.length} câu từ ngân hàng!`,'ok');
     closeBankPicker();
@@ -2583,15 +2727,28 @@ function getQuestionsFromForm(){
     const qs=[];
     cards.forEach(card=>{
         const id=card.id.replace('qcard-','');
+        const type=card.dataset.type==='tf'?'tf':(card.dataset.type==='short'?'short':'mc');
         const q=document.getElementById('qq-'+id)?.value.trim()||'';
         if(!q) return;
-        const A=document.getElementById('qopt-'+id+'-A')?.value.trim()||'';
-        const B=document.getElementById('qopt-'+id+'-B')?.value.trim()||'';
-        const C=document.getElementById('qopt-'+id+'-C')?.value.trim()||'';
-        const D=document.getElementById('qopt-'+id+'-D')?.value.trim()||'';
-        const checked=card.querySelector('input[type=radio]:checked');
-        const ans=checked?checked.value:'';
-        qs.push({q,A,B,C,D,ans});
+        if(type==='tf'){
+            const A=document.getElementById('qopt-'+id+'-A')?.value.trim()||'';
+            const B=document.getElementById('qopt-'+id+'-B')?.value.trim()||'';
+            const C=document.getElementById('qopt-'+id+'-C')?.value.trim()||'';
+            const D=document.getElementById('qopt-'+id+'-D')?.value.trim()||'';
+            const correct=['A','B','C','D'].map(L=>document.getElementById('qans-'+id+'-'+L)?.value==='Đ'?'Đ':'S').join('');
+            qs.push({type:'tf',q,A,B,C,D,correct});
+        } else if(type==='short'){
+            const correct=document.getElementById('qopt-'+id+'-short')?.value.trim()||'';
+            qs.push({type:'short',q,correct});
+        } else {
+            const A=document.getElementById('qopt-'+id+'-A')?.value.trim()||'';
+            const B=document.getElementById('qopt-'+id+'-B')?.value.trim()||'';
+            const C=document.getElementById('qopt-'+id+'-C')?.value.trim()||'';
+            const D=document.getElementById('qopt-'+id+'-D')?.value.trim()||'';
+            const checked=card.querySelector('input[type=radio]:checked');
+            const ans=checked?checked.value:'';
+            qs.push({type:'mc',q,A,B,C,D,ans,correct:ans});
+        }
     });
     return qs;
 }
@@ -2604,8 +2761,12 @@ async function saveLessonForm(){
     const tenbai=document.getElementById('f-tenbai').value.trim();
     if(!khoa||!chuong||!tenbai){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Điền đủ Khóa học, Chương, Tên bài!','err'); return; }
     const qs=getQuestionsFromForm();
-    const badQ=qs.filter(q=>!q.ans);
-    if(badQ.length){ toast(`<i class="fa-solid fa-triangle-exclamation"></i> ${badQ.length} câu chưa chọn đáp án đúng!`,'err'); return; }
+    const badQ=qs.filter(q=>{
+        if(q.type==='tf') return !/^[ĐS]{4}$/.test(q.correct||'');
+        if(q.type==='short') return !q.correct;
+        return !q.ans;
+    });
+    if(badQ.length){ toast(`<i class="fa-solid fa-triangle-exclamation"></i> ${badQ.length} câu chưa đủ đáp án đúng!`,'err'); return; }
     const vqErr=vqValidate();
     if(vqErr){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Câu hỏi trong video — '+vqErr,'err'); return; }
     const payload={
