@@ -113,7 +113,8 @@
         .nh-up-status { font-size:13px; margin-top:10px; line-height:1.6; }
         .nh-preview-list { max-height:380px; overflow-y:auto; margin-top:12px; border:1.5px solid var(--border); border-radius:10px; }
         .nh-err { color:var(--red); font-size:13px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:8px 12px; margin-top:8px; }
-        .wrap { max-width:1200px; margin:0 auto; padding:32px 24px 80px; }
+        .wrap { max-width:1600px; margin:0 auto; padding:32px 32px 80px; }
+        @media(max-width:1680px){ .wrap{max-width:96vw;} }
         .field-label { display:block; font-size:12.5px; font-weight:700; color:var(--gray); margin-bottom:5px; }
         .field-input { width:100%; padding:10px 13px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:'Inter',sans-serif; color:var(--black); background:var(--bg2); outline:none; transition:border-color .15s; resize:vertical; }
         .field-input:focus { border-color:var(--blue); background:var(--bg); }
@@ -140,7 +141,7 @@
         /* ══════════════════════════════
            TAB 1: QUẢN LÝ BÀI HỌC
         ══════════════════════════════ */
-        .lesson-manager { display:grid; grid-template-columns:1fr 440px; gap:24px; align-items:start; }
+        .lesson-manager { display:grid; grid-template-columns:1fr minmax(440px,620px); gap:24px; align-items:start; }
         .lm-left { min-width:0; }
         .lm-right { position:sticky; top:72px; }
 
