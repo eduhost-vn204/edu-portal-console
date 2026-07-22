@@ -738,9 +738,16 @@
                                     <button class="btn-from-bank" onclick="openBankPicker('video')"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
                                     <button class="btn-add-q" onclick="document.getElementById('vq-file-input').click()"><i class="fa-solid fa-file-word"></i> Tải file Word</button>
                                     <input type="file" id="vq-file-input" accept=".docx" style="display:none">
-                                    <button class="btn-add-q" onclick="vqAddManual()"><i class="fa-solid fa-plus"></i> Nhập tay</button>
+                                    <span style="width:1.5px;align-self:stretch;background:var(--border);margin:0 2px"></span>
+                                    <select id="vq-add-type" style="padding:6px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:12px">
+                                        <option value="mc">Trắc nghiệm A/B/C/D</option>
+                                        <option value="tf">Đúng/Sai</option>
+                                        <option value="short">Trả lời ngắn</option>
+                                    </select>
+                                    <button class="btn-add-q" onclick="vqAddManual(document.getElementById('vq-add-type').value)"><i class="fa-solid fa-plus"></i> Nhập tay</button>
                                 </div>
                             </div>
+                            <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> <b>Tải file Word</b> tự nhận diện đủ cả 3 dạng câu (trắc nghiệm/Đúng-Sai/trả lời ngắn) có trong file, không cần chọn trước — dropdown bên cạnh chỉ dùng khi bấm <b>"Nhập tay"</b> để gõ 1 câu mới.</div>
                             <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> Nhập mốc thời gian dạng <b>mm:ss</b> (ví dụ 12:35) — nên đặt ngay TRƯỚC đoạn thầy chữa câu đó.</div>
                             <div class="vq-transcript-box">
                                 <button type="button" class="btn-add-q" style="font-size:12px" onclick="vqToggleTranscriptBox()"><i class="fa-solid fa-closed-captioning"></i> Dán phụ đề để tự dò mốc (tuỳ chọn)</button>
@@ -759,6 +766,7 @@
                                     <button class="btn-from-bank" onclick="openBankPicker()"><i class="fa-solid fa-database"></i> Chọn từ ngân hàng</button>
                                     <button class="btn-add-q" onclick="document.getElementById('q-file-input').click()"><i class="fa-solid fa-file-word"></i> Tải file Word</button>
                                     <input type="file" id="q-file-input" accept=".docx" style="display:none">
+                                    <span style="width:1.5px;align-self:stretch;background:var(--border);margin:0 2px"></span>
                                     <select id="q-add-type" style="padding:6px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:12px">
                                         <option value="mc">Trắc nghiệm A/B/C/D</option>
                                         <option value="tf">Đúng/Sai</option>
@@ -767,6 +775,7 @@
                                     <button class="btn-add-q" onclick="addQuestion({type:document.getElementById('q-add-type').value})"><i class="fa-solid fa-plus"></i> Thêm tay</button>
                                 </div>
                             </div>
+                            <div class="vq-hint" style="margin-bottom:10px"><i class="fa-solid fa-circle-info"></i> <b>Tải file Word</b> tự nhận diện đủ cả 3 dạng câu (trắc nghiệm/Đúng-Sai/trả lời ngắn) có trong file, không cần chọn trước — dropdown bên cạnh chỉ dùng khi bấm <b>"Thêm tay"</b> để gõ 1 câu mới.</div>
                             <div id="quiz-builder"></div>
                         </div>
                     </div>
@@ -2337,8 +2346,11 @@ function vqUpd(i,f,v){
     vqItems[i][f]=v;
 }
 function vqDel(i){ vqItems.splice(i,1); window._vqTouched=true; renderVQ(); }
-function vqAddManual(){
-    vqItems.push({t:0,nhId:'',q:'',A:'',B:'',C:'',D:'',ans:''});
+function vqAddManual(type){
+    type=(type==='tf'||type==='short')?type:'mc';
+    if(type==='tf') vqItems.push({t:0,nhId:'',type:'tf',q:'',A:'',B:'',C:'',D:'',correct:''});
+    else if(type==='short') vqItems.push({t:0,nhId:'',type:'short',q:'',correct:''});
+    else vqItems.push({t:0,nhId:'',type:'mc',q:'',A:'',B:'',C:'',D:'',ans:''});
     window._vqTouched=true;
     renderVQ();
 }
