@@ -4695,6 +4695,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
           <th style="padding:10px 14px;text-align:left;font-weight:700">Hết hạn</th>
           <th style="padding:10px 14px;text-align:left;font-weight:700">Ngày tạo</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700" title="Học sinh đã học trong lớp/khoá của thầy + đã xem live rồi &#8594; không cần bắt xem video/câu áp dụng trong bài, chỉ cần &#8805;90% Luyện tập trắc nghiệm là qua bài">Miễn ĐK video</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700" title="Chỉ có ý nghĩa với HS đã Miễn ĐK video. Tích: vẫn bắt trả lời câu hỏi trong video như bình thường (dừng video hỏi bài). Bỏ tích (mặc định): video phát liền mạch, không bị dừng lại hỏi bài.">Làm trắc nghiệm cùng thầy</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700">Thao tác</th>
         </tr>
       </thead>
@@ -4908,6 +4909,9 @@ function renderTK(list) {
         <td style="padding:10px 14px;text-align:center" onclick="event.stopPropagation()">
           <input type="checkbox" ${r.mienVideo?'checked':''} onchange="tkToggleMienVideo('${esc(r.sdt)}', this.checked, this)" title="Miễn điều kiện xem video/câu áp dụng, chỉ cần ≥90% Luyện tập trắc nghiệm" style="width:16px;height:16px;cursor:pointer">
         </td>
+        <td style="padding:10px 14px;text-align:center" onclick="event.stopPropagation()">
+          <input type="checkbox" ${r.tracNghiemVideo?'checked':''} onchange="tkToggleTracNghiemVideo('${esc(r.sdt)}', this.checked, this)" title="Tích: vẫn bắt trả lời câu hỏi trong video (dừng video hỏi bài). Bỏ tích: video phát liền mạch không bị dừng lại." style="width:16px;height:16px;cursor:pointer">
+        </td>
         <td style="padding:10px 14px;text-align:center;white-space:nowrap">
           <button onclick="event.stopPropagation();openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
           <button onclick="event.stopPropagation();deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
@@ -4954,6 +4958,31 @@ async function tkToggleMienVideo(sdt, checked, cb) {
       toast(checked ? 'Đã miễn điều kiện video cho học sinh này!' : 'Đã bỏ miễn điều kiện video.', 'ok');
       const row = allTK.find(x => String(x.sdt) === String(sdt));
       if (row) row.mienVideo = checked;
+    } else {
+      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      if (cb) cb.checked = !checked;
+    }
+  } catch(e) {
+    toast('Lỗi: ' + e.message, 'err');
+    if (cb) cb.checked = !checked;
+  } finally {
+    if (cb) cb.disabled = false;
+  }
+}
+
+// Bật/tắt "Làm trắc nghiệm cùng thầy" — chỉ có ý nghĩa với HS đã Miễn ĐK video.
+// Tích: vẫn bắt trả lời câu hỏi trong video (dừng video hỏi bài) như HS thường.
+// Bỏ tích (mặc định): video phát liền mạch, không bị dừng lại hỏi bài giữa chừng.
+async function tkToggleTracNghiemVideo(sdt, checked, cb) {
+  if (cb) cb.disabled = true;
+  try {
+    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, tracNghiemVideo: checked }) });
+    const d = await r.json();
+    if (d.ok) {
+      toast(checked ? 'HS sẽ làm trắc nghiệm cùng video như bình thường.' : 'Video sẽ phát liền mạch, không dừng hỏi bài.', 'ok');
+      const row = allTK.find(x => String(x.sdt) === String(sdt));
+      if (row) row.tracNghiemVideo = checked;
     } else {
       toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
       if (cb) cb.checked = !checked;
