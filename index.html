@@ -668,6 +668,7 @@
                     </div>
                     <div class="fp-body">
                         <input type="hidden" id="f-original-key">
+                        <input type="hidden" id="f-original-ttb">
                         <div class="form-row">
                             <div class="form-field">
                                 <label>Lớp / Môn <span>*</span></label>
@@ -2134,6 +2135,7 @@ function openNewForm(){
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Thêm bài giảng mới';
     document.getElementById('f-original-key').value='';
+    document.getElementById('f-original-ttb').value='';
     document.getElementById('f-lop').value='Vật Lý 12';
     document.getElementById('f-ten-khoa').value='';
     updateKhoaOptions();
@@ -2166,6 +2168,7 @@ async function openEditForm(key){
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Sửa bài giảng';
     document.getElementById('f-original-key').value=key;
+    document.getElementById('f-original-ttb').value=(row.ThuTuBai!==undefined&&row.ThuTuBai!==null)?row.ThuTuBai:((row.thutubai!==undefined&&row.thutubai!==null)?row.thutubai:'');
     const sc_row = extractSC(row.KhoaHoc||row.khoahoc||row.course||'Vật Lý 12');
     document.getElementById('f-lop').value = sc_row.subject || 'Vật Lý 12';
     document.getElementById('f-ten-khoa').value = sc_row.courseName || '';
@@ -2846,7 +2849,8 @@ async function saveLessonForm(){
         PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
-        BaiTap:'' // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
+        BaiTap:'', // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
+        ThuTuBai:document.getElementById('f-original-ttb').value // giu nguyen thu tu cu khi sua bai - thieu field nay khien GAS ghi de ThuTuBai='' moi lan Luu, lam bai tu nhay xuong cuoi chuong
     };
     const btn=document.getElementById('btn-save-lesson');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
@@ -2867,7 +2871,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         updateChuongList(); renderLessonList();
     }catch(err){
