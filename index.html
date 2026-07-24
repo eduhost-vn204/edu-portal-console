@@ -2117,13 +2117,22 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
     toast(`<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa ${affected.length} bài...`);
     let ok=0, fail=0;
     for(const row of affected){
-        const payload={action:'deleteBaiHoc', KhoaHoc:khoa, Chuong:chuong, TenBai:row.TenBai||row.tenbai||row.title||row.ten||''};
+        const tenBaiV = row.TenBai||row.tenbai||row.title||row.ten||'';
+        const key = khoa+'|||'+chuong+'|||'+tenBaiV;
+        const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoa, Chuong:chuong, TenBai:tenBaiV};
         if(await postAdminWrite(payload)) ok++; else fail++;
     }
+    // Xác minh thật: xoá cache rồi tải THẲNG từ server, đếm lại chương còn bài nào không.
     invalidateCache();
     await loadLessons();
-    if(fail>0) toast(`⚠️ Đã xóa ${ok}/${affected.length} bài, ${fail} bài LỖI`,'err');
-    else toast(`<i class="fa-solid fa-circle-check"></i> Đã xóa chương "${chuong}" (${ok} bài)!`,'ok');
+    const stillThere = allLessons.filter(r=>(khoaOf(r))=== khoa && (r.Chuong||r.chuong||r.chapter||'')=== chuong).length;
+    if(stillThere > 0){
+        toast(`⚠️ Xóa KHÔNG thành công — vẫn còn ${stillThere} bài của chương "${chuong}" trên server.`,'err');
+    } else if(fail>0){
+        toast(`⚠️ Đã xóa ${ok}/${affected.length} bài, ${fail} bài LỖI`,'err');
+    } else {
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã xóa chương "${chuong}" (${ok} bài)!`,'ok');
+    }
 }
 
 /* ── Form helpers ── */
@@ -2895,18 +2904,25 @@ async function doDelete(){
     const keyToDelete=pendingDelete;
     closeConfirm();
     const parts=keyToDelete.split('|||');
-    const payload={action:'deleteBaiHoc',KhoaHoc:parts[0]||'',Chuong:parts[1]||'',TenBai:parts[2]||''};
+    const payload={action:'deleteBaiHoc', key:keyToDelete, originalKey:keyToDelete, KhoaHoc:parts[0]||'',Chuong:parts[1]||'',TenBai:parts[2]||''};
     try{
         const success = await postAdminWrite(payload);
         if(!success){ toast('<i class="fa-solid fa-bug"></i> Lỗi xóa: Google Sheets từ chối (thử lại nhé)','err'); return; }
+        // Xác minh thật: xoá cache rồi tải THẲNG từ server, kiểm tra bài đã thực sự biến
+        // mất chưa — KHÔNG tin suông {ok:true} của GAS (tiền lệ: backend trả ok:true dù
+        // không xóa được gì vì thiếu field key/originalKey mà findRowByKey cần).
         invalidateCache();
-        allLessons=allLessons.filter(r=>{
+        await loadLessons();
+        const stillThere = allLessons.some(r=>{
             const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||'');
-            return k!==keyToDelete;
+            return k===keyToDelete;
         });
-        renderLessonList();
         restoreListScrollY();
-        toast('<i class="fa-solid fa-circle-check"></i> Đã xóa bài giảng!','ok');
+        if(stillThere){
+            toast('⚠️ Xóa KHÔNG thành công — bài vẫn còn trên server. Báo lỗi này để kiểm tra thêm.','err');
+        } else {
+            toast('<i class="fa-solid fa-circle-check"></i> Đã xóa bài giảng!','ok');
+        }
     }catch(e){ toast('<i class="fa-solid fa-bug"></i> Lỗi xóa: '+e.message,'err'); }
 }
 
