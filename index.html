@@ -751,6 +751,7 @@
                             </div>
                             <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> <b>Tải file Word</b> tự nhận diện đủ cả 3 dạng câu (trắc nghiệm/Đúng-Sai/trả lời ngắn) có trong file, không cần chọn trước — dropdown bên cạnh chỉ dùng khi bấm <b>"Nhập tay"</b> để gõ 1 câu mới.</div>
                             <div class="vq-hint"><i class="fa-solid fa-circle-info"></i> Nhập mốc thời gian dạng <b>mm:ss</b> (ví dụ 12:35) — nên đặt ngay TRƯỚC đoạn thầy chữa câu đó.</div>
+                            <div class="vq-hint" style="color:var(--purple)"><i class="fa-solid fa-list-ol"></i> <b>Để TRỐNG ô mốc</b>: câu đó sẽ KHÔNG dừng video, mà hiện thành 1 danh sách tuần tự trong tab <b>"Làm bài tập cùng thầy"</b> ở trang Live — học sinh vừa xem video vừa cuộn làm bài, không bị chặn xem tiếp.</div>
                             <div class="vq-transcript-box">
                                 <button type="button" class="btn-add-q" style="font-size:12px" onclick="vqToggleTranscriptBox()"><i class="fa-solid fa-closed-captioning"></i> Dán phụ đề để tự dò mốc (tuỳ chọn)</button>
                                 <div id="vq-transcript-wrap" style="display:none;margin-top:8px">
@@ -2360,13 +2361,19 @@ window._vqTouched=false;
 function vqReset(){ vqItems=[]; window._vqTouched=false; renderVQ(); }
 
 function vqFmtTime(s){
+    if(s===null||s===undefined||s==='') return '';
     s=Math.max(0,Math.round(Number(s)||0));
     const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
     const p=n=>String(n).padStart(2,'0');
     return h? h+':'+p(m)+':'+p(sec) : m+':'+p(sec);
 }
+// Để trống ô mốc thời gian = câu này KHÔNG dừng video, sẽ hiện tuần tự trong tab
+// "Làm bài tập cùng thầy" (trang Live) thay vì chặn xem tại 1 mốc cụ thể.
+// Trả về null cho chuỗi rỗng (hợp lệ, khác NaN = lỗi định dạng thật sự).
 function vqParseTime(str){
-    const parts=String(str||'').trim().split(':').map(x=>parseInt(x,10));
+    const s=String(str||'').trim();
+    if(!s) return null;
+    const parts=s.split(':').map(x=>parseInt(x,10));
     if(!parts.length||parts.some(isNaN)) return NaN;
     return parts.reduce((a,b)=>a*60+b,0);
 }
@@ -2375,7 +2382,7 @@ function vqUpd(i,f,v){
     window._vqTouched=true;
     if(f==='t'){
         const s=vqParseTime(v);
-        if(isNaN(s)){ toast('Th\u1eddi gian kh\u00f4ng h\u1ee3p l\u1ec7 \u2014 d\u00f9ng d\u1ea1ng mm:ss (v\u00ed d\u1ee5 12:35)','err'); renderVQ(); return; }
+        if(s!==null && isNaN(s)){ toast('Th\u1eddi gian kh\u00f4ng h\u1ee3p l\u1ec7 \u2014 d\u00f9ng d\u1ea1ng mm:ss (v\u00ed d\u1ee5 12:35), ho\u1eb7c \u0111\u1ec3 tr\u1ed1ng','err'); renderVQ(); return; }
         vqItems[i].t=s; renderVQ(); return;
     }
     vqItems[i][f]=v;
@@ -2383,9 +2390,11 @@ function vqUpd(i,f,v){
 function vqDel(i){ vqItems.splice(i,1); window._vqTouched=true; renderVQ(); }
 function vqAddManual(type){
     type=(type==='tf'||type==='short')?type:'mc';
-    if(type==='tf') vqItems.push({t:0,nhId:'',type:'tf',q:'',A:'',B:'',C:'',D:'',correct:''});
-    else if(type==='short') vqItems.push({t:0,nhId:'',type:'short',q:'',correct:''});
-    else vqItems.push({t:0,nhId:'',type:'mc',q:'',A:'',B:'',C:'',D:'',ans:''});
+    // t:null (để trống) mặc định — câu mới thêm sẽ hiện tuần tự trong tab "Làm bài
+    // tập cùng thầy" trừ khi thầy tự gõ mốc mm:ss để biến nó thành điểm dừng video.
+    if(type==='tf') vqItems.push({t:null,nhId:'',type:'tf',q:'',A:'',B:'',C:'',D:'',correct:''});
+    else if(type==='short') vqItems.push({t:null,nhId:'',type:'short',q:'',correct:''});
+    else vqItems.push({t:null,nhId:'',type:'mc',q:'',A:'',B:'',C:'',D:'',ans:''});
     window._vqTouched=true;
     renderVQ();
 }
@@ -2420,16 +2429,19 @@ async function vqHandleDocxFile(file){
         });
         const skipped=qs.length-ok.length;
         if(!ok.length){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Không nhận diện được câu hỏi nào trong file. Kiểm tra định dạng "Câu 1:", "A.", "*C.", "a)"...','err'); return; }
+        // t:null (để trống) — mặc định các câu nạp hàng loạt từ Word sẽ hiện tuần tự
+        // trong tab "Làm bài tập cùng thầy" ở trang Live, không cần gõ mốc cho từng câu.
+        // Thầy chỉ cần điền mốc mm:ss cho những câu MUỐN dừng video lại để hỏi.
         ok.forEach(q=>{
-            if(q.type==='mc') vqItems.push({t:0, nhId:'', type:'mc', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim()});
-            else if(q.type==='tf') vqItems.push({t:0, nhId:'', type:'tf', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', correct:(q.correct||'').toString().toUpperCase().trim()});
-            else vqItems.push({t:0, nhId:'', type:'short', q:q.question||'', correct:(q.correct||'').toString().trim()});
+            if(q.type==='mc') vqItems.push({t:null, nhId:'', type:'mc', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', ans:(q.correct||'').toString().toUpperCase().trim()});
+            else if(q.type==='tf') vqItems.push({t:null, nhId:'', type:'tf', q:q.question||'', A:q.options.A||'', B:q.options.B||'', C:q.options.C||'', D:q.options.D||'', correct:(q.correct||'').toString().toUpperCase().trim()});
+            else vqItems.push({t:null, nhId:'', type:'short', q:q.question||'', correct:(q.correct||'').toString().trim()});
         });
         window._vqTouched=true;
         renderVQ();
         const nM=ok.filter(q=>q.type==='mc').length,nT=ok.filter(q=>q.type==='tf').length,nS=ok.filter(q=>q.type==='short').length;
         const missingAns=ok.filter(q=>!q.correct).length;
-        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${ok.length} câu (${nM} A/B/C/D · ${nT} Đúng/Sai · ${nS} trả lời ngắn) — nhớ nhập mốc thời gian ⏱ cho từng câu!`
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${ok.length} câu (${nM} A/B/C/D · ${nT} Đúng/Sai · ${nS} trả lời ngắn) — để trống mốc = hiện trong tab "Làm bài tập cùng thầy", hoặc điền mốc ⏱ cho câu nào muốn dừng video!`
             +(skipped?` (bỏ qua ${skipped} mục không nhận dạng được)`:'')
             +(missingAns?` <span style="color:var(--red)">— ${missingAns} câu chưa nhận diện được đáp án, cần chọn/nhập tay</span>`:''),'ok');
         document.getElementById('vq-section')?.scrollIntoView({behavior:'smooth',block:'center'});
@@ -2584,13 +2596,15 @@ function renderVQ(){
                     <input type="text" placeholder="Đáp án ${L}..." value="${esc(it[L]||'')}" onchange="vqUpd(${i},'${L}',this.value)">
                 </div>`).join('')}`;
         }
+        const isSeq=(it.t===null);
         return `<div class="qb-card" data-type="${type}">
             <div class="qb-head" style="gap:8px;flex-wrap:wrap">
-                <span class="qb-num">MỐC ${i+1}</span>
+                <span class="qb-num">${isSeq?'CÂU':'MỐC'} ${i+1}</span>
                 <span class="q-type-tag t-${type}">${TL[type]}</span>
                 <span style="font-size:11px;color:var(--gray2);font-weight:700">⏱</span>
-                <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="mm:ss" title="Mốc thời gian trong video, dạng mm:ss">
+                <input class="vq-time" value="${vqFmtTime(it.t)}" onchange="vqUpd(${i},'t',this.value)" placeholder="Để trống = tuần tự" title="Mốc thời gian trong video, dạng mm:ss — để trống nếu muốn câu này KHÔNG dừng video mà hiện tuần tự trong tab &quot;Làm bài tập cùng thầy&quot; ở trang Live">
                 <button type="button" class="qb-del" style="color:var(--blue)" onclick="vqMatchTranscript(${i})" title="Dò mốc từ phụ đề đã dán"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                ${isSeq?'<span class="nh-badge" style="font-size:10px;background:rgba(124,58,237,.12);color:var(--purple)"><i class="fa-solid fa-list-ol"></i> Tuần tự · tab "Cùng thầy"</span>':''}
                 ${src}
                 <button class="qb-del" onclick="vqDel(${i})" style="margin-left:auto"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -2613,19 +2627,21 @@ function vqValidate(){
     for(let i=0;i<vqItems.length;i++){
         const it=vqItems[i];
         const type=(it.type==='tf'||it.type==='short')?it.type:'mc';
-        if(isNaN(Number(it.t))||Number(it.t)<0) return `Mốc ${i+1}: thời gian không hợp lệ (dùng dạng mm:ss)`;
-        if(!(it.q||'').toString().trim()) return `Mốc ${i+1}: chưa có nội dung câu hỏi`;
+        // t===null nghĩa là thầy chủ động để trống (câu hiện tuần tự trong tab "Làm
+        // bài tập cùng thầy", không dừng video) — chỉ báo lỗi khi có nhập nhưng sai định dạng.
+        if(it.t!==null && (isNaN(Number(it.t))||Number(it.t)<0)) return `Câu ${i+1}: thời gian không hợp lệ (dùng dạng mm:ss, hoặc để trống)`;
+        if(!(it.q||'').toString().trim()) return `Câu ${i+1}: chưa có nội dung câu hỏi`;
         if(type==='mc'){
-            if(['A','B','C','D'].indexOf(it.ans)<0) return `Mốc ${i+1}: chưa chọn đáp án đúng`;
-            if(!(it[it.ans]||'').toString().trim()) return `Mốc ${i+1}: đáp án đúng (${it.ans}) đang để trống`;
+            if(['A','B','C','D'].indexOf(it.ans)<0) return `Câu ${i+1}: chưa chọn đáp án đúng`;
+            if(!(it[it.ans]||'').toString().trim()) return `Câu ${i+1}: đáp án đúng (${it.ans}) đang để trống`;
         } else if(type==='tf'){
-            if(!/^[ĐS]{4}$/.test((it.correct||'').toString())) return `Mốc ${i+1}: chưa chọn đủ Đúng/Sai cho cả 4 ý`;
+            if(!/^[ĐS]{4}$/.test((it.correct||'').toString())) return `Câu ${i+1}: chưa chọn đủ Đúng/Sai cho cả 4 ý`;
         } else if(type==='short'){
-            if(!(it.correct||'').toString().trim()) return `Mốc ${i+1}: chưa có đáp số`;
+            if(!(it.correct||'').toString().trim()) return `Câu ${i+1}: chưa có đáp số`;
         }
     }
-    const ts=vqItems.map(x=>Number(x.t));
-    if(new Set(ts).size!==ts.length) return 'Có 2 mốc trùng thời gian — mỗi mốc cần thời điểm khác nhau';
+    const ts=vqItems.filter(x=>x.t!==null).map(x=>Number(x.t));
+    if(new Set(ts).size!==ts.length) return 'Có 2 mốc trùng thời gian — mỗi mốc cần thời điểm khác nhau (câu để trống mốc thì không bị giới hạn này)';
     return '';
 }
 async function vqLoadFromGAS(key){
@@ -2636,7 +2652,7 @@ async function vqLoadFromGAS(key){
         const j=await r.json();
         vqItems=(j&&j.data||[])
             .filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key)
-            .map(rw=>({t:Number(rw.thoiGian)||0,nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
+            .map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
         if(vqItems.length) window._vqTouched=true;
     }catch(e){ vqItems=[]; }
     renderVQ();
@@ -2646,11 +2662,16 @@ async function vqSaveToGAS(newKey, origKey){
     // Gửi kèm 'type' + 'correct' (chuỗi 4 ký tự Đ/S cho tf, đáp số cho short) — GAS cần
     // lưu thêm cột 'loai' trong sheet VideoCauHoi mới đọc/ghi đủ 2 loại câu mới này,
     // nếu backend chưa có cột đó thì các trường thừa này bị bỏ qua vô hại (không lỗi).
-    const items=vqItems.slice().sort((a,b)=>Number(a.t)-Number(b.t))
+    // Câu CÓ mốc thời gian: sắp theo giờ tăng dần (như cũ, để phát đúng thứ tự dừng video).
+    // Câu ĐỂ TRỐNG mốc: giữ nguyên thứ tự thầy đã sắp trong danh sách, xếp SAU cùng —
+    // đây chính là thứ tự hiển thị trong tab "Làm bài tập cùng thầy" ở trang Live.
+    const timed=vqItems.filter(it=>it.t!==null).sort((a,b)=>Number(a.t)-Number(b.t));
+    const untimed=vqItems.filter(it=>it.t===null);
+    const items=timed.concat(untimed)
         .map(it=>{
             const type=(it.type==='tf'||it.type==='short')?it.type:'mc';
             const correct=type==='mc'?(it.ans||''):(it.correct||'');
-            return {t:Number(it.t)||0,nhId:it.nhId||'',type,q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||'',correct};
+            return {t:(it.t===null?'':(Number(it.t)||0)),nhId:it.nhId||'',type,q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||'',correct};
         });
     await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items})});
