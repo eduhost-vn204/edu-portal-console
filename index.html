@@ -1829,6 +1829,18 @@ function updateChuongList(){
 // Lấy giá trị KhoaHoc thực tế của 1 dòng, fallback 'Khác' giống groupLessons (đồng bộ để xoá/sửa/đổi tên khoá 'Khác' hoạt động đúng)
 function khoaOf(r){ return r.KhoaHoc||r.khoahoc||r.course||r.mon||'Khác'; }
 
+// Lấy DANH SÁCH BÀI MỚI NHẤT trực tiếp từ server (KHÔNG qua allLessons/cache trình duyệt).
+// Bắt buộc dùng cho các thao tác ghi HÀNG LOẠT (đổi tên khóa/chương, xóa khóa/chương) — nếu
+// dùng allLessons có thể đang là cache cũ/thiếu bài (thầy vừa thêm bài mới, hoặc tab đang mở
+// lâu), khiến thao tác chỉ áp dụng cho MỘT PHẦN bài thật, làm khóa bị "tách đôi" (một phần
+// mang tên mới, phần còn lại vẫn tên cũ) — sự cố xảy ra ngày 5/8/2026 với khóa "Chuyên Đề Lí
+// Thuyết GĐ1" (chỉ 17/33 bài được đổi tên vì allLessons lúc đó là cache thiếu bài).
+async function fetchFreshLessons(){
+    const r = await fetch(DB_URL + '?type=baihoc&t=' + Date.now());
+    const data = await r.json();
+    return Array.isArray(data) ? data : (data.baihoc || data.data || []);
+}
+
 function groupLessons(rows){
     // subjects: { subjectName: { courseName: { chapters: { chapterName: [lessons] } } } }
     const subjects = {};
@@ -2021,7 +2033,11 @@ async function renameCourse(fullName){
     const newTitle=prompt('Nhập tên khóa mới:',oldTitle);
     if(!newTitle||newTitle.trim()===''||newTitle.trim()===oldTitle) return;
     const newFull=buildKhoaHoc(sc.subject||sc.courseName,newTitle.trim());
-    const lessons=allLessons.filter(r=>(khoaOf(r))===fullName);
+    // Luôn lấy danh sách MỚI NHẤT từ server trước khi đổi tên hàng loạt — KHÔNG dùng allLessons
+    // (có thể đang là cache cũ/thiếu bài), tránh lặp lại sự cố "khóa tách đôi" ngày 5/8/2026.
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách bài mới nhất…');
+    const freshLessons = await fetchFreshLessons();
+    const lessons=freshLessons.filter(r=>(khoaOf(r))===fullName);
     if(!lessons.length){alert('Không tìm thấy bài nào.');return;}
     if(!confirm('Đổi tên "'+oldTitle+'" → "'+newTitle.trim()+'"?\n('+lessons.length+' bài sẽ được cập nhật)')) return;
     toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật '+lessons.length+' bài…');
@@ -2036,20 +2052,25 @@ async function renameCourse(fullName){
         };
         if(await postAdminWrite(payload)) ok++; else fail++;
     }
-    if(fail>0){
+    // Xác minh thật: tải lại THẲNG từ server (không qua cache) và kiểm tra không còn bài nào
+    // mang tên khóa CŨ — nếu còn nghĩa là đổi tên chỉ áp dụng được MỘT PHẦN (khóa bị tách đôi).
+    invalidateCache();
+    await loadLessons();
+    const stillOldName = allLessons.filter(r=>(khoaOf(r))===fullName).length;
+    if(stillOldName > 0){
+        toast('⚠️ Đổi tên CHƯA XONG — vẫn còn '+stillOldName+' bài mang tên cũ "'+oldTitle+'" trên server. Bấm lại "Đổi tên khóa" để hoàn tất.','err');
+    } else if(fail>0){
         toast('⚠️ Đổi tên '+ok+'/'+lessons.length+' bài, '+fail+' bài LỖI (thầy nhấn F5 để kiểm tra lại)','err');
     } else {
         toast('✅ Đổi tên xong '+ok+'/'+lessons.length+' bài','ok');
     }
-    invalidateCache();
-    await loadLessons();
 }
 
 // Xóa toàn bộ khóa học (xóa từng bài)
 async function deleteCourse(fullName){
     const sc=extractSC(fullName);
     const cName=sc.courseName||fullName;
-    const lessons=allLessons.filter(r=>(khoaOf(r))===fullName);
+    const lessons=(await fetchFreshLessons()).filter(r=>(khoaOf(r))===fullName);
     if(!lessons.length){alert('Không tìm thấy bài nào.');return;}
     if(!confirm('⚠️ Xóa toàn bộ khóa "'+cName+'"?\n'+lessons.length+' bài sẽ bị xóa vĩnh viễn.')) return;
     if(!confirm('Xác nhận lần 2: Xóa "'+cName+'" ('+lessons.length+' bài)?')) return;
@@ -2091,7 +2112,7 @@ async function editChapter(khoa, oldChuong){
 Tên mới:`, oldChuong);
     if(!newChuong || newChuong.trim()==='' || newChuong.trim()===oldChuong) return;
     const newName = newChuong.trim();
-    const affected = allLessons.filter(r=>(khoaOf(r))=== khoa && (r.Chuong||r.chuong||r.chapter||'')=== oldChuong);
+    const affected = (await fetchFreshLessons()).filter(r=>(khoaOf(r))=== khoa && (r.Chuong||r.chuong||r.chapter||'')=== oldChuong);
     if(!affected.length){ toast('Không tìm thấy bài nào trong chương này!','err'); return; }
     toast(`<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật ${affected.length} bài...`);
     let ok=0, fail=0;
@@ -2111,7 +2132,7 @@ Tên mới:`, oldChuong);
 }
 
 async function deleteChapter(khoa, chuong){
-    const affected = allLessons.filter(r=>(khoaOf(r))=== khoa && (r.Chuong||r.chuong||r.chapter||'')=== chuong);
+    const affected = (await fetchFreshLessons()).filter(r=>(khoaOf(r))=== khoa && (r.Chuong||r.chuong||r.chapter||'')=== chuong);
     if(!affected.length){ toast('Chương không có bài nào!','err'); return; }
     if(!confirm(`Xóa toàn bộ chương "${chuong}"?
 Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
