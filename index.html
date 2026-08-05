@@ -1224,6 +1224,20 @@
     </div>
 </div>
 
+<!-- PROMPT (thay cho window.prompt() gốc trình duyệt — dialog gốc chặn mọi thao tác tự động hóa/kiểm thử,
+     và không hợp phong cách dark space theme của trang) -->
+<div class="confirm-overlay" id="prompt-overlay">
+    <div class="confirm-box">
+        <h3 id="prompt-title"><i class="fa-solid fa-pen" style="color:var(--blue)"></i> Nhập tên mới</h3>
+        <p id="prompt-msg">Nhập tên khóa mới:</p>
+        <input type="text" id="prompt-input" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2,#0f1621);color:var(--text,#fff);font-size:14px;margin-bottom:14px" />
+        <div class="confirm-btns">
+            <button class="btn-confirm-del" id="prompt-ok">Đồng ý</button>
+            <button class="btn-confirm-cancel" onclick="closePrompt()">Hủy</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -2030,8 +2044,11 @@ async function postAdminWrite(payload){
 async function renameCourse(fullName){
     const sc=extractSC(fullName);
     const oldTitle=sc.courseName||sc.subject;
-    const newTitle=prompt('Nhập tên khóa mới:',oldTitle);
-    if(!newTitle||newTitle.trim()===''||newTitle.trim()===oldTitle) return;
+    // Dùng modal trong trang thay cho window.prompt() gốc (native dialog chặn tự động hóa/kiểm thử
+    // và không hợp giao diện dark space theme).
+    const newTitleRaw=await promptAsync('Nhập tên khóa mới:',oldTitle);
+    if(!newTitleRaw||newTitleRaw.trim()===''||newTitleRaw.trim()===oldTitle) return;
+    const newTitle=newTitleRaw;
     const newFull=buildKhoaHoc(sc.subject||sc.courseName,newTitle.trim());
     // Luôn lấy danh sách MỚI NHẤT từ server trước khi đổi tên hàng loạt — KHÔNG dùng allLessons
     // (có thể đang là cache cũ/thiếu bài), tránh lặp lại sự cố "khóa tách đôi" ngày 5/8/2026.
@@ -2039,7 +2056,7 @@ async function renameCourse(fullName){
     const freshLessons = await fetchFreshLessons();
     const lessons=freshLessons.filter(r=>(khoaOf(r))===fullName);
     if(!lessons.length){alert('Không tìm thấy bài nào.');return;}
-    if(!confirm('Đổi tên "'+oldTitle+'" → "'+newTitle.trim()+'"?\n('+lessons.length+' bài sẽ được cập nhật)')) return;
+    if(!await confirmAsync('Đổi tên "'+oldTitle+'" → "'+newTitle.trim()+'"?\n('+lessons.length+' bài sẽ được cập nhật)')) return;
     toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật '+lessons.length+' bài…');
     let ok=0, fail=0;
     for(const l of lessons){
@@ -4118,6 +4135,21 @@ function openConfirm(msg,onYes){
     document.getElementById('confirm-overlay').classList.add('show');
     document.getElementById('confirm-yes').onclick=()=>{ closeConfirm(); onYes(); };
 }
+// Modal nhập text thay cho window.prompt() gốc (xem ghi chú ở #prompt-overlay trong HTML)
+function openPrompt(msg, defaultVal, onOk){
+    document.getElementById('prompt-msg').textContent = msg;
+    const inp = document.getElementById('prompt-input');
+    inp.value = defaultVal || '';
+    document.getElementById('prompt-overlay').classList.add('show');
+    setTimeout(()=>{ inp.focus(); inp.select(); }, 50);
+    const submit = ()=>{ closePrompt(); onOk(inp.value); };
+    document.getElementById('prompt-ok').onclick = submit;
+    inp.onkeydown = (e)=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } };
+}
+function closePrompt(){ document.getElementById('prompt-overlay').classList.remove('show'); }
+// Bản Promise của openPrompt/openConfirm để dùng với async/await cho gọn (thay window.prompt/confirm gốc)
+function promptAsync(msg, defaultVal){ return new Promise(resolve=>{ openPrompt(msg, defaultVal, v=>resolve(v)); }); }
+function confirmAsync(msg){ return new Promise(resolve=>{ openConfirm(msg, ()=>resolve(true)); document.querySelector('#confirm-overlay .btn-confirm-cancel').onclick=()=>{ closeConfirm(); resolve(false); }; }); }
 
 /* ── Đọc file Excel ── */
 const nhDrop=document.getElementById('nh-dropzone'), nhFile=document.getElementById('nh-file-input');
