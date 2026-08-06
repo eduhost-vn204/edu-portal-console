@@ -299,6 +299,14 @@
         .nhe-foot { padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:10px; justify-content:flex-end; }
         .nh-edit-btn { background:none; border:none; color:var(--gray2); cursor:pointer; font-size:14px; padding:6px; transition:color .15s; }
         .nh-edit-btn:hover { color:var(--blue); }
+        #nh-scan-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2100; align-items:center; justify-content:center; }
+        #nh-scan-overlay.show { display:flex; }
+        #nh-scan-modal { background:var(--card); border-radius:16px; width:min(820px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.4); border:1px solid var(--line); }
+        .scan-section h4 { font-size:14px; font-weight:800; margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+        .scan-item { border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-bottom:8px; background:var(--bg2); }
+        .scan-item-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+        .scan-item-text { font-size:13px; color:var(--gray); line-height:1.5; }
+        .scan-empty { text-align:center; padding:20px; color:var(--gray2); font-size:13.5px; }
 
         .qb-card { background:var(--bg2); border:1.5px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px; }
         .qb-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
@@ -963,6 +971,9 @@
             <a href="Mau_NganHangDe.xlsx" download class="btn-new" style="background:var(--bg2);color:var(--black);border:1.5px solid var(--border);text-decoration:none">
                 <i class="fa-solid fa-file-excel" style="color:#15803d"></i> Tải file Excel mẫu
             </a>
+            <button class="btn-new" style="background:#7c3aed" onclick="bankRunScan()">
+                <i class="fa-solid fa-magnifying-glass"></i> Quét lỗi ảnh &amp; trùng lặp
+            </button>
             <button class="btn-new" style="background:var(--blue)" onclick="loadBank(true)">
                 <i class="fa-solid fa-rotate-right"></i> Làm mới
             </button>
@@ -1087,6 +1098,7 @@
                 <span class="ns-count"><i class="fa-solid fa-circle-check" style="color:#4ade80"></i> Đã chọn <span id="nh-sel-count">0</span> câu</span>
                 <button style="background:#2563eb;color:#fff" onclick="showBankExamForm()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo đề thi từ câu đã chọn</button>
                 <button style="background:#0e7490;color:#fff" onclick="bankAssignBaiOpen()"><i class="fa-solid fa-tag"></i> Gán vào Bài</button>
+                <button style="background:#0f766e;color:#fff" onclick="bankExportWordOpen()"><i class="fa-solid fa-file-word"></i> Xuất Word</button>
                 <button style="background:#dc2626;color:#fff" onclick="bankDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa khỏi ngân hàng</button>
                 <button style="background:rgba(255,255,255,.15);color:#fff" onclick="bankClearSelection()">Bỏ chọn</button>
             </div>
@@ -1125,6 +1137,17 @@
                 <div style="display:flex;gap:10px;margin-top:6px">
                     <button class="btn-publish" id="nh-bf-apply-btn" style="flex:1" onclick="bankAssignBaiApply()"><i class="fa-solid fa-check"></i> Gán cho câu đã chọn</button>
                     <button class="btn-ghost2" onclick="document.getElementById('nh-bai-form').style.display='none'">Hủy</button>
+                </div>
+            </div>
+
+            <!-- FORM XUẤT ĐỀ RA WORD -->
+            <div class="nh-card" id="nh-word-form" style="display:none;margin-top:16px;border-color:#0f766e">
+                <h3><i class="fa-solid fa-file-word" style="color:#0f766e"></i> Xuất <span id="nh-wf-count">0</span> câu ra file Word</h3>
+                <div class="form-field"><label>Tên đề</label><input type="text" id="nh-wf-title" placeholder="vd: Đề ôn tập Bài 21 - Từ trường"></div>
+                <div class="form-field"><label>Ghi chú phụ (tuỳ chọn)</label><input type="text" id="nh-wf-subtitle" placeholder="vd: Thời gian làm bài: 45 phút"></div>
+                <div style="display:flex;gap:10px;margin-top:6px">
+                    <button class="btn-publish" id="nh-wf-export-btn" style="flex:1" onclick="bankExportWord()"><i class="fa-solid fa-download"></i> Tải file Word</button>
+                    <button class="btn-ghost2" onclick="document.getElementById('nh-word-form').style.display='none'">Hủy</button>
                 </div>
             </div>
         </div>
@@ -4549,7 +4572,7 @@ function updateSelBar(){
     const n=bankSel.size;
     document.getElementById('nh-sel-count').textContent=n;
     document.getElementById('nh-selbar').classList.toggle('show',n>0);
-    if(n===0){ document.getElementById('nh-exam-form').style.display='none'; document.getElementById('nh-bai-form').style.display='none'; }
+    if(n===0){ document.getElementById('nh-exam-form').style.display='none'; document.getElementById('nh-bai-form').style.display='none'; document.getElementById('nh-word-form').style.display='none'; }
 }
 
 /* ── Gán "Bài học" hàng loạt cho các câu đã chọn ── */
@@ -4586,6 +4609,334 @@ async function bankAssignBaiApply(){
         toast('Lỗi: '+e.message,'err');
     }finally{
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   QUÉT LỖI ẢNH & TRÙNG LẶP TRONG NGÂN HÀNG (mục 6)
+══════════════════════════════════════════════════════════ */
+function stripTagsForScan(s){ return (s==null?'':s.toString()).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim(); }
+function dupSignature(q){
+    const qText=normKey(stripTagsForScan(q.question));
+    if(qText.length<8) return '';
+    const optText=normKey(stripTagsForScan((q.optA||'')+(q.optB||'')+(q.optC||'')+(q.optD||'')));
+    return qText+'|'+optText;
+}
+function bankScanDuplicates(){
+    const map=new Map();
+    bankData.forEach(q=>{
+        const sig=dupSignature(q);
+        if(!sig) return;
+        if(!map.has(sig)) map.set(sig,[]);
+        map.get(sig).push(q.id);
+    });
+    return [...map.values()].filter(ids=>ids.length>1);
+}
+function extractImgSrcs(q){
+    const fields=['question','optA','optB','optC','optD','giaiThich','deBaiChung'];
+    const out=[];
+    fields.forEach(f=>{
+        const v=(q[f]==null?'':q[f]).toString();
+        for(const m of v.matchAll(/<img[^>]*?src="([^"]*)"[^>]*>/gi)) out.push({field:f, src:m[1]});
+    });
+    return out;
+}
+function loadImgCheck(src){
+    return new Promise(resolve=>{
+        if(!src){ resolve(false); return; }
+        const img=new Image();
+        const timer=setTimeout(()=>resolve(false),4000);
+        img.onload=()=>{ clearTimeout(timer); resolve(img.naturalWidth>0&&img.naturalHeight>0); };
+        img.onerror=()=>{ clearTimeout(timer); resolve(false); };
+        img.src=src;
+    });
+}
+async function bankScanImageErrors(onProgress){
+    const jobs=[];
+    bankData.forEach(q=>{ extractImgSrcs(q).forEach(({field,src})=>jobs.push({id:q.id, field, src})); });
+    const bad=[];
+    let idx=0, done=0;
+    const CONC=24;
+    async function worker(){
+        while(idx<jobs.length){
+            const my=jobs[idx++];
+            const ok=await loadImgCheck(my.src);
+            if(!ok) bad.push(my);
+            done++;
+            if(onProgress) onProgress(done, jobs.length);
+        }
+    }
+    await Promise.all(Array.from({length:Math.max(1,Math.min(CONC,jobs.length))},worker));
+    const byId={};
+    bad.forEach(r=>{ (byId[r.id]=byId[r.id]||[]).push(r.field); });
+    return Object.entries(byId).map(([id,fields])=>({id, fields}));
+}
+let _scanImgErrors=[], _scanDupGroups=[];
+async function bankRunScan(){
+    document.getElementById('nh-scan-overlay').classList.add('show');
+    document.getElementById('nh-scan-status').textContent='';
+    const body=document.getElementById('nh-scan-body');
+    body.innerHTML='<div style="text-align:center;padding:30px;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin" style="font-size:22px"></i><p style="margin-top:10px" id="nh-scan-progress">Đang quét trùng lặp...</p></div>';
+    if(!bankData.length){ await loadBank(); }
+    _scanDupGroups=bankScanDuplicates();
+    const progEl=()=>document.getElementById('nh-scan-progress');
+    if(progEl()) progEl().textContent='Đang kiểm tra ảnh (0/?)...';
+    _scanImgErrors=await bankScanImageErrors((done,total)=>{ const el=progEl(); if(el) el.textContent='Đang kiểm tra ảnh ('+done+'/'+total+')...'; });
+    renderScanResults();
+}
+function bankScanClose(){ document.getElementById('nh-scan-overlay').classList.remove('show'); }
+function scanEditQuestion(id){ bankScanClose(); bankEditOpen(id); }
+function scanSelectIds(ids){
+    ids.forEach(id=>bankSel.add(id));
+    renderBankList(); updateSelBar();
+    bankScanClose();
+    toast('<i class="fa-solid fa-circle-check"></i> Đã thêm '+ids.length+' câu vào danh sách đã chọn — cuộn xuống để Sửa/Xoá','ok');
+    const bar=document.getElementById('nh-selbar'); if(bar) bar.scrollIntoView({behavior:'smooth', block:'center'});
+}
+function renderScanResults(){
+    const body=document.getElementById('nh-scan-body');
+    const totalImgErr=_scanImgErrors.length;
+    const totalDupCau=_scanDupGroups.reduce((s,g)=>s+g.length,0);
+    let html='';
+    html+='<div class="scan-section">';
+    html+='<h4><i class="fa-solid fa-image" style="color:#dc2626"></i> Câu lỗi ảnh ('+totalImgErr+')</h4>';
+    if(totalImgErr){
+        html+='<button class="btn-new" style="background:#dc2626;margin-bottom:10px" onclick=\'scanSelectIds('+JSON.stringify(_scanImgErrors.map(r=>r.id))+')\'><i class="fa-solid fa-check-double"></i> Chọn tất cả vào danh sách đã chọn</button>';
+        html+=_scanImgErrors.map(r=>{
+            const q=bankData.find(x=>x.id===r.id)||{};
+            const snip=nhEsc(stripTagsForScan(q.question).slice(0,140));
+            return '<div class="scan-item"><div class="scan-item-head"><span style="font-size:11px;color:var(--gray2)">'+nhEsc(r.id)+'</span><span class="nh-badge b-vdc">Ảnh lỗi: '+nhEsc(r.fields.join(', '))+'</span><button class="nh-edit-btn" onclick="scanEditQuestion(\''+r.id+'\')"><i class="fa-solid fa-pen"></i> Sửa</button></div><div class="scan-item-text">'+snip+'...</div></div>';
+        }).join('');
+    } else html+='<div class="scan-empty">Không phát hiện ảnh lỗi.</div>';
+    html+='</div>';
+
+    html+='<div class="scan-section" style="margin-top:18px">';
+    html+='<h4><i class="fa-solid fa-clone" style="color:#d97706"></i> Câu trùng lặp ('+_scanDupGroups.length+' nhóm, '+totalDupCau+' câu)</h4>';
+    if(_scanDupGroups.length){
+        const toRemove=_scanDupGroups.flatMap(g=>g.slice(1));
+        html+='<button class="btn-new" style="background:#d97706;margin-bottom:10px" onclick=\'scanSelectIds('+JSON.stringify(toRemove)+')\'><i class="fa-solid fa-check-double"></i> Chọn bản trùng để xoá (giữ 1 câu/nhóm, '+toRemove.length+' câu)</button>';
+        html+=_scanDupGroups.map(g=>{
+            const q=bankData.find(x=>x.id===g[0])||{};
+            const snip=nhEsc(stripTagsForScan(q.question).slice(0,140));
+            const idBadges=g.map((id,i)=>'<span class="nh-badge '+(i===0?'b-nb':'b-vdc')+'" style="cursor:pointer" title="'+(i===0?'Giữ lại (mặc định)':'Nghi trùng')+'" onclick="scanEditQuestion(\''+id+'\')">'+nhEsc(id)+'</span>').join(' ');
+            return '<div class="scan-item"><div class="scan-item-head">'+idBadges+'</div><div class="scan-item-text">'+snip+'...</div></div>';
+        }).join('');
+    } else html+='<div class="scan-empty">Không phát hiện câu trùng lặp.</div>';
+    html+='</div>';
+
+    body.innerHTML=html;
+    document.getElementById('nh-scan-status').textContent='Đã quét '+bankData.length+' câu.';
+}
+
+/* ══════════════════════════════════════════════════════════
+   XUẤT ĐỀ THI RA FILE WORD (.docx) — mục 7, dựng OOXML tối giản
+   bằng JSZip (đã có sẵn cho luồng nạp .docx), không cần thư viện ngoài
+══════════════════════════════════════════════════════════ */
+const EMU_PER_PX=9525;
+function escXml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
+function wRun(text, fmt){
+    fmt=fmt||{};
+    let rpr='';
+    if(fmt.bold) rpr+='<w:b/>';
+    if(fmt.italic) rpr+='<w:i/>';
+    if(fmt.sup) rpr+='<w:vertAlign w:val="superscript"/>';
+    if(fmt.sub) rpr+='<w:vertAlign w:val="subscript"/>';
+    const rprXml=rpr?('<w:rPr>'+rpr+'</w:rPr>'):'';
+    const parts=String(text).split('\n');
+    return parts.map((t,i)=>(i>0?'<w:r><w:br/></w:r>':'')+(t?('<w:r>'+rprXml+'<w:t xml:space="preserve">'+escXml(t)+'</w:t></w:r>'):'')).join('');
+}
+async function imgRunXml(src, imgCtx){
+    if(!src || !/^data:image\/(png|jpe?g)/i.test(src)) return '';
+    try{
+        const m=src.match(/^data:image\/(png|jpe?g);base64,(.+)$/i);
+        if(!m) return '';
+        let ext=m[1].toLowerCase(); if(ext==='jpg') ext='jpeg';
+        const b64=m[2];
+        const dims=await new Promise(resolve=>{
+            const img=new Image();
+            img.onload=()=>resolve({w:img.naturalWidth||120,h:img.naturalHeight||60});
+            img.onerror=()=>resolve({w:120,h:60});
+            img.src=src;
+        });
+        let pxW=dims.w, pxH=dims.h;
+        const MAXW=380;
+        if(pxW>MAXW){ pxH=Math.round(pxH*MAXW/pxW); pxW=MAXW; }
+        const rid='rIdImg'+(++imgCtx.relCounter);
+        const fname='image'+imgCtx.relCounter+'.'+ext;
+        imgCtx.rels.push({id:rid, fname, b64});
+        const cx=Math.round(pxW*EMU_PER_PX), cy=Math.round(pxH*EMU_PER_PX);
+        const docPrId=imgCtx.relCounter;
+        return '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">'
+            +'<wp:extent cx="'+cx+'" cy="'+cy+'"/>'
+            +'<wp:docPr id="'+docPrId+'" name="Picture '+docPrId+'"/>'
+            +'<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            +'<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+            +'<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+            +'<pic:nvPicPr><pic:cNvPr id="'+docPrId+'" name="'+fname+'"/><pic:cNvPicPr/></pic:nvPicPr>'
+            +'<pic:blipFill><a:blip r:embed="'+rid+'" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+            +'<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="'+cx+'" cy="'+cy+'"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+            +'</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>';
+    }catch(e){ return ''; }
+}
+async function htmlToRunsXml(html, imgCtx){
+    const doc=new DOMParser().parseFromString('<root>'+(html||'')+'</root>','text/html');
+    const root=(doc.body&&doc.body.firstChild)||doc.querySelector('root');
+    let xml='';
+    async function walk(node, fmt){
+        if(!node) return;
+        for(const child of Array.from(node.childNodes)){
+            if(child.nodeType===3){
+                if(child.textContent) xml+=wRun(child.textContent, fmt);
+            } else if(child.nodeType===1){
+                const tag=child.tagName.toLowerCase();
+                if(tag==='img'){
+                    xml+=await imgRunXml(child.getAttribute('src'), imgCtx);
+                } else if(tag==='br'){
+                    xml+='<w:r><w:br/></w:r>';
+                } else {
+                    const nf=Object.assign({},fmt);
+                    if(tag==='sup') nf.sup=true;
+                    else if(tag==='sub') nf.sub=true;
+                    else if(tag==='b'||tag==='strong') nf.bold=true;
+                    else if(tag==='i'||tag==='em') nf.italic=true;
+                    await walk(child, nf);
+                }
+            }
+        }
+    }
+    await walk(root, {});
+    return xml;
+}
+function resolveDeBaiChung(q){
+    if(q.deBaiChung) return q.deBaiChung;
+    if(q.nhomId){
+        const leader=bankData.find(x=>x.nhomId===q.nhomId && x.deBaiChung);
+        if(leader) return leader.deBaiChung;
+    }
+    return '';
+}
+async function buildExamDocxBlob(questions, meta){
+    meta=meta||{};
+    const imgCtx={relCounter:0, rels:[]};
+    let bodyXml='';
+    bodyXml+='<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="28"/></w:rPr><w:t xml:space="preserve">'+escXml(meta.title||'ĐỀ THI')+'</w:t></w:r></w:p>';
+    if(meta.subtitle) bodyXml+='<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:i/></w:rPr><w:t xml:space="preserve">'+escXml(meta.subtitle)+'</w:t></w:r></w:p>';
+    bodyXml+='<w:p/>';
+
+    let lastNhomId=null;
+    for(let i=0;i<questions.length;i++){
+        const q=questions[i];
+        const n=i+1;
+        const ctx=resolveDeBaiChung(q);
+        if(ctx && q.nhomId!==lastNhomId){
+            bodyXml+='<w:p><w:pPr><w:shd w:val="clear" w:fill="F0F9FF"/></w:pPr>'+await htmlToRunsXml(ctx, imgCtx)+'</w:p>';
+        }
+        lastNhomId=q.nhomId||null;
+
+        let qXml='<w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">Câu '+n+': </w:t></w:r>'+await htmlToRunsXml(q.question||'', imgCtx);
+        bodyXml+='<w:p>'+qXml+'</w:p>';
+
+        const loai=(q.loai||'TN').toUpperCase();
+        if(loai==='TN'){
+            for(const L of ['A','B','C','D']){
+                if(!q['opt'+L]) continue;
+                const optXml='<w:r><w:t xml:space="preserve">'+L+'. </w:t></w:r>'+await htmlToRunsXml(q['opt'+L], imgCtx);
+                bodyXml+='<w:p>'+optXml+'</w:p>';
+            }
+        } else if(loai==='DS'){
+            const labels=['a','b','c','d'];
+            for(let k=0;k<4;k++){
+                const L=['A','B','C','D'][k];
+                if(!q['opt'+L]) continue;
+                const optXml='<w:r><w:t xml:space="preserve">'+labels[k]+') </w:t></w:r>'+await htmlToRunsXml(q['opt'+L], imgCtx);
+                bodyXml+='<w:p>'+optXml+'</w:p>';
+            }
+        }
+        bodyXml+='<w:p/>';
+    }
+
+    bodyXml+='<w:p><w:pPr><w:pageBreakBefore/><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="26"/></w:rPr><w:t xml:space="preserve">ĐÁP ÁN</w:t></w:r></w:p>';
+    questions.forEach((q,i)=>{
+        const n=i+1;
+        const loai=(q.loai||'TN').toUpperCase();
+        let ans='';
+        if(loai==='TN') ans=(q.correct||'').toString().toUpperCase();
+        else if(loai==='DS'){
+            const corr=(q.correct||'').toString().replace(/[^ĐSđs]/g,'').toUpperCase();
+            const labels=['a','b','c','d'];
+            ans=labels.map((l,idx)=> l+') '+((corr[idx]||'')==='Đ'?'Đúng':'Sai')).join('   ');
+        } else ans=(q.correct||'').toString();
+        bodyXml+='<w:p><w:r><w:t xml:space="preserve">Câu '+n+': '+escXml(ans)+'</w:t></w:r></w:p>';
+    });
+
+    const sectPr='<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
+    const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+        +'<w:body>'+bodyXml+sectPr+'</w:body></w:document>';
+
+    const zip=new JSZip();
+    zip.file('[Content_Types].xml',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        +'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        +'<Default Extension="xml" ContentType="application/xml"/>'
+        +'<Default Extension="png" ContentType="image/png"/>'
+        +'<Default Extension="jpeg" ContentType="image/jpeg"/>'
+        +'<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+        +'</Types>');
+    zip.file('_rels/.rels',
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        +'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+        +'</Relationships>');
+    zip.file('word/document.xml', documentXml);
+    if(imgCtx.rels.length){
+        let relsXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+        imgCtx.rels.forEach(r=>{ relsXml+='<Relationship Id="'+r.id+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/'+r.fname+'"/>'; });
+        relsXml+='</Relationships>';
+        zip.file('word/_rels/document.xml.rels', relsXml);
+        imgCtx.rels.forEach(r=>{ zip.file('word/media/'+r.fname, r.b64, {base64:true}); });
+    }
+    return await zip.generateAsync({type:'blob'});
+}
+function downloadBlob(blob, filename){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+function bankExportWordOpen(){
+    if(!bankSel.size){ toast('Chưa chọn câu nào','err'); return; }
+    document.getElementById('nh-exam-form').style.display='none';
+    document.getElementById('nh-bai-form').style.display='none';
+    document.getElementById('nh-wf-count').textContent=bankSel.size;
+    const ids=[...bankSel];
+    const bais=[...new Set(ids.map(id=>{const q=bankData.find(x=>x.id===id);return q?q.baiHoc:'';}).filter(Boolean))];
+    document.getElementById('nh-wf-title').value = bais.length===1 ? ('Đề ôn tập: '+bais[0]) : '';
+    document.getElementById('nh-wf-subtitle').value='';
+    document.getElementById('nh-word-form').style.display='';
+    document.getElementById('nh-word-form').scrollIntoView({behavior:'smooth'});
+}
+async function bankExportWord(){
+    const ids=[...bankSel];
+    if(!ids.length) return;
+    const title=(document.getElementById('nh-wf-title').value||'ĐỀ THI').trim();
+    const subtitle=(document.getElementById('nh-wf-subtitle').value||'').trim();
+    const btn=document.getElementById('nh-wf-export-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo file...';
+    try{
+        const questions=ids.map(id=>bankData.find(x=>x.id===id)).filter(Boolean);
+        const blob=await buildExamDocxBlob(questions, {title, subtitle});
+        const fname=(title||'de-thi').replace(/[\\/:*?"<>|]/g,'').trim()+'.docx';
+        downloadBlob(blob, fname);
+        toast('<i class="fa-solid fa-circle-check"></i> Đã tạo file Word ('+ids.length+' câu)','ok');
+        document.getElementById('nh-word-form').style.display='none';
+    }catch(e){
+        console.error(e);
+        toast('Lỗi tạo file: '+e.message,'err');
+    }finally{
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-download"></i> Tải file Word';
     }
 }
 
@@ -6009,6 +6360,24 @@ async function htResetDevice(deviceId) {
             <span class="bpm-count" id="bpm-count-label"></span>
             <button onclick="closeBankPicker()" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer">Huỷ</button>
             <button id="bpm-add-btn" onclick="addFromBankPicker()" style="padding:8px 18px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="fa-solid fa-plus"></i> Thêm vào bài</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════ SCAN LỖI ẢNH / TRÙNG LẶP MODAL ══════ -->
+<div id="nh-scan-overlay">
+    <div id="nh-scan-modal">
+        <div class="nhe-head">
+            <i class="fa-solid fa-magnifying-glass" style="color:#7c3aed;font-size:18px"></i>
+            <h3>Quét lỗi ảnh &amp; trùng lặp</h3>
+            <button onclick="bankScanClose()" style="background:none;border:none;font-size:18px;color:var(--gray2);cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nhe-body" id="nh-scan-body">
+            <div style="text-align:center;padding:30px;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin" style="font-size:22px"></i><p style="margin-top:10px">Đang quét...</p></div>
+        </div>
+        <div class="nhe-foot">
+            <span id="nh-scan-status" style="font-size:12.5px;color:var(--gray2);flex:1"></span>
+            <button onclick="bankScanClose()" style="padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-size:13px;font-weight:600;cursor:pointer">Đóng</button>
         </div>
     </div>
 </div>
