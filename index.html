@@ -1558,6 +1558,7 @@ async function toggleLiveDone(id){
 let _deleteLiveId = null;
 function deleteLive(id, title){
     _deleteLiveId = id;
+    resetConfirmDangerDefault();
     document.getElementById('confirm-msg').textContent = `Xóa buổi live "${title}"? Không thể hoàn tác.`;
     document.getElementById('confirm-yes').onclick = confirmDeleteLive;
     document.getElementById('confirm-overlay').classList.add('show');
@@ -3092,6 +3093,7 @@ function confirmDelete(key){
     pendingDelete=key;
     lmListScrollY=window.scrollY;
     const name=pendingDelete.split('|||')[2]||'bài này';
+    resetConfirmDangerDefault();
     document.getElementById('confirm-msg').textContent=`Xóa bài "${name}"? Không thể hoàn tác.`;
     document.getElementById('confirm-overlay').classList.add('show');
     document.getElementById('confirm-yes').onclick=doDelete;
@@ -3959,6 +3961,7 @@ async function toggleExamStatus(examId, curStatus) {
 let _pendingDeleteExamId = null;
 function confirmDeleteExam(examId, tenDe) {
     _pendingDeleteExamId = examId;
+    resetConfirmDangerDefault();
     document.getElementById('confirm-title').textContent = 'Xóa đề "' + tenDe + '"?';
     document.getElementById('confirm-msg').textContent   = 'Toàn bộ câu hỏi của đề này sẽ bị xóa vĩnh viễn khỏi Sheets.';
     document.getElementById('confirm-overlay').classList.add('show');
@@ -4267,6 +4270,12 @@ function _bankDeleteIds(ids){
             toast('<i class="fa-solid fa-circle-check"></i> Đã xóa '+ids.length+' câu','ok');
         }catch(e){ toast('Lỗi: '+e.message,'err'); }
     });
+}
+function resetConfirmDangerDefault(){
+    document.getElementById('confirm-title').innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Xác nhận xóa';
+    const yb = document.getElementById('confirm-yes');
+    yb.textContent = 'Xóa';
+    yb.className = 'btn-confirm-del';
 }
 function openConfirm(msg,onYes,opts){
     opts = opts || {};
