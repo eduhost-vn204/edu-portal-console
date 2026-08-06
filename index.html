@@ -409,6 +409,7 @@
         .confirm-box p { font-size:14px; color:var(--gray); margin-bottom:24px; line-height:1.6; }
         .confirm-btns { display:flex; gap:10px; justify-content:center; }
         .btn-confirm-del { padding:11px 28px; background:var(--red); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif; }
+        .btn-confirm-ok { padding:11px 28px; background:var(--blue); color:#fff; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif; }
         .btn-confirm-cancel { padding:11px 22px; background:var(--bg2); color:var(--gray); border:1.5px solid var(--border); border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif; }
 
         .subject-header { display:flex; align-items:center; gap:10px; margin:20px 0 10px; padding-bottom:8px; border-bottom:2px solid var(--border); }
@@ -2191,7 +2192,11 @@ async function renameCourse(fullName){
     const freshLessons = await fetchFreshLessons();
     const lessons=freshLessons.filter(r=>(khoaOf(r))===fullName);
     if(!lessons.length){alert('Không tìm thấy bài nào.');return;}
-    if(!await confirmAsync('Đổi tên "'+oldTitle+'" → "'+newTitle.trim()+'"?\n('+lessons.length+' bài sẽ được cập nhật)')) return;
+    if(!await confirmAsync('Đổi tên "'+oldTitle+'" → "'+newTitle.trim()+'"?\n('+lessons.length+' bài sẽ được cập nhật)', {
+        title:'<i class="fa-solid fa-pen" style="color:var(--blue)"></i> Xác nhận đổi tên',
+        okLabel:'Đổi tên',
+        danger:false
+    })) return;
     toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật '+lessons.length+' bài…');
     let ok=0, fail=0;
     for(const l of lessons){
@@ -4263,10 +4268,18 @@ function _bankDeleteIds(ids){
         }catch(e){ toast('Lỗi: '+e.message,'err'); }
     });
 }
-function openConfirm(msg,onYes){
+function openConfirm(msg,onYes,opts){
+    opts = opts || {};
     document.getElementById('confirm-msg').textContent=msg;
+    // Modal nay dung CHUNG cho nhieu hanh dong (xoa, doi ten, ...) - luon dat lai tieu de/nut O
+    // MOI LAN GOI thay vi de nguyen tu lan truoc, tranh lap lai loi hien "Xac nhan xoa"/nut "Xoa"
+    // mau do cho mot hanh dong KHONG PHAI xoa (vd doi ten khoa) - gay hieu nham nguy hiem.
+    document.getElementById('confirm-title').innerHTML = opts.title || '<i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Xác nhận xóa';
+    const yesBtn = document.getElementById('confirm-yes');
+    yesBtn.textContent = opts.okLabel || 'Xóa';
+    yesBtn.className = opts.danger===false ? 'btn-confirm-ok' : 'btn-confirm-del';
     document.getElementById('confirm-overlay').classList.add('show');
-    document.getElementById('confirm-yes').onclick=()=>{ closeConfirm(); onYes(); };
+    yesBtn.onclick=()=>{ closeConfirm(); onYes(); };
 }
 // Modal nhập text thay cho window.prompt() gốc (xem ghi chú ở #prompt-overlay trong HTML)
 function openPrompt(msg, defaultVal, onOk){
@@ -4282,7 +4295,7 @@ function openPrompt(msg, defaultVal, onOk){
 function closePrompt(){ document.getElementById('prompt-overlay').classList.remove('show'); }
 // Bản Promise của openPrompt/openConfirm để dùng với async/await cho gọn (thay window.prompt/confirm gốc)
 function promptAsync(msg, defaultVal){ return new Promise(resolve=>{ openPrompt(msg, defaultVal, v=>resolve(v)); }); }
-function confirmAsync(msg){ return new Promise(resolve=>{ openConfirm(msg, ()=>resolve(true)); document.querySelector('#confirm-overlay .btn-confirm-cancel').onclick=()=>{ closeConfirm(); resolve(false); }; }); }
+function confirmAsync(msg,opts){ return new Promise(resolve=>{ openConfirm(msg, ()=>resolve(true), opts); document.querySelector('#confirm-overlay .btn-confirm-cancel').onclick=()=>{ closeConfirm(); resolve(false); }; }); }
 
 /* ── Đọc file Excel ── */
 const nhDrop=document.getElementById('nh-dropzone'), nhFile=document.getElementById('nh-file-input');
