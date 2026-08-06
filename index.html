@@ -82,6 +82,7 @@
         .nh-badge.b-vd { background:#fff7ed; color:#c2410c; }
         .nh-badge.b-vdc { background:#fef2f2; color:#b91c1c; }
         .nh-badge.b-ch { background:var(--bg2); color:var(--gray); border:1px solid var(--border); }
+        .nh-badge.b-bai { background:#ecfeff; color:#0e7490; }
         .nh-badge.b-nhom { background:#f5f3ff; color:#6d28d9; }
         .nh-badge.b-pl { background:#fef3c7; color:#92400e; font-weight:600; }
         .nh-q-text { font-size:14px; line-height:1.55; word-break:break-word; }
@@ -521,6 +522,7 @@
         body.dark .nh-badge.b-nhom { background:rgba(109,40,217,.2); color:#c4b5fd; }
         body.dark .nh-badge.b-pl { background:rgba(146,64,14,.2); color:#fcd34d; }
         body.dark .nh-badge.b-ch { background:#21262d; color:#8b949e; border-color:#30363d; }
+        body.dark .nh-badge.b-bai { background:rgba(14,116,144,.25); color:#67e8f9; }
         /* Ngân hàng rows */
         body.dark .nh-row { background:#161b22; border-color:#30363d; color:#e6edf3; }
         body.dark .nh-row:hover { background:#1c2128; }
@@ -1069,6 +1071,7 @@
                     <option value="DS-TT">DS: Tính toán</option><option value="DS-LT">DS: Lí thuyết</option>
                     <option value="TLN-CT">TLN: Tính toán</option><option value="TLN-KH">TLN: Khái quát</option><option value="TLN-TH">TLN: Tổng hợp</option>
                 </select>
+                <select id="nh-f-bai" onchange="renderBankList()"><option value="">Tất cả bài</option></select>
                 <input id="nh-f-search" placeholder="Tìm trong nội dung câu hỏi..." oninput="renderBankList()">
             </div>
             <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;font-size:13px;color:var(--gray)">
@@ -1083,6 +1086,7 @@
             <div class="nh-selbar" id="nh-selbar">
                 <span class="ns-count"><i class="fa-solid fa-circle-check" style="color:#4ade80"></i> Đã chọn <span id="nh-sel-count">0</span> câu</span>
                 <button style="background:#2563eb;color:#fff" onclick="showBankExamForm()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo đề thi từ câu đã chọn</button>
+                <button style="background:#0e7490;color:#fff" onclick="bankAssignBaiOpen()"><i class="fa-solid fa-tag"></i> Gán vào Bài</button>
                 <button style="background:#dc2626;color:#fff" onclick="bankDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa khỏi ngân hàng</button>
                 <button style="background:rgba(255,255,255,.15);color:#fff" onclick="bankClearSelection()">Bỏ chọn</button>
             </div>
@@ -1106,6 +1110,21 @@
                 <div style="display:flex;gap:10px;margin-top:6px">
                     <button class="btn-publish" id="nh-ef-create-btn" style="flex:1" onclick="bankCreateExam()"><i class="fa-solid fa-rocket"></i> Tạo đề & đưa câu hỏi vào</button>
                     <button class="btn-ghost2" onclick="document.getElementById('nh-exam-form').style.display='none'">Hủy</button>
+                </div>
+            </div>
+
+            <!-- FORM GÁN "BÀI HỌC" HÀNG LOẠT -->
+            <div class="nh-card" id="nh-bai-form" style="display:none;margin-top:16px;border-color:#0e7490">
+                <h3><i class="fa-solid fa-tag" style="color:#0e7490"></i> Gán "Bài học" cho <span id="nh-bf-count">0</span> câu đã chọn</h3>
+                <div class="form-field"><label>Chương (GĐ1) — lọc bớt danh sách bài</label>
+                    <select id="nh-bf-chuong" onchange="bankAssignBaiFillOptions()"><option value="">-- Tất cả chương --</option></select>
+                </div>
+                <div class="form-field"><label>Bài học</label>
+                    <select id="nh-bf-bai"></select>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:6px">
+                    <button class="btn-publish" id="nh-bf-apply-btn" style="flex:1" onclick="bankAssignBaiApply()"><i class="fa-solid fa-check"></i> Gán cho câu đã chọn</button>
+                    <button class="btn-ghost2" onclick="document.getElementById('nh-bai-form').style.display='none'">Hủy</button>
                 </div>
             </div>
         </div>
@@ -4282,6 +4301,25 @@ function resetAll(){
 ════════════════════════════════════ */
 let bankData=[], bankLoaded=false, bankParsed=[], bankSel=new Set();
 
+/* ── Bài học (chủ đề) — dùng danh sách Bài của khóa "GĐ1" làm tiêu chí phân loại câu hỏi ── */
+function normVN(s){ return (s||'').toString().toLowerCase().replace(/\blý\b/g,'lí').replace(/chương\s*\d+\s*[-–—]\s*/gi,'').replace(/\s+/g,' ').trim(); }
+function getGD1Lessons(){ return (typeof allLessons!=='undefined'?allLessons:[]).filter(r=>/GĐ1|GD1/i.test(khoaOf(r))); }
+function baiOptionsForChuong(chuong){
+    const lessons=getGD1Lessons();
+    const key=normVN(chuong);
+    const filtered=chuong?lessons.filter(r=>normVN(r.Chuong||r.chuong||'')===key):lessons;
+    return [...new Set(filtered.map(r=>r.TenBai||r.tenbai||r.title||r.ten||'').filter(Boolean))];
+}
+function bankEditFillBai(presetValue){
+    const chuong=document.getElementById('nhe-chuong').value;
+    const sel=document.getElementById('nhe-bai');
+    const cur=presetValue!==undefined?presetValue:sel.value;
+    let opts=baiOptionsForChuong(chuong);
+    if(cur && !opts.includes(cur)) opts=[cur,...opts];
+    sel.innerHTML='<option value="">-- Không gán bài --</option>'+opts.map(b=>`<option value="${nhEsc(b)}" ${b===cur?'selected':''}>${nhEsc(b)}</option>`).join('');
+    sel.value=cur||'';
+}
+
 /* Chuyển link Google Drive bất kỳ thành link ảnh hiển thị được */
 function driveImg(url){
     url=(url||'').toString().trim(); if(!url) return '';
@@ -4333,11 +4371,13 @@ function renderBankStats(){
 function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
     const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
-    const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong');
-    const vm=sm.value, vc=sc.value;
+    const bais=[...new Set(bankData.map(q=>q.baiHoc).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
+    const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong'), sb=document.getElementById('nh-f-bai');
+    const vm=sm.value, vc=sc.value, vb=sb.value;
     sm.innerHTML='<option value="">Tất cả môn</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
     sc.innerHTML='<option value="">Tất cả chương</option>'+chuongs.map(m=>`<option>${nhEsc(m)}</option>`).join('');
-    sm.value=vm; sc.value=vc;
+    sb.innerHTML='<option value="">Tất cả bài</option>'+bais.map(m=>`<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
+    sm.value=vm; sc.value=vc; sb.value=vb;
 }
 function bankFiltered(){
     const fm=document.getElementById('nh-f-mon').value,
@@ -4345,10 +4385,11 @@ function bankFiltered(){
           fd=document.getElementById('nh-f-mucdo').value,
           fl=document.getElementById('nh-f-loai').value,
           fp=document.getElementById('nh-f-phanloai').value,
+          fb=document.getElementById('nh-f-bai').value,
           fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
     return bankData.filter(q=>
         (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
-        (!fp||q.phanLoai===fp)&&
+        (!fp||q.phanLoai===fp)&&(!fb||q.baiHoc===fb)&&
         (!fs||((q.question||'')+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
@@ -4381,6 +4422,7 @@ function bankRowHtml(q,withCheck){
                 <span class="nh-badge b-${q.loai.toLowerCase()}">${NH_LOAI_TEN[q.loai]||q.loai}</span>
                 ${md?`<span class="nh-badge b-${md.toLowerCase()}">${md}</span>`:''}
                 ${q.chuong?`<span class="nh-badge b-ch">${nhEsc(q.chuong)}</span>`:''}
+                ${q.baiHoc?`<span class="nh-badge b-bai" title="Bài học liên quan"><i class="fa-solid fa-book"></i> ${nhEsc(q.baiHoc)}</span>`:''}
                 ${q.phanLoai?`<span class="nh-badge b-pl" title="${nhEsc(NH_PL_TEN[q.phanLoai]||q.phanLoai)}">${nhEsc(q.phanLoai)}</span>`:''}
                 ${q.nhomId?`<span class="nh-badge b-nhom"><i class="fa-solid fa-link"></i> ${nhEsc(q.nhomId)}</span>`:''}
                 <span style="font-size:11px;color:var(--gray2)">${nhEsc(q.id||'')}</span>
@@ -4417,6 +4459,7 @@ function bankEditOpen(id){
     const chuongs=[...new Set([...Object.keys(CHUONG_KEYWORDS),...bankData.map(x=>x.chuong).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'vi'));
     document.getElementById('nhe-chuong').innerHTML=chuongs.map(c=>`<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
     document.getElementById('nhe-chuong').value=q.chuong||chuongs[0]||'';
+    bankEditFillBai(q.baiHoc||'');
     document.getElementById('nhe-debai').value=q.deBaiChung||'';
     document.getElementById('nhe-question').value=q.question||'';
     document.getElementById('nhe-giaithich').value=q.giaiThich||'';
@@ -4462,6 +4505,7 @@ async function bankEditSave(){
     if(!question){ toast('Câu hỏi không được để trống','err'); return; }
     const q={
         loai, mucDo:document.getElementById('nhe-mucdo').value, chuong:document.getElementById('nhe-chuong').value,
+        baiHoc:document.getElementById('nhe-bai').value,
         deBaiChung:document.getElementById('nhe-debai').value.trim(),
         question,
         giaiThich:document.getElementById('nhe-giaithich').value.trim()
@@ -4505,7 +4549,44 @@ function updateSelBar(){
     const n=bankSel.size;
     document.getElementById('nh-sel-count').textContent=n;
     document.getElementById('nh-selbar').classList.toggle('show',n>0);
-    if(n===0) document.getElementById('nh-exam-form').style.display='none';
+    if(n===0){ document.getElementById('nh-exam-form').style.display='none'; document.getElementById('nh-bai-form').style.display='none'; }
+}
+
+/* ── Gán "Bài học" hàng loạt cho các câu đã chọn ── */
+function bankAssignBaiOpen(){
+    if(!bankSel.size){ toast('Chưa chọn câu nào','err'); return; }
+    document.getElementById('nh-exam-form').style.display='none';
+    document.getElementById('nh-bf-count').textContent=bankSel.size;
+    const chuongs=[...new Set(getGD1Lessons().map(r=>r.Chuong||r.chuong||'').filter(Boolean))];
+    document.getElementById('nh-bf-chuong').innerHTML='<option value="">-- Tất cả chương --</option>'+chuongs.map(c=>`<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
+    bankAssignBaiFillOptions();
+    document.getElementById('nh-bai-form').style.display='';
+    document.getElementById('nh-bai-form').scrollIntoView({behavior:'smooth'});
+}
+function bankAssignBaiFillOptions(){
+    const chuongRaw=document.getElementById('nh-bf-chuong').value;
+    const lessons=getGD1Lessons().filter(r=>!chuongRaw||(r.Chuong||r.chuong||'')===chuongRaw);
+    const bais=[...new Set(lessons.map(r=>r.TenBai||r.tenbai||r.title||r.ten||'').filter(Boolean))];
+    document.getElementById('nh-bf-bai').innerHTML=bais.map(b=>`<option value="${nhEsc(b)}">${nhEsc(b)}</option>`).join('')||'<option value="">(không có bài nào)</option>';
+}
+async function bankAssignBaiApply(){
+    const ids=[...bankSel];
+    if(!ids.length) return;
+    const baiHoc=document.getElementById('nh-bf-bai').value||'';
+    const btn=document.getElementById('nh-bf-apply-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang gán...';
+    try{
+        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bulksetbainganhang',ids,baiHoc})});
+        await new Promise(r=>setTimeout(r,900));
+        ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; });
+        fillBankFilters(); renderBankList();
+        toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
+        document.getElementById('nh-bai-form').style.display='none';
+    }catch(e){
+        toast('Lỗi: '+e.message,'err');
+    }finally{
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
+    }
 }
 
 /* ── Xóa câu ── */
@@ -4575,7 +4656,7 @@ function nhStatus(html,isErr){
     s.innerHTML=html; s.style.color=isErr?'var(--red)':'var(--blue)';
 }
 function normKey(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]/g,''); }
-const NH_COLMAP={id:'id',mon:'mon',chuong:'chuong',mucdo:'mucDo',loaicau:'loai',loai:'loai',phanloai:'phanLoai',nhomid:'nhomId',nhom:'nhomId',debaichung:'deBaiChung',cauhoi:'question',noidung:'question',a:'optA',b:'optB',c:'optC',d:'optD',dapan:'correct',hinhanh:'hinhAnh',anh:'hinhAnh',giaithich:'giaiThich',loigiai:'giaiThich',nguon:'nguon'};
+const NH_COLMAP={id:'id',mon:'mon',chuong:'chuong',mucdo:'mucDo',loaicau:'loai',loai:'loai',phanloai:'phanLoai',nhomid:'nhomId',nhom:'nhomId',debaichung:'deBaiChung',cauhoi:'question',noidung:'question',a:'optA',b:'optB',c:'optC',d:'optD',dapan:'correct',hinhanh:'hinhAnh',anh:'hinhAnh',giaithich:'giaiThich',loigiai:'giaiThich',nguon:'nguon',baihoc:'baiHoc',bai:'baiHoc'};
 const NH_PL_TEN={'LT-CB':'Lí thuyết cơ bản','LT-PB':'Lí thuyết phản biện','LT-UD':'Lí thuyết ứng dụng','LT-LUA':'Lí thuyết lừa','BT-CT':'Bài tập công thức','BT-KH':'Bài tập khái quát','BT-DT':'Bài tập đồ thị','DS-TN':'Đúng/Sai thí nghiệm','DS-UD':'Đúng/Sai ứng dụng','DS-TT':'Đúng/Sai tính toán','DS-LT':'Đúng/Sai lí thuyết','TLN-CT':'TLN tính toán','TLN-KH':'TLN khái quát','TLN-TH':'TLN tổng hợp'};
 /* ── Tự nhận diện Chương + Mức độ dựa trên thuật ngữ đặc trưng (Vật Lý 12) ── */
 const CHUONG_KEYWORDS = {
@@ -5954,9 +6035,10 @@ async function htResetDevice(deviceId) {
                     </select>
                 </div>
                 <div class="nhe-field"><label>Chương</label>
-                    <select id="nhe-chuong"></select>
+                    <select id="nhe-chuong" onchange="bankEditFillBai()"></select>
                 </div>
             </div>
+            <div class="nhe-field"><label>Bài học liên quan (khóa Chuyên Đề Lí Thuyết GĐ1)</label><select id="nhe-bai"></select></div>
             <div class="nhe-field"><label>Đề bài chung (chỉ dùng cho câu chùm)</label><textarea id="nhe-debai" style="min-height:44px"></textarea></div>
             <div class="nhe-field"><label>Nội dung câu hỏi</label><textarea id="nhe-question" style="min-height:80px"></textarea></div>
             <div id="nhe-opts-wrap"></div>
