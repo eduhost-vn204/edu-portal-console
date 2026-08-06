@@ -187,6 +187,9 @@
         .chapter-label:hover .ch-btn { opacity:1; }
         .ch-btn.edit:hover { border-color:var(--blue); color:var(--blue); background:rgba(11,132,243,.08); }
         .ch-btn.del:hover { border-color:var(--red); color:var(--red); background:rgba(220,38,38,.08); }
+        .ch-btn.order:hover { border-color:var(--blue); color:var(--blue); background:rgba(11,132,243,.08); }
+        .ch-order-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--bg3); color:var(--gray); border:1px solid var(--border); border-radius:5px; font-size:10px; font-weight:700; min-width:20px; height:18px; padding:0 4px; margin-left:2px; opacity:0; transition:opacity .15s; }
+        .chapter-label:hover .ch-order-badge { opacity:1; }
         .lesson-item { display:flex; align-items:center; gap:12px; padding:13px 20px; border-bottom:1px solid var(--border); transition:background .12s; }
         .lesson-item:last-child { border-bottom:none; }
         .lesson-item:hover { background:var(--bg2); }
@@ -565,6 +568,8 @@
         body.dark .ch-btn { border-color:#484f58; color:#8b949e; background:#21262d; }
         body.dark .ch-btn.edit:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .ch-btn.del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.12); }
+        body.dark .ch-btn.order:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
+        body.dark .ch-order-badge { background:#21262d; border-color:#484f58; color:#8b949e; }
 
     
         /* ═══ CÂU HỎI TRONG VIDEO ═══ */
@@ -1599,21 +1604,16 @@ async function loadKhoaConfig(){
     }catch(e){ console.warn('loadKhoaConfig lỗi:', e); }
 }
 
+// Dùng chung cơ chế retry+giãn cách (postAdminWriteWithRetry, xem ghi chú 6/8/2026) —
+// đây là cách ghi hàng loạt an toàn DÙNG CHUNG cho mọi nơi cần lưu KhoaConfig (thứ tự khóa,
+// thứ tự chương qua chuongOrderKey(), ẩn/hiện, khai giảng, đối tượng học...).
 async function saveKhoaConfigField(fullName, field, value){
-    try{
-        const r = await fetch(DB_URL, { method:'POST', body: JSON.stringify({
-            action: 'savekhoaconfig',
-            adminKey: getAdminKey(),
-            khoaHoc: fullName,
-            field: field,
-            value: value
-        })});
-        const d = await r.json();
-        if(!d.ok) throw new Error(d.msg || 'Lỗi');
-        if(!ADMIN_KHOACONFIG[fullName]) ADMIN_KHOACONFIG[fullName] = { hienThi:true, thuTu:999, daKhaiGiang:false, loaiTK:'free,vip,premium' };
-        ADMIN_KHOACONFIG[fullName][field] = value;
-        return true;
-    }catch(e){ toast('Lỗi lưu config: ' + e.message, 'err'); return false; }
+    const payload = { action:'savekhoaconfig', adminKey:getAdminKey(), khoaHoc:fullName, field:field, value:value };
+    const ok = await postAdminWriteWithRetry(payload);
+    if(!ok){ toast('Lỗi lưu config: không lưu được sau khi thử lại', 'err'); return false; }
+    if(!ADMIN_KHOACONFIG[fullName]) ADMIN_KHOACONFIG[fullName] = { hienThi:true, thuTu:999, daKhaiGiang:false, loaiTK:'free,vip,premium' };
+    ADMIN_KHOACONFIG[fullName][field] = value;
+    return true;
 }
 
 function toggleTheme(){
@@ -1715,6 +1715,39 @@ async function moveCourseOrder(fullName, dir){
     await Promise.all([
         saveKhoaConfigField(allCourses[idx].fullName, 'thuTu', allCourses[idx].thuTu),
         saveKhoaConfigField(allCourses[swapIdx].fullName, 'thuTu', allCourses[swapIdx].thuTu)
+    ]);
+    renderLessonList();
+}
+
+// Sắp xếp thứ tự CHƯƠNG trong 1 khóa (nút lên/xuống, giống hệt moveCourseOrder ở trên nhưng
+// phạm vi trong 1 khóa). Tái dùng NGUYÊN VẸN sheet/action 'savekhoaconfig' đã có sẵn cho khóa —
+// đã verify GAS saveKhoaConfig() chỉ coi khoaHoc là 1 chuỗi khóa bất kỳ (không đối chiếu với
+// sheet nào khác, không có chỗ nào lặp Object.keys(ADMIN_KHOACONFIG) để liệt kê "danh sách khóa
+// thật"), nên dùng khóa ghép "khoa|||chương" làm khoaHoc là AN TOÀN, không cần sửa GAS/thêm sheet mới.
+function chuongOrderKey(khoa, chuong){ return khoa + '|||' + chuong; }
+
+async function moveChapterOrder(khoa, chuongName, dir){
+    const targetSubject = extractSC(khoa).subject || khoa;
+    const subjects = groupLessons(allLessons);
+    const course = subjects[targetSubject]?.courses?.[khoa];
+    if(!course) return;
+    const allChapters = Object.keys(course.chapters).map(cn => {
+        const cfg = ADMIN_KHOACONFIG[chuongOrderKey(khoa, cn)] || { thuTu:999 };
+        return { name: cn, thuTu: typeof cfg.thuTu === 'number' ? cfg.thuTu : 999 };
+    });
+    allChapters.sort((a,b) => a.thuTu - b.thuTu);
+    let seq = 1;
+    allChapters.forEach(c => { if(c.thuTu === 999) c.thuTu = seq; else seq = c.thuTu + 1; });
+    const idx = allChapters.findIndex(c => c.name === chuongName);
+    if(idx < 0) return;
+    const swapIdx = idx + dir;
+    if(swapIdx < 0 || swapIdx >= allChapters.length) return;
+    const tmpThu = allChapters[idx].thuTu;
+    allChapters[idx].thuTu = allChapters[swapIdx].thuTu;
+    allChapters[swapIdx].thuTu = tmpThu;
+    await Promise.all([
+        saveKhoaConfigField(chuongOrderKey(khoa, allChapters[idx].name), 'thuTu', allChapters[idx].thuTu),
+        saveKhoaConfigField(chuongOrderKey(khoa, allChapters[swapIdx].name), 'thuTu', allChapters[swapIdx].thuTu)
     ]);
     renderLessonList();
 }
@@ -2095,12 +2128,25 @@ function renderCourseBlock(course){
             <button class="course-action-btn order-btn" title="Xuống dưới" onclick="moveCourseOrder('${fn}',1)"><i class="fa-solid fa-chevron-down"></i></button>
         </div>
         <div class="chapter-group">`;
-    Object.entries(course.chapters).forEach(([chName,lessons])=>{
+    // Sắp xếp chương theo thứ tự thầy tự đặt (nút lên/xuống, moveChapterOrder) — chương chưa
+    // từng sắp xếp (thuTu mặc định 999) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
+    const chapterEntries = Object.entries(course.chapters).sort((a,b)=>{
+        const ta = ADMIN_KHOACONFIG[chuongOrderKey(course.fullName, a[0])]?.thuTu ?? 999;
+        const tb = ADMIN_KHOACONFIG[chuongOrderKey(course.fullName, b[0])]?.thuTu ?? 999;
+        return ta - tb;
+    });
+    chapterEntries.forEach(([chName,lessons])=>{
+        const chFn = esc(course.fullName).replace(/'/g,"&#39;");
+        const chNm = esc(chName).replace(/'/g,"&#39;");
+        const chOrd = ADMIN_KHOACONFIG[chuongOrderKey(course.fullName, chName)]?.thuTu;
         html+=`<div class="chapter-label">
             <i class="fa-solid fa-folder" style="font-size:10px"></i>
             <span class="ch-name">${esc(chName)}</span>
-            <button class="ch-btn edit" title="Đổi tên chương" onclick="editChapter('${esc(course.fullName).replace(/'/g,"&#39;")}','${esc(chName).replace(/'/g,"&#39;")}')"><i class="fa-solid fa-pen"></i></button>
-            <button class="ch-btn del" title="Xóa chương" onclick="deleteChapter('${esc(course.fullName).replace(/'/g,"&#39;")}','${esc(chName).replace(/'/g,"&#39;")}')"><i class="fa-solid fa-trash"></i></button>
+            <button class="ch-btn edit" title="Đổi tên chương" onclick="editChapter('${chFn}','${chNm}')"><i class="fa-solid fa-pen"></i></button>
+            <button class="ch-btn del" title="Xóa chương" onclick="deleteChapter('${chFn}','${chNm}')"><i class="fa-solid fa-trash"></i></button>
+            <span class="ch-order-badge" title="Thứ tự chương">#${chOrd===undefined||chOrd===999?'–':chOrd}</span>
+            <button class="ch-btn order" title="Chương lên trên" onclick="moveChapterOrder('${chFn}','${chNm}',-1)"><i class="fa-solid fa-chevron-up"></i></button>
+            <button class="ch-btn order" title="Chương xuống dưới" onclick="moveChapterOrder('${chFn}','${chNm}',1)"><i class="fa-solid fa-chevron-down"></i></button>
         </div>`;
         html+=`<div class="chapter-lessons" data-khoa="${esc(course.fullName)}" data-chuong="${esc(chName)}">`;
         lessons.forEach((l)=>{
