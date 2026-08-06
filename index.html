@@ -1704,7 +1704,7 @@ async function moveCourseOrder(fullName, dir){
     allCourses.sort((a,b) => a.thuTu - b.thuTu);
     // Gán lại thuTu tuần tự cho khoá chưa có
     let seq = 1;
-    allCourses.forEach(c => { if(c.thuTu === 999) c.thuTu = seq; else seq = c.thuTu + 1; });
+    allCourses.forEach(c => { if(c.thuTu === 999) c.thuTu = seq; seq = c.thuTu + 1; });
     const idx = allCourses.findIndex(c => c.fullName === fullName);
     if(idx < 0) return;
     const swapIdx = idx + dir;
@@ -1737,7 +1737,7 @@ async function moveChapterOrder(khoa, chuongName, dir){
     });
     allChapters.sort((a,b) => a.thuTu - b.thuTu);
     let seq = 1;
-    allChapters.forEach(c => { if(c.thuTu === 999) c.thuTu = seq; else seq = c.thuTu + 1; });
+    allChapters.forEach(c => { if(c.thuTu === 999) c.thuTu = seq; seq = c.thuTu + 1; });
     const idx = allChapters.findIndex(c => c.name === chuongName);
     if(idx < 0) return;
     const swapIdx = idx + dir;
