@@ -151,6 +151,19 @@
         .btn-new { display:inline-flex; align-items:center; gap:8px; background:var(--black); color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:14px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; transition:opacity .15s; }
         .btn-new:hover { opacity:.85; }
         .filter-bar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+        .btn-bulk-toggle { padding:9px 16px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg); color:var(--gray); font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .15s; margin-left:8px; }
+        .btn-bulk-toggle:hover { border-color:var(--blue); color:var(--blue); }
+        .btn-bulk-toggle.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+        .bulk-action-bar { display:none; align-items:center; gap:10px; flex-wrap:wrap; background:rgba(11,132,243,.08); border:1px solid var(--blue); border-radius:10px; padding:10px 14px; margin-bottom:14px; font-size:13px; }
+        .bulk-action-bar.show { display:flex; }
+        .bulk-action-bar .bab-count { font-weight:700; color:var(--blue); }
+        .bulk-action-bar button { padding:7px 14px; border-radius:7px; border:1px solid var(--border); background:var(--bg); color:var(--text,#e2e8f0); font-size:12.5px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .15s; }
+        .bulk-action-bar button.bab-move:hover { border-color:var(--blue); color:var(--blue); }
+        .bulk-action-bar button.bab-del:hover { border-color:var(--red); color:var(--red); }
+        .bulk-action-bar button.bab-clear:hover { border-color:var(--gray); }
+        .bulk-checkbox { width:16px; height:16px; cursor:pointer; accent-color:var(--blue); flex-shrink:0; }
+        .chapter-label .bulk-checkbox { margin-right:4px; }
+        .lesson-item .bulk-checkbox { margin-right:2px; }
         .filter-chip { padding:6px 14px; border-radius:50px; border:1.5px solid var(--border); background:var(--bg); font-size:13px; font-weight:600; cursor:pointer; color:var(--gray); transition:all .15s; }
         .filter-chip.active { background:var(--black); color:#fff; border-color:var(--black); }
 
@@ -191,6 +204,7 @@
         .ch-order-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--bg3); color:var(--gray); border:1px solid var(--border); border-radius:5px; font-size:10px; font-weight:700; min-width:20px; height:18px; padding:0 4px; margin-left:2px; opacity:0; transition:opacity .15s; }
         .chapter-label:hover .ch-order-badge { opacity:1; }
         .lesson-item { display:flex; align-items:center; gap:12px; padding:13px 20px; border-bottom:1px solid var(--border); transition:background .12s; }
+        .lesson-item.bulk-selected { background:rgba(11,132,243,.1); }
         .lesson-item:last-child { border-bottom:none; }
         .lesson-item:hover { background:var(--bg2); }
         .li-name { flex:1; font-size:14px; font-weight:600; line-height:1.4; }
@@ -652,11 +666,15 @@
         <button class="btn-new" onclick="openNewForm()">
             <i class="fa-solid fa-plus"></i> Thêm bài mới
         </button>
+        <button class="btn-bulk-toggle" id="btn-bulk-toggle" onclick="toggleBulkMode()" title="Chọn nhiều bài để chuyển chương/xóa cùng lúc">
+            <i class="fa-solid fa-list-check"></i> Sửa hàng loạt
+        </button>
     </div>
     <div class="filter-bar" id="filter-bar">
         <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả</span>
         <span class="filter-chip" data-f="Vật Lý 12" onclick="filterCourse('Vật Lý 12',this)">⚛️ Vật Lý 12</span>
     </div>
+    <div class="bulk-action-bar" id="bulk-action-bar"></div>
     <!-- JS sẽ thêm filter chips động từ dữ liệu thực tế -->
     <div class="lesson-manager">
         <div class="lm-left" id="lesson-list-wrap">
@@ -1247,6 +1265,20 @@
     </div>
 </div>
 
+<!-- CHUYỂN HÀNG LOẠT sang chương khác (chế độ sửa hàng loạt) -->
+<div class="confirm-overlay" id="bulkmove-overlay">
+    <div class="confirm-box">
+        <h3><i class="fa-solid fa-arrows-turn-right" style="color:var(--blue)"></i> Chuyển bài sang chương khác</h3>
+        <p>Chọn khóa và chương đích cho <b id="bulkmove-count">0</b> bài đã chọn:</p>
+        <select id="bulkmove-course" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2,#0f1621);color:var(--text,#fff);font-size:14px;margin-bottom:10px" onchange="fillBulkMoveChapterSelect()"></select>
+        <select id="bulkmove-chapter" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2,#0f1621);color:var(--text,#fff);font-size:14px;margin-bottom:14px"></select>
+        <div class="confirm-btns">
+            <button class="btn-confirm-ok" id="bulkmove-ok" onclick="confirmBulkMove()">Chuyển</button>
+            <button class="btn-confirm-cancel" onclick="closeBulkMoveModal()">Hủy</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1752,6 +1784,149 @@ async function moveChapterOrder(khoa, chuongName, dir){
     renderLessonList();
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// CHẾ ĐỘ SỬA HÀNG LOẠT — chọn nhiều bài cùng lúc để chuyển chương hoặc xóa.
+// LÕI DÙNG CHUNG là postAdminWriteWithRetry (retry+giãn cách 150ms/request) — CÙNG cơ chế
+// đã dùng cho renameCourse/deleteCourse/editChapter/deleteChapter/saveLessonOrderFromDOM
+// (xem ghi chú 6/8/2026 [[project_batch-write-retry-060826]]: GAS quá tải nếu bắn nhiều
+// request liên tục không nghỉ). Thầy dặn: MỌI thao tác sửa nhiều dòng cùng lúc — kể cả tính
+// năng mới này — đều phải qua CÙNG 1 cơ chế, không tách vá riêng từng nơi.
+// ═══════════════════════════════════════════════════════════════════
+let bulkMode = false;
+let bulkSelected = new Set(); // Set các key "khoa|||chuong|||tenBai"
+
+function lessonKeyOf(r){ return khoaOf(r) + '|||' + (r.Chuong||r.chuong||'') + '|||' + (r.TenBai||r.tenbai||''); }
+
+function toggleBulkMode(){
+    bulkMode = !bulkMode;
+    if(!bulkMode) bulkSelected.clear();
+    const btn = document.getElementById('btn-bulk-toggle');
+    if(btn) btn.classList.toggle('active', bulkMode);
+    renderLessonList();
+}
+
+function toggleBulkSelect(key, checked){
+    if(checked) bulkSelected.add(key); else bulkSelected.delete(key);
+    renderBulkActionBar();
+    // Cập nhật lại trạng thái checkbox "chọn cả chương" khi bấm lẻ từng bài (không render lại toàn bộ danh sách cho nhanh)
+    syncChapterCheckboxes();
+}
+
+function toggleBulkSelectChapter(khoa, chuong, checked){
+    allLessons.forEach(r=>{
+        if(khoaOf(r)===khoa && (r.Chuong||r.chuong||'Chương chưa phân loại')===chuong){
+            if(checked) bulkSelected.add(lessonKeyOf(r)); else bulkSelected.delete(lessonKeyOf(r));
+        }
+    });
+    renderLessonList();
+}
+
+function syncChapterCheckboxes(){
+    document.querySelectorAll('.chapter-lessons').forEach(wrap=>{
+        const khoa = wrap.dataset.khoa, chuong = wrap.dataset.chuong;
+        const itemBoxes = [...wrap.querySelectorAll('.bulk-checkbox.li-check')];
+        const allChecked = itemBoxes.length>0 && itemBoxes.every(cb=>cb.checked);
+        const chBox = wrap.parentElement.querySelector('.bulk-checkbox.ch-check');
+        if(chBox) chBox.checked = allChecked;
+    });
+    renderBulkActionBar();
+}
+
+function clearBulkSelection(){ bulkSelected.clear(); renderLessonList(); }
+
+function renderBulkActionBar(){
+    const bar = document.getElementById('bulk-action-bar');
+    if(!bar) return;
+    if(!bulkMode || bulkSelected.size===0){ bar.classList.remove('show'); bar.innerHTML=''; return; }
+    bar.classList.add('show');
+    bar.innerHTML = `<span class="bab-count"><i class="fa-solid fa-check-double"></i> Đã chọn ${bulkSelected.size} bài</span>
+        <button class="bab-move" onclick="openBulkMoveModal()"><i class="fa-solid fa-arrows-turn-right"></i> Chuyển sang chương khác</button>
+        <button class="bab-del" onclick="bulkDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa đã chọn</button>
+        <button class="bab-clear" onclick="clearBulkSelection()"><i class="fa-solid fa-xmark"></i> Bỏ chọn</button>`;
+}
+
+async function bulkDeleteSelected(){
+    if(bulkSelected.size===0) return;
+    const keys = [...bulkSelected];
+    if(!await confirmAsync('Xóa '+keys.length+' bài đã chọn? Hành động này không thể hoàn tác.', {
+        title:'<i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Xác nhận xóa hàng loạt',
+        okLabel:'Xóa '+keys.length+' bài',
+        danger:true
+    })) return;
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa '+keys.length+' bài…');
+    let ok=0, fail=0;
+    for(const key of keys){
+        const parts = key.split('|||');
+        const payload = {action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:parts[0]||'', Chuong:parts[1]||'', TenBai:parts[2]||''};
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
+    }
+    bulkSelected.clear();
+    invalidateCache();
+    await loadLessons();
+    toast(fail>0 ? ('⚠️ Xóa '+ok+'/'+keys.length+' bài, '+fail+' bài LỖI (F5 để kiểm tra lại)') : ('✅ Đã xóa '+ok+' bài'), fail>0?'err':'ok');
+}
+
+function openBulkMoveModal(){
+    if(bulkSelected.size===0) return;
+    document.getElementById('bulkmove-count').textContent = bulkSelected.size;
+    fillBulkMoveCourseSelect();
+    document.getElementById('bulkmove-overlay').classList.add('show');
+}
+function closeBulkMoveModal(){ document.getElementById('bulkmove-overlay').classList.remove('show'); }
+
+// Danh sách khóa/chương đích chỉ lấy từ khóa/chương ĐÃ CÓ SẴN trong allLessons (dropdown cố
+// định, không cho gõ tự do) — cùng lý do đã áp dụng cho form Thêm/Sửa bài ở mục 1/8
+// (xem [[project_khoa-chuong-dropdown-060826]]): gõ tự do từng gây khóa "tách đôi".
+function fillBulkMoveCourseSelect(){
+    const sel = document.getElementById('bulkmove-course');
+    const courses = new Set();
+    allLessons.forEach(r=>courses.add(khoaOf(r)));
+    const list = [...courses].sort((a,b)=>a.localeCompare(b,'vi'));
+    sel.innerHTML = list.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    fillBulkMoveChapterSelect();
+}
+function fillBulkMoveChapterSelect(){
+    const khoa = document.getElementById('bulkmove-course').value;
+    const sel = document.getElementById('bulkmove-chapter');
+    const chapters = new Set();
+    allLessons.forEach(r=>{ if(khoaOf(r)===khoa) chapters.add(r.Chuong||r.chuong||'Chương chưa phân loại'); });
+    const list = [...chapters].sort((a,b)=>a.localeCompare(b,'vi'));
+    sel.innerHTML = list.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+async function confirmBulkMove(){
+    const khoaDich = document.getElementById('bulkmove-course').value;
+    const chuongDich = document.getElementById('bulkmove-chapter').value;
+    if(!khoaDich || !chuongDich) return;
+    closeBulkMoveModal();
+    const keys = [...bulkSelected];
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển '+keys.length+' bài sang "'+chuongDich+'"…');
+    let ok=0, fail=0, skip=0;
+    for(const key of keys){
+        const parts = key.split('|||');
+        const oldKhoa=parts[0]||'', oldChuong=parts[1]||'', tenBai=parts[2]||'';
+        if(oldKhoa===khoaDich && oldChuong===chuongDich){ skip++; continue; } // đã ở đúng chương đích, khỏi ghi
+        const row = allLessons.find(r=>lessonKeyOf(r)===key);
+        if(!row){ fail++; continue; }
+        const payload = {
+            action:'saveBaiHoc', originalKey:key,
+            KhoaHoc:khoaDich, Chuong:chuongDich, TenBai:tenBai,
+            Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
+            MoTaBai:row.MoTaBai||row.motabai||'', NgayDang:row.NgayDang||row.ngaydang||'', BaiTap:row.BaiTap||row.baitap||''
+        };
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
+    }
+    bulkSelected.clear();
+    invalidateCache();
+    await loadLessons();
+    let msg = '✅ Đã chuyển '+ok+' bài sang "'+chuongDich+'"';
+    if(skip>0) msg += ' ('+skip+' bài đã ở sẵn đó)';
+    if(fail>0) msg = '⚠️ Chuyển '+ok+'/'+keys.length+' bài, '+fail+' bài LỖI (F5 để kiểm tra lại)';
+    toast(msg, fail>0?'err':'ok');
+}
+
 // Kéo-thả để đổi thứ tự bài trong 1 chương (thay cho nút lên/xuống cũ — nhanh hơn nhiều khi chương có nhiều bài).
 // Kéo thả chỉ hoạt động TRONG cùng 1 chương (mỗi chương được bọc trong 1 div .chapter-lessons riêng).
 // Sau khi thả: đọc lại thứ tự thật trên DOM, đánh số ThuTuBai 1..N cho TẤT CẢ bài trong chương rồi lưu hết —
@@ -2139,7 +2314,10 @@ function renderCourseBlock(course){
         const chFn = esc(course.fullName).replace(/'/g,"&#39;");
         const chNm = esc(chName).replace(/'/g,"&#39;");
         const chOrd = ADMIN_KHOACONFIG[chuongOrderKey(course.fullName, chName)]?.thuTu;
+        const chLessonKeys = lessons.map(l=>`${l.khoa}|||${l.chuong}|||${l.ten}`);
+        const chAllSelected = bulkMode && chLessonKeys.length>0 && chLessonKeys.every(k=>bulkSelected.has(k));
         html+=`<div class="chapter-label">
+            ${bulkMode?`<input type="checkbox" class="bulk-checkbox ch-check" ${chAllSelected?'checked':''} onclick="toggleBulkSelectChapter('${chFn}','${chNm}',this.checked)" title="Chọn cả chương">`:''}
             <i class="fa-solid fa-folder" style="font-size:10px"></i>
             <span class="ch-name">${esc(chName)}</span>
             <button class="ch-btn edit" title="Đổi tên chương" onclick="editChapter('${chFn}','${chNm}')"><i class="fa-solid fa-pen"></i></button>
@@ -2157,9 +2335,10 @@ function renderCourseBlock(course){
             const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
             const isTeaching = (currentTeachingLesson === key);
             const safeKey = esc(key).replace(/'/g,"&#39;");
-            html+=`<div class="lesson-item${isTeaching?' teaching':''}" draggable="true" data-key="${esc(key)}"
+            const liSelected = bulkMode && bulkSelected.has(key);
+            html+=`<div class="lesson-item${isTeaching?' teaching':''}${liSelected?' bulk-selected':''}" draggable="${bulkMode?'false':'true'}" data-key="${esc(key)}"
                 ondragstart="lessonDragStart(event)" ondragover="lessonDragOver(event)" ondrop="lessonDrop(event)" ondragend="lessonDragEnd(event)">
-                <div class="li-drag-handle" title="Kéo để đổi thứ tự"><i class="fa-solid fa-grip-vertical"></i></div>
+                ${bulkMode?`<input type="checkbox" class="bulk-checkbox li-check" ${liSelected?'checked':''} onclick="toggleBulkSelect('${safeKey}',this.checked)">`:`<div class="li-drag-handle" title="Kéo để đổi thứ tự"><i class="fa-solid fa-grip-vertical"></i></div>`}
                 <div class="li-name">${esc(l.ten)}</div>
                 <div class="li-badges">
                     ${isTeaching?'<span class="li-teaching-badge">⭐ Đang dạy</span>':''}
@@ -2190,6 +2369,7 @@ function renderLessonList(){
     const subjects = groupLessons(filtered);
     if(Object.keys(subjects).length===0){
         wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
+        renderBulkActionBar();
         return;
     }
     let html='';
@@ -2209,6 +2389,7 @@ function renderLessonList(){
         allCourses.forEach(course=>{ html+=renderCourseBlock(course); });
     });
     wrap.innerHTML=html;
+    renderBulkActionBar();
 }
 
 function filterCourse(f,el){
