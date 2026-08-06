@@ -228,6 +228,7 @@
             outline:none; transition:border-color .15s;
         }
         .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color:var(--blue); background:var(--bg); }
+        .dup-warn { margin-top:6px; font-size:12.5px; color:#ffb84d; background:rgba(255,184,77,.1); border:1px solid rgba(255,184,77,.35); border-radius:6px; padding:6px 10px; }
         .form-field textarea { min-height:80px; resize:vertical; }
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .input-wrap { display:flex; gap:8px; }
@@ -672,14 +673,15 @@
                         <div class="form-row">
                             <div class="form-field">
                                 <label>Lớp / Môn <span>*</span></label>
-                                <select id="f-lop" onchange="updateKhoaOptions()">
+                                <select id="f-lop" onchange="onLopChange()">
                                     <option>Vật Lý 12</option>
                                 </select>
                             </div>
                             <div class="form-field">
                                 <label>Tên khóa học <span>*</span></label>
-                                <input id="f-ten-khoa" list="ten-khoa-list" placeholder="VD: Luyện đề 2k8">
-                                <datalist id="ten-khoa-list"></datalist>
+                                <select id="f-ten-khoa" onchange="onKhoaSelectChange()"></select>
+                                <input id="f-ten-khoa-new" placeholder="Nhập tên khóa MỚI, VD: Luyện đề 2k8" style="display:none;margin-top:6px" oninput="checkKhoaDup()">
+                                <div class="dup-warn" id="f-ten-khoa-warn" style="display:none"></div>
                             </div>
                         </div>
                         <div class="form-row">
@@ -690,8 +692,9 @@
                         </div>
                         <div class="form-field">
                             <label>Chương <span>*</span></label>
-                            <input id="f-chuong" list="chuong-list" placeholder="VD: Chương 1 — Vật lý nhiệt">
-                            <datalist id="chuong-list"></datalist>
+                            <select id="f-chuong" onchange="onChuongSelectChange()"></select>
+                            <input id="f-chuong-new" placeholder="Nhập tên chương MỚI, VD: Chương 1 — Vật lý nhiệt" style="display:none;margin-top:6px" oninput="checkChuongDup()">
+                            <div class="dup-warn" id="f-chuong-warn" style="display:none"></div>
                         </div>
                         <div class="form-field">
                             <label>Tên bài <span>*</span></label>
@@ -1792,7 +1795,7 @@ async function loadLessons(){
     const cached = aCache(CKEY);
     if(cached){
         allLessons = Array.isArray(cached.d) ? cached.d : (cached.d.baihoc || cached.d.data || []);
-        updateChuongList(); renderLessonList();
+        renderLessonList();
         if(aFresh(cached)) return;
     } else {
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
@@ -1806,7 +1809,6 @@ async function loadLessons(){
         console.warn('Không kết nối được Sheets:', e);
         if(!allLessons.length) toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa kết nối được Google Sheets.', 'err');
     }
-    updateChuongList();
     renderLessonList();
     loadQbCounts();
 }
@@ -1827,17 +1829,6 @@ async function loadQbCounts(){
         _qbCounts = map;
         renderLessonList();
     }catch(e){ if(_qbCounts===null) _qbCounts={}; }
-}
-
-function updateChuongList(){
-    const dl = document.getElementById('chuong-list');
-    if(!dl) return;
-    const set = new Set();
-    allLessons.forEach(r => {
-        const c = r.Chuong || r.chuong || r.chapter || '';
-        if(c) set.add(c);
-    });
-    dl.innerHTML = [...set].map(c=>`<option value="${esc(c)}">`).join('');
 }
 
 // Lấy giá trị KhoaHoc thực tế của 1 dòng, fallback 'Khác' giống groupLessons (đồng bộ để xoá/sửa/đổi tên khoá 'Khác' hoạt động đúng)
@@ -1910,18 +1901,162 @@ function buildKhoaHoc(lop, tenKhoa){
     return t ? t + ' - ' + l : l;
 }
 
-// Cập nhật datalist tên khóa khi đổi lớp
-function updateKhoaOptions(){
+// ===== Chọn Khóa học / Chương bằng DANH SÁCH CỐ ĐỊNH (dropdown), không còn ô gõ tự do =====
+// Lý do: gõ tự do (kể cả có gợi ý datalist) từng gây khóa "tách đôi" khi thầy gõ lệch
+// hoa/thường hoặc gạch ngang so với tên đã có (xem project_khoa-tach-doi-050826, 5/8/2026).
+// Giờ chỉ có 2 cách chọn: (1) chọn đúng 1 khóa/chương CÓ SẴN trong danh sách, hoặc
+// (2) chọn "+ Thêm mới…" rồi gõ tên hoàn toàn mới — có cảnh báo nếu tên gõ giống tên đã có.
+const NEW_KHOA_VALUE = '__new_khoa__';
+const NEW_CHUONG_VALUE = '__new_chuong__';
+
+// Chuẩn hoá chuỗi để so sánh gần-giống (bỏ khoảng trắng thừa, hoa/thường, gạch ngang khác kiểu)
+function normDup(str){
+    return (str||'').trim().toLowerCase().replace(/[\u2010-\u2015]/g,'-').replace(/\s+/g,' ');
+}
+
+function onLopChange(){
+    fillKhoaSelect();
+    fillChuongSelect();
+}
+
+// selectedCourseName: tên khóa cần chọn sẵn (dùng khi mở form Sửa). Không truyền = để trống.
+function fillKhoaSelect(selectedCourseName){
     const lop = document.getElementById('f-lop')?.value || '';
-    const dl = document.getElementById('ten-khoa-list');
-    if(!dl) return;
+    const sel = document.getElementById('f-ten-khoa');
+    if(!sel) return;
     const courses = new Set();
     allLessons.forEach(r=>{
         const k = khoaOf(r);
         const sc = extractSC(k);
         if(sc.subject === lop && sc.courseName) courses.add(sc.courseName);
     });
-    dl.innerHTML = [...courses].map(n=>`<option value="${esc(n)}">`).join('');
+    const list = [...courses].sort((a,b)=>a.localeCompare(b,'vi'));
+    sel.innerHTML = '<option value="">— Chọn khóa học —</option>'
+        + list.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')
+        + `<option value="${NEW_KHOA_VALUE}">+ Thêm khóa mới…</option>`;
+    if(selectedCourseName && list.includes(selectedCourseName)){
+        sel.value = selectedCourseName;
+    } else if(selectedCourseName){
+        // Tên không khớp chính xác tên nào trong danh sách (hiếm, có thể do lệch cache) —
+        // vẫn giữ đúng tên gốc bằng cách đổ vào ô "khóa mới" thay vì âm thầm bỏ qua.
+        sel.value = NEW_KHOA_VALUE;
+        document.getElementById('f-ten-khoa-new').value = selectedCourseName;
+    } else {
+        sel.value = '';
+    }
+    applyKhoaSelectUI();
+}
+
+function applyKhoaSelectUI(){
+    const sel = document.getElementById('f-ten-khoa');
+    const newInput = document.getElementById('f-ten-khoa-new');
+    if(!sel || !newInput) return;
+    if(sel.value === NEW_KHOA_VALUE){ newInput.style.display='block'; }
+    else { newInput.style.display='none'; newInput.value=''; document.getElementById('f-ten-khoa-warn').style.display='none'; }
+}
+
+function onKhoaSelectChange(){
+    applyKhoaSelectUI();
+    fillChuongSelect(); // đổi khóa -> danh sách chương phụ thuộc khóa đổi theo, bỏ chọn cũ
+}
+
+function currentTenKhoaValue(){
+    const sel = document.getElementById('f-ten-khoa');
+    if(!sel) return '';
+    if(sel.value === NEW_KHOA_VALUE) return document.getElementById('f-ten-khoa-new').value.trim();
+    return sel.value.trim();
+}
+
+// Cảnh báo (không chặn lưu) nếu tên khóa mới gõ giống gần-giống 1 khóa đã có trong CÙNG lớp/môn
+function checkKhoaDup(){
+    const lop = document.getElementById('f-lop')?.value || '';
+    const typed = document.getElementById('f-ten-khoa-new').value;
+    const warn = document.getElementById('f-ten-khoa-warn');
+    if(!typed.trim()){ warn.style.display='none'; return; }
+    const n = normDup(typed);
+    const hit = new Set();
+    allLessons.forEach(r=>{
+        const sc = extractSC(khoaOf(r));
+        if(sc.subject === lop && sc.courseName) hit.add(sc.courseName);
+    });
+    const dup = [...hit].find(c => normDup(c) === n);
+    if(dup){
+        warn.style.display='block';
+        warn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Đã có khóa gần giống tên này: "<b>${esc(dup)}</b>". Thầy có chắc muốn tạo khóa MỚI thay vì chọn khóa có sẵn ở trên không?`;
+    } else {
+        warn.style.display='none';
+    }
+}
+
+// selectedChuong: tên chương cần chọn sẵn (dùng khi mở form Sửa). Không truyền = để trống.
+function fillChuongSelect(selectedChuong){
+    const sel = document.getElementById('f-chuong');
+    if(!sel) return;
+    const lop = document.getElementById('f-lop')?.value || '';
+    const tenKhoa = currentTenKhoaValue();
+    const khoa = buildKhoaHoc(lop, tenKhoa);
+    const set = new Set();
+    allLessons.forEach(r=>{
+        if(khoaOf(r) !== khoa) return;
+        const c = r.Chuong || r.chuong || r.chapter || '';
+        if(c) set.add(c);
+    });
+    const list = [...set].sort((a,b)=>a.localeCompare(b,'vi'));
+    sel.innerHTML = '<option value="">— Chọn chương —</option>'
+        + list.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')
+        + `<option value="${NEW_CHUONG_VALUE}">+ Thêm chương mới…</option>`;
+    if(selectedChuong && list.includes(selectedChuong)){
+        sel.value = selectedChuong;
+    } else if(selectedChuong){
+        sel.value = NEW_CHUONG_VALUE;
+        document.getElementById('f-chuong-new').value = selectedChuong;
+    } else {
+        sel.value = '';
+    }
+    applyChuongSelectUI();
+}
+
+function applyChuongSelectUI(){
+    const sel = document.getElementById('f-chuong');
+    const newInput = document.getElementById('f-chuong-new');
+    if(!sel || !newInput) return;
+    if(sel.value === NEW_CHUONG_VALUE){ newInput.style.display='block'; }
+    else { newInput.style.display='none'; newInput.value=''; document.getElementById('f-chuong-warn').style.display='none'; }
+}
+
+function onChuongSelectChange(){
+    applyChuongSelectUI();
+}
+
+function currentChuongValue(){
+    const sel = document.getElementById('f-chuong');
+    if(!sel) return '';
+    if(sel.value === NEW_CHUONG_VALUE) return document.getElementById('f-chuong-new').value.trim();
+    return sel.value.trim();
+}
+
+// Cảnh báo (không chặn lưu) nếu tên chương mới gõ giống gần-giống 1 chương đã có TRONG CÙNG khóa
+function checkChuongDup(){
+    const lop = document.getElementById('f-lop')?.value || '';
+    const tenKhoa = currentTenKhoaValue();
+    const khoa = buildKhoaHoc(lop, tenKhoa);
+    const typed = document.getElementById('f-chuong-new').value;
+    const warn = document.getElementById('f-chuong-warn');
+    if(!typed.trim()){ warn.style.display='none'; return; }
+    const n = normDup(typed);
+    const hit = new Set();
+    allLessons.forEach(r=>{
+        if(khoaOf(r) !== khoa) return;
+        const c = r.Chuong||r.chuong||r.chapter||'';
+        if(c) hit.add(c);
+    });
+    const dup = [...hit].find(c => normDup(c) === n);
+    if(dup){
+        warn.style.display='block';
+        warn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Đã có chương gần giống tên này: "<b>${esc(dup)}</b>". Thầy có chắc muốn tạo chương MỚI thay vì chọn chương có sẵn ở trên không?`;
+    } else {
+        warn.style.display='none';
+    }
 }
 
 function renderCourseBlock(course){
@@ -2119,7 +2254,7 @@ async function deleteCourse(fullName){
 function openNewFormForSubject(subjectName){
     openNewForm();
     const lopEl = document.getElementById('f-lop');
-    if(lopEl){ lopEl.value = subjectName; updateKhoaOptions(); }
+    if(lopEl){ lopEl.value = subjectName; fillKhoaSelect(); fillChuongSelect(); }
 }
 
 async function editChapter(khoa, oldChuong){
@@ -2185,9 +2320,8 @@ function openNewForm(){
     document.getElementById('f-original-key').value='';
     document.getElementById('f-original-ttb').value='';
     document.getElementById('f-lop').value='Vật Lý 12';
-    document.getElementById('f-ten-khoa').value='';
-    updateKhoaOptions();
-    document.getElementById('f-chuong').value='';
+    fillKhoaSelect();
+    fillChuongSelect();
     document.getElementById('f-tenbai').value='';
     document.getElementById('f-video').value='';
     document.getElementById('f-videogiai').value='';
@@ -2219,9 +2353,8 @@ async function openEditForm(key){
     document.getElementById('f-original-ttb').value=(row.ThuTuBai!==undefined&&row.ThuTuBai!==null)?row.ThuTuBai:((row.thutubai!==undefined&&row.thutubai!==null)?row.thutubai:'');
     const sc_row = extractSC(row.KhoaHoc||row.khoahoc||row.course||'Vật Lý 12');
     document.getElementById('f-lop').value = sc_row.subject || 'Vật Lý 12';
-    document.getElementById('f-ten-khoa').value = sc_row.courseName || '';
-    updateKhoaOptions();
-    document.getElementById('f-chuong').value=row.Chuong||row.chuong||row.chapter||'';
+    fillKhoaSelect(sc_row.courseName || '');
+    fillChuongSelect(row.Chuong||row.chuong||row.chapter||'');
     document.getElementById('f-tenbai').value=row.TenBai||row.tenbai||row.title||row.ten||'';
     document.getElementById('f-video').value=row.Video||row.video||row.link||'';
     document.getElementById('f-videogiai').value=row.VideoGiai||row.videogiai||row.videochua||'';
@@ -2891,9 +3024,9 @@ function getQuestionsFromForm(){
 
 async function saveLessonForm(){
     const lop=document.getElementById('f-lop').value.trim();
-    const tenKhoa=document.getElementById('f-ten-khoa').value.trim();
+    const tenKhoa=currentTenKhoaValue();
     const khoa=buildKhoaHoc(lop, tenKhoa);
-    const chuong=document.getElementById('f-chuong').value.trim();
+    const chuong=currentChuongValue();
     const tenbai=document.getElementById('f-tenbai').value.trim();
     if(!khoa||!chuong||!tenbai){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Điền đủ Khóa học, Chương, Tên bài!','err'); return; }
     const qs=getQuestionsFromForm();
@@ -2941,7 +3074,7 @@ async function saveLessonForm(){
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
         const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
-        updateChuongList(); renderLessonList();
+        renderLessonList();
     }catch(err){
         toast('<i class="fa-solid fa-bug"></i> Lỗi lưu: '+err.message,'err');
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
