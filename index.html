@@ -1781,13 +1781,19 @@ async function saveLessonOrderFromDOM(wrap){
         BaiTap: r.BaiTap||r.baitap||'',
         ThuTuBai: ttb
     });
-    const jobs = keys.map((key, i) => {
-        const r = byKey[key];
-        return r ? postAdminWrite(buildPayload(r, key, i + 1)) : null;
-    }).filter(Boolean);
-    if(!jobs.length) return;
-    const results = await Promise.all(jobs);
-    if(results.some(x=>!x)){ toast('⚠️ Đổi thứ tự lỗi, thầy thử lại nhé','err'); }
+    // Gui TUAN TU (khong Promise.all ban dau) + co thu lai - ban Promise.all cu ban day
+    // TAT CA request len GAS CUNG LUC de gay loi hang loat giong het su co doi ten khoa
+    // 6/8/2026 (16/37 bai thanh cong roi cac request sau lien tuc that bai) - GAS/Spreadsheet
+    // khong chiu duoc nhieu ghi dong thoi vao cung 1 sheet.
+    let anyFail = false;
+    for(let i=0; i<keys.length; i++){
+        const r = byKey[keys[i]];
+        if(!r) continue;
+        const ok = await postAdminWriteWithRetry(buildPayload(r, keys[i], i + 1));
+        if(!ok) anyFail = true;
+        await sleep(150);
+    }
+    if(anyFail){ toast('⚠️ Đổi thứ tự lỗi, thầy thử lại nhé','err'); }
     invalidateCache();
     await loadLessons();
 }
@@ -2176,6 +2182,21 @@ async function postAdminWrite(payload){
         return !!(json && json.ok !== false);
     }catch(e){ return false; }
 }
+function sleep(ms){ return new Promise(res=>setTimeout(res, ms)); }
+// Dung cho thao tac GHI HANG LOAT (doi ten khoa/chuong, xoa khoa/chuong) - tu dong thu lai
+// toi da 2 lan (cach nhau 1s) neu 1 request trong loat that bai, DE PHONG GAS qua tai khi
+// nhan nhieu request lien tuc khong nghi (xem ghi chu 6/8/2026, khoa "Chuyen De Li Thuyet
+// GD1" tung chi doi ten thanh cong 16/37 bai roi cac request sau deu that bai lien tiep).
+// Cung cho' 1 khoang nghi nho (150ms) giua MOI request trong loat, ke ca khi thanh cong,
+// de giam ap luc goi lien tuc len GAS ngay tu dau.
+async function postAdminWriteWithRetry(payload, retries){
+    if(retries===undefined) retries=2;
+    for(let attempt=0; attempt<=retries; attempt++){
+        if(attempt>0) await sleep(1000);
+        if(await postAdminWrite(payload)) return true;
+    }
+    return false;
+}
 
 // Đổi tên khóa: cập nhật KhoaHoc của tất cả bài trong khóa
 async function renameCourse(fullName){
@@ -2208,7 +2229,8 @@ async function renameCourse(fullName){
             Video:l.Video||l.video||'',VideoGiai:l.VideoGiai||l.videogiai||'',
             MoTaBai:l.MoTaBai||l.motabai||'',NgayDang:l.NgayDang||l.ngaydang||'',BaiTap:l.BaiTap||l.baitap||''
         };
-        if(await postAdminWrite(payload)) ok++; else fail++;
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
     }
     // Xác minh thật: tải lại THẲNG từ server (không qua cache) và kiểm tra không còn bài nào
     // mang tên khóa CŨ — nếu còn nghĩa là đổi tên chỉ áp dụng được MỘT PHẦN (khóa bị tách đôi).
@@ -2238,7 +2260,8 @@ async function deleteCourse(fullName){
         const khoaV=l.KhoaHoc||'', chuongV=l.Chuong||l.chuong||'', tenBaiV=l.TenBai||l.tenbai||'';
         const key=khoaV+'|||'+chuongV+'|||'+tenBaiV;
         const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoaV, Chuong:chuongV, TenBai:tenBaiV};
-        if(await postAdminWrite(payload)) ok++; else fail++;
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
     }
     // Xác minh thật: XOÁ CACHE rồi tải lại danh sách bài THẲNG từ server (không phải
     // đọc lại cache 5 phút) và kiểm tra khóa này còn bài nào không — KHÔNG tin suông
@@ -2281,7 +2304,8 @@ Tên mới:`, oldChuong);
             Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
             MoTaBai:row.MoTaBai||row.motabai||'', PDF:row.PDF||row.pdf||'',
             NgayDang:row.NgayDang||row.ngaydang||todayStr(), BaiTap:row.BaiTap||row.baitap||''};
-        if(await postAdminWrite(payload)) ok++; else fail++;
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
     }
     invalidateCache();
     await loadLessons();
@@ -2300,7 +2324,8 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
         const tenBaiV = row.TenBai||row.tenbai||row.title||row.ten||'';
         const key = khoa+'|||'+chuong+'|||'+tenBaiV;
         const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoa, Chuong:chuong, TenBai:tenBaiV};
-        if(await postAdminWrite(payload)) ok++; else fail++;
+        if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
+        await sleep(150);
     }
     // Xác minh thật: xoá cache rồi tải THẲNG từ server, đếm lại chương còn bài nào không.
     invalidateCache();
