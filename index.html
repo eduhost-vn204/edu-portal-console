@@ -2683,6 +2683,20 @@ async function openEditForm(key){
     const maBai=(row.MaBai||row.mabai||'').toString().trim();
     document.getElementById('f-mabai').value=maBai;
     _vqSourceKey=maBai||key; _qbSourceKey=maBai||key;
+    // Ban do MOT LAN cho 6 bai da biet bi lac cau hoi truoc 7/8/2026 (xem
+    // project_pdf-baitap-mat-070826) - khoa VAN BAN GOC that su con luu trong sheet
+    // VideoCauHoi/BaiTapTracNghiem, khac voi 'key' (ten hien tai, da bi go lai IN HOA).
+    // Chi dung de TIM LAI 1 lan; sau khi Luu lai, du lieu chuyen han sang MaBai va map
+    // nay khong con tac dung (an toan de giu lai lau dai, khong anh huong bai khac).
+    const MIGRATION_OLDKEYS={
+        'B1036d251af19':'Chuyên đề lí thuyết GĐ1 - Vật Lý 12|||Chương 1 – Vật lý Nhiệt|||B1. Khai giảng GĐ1 + Cấu trúc của chất & Mô hình động học phân tử',
+        'B04e20f0ec67d':'Chuyên đề lí thuyết GĐ1 - Vật Lý 12|||Chương 1 – Vật lý Nhiệt|||B2. Lực liên kết và Sự chuyển thể của chất',
+        'Bfb85fde44802':'Chuyên đề lí thuyết GĐ1 - Vật Lý 12|||Chương 1 – Vật lý Nhiệt|||B3. Nhiệt độ – Thang nhiệt độ – Nhiệt kế',
+        'Bfc4552a2a3b2':'Chuyên đề lí thuyết GĐ1 - Vật Lý 12|||Chương 1 – Vật lý Nhiệt|||B4. Nhiệt dung riêng - Nóng chảy riêng - Hoá Hơi riêng',
+        'Be5b72ccf1261':'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12|||Chương 1 – Vật lý Nhiệt|||B5. Nội Năng – Định Luật I Nhiệt Động Lực Học',
+        'B04ff6fe289da':'5 NGÀY LẤY GỐC VẬT LÍ ( NÊN HỌC ⭐) - Vật Lý 12|||VẬT LÍ 10|||Ngày 1: Ý NGHĨA CỦA ĐƠN VỊ TRONG VẬT LÝ'
+    };
+    const migOldKey=MIGRATION_OLDKEYS[maBai]||'';
     const sc_row = extractSC(row.KhoaHoc||row.khoahoc||row.course||'Vật Lý 12');
     document.getElementById('f-lop').value = sc_row.subject || 'Vật Lý 12';
     fillKhoaSelect(sc_row.courseName || '');
@@ -2701,10 +2715,10 @@ async function openEditForm(key){
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    let baitapArr = await qbLoadFromGAS(maBai||key, key);
+    let baitapArr = await qbLoadFromGAS(maBai||key, key, migOldKey);
     if(baitapArr===null){ try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){baitapArr=[];} }
     baitapArr.forEach(q=>addQuestion(q));
-    vqReset(); vqLoadFromGAS(maBai||key, key);
+    vqReset(); vqLoadFromGAS(maBai||key, key, migOldKey);
     document.getElementById('btn-save-lesson').disabled=false;
     document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
     lmListScrollY=window.scrollY;
@@ -3151,11 +3165,11 @@ function vqValidate(){
     if(new Set(ts).size!==ts.length) return 'Có 2 mốc trùng thời gian — mỗi mốc cần thời điểm khác nhau (câu để trống mốc thì không bị giới hạn này)';
     return '';
 }
-async function vqLoadFromGAS(key, altKey){
+async function vqLoadFromGAS(key, ...altKeys){
     const box=document.getElementById('vq-list');
     if(box) box.innerHTML='<div style="color:var(--gray2);font-size:13px;padding:6px 0"><i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea3i c\u00e2u h\u1ecfi trong video...</div>';
     try{
-        const tryKeys=[key]; if(altKey && altKey!==key) tryKeys.push(altKey);
+        const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         let found=[];
         for(const k of tryKeys){
             const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now());
@@ -3192,9 +3206,9 @@ async function vqSaveToGAS(newKey, origKey){
    còn giới hạn 50.000 ký tự/ô như cột BaiTap cũ trong sheet BaiHoc) — cùng cơ chế
    với Câu hỏi trong video ở trên. Cột BaiTap cũ chỉ còn dùng làm fallback đọc cho
    các bài CŨ chưa từng được lưu lại bằng bản này (xem openEditForm/saveLessonForm). */
-async function qbLoadFromGAS(key, altKey){
+async function qbLoadFromGAS(key, ...altKeys){
     try{
-        const tryKeys=[key]; if(altKey && altKey!==key) tryKeys.push(altKey);
+        const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         for(const k of tryKeys){
             const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now());
             const j = await r.json();
