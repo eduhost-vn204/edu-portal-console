@@ -714,6 +714,7 @@
                     <div class="fp-body">
                         <input type="hidden" id="f-original-key">
                         <input type="hidden" id="f-original-ttb">
+                        <input type="hidden" id="f-mabai">
                         <div class="form-row">
                             <div class="form-field">
                                 <label>Lớp / Môn <span>*</span></label>
@@ -2640,6 +2641,8 @@ function openNewForm(){
     document.getElementById('fp-title').textContent='Thêm bài giảng mới';
     document.getElementById('f-original-key').value='';
     document.getElementById('f-original-ttb').value='';
+    document.getElementById('f-mabai').value='';
+    _vqSourceKey=''; _qbSourceKey='';
     document.getElementById('f-lop').value='Vật Lý 12';
     fillKhoaSelect();
     fillChuongSelect();
@@ -2672,6 +2675,14 @@ async function openEditForm(key){
     document.getElementById('fp-title').textContent='Sửa bài giảng';
     document.getElementById('f-original-key').value=key;
     document.getElementById('f-original-ttb').value=(row.ThuTuBai!==undefined&&row.ThuTuBai!==null)?row.ThuTuBai:((row.thutubai!==undefined&&row.thutubai!==null)?row.thutubai:'');
+    // MaBai: ma dinh danh ON DINH cua bai hoc (khong doi khi doi ten khoa/chuong/bai) - dung lam
+    // khoa tra cuu Cau hoi trong video/Bai tap trac nghiem thay vi ten bai ghep chuoi de tranh
+    // lac du lieu khi doi ten (xem project_pdf-baitap-mat-070826, 7/8/2026). Mac dinh khoa nguon =
+    // MaBai (hoac key cu neu chua co MaBai); vqLoadFromGAS/qbLoadFromGAS se cap nhat lai neu
+    // du lieu thuc te dang con nam o khoa cu (bai chua tung luu lai theo co che moi).
+    const maBai=(row.MaBai||row.mabai||'').toString().trim();
+    document.getElementById('f-mabai').value=maBai;
+    _vqSourceKey=maBai||key; _qbSourceKey=maBai||key;
     const sc_row = extractSC(row.KhoaHoc||row.khoahoc||row.course||'Vật Lý 12');
     document.getElementById('f-lop').value = sc_row.subject || 'Vật Lý 12';
     fillKhoaSelect(sc_row.courseName || '');
@@ -2690,10 +2701,10 @@ async function openEditForm(key){
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    let baitapArr = await qbLoadFromGAS(key);
+    let baitapArr = await qbLoadFromGAS(maBai||key, key);
     if(baitapArr===null){ try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){baitapArr=[];} }
     baitapArr.forEach(q=>addQuestion(q));
-    vqReset(); vqLoadFromGAS(key);
+    vqReset(); vqLoadFromGAS(maBai||key, key);
     document.getElementById('btn-save-lesson').disabled=false;
     document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
     lmListScrollY=window.scrollY;
@@ -2848,9 +2859,13 @@ document.getElementById('q-file-input')?.addEventListener('change', e=>{ if(e.ta
 
 /* ════ CÂU HỎI TRONG VIDEO (video dừng tại mốc, HS trả lời mới xem tiếp) ════ */
 let vqItems=[]; // {t:giây, nhId, q, A, B, C, D, ans}
+// Khoa THAT SU vua doc du lieu Cau hoi trong video / Bai tap trac nghiem ra tu server
+// (co the la MaBai moi hoac khoa ghep chuoi cu con sot) - dung lam originalKey khi luu lai,
+// de doi ten khoa/chuong/bai khong lam lac cau hoi (xem project_pdf-baitap-mat-070826, 7/8/2026).
+let _vqSourceKey='', _qbSourceKey='';
 window._vqTouched=false;
 
-function vqReset(){ vqItems=[]; window._vqTouched=false; renderVQ(); }
+function vqReset(){ vqItems=[]; window._vqTouched=false; _vqSourceKey=''; renderVQ(); }
 
 function vqFmtTime(s){
     if(s===null||s===undefined||s==='') return '';
@@ -3136,15 +3151,19 @@ function vqValidate(){
     if(new Set(ts).size!==ts.length) return 'Có 2 mốc trùng thời gian — mỗi mốc cần thời điểm khác nhau (câu để trống mốc thì không bị giới hạn này)';
     return '';
 }
-async function vqLoadFromGAS(key){
+async function vqLoadFromGAS(key, altKey){
     const box=document.getElementById('vq-list');
     if(box) box.innerHTML='<div style="color:var(--gray2);font-size:13px;padding:6px 0"><i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea3i c\u00e2u h\u1ecfi trong video...</div>';
     try{
-        const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(key)+'&t='+Date.now());
-        const j=await r.json();
-        vqItems=(j&&j.data||[])
-            .filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key)
-            .map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
+        const tryKeys=[key]; if(altKey && altKey!==key) tryKeys.push(altKey);
+        let found=[];
+        for(const k of tryKeys){
+            const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now());
+            const j=await r.json();
+            found=(j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+            if(found.length){ _vqSourceKey=k; break; }
+        }
+        vqItems=found.map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
         if(vqItems.length) window._vqTouched=true;
     }catch(e){ vqItems=[]; }
     renderVQ();
@@ -3173,21 +3192,25 @@ async function vqSaveToGAS(newKey, origKey){
    còn giới hạn 50.000 ký tự/ô như cột BaiTap cũ trong sheet BaiHoc) — cùng cơ chế
    với Câu hỏi trong video ở trên. Cột BaiTap cũ chỉ còn dùng làm fallback đọc cho
    các bài CŨ chưa từng được lưu lại bằng bản này (xem openEditForm/saveLessonForm). */
-async function qbLoadFromGAS(key){
+async function qbLoadFromGAS(key, altKey){
     try{
-        const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(key)+'&t='+Date.now());
-        const j = await r.json();
-        const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===key);
-        if(rows.length){
-            rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
-            return rows.map(rw=>({
-                type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
-                q:(rw.question||'').toString(),
-                A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
-                C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
-                ans:String(rw.correct||'').toUpperCase().trim(),
-                correct:(rw.correct||'').toString()
-            }));
+        const tryKeys=[key]; if(altKey && altKey!==key) tryKeys.push(altKey);
+        for(const k of tryKeys){
+            const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now());
+            const j = await r.json();
+            const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+            if(rows.length){
+                _qbSourceKey=k;
+                rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
+                return rows.map(rw=>({
+                    type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                    q:(rw.question||'').toString(),
+                    A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
+                    C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
+                    ans:String(rw.correct||'').toUpperCase().trim(),
+                    correct:(rw.correct||'').toString()
+                }));
+            }
         }
     }catch(e){ /* rơi xuống fallback đọc cột BaiTap cũ ở nơi gọi */ }
     return null; // null = sheet mới chưa có dữ liệu cho bài này, nơi gọi tự fallback
@@ -3384,8 +3407,15 @@ async function saveLessonForm(){
             return;
         }
         invalidateCache();
-        try{ await qbSaveToGAS(`${khoa}|||${chuong}|||${tenbai}`, document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRẮC NGHIỆM lưu lỗi: '+e.message,'err'); }
-        try{ await vqSaveToGAS(`${khoa}|||${chuong}|||${tenbai}`, document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRONG VIDEO lưu lỗi: '+e.message,'err'); }
+        // Tu 7/8/2026: luu Cau hoi trong video/Bai tap trac nghiem theo MaBai (on dinh) thay vi
+        // ten bai ghep chuoi, de doi ten khoa/chuong/bai sau nay khong lam lac cau hoi nua.
+        // Bai chua co MaBai (moi tao) tam fallback ve ten ghep chuoi, se tu chuyen sang MaBai
+        // o lan luu sau (khi server da gan MaBai). originalKey dung _qbSourceKey/_vqSourceKey
+        // (khoa THAT SU vua doc du lieu ra o buoc mo form) de doi dung dong, khong tao trung.
+        const maBaiVal=document.getElementById('f-mabai').value.trim();
+        const qbvqKey=maBaiVal||`${khoa}|||${chuong}|||${tenbai}`;
+        try{ await qbSaveToGAS(qbvqKey, _qbSourceKey||document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRẮC NGHIỆM lưu lỗi: '+e.message,'err'); }
+        try{ await vqSaveToGAS(qbvqKey, _vqSourceKey||document.getElementById('f-original-key').value); }catch(e){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Bài đã lưu nhưng CÂU HỎI TRONG VIDEO lưu lỗi: '+e.message,'err'); }
         toast('<i class="fa-solid fa-circle-check"></i> Đã lưu bài giảng lên Google Sheets!','ok');
         showSyncBadge();
         closeForm();
