@@ -1965,7 +1965,11 @@ async function confirmBulkMove(){
             action:'saveBaiHoc', originalKey:key,
             KhoaHoc:khoaDich, Chuong:chuongDich, TenBai:tenBai,
             Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
-            MoTaBai:row.MoTaBai||row.motabai||'', NgayDang:row.NgayDang||row.ngaydang||'', BaiTap:row.BaiTap||row.baitap||''
+            MoTaBai:row.MoTaBai||row.motabai||'',
+            PDF:row.PDF||row.pdf||'', PDFLyThuyet:row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'',
+            PDFLuyenTap:row.PDFLuyenTap||row.pdfluyentap||'', ThoiGianLamBai:row.ThoiGianLamBai||row.thoigianlambai||'',
+            NgayDang:row.NgayDang||row.ngaydang||'', BaiTap:row.BaiTap||row.baitap||'',
+            ThuTuBai:row.ThuTuBai||row.thutubai||''
         };
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
@@ -2506,7 +2510,11 @@ async function renameCourse(fullName){
             originalKey:(l.KhoaHoc||'')+'|||'+(l.Chuong||l.chuong||'')+'|||'+(l.TenBai||l.tenbai||''),
             KhoaHoc:newFull,Chuong:l.Chuong||l.chuong||'',TenBai:l.TenBai||l.tenbai||'',
             Video:l.Video||l.video||'',VideoGiai:l.VideoGiai||l.videogiai||'',
-            MoTaBai:l.MoTaBai||l.motabai||'',NgayDang:l.NgayDang||l.ngaydang||'',BaiTap:l.BaiTap||l.baitap||''
+            MoTaBai:l.MoTaBai||l.motabai||'',
+            PDF:l.PDF||l.pdf||'', PDFLyThuyet:l.PDFLyThuyet||l.pdflythuyet||l.pdflt||'',
+            PDFLuyenTap:l.PDFLuyenTap||l.pdfluyentap||'', ThoiGianLamBai:l.ThoiGianLamBai||l.thoigianlambai||'',
+            NgayDang:l.NgayDang||l.ngaydang||'',BaiTap:l.BaiTap||l.baitap||'',
+            ThuTuBai:l.ThuTuBai||l.thutubai||''
         };
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
@@ -2582,7 +2590,10 @@ Tên mới:`, oldChuong);
             TenBai:row.TenBai||row.tenbai||row.title||row.ten||'',
             Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
             MoTaBai:row.MoTaBai||row.motabai||'', PDF:row.PDF||row.pdf||'',
-            NgayDang:row.NgayDang||row.ngaydang||todayStr(), BaiTap:row.BaiTap||row.baitap||''};
+            PDFLyThuyet:row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'', PDFLuyenTap:row.PDFLuyenTap||row.pdfluyentap||'',
+            ThoiGianLamBai:row.ThoiGianLamBai||row.thoigianlambai||'',
+            NgayDang:row.NgayDang||row.ngaydang||todayStr(), BaiTap:row.BaiTap||row.baitap||'',
+            ThuTuBai:row.ThuTuBai||row.thutubai||''};
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
     }
