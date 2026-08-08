@@ -4459,7 +4459,7 @@ function renderBankStats(){
 function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
     const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
-    const bais=[...new Set(bankData.map(q=>q.baiHoc).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
+    const bais=[...new Set(bankData.flatMap(q=>(q.baiHoc||'').split(',').map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi'));
     const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong'), sb=document.getElementById('nh-f-bai');
     const vm=sm.value, vc=sc.value, vb=sb.value;
     sm.innerHTML='<option value="">Tất cả môn</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
@@ -4477,7 +4477,7 @@ function bankFiltered(){
           fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
     return bankData.filter(q=>
         (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
-        (!fp||q.phanLoai===fp)&&(!fb||q.baiHoc===fb)&&
+        (!fp||q.phanLoai===fp)&&(!fb||(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb))&&
         (!fs||((q.question||'')+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
