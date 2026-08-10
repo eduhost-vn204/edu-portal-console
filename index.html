@@ -4390,7 +4390,7 @@ function resetAll(){
 let bankData=[], bankLoaded=false, bankParsed=[], bankSel=new Set();
 
 /* ── Bài học (chủ đề) — dùng danh sách Bài của khóa "GĐ1" làm tiêu chí phân loại câu hỏi ── */
-function normVN(s){ return (s||'').toString().toLowerCase().replace(/\blý\b/g,'lí').replace(/chương\s*\d+\s*[-–—]\s*/gi,'').replace(/\s+/g,' ').trim(); }
+function normVN(s){ return (s||'').toString().toLowerCase().replace(/lý/g,'lí').replace(/chương\s*\d+\s*[-–—]\s*/gi,'').replace(/\s+/g,' ').trim(); }
 function getGD1Lessons(){ return (typeof allLessons!=='undefined'?allLessons:[]).filter(r=>/GĐ1|GD1/i.test(khoaOf(r))); }
 function baiOptionsForChuong(chuong){
     const lessons=getGD1Lessons();
@@ -4460,11 +4460,14 @@ function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
     const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
     const bais=[...new Set(bankData.flatMap(q=>(q.baiHoc||'').split(',').map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi'));
+    const unsetCount=bankData.filter(q=>!(q.baiHoc||'').trim()).length;
     const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong'), sb=document.getElementById('nh-f-bai');
     const vm=sm.value, vc=sc.value, vb=sb.value;
     sm.innerHTML='<option value="">Tất cả môn</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
     sc.innerHTML='<option value="">Tất cả chương</option>'+chuongs.map(m=>`<option>${nhEsc(m)}</option>`).join('');
-    sb.innerHTML='<option value="">Tất cả bài</option>'+bais.map(m=>`<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
+    sb.innerHTML='<option value="">Tất cả bài</option>'
+        +`<option value="__EMPTY__">⚠️ Chưa gán bài (${unsetCount})</option>`
+        +bais.map(m=>`<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
     sm.value=vm; sc.value=vc; sb.value=vb;
 }
 function bankFiltered(){
@@ -4477,7 +4480,7 @@ function bankFiltered(){
           fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
     return bankData.filter(q=>
         (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
-        (!fp||q.phanLoai===fp)&&(!fb||(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb))&&
+        (!fp||q.phanLoai===fp)&&(!fb||(fb==='__EMPTY__'?!(q.baiHoc||'').trim():(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb)))&&
         (!fs||((q.question||'')+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
