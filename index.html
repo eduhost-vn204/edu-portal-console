@@ -4669,8 +4669,8 @@ async function bankAssignBaiApply(){
     try{
         await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bulksetbainganhang',ids,baiHoc})});
         await new Promise(r=>setTimeout(r,900));
-        ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; });
-        fillBankFilters(); renderBankList();
+        ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; bankSel.delete(id); });
+        fillBankFilters(); renderBankList(); updateSelBar();
         toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
         document.getElementById('nh-bai-form').style.display='none';
     }catch(e){
