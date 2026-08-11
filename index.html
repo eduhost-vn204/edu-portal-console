@@ -5703,6 +5703,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
           <th style="padding:10px 14px;text-align:left;font-weight:700">Ngày tạo</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700" title="Học sinh đã học trong lớp/khoá của thầy + đã xem live rồi &#8594; không cần bắt xem video/câu áp dụng trong bài, chỉ cần &#8805;90% Luyện tập trắc nghiệm là qua bài">Miễn ĐK video</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700" title="Áp dụng cho MỌI tài khoản. Tích (mặc định): HS vẫn bị dừng video để trả lời câu hỏi trong bài như bình thường. Bỏ tích: video phát liền mạch, không dừng lại hỏi bài.">Làm trắc nghiệm cùng thầy</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700" title="Mặc định KHÔNG tích — chỉ thầy chủ động bật cho từng tài khoản. Khi tích: HS chỉ cần xem hết video là qua bài, không cần đạt ≥90% Luyện tập trắc nghiệm.">Miễn ĐK luyện tập</th>
           <th style="padding:10px 14px;text-align:center;font-weight:700">Thao tác</th>
         </tr>
       </thead>
@@ -5919,6 +5920,9 @@ function renderTK(list) {
         <td style="padding:10px 14px;text-align:center" onclick="event.stopPropagation()">
           <input type="checkbox" ${r.tracNghiemVideo!==false?'checked':''} onchange="tkToggleTracNghiemVideo('${esc(r.sdt)}', this.checked, this)" title="Áp dụng mọi tài khoản. Tích (mặc định): vẫn bắt trả lời câu hỏi trong video (dừng video hỏi bài). Bỏ tích: video phát liền mạch không bị dừng lại." style="width:16px;height:16px;cursor:pointer">
         </td>
+        <td style="padding:10px 14px;text-align:center" onclick="event.stopPropagation()">
+          <input type="checkbox" ${r.mienLuyenTap?'checked':''} onchange="tkToggleMienLuyenTap('${esc(r.sdt)}', this.checked, this)" title="Mặc định KHÔNG tích. Tích: HS chỉ cần xem hết video là qua bài, không cần đạt ≥90% Luyện tập trắc nghiệm." style="width:16px;height:16px;cursor:pointer">
+        </td>
         <td style="padding:10px 14px;text-align:center;white-space:nowrap">
           <button onclick="event.stopPropagation();openTkModal('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Nâng cấp</button>
           <button onclick="event.stopPropagation();deleteTK('${esc(r.sdt)}','${esc(r.hoten)}')" style="font-size:12px;padding:5px 12px;margin-left:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Xoá</button>
@@ -6003,6 +6007,31 @@ async function tkToggleTracNghiemVideo(sdt, checked, cb) {
   }
 }
 
+// Bật/tắt "Miễn điều kiện luyện tập trắc nghiệm" cho 1 học sinh — mặc định KHÔNG
+// tích (kể cả tài khoản mới tạo), CHỈ thầy chủ động bật ở đây mới có tác dụng.
+// Khi bật: HS chỉ cần xem hết video là qua bài, không cần đạt ≥90% Luyện tập trắc nghiệm.
+async function tkToggleMienLuyenTap(sdt, checked, cb) {
+  if (cb) cb.disabled = true;
+  try {
+    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, mienLuyenTap: checked }) });
+    const d = await r.json();
+    if (d.ok) {
+      toast(checked ? 'Đã miễn điều kiện luyện tập cho học sinh này — chỉ cần xem hết video là qua bài.' : 'Đã bỏ miễn điều kiện luyện tập.', 'ok');
+      const row = allTK.find(x => String(x.sdt) === String(sdt));
+      if (row) row.mienLuyenTap = checked;
+    } else {
+      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      if (cb) cb.checked = !checked;
+    }
+  } catch(e) {
+    toast('Lỗi: ' + e.message, 'err');
+    if (cb) cb.checked = !checked;
+  } finally {
+    if (cb) cb.disabled = false;
+  }
+}
+
 /* ════ CHI TIẾT TÀI KHOẢN + LỊCH SỬ HOẠT ĐỘNG ════ */
 let tkdSdt = null;
 
@@ -6069,6 +6098,33 @@ async function tkdLoadAct(sdt) {
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
 }
 
+// Tra ten bai hoc that su tu 1 gia tri TienDo.lesson da luu (co the la MaBai on dinh
+// dang "B..." tu 6/8/2026, hoac key ghep cu "Khoa|||Chuong|||TenBai", hoac hiem hon la
+// ten thuan cu hon nua). CHI doc du lieu allLessons da tai san (tab Quan ly bai hoc),
+// KHONG ghi/sua bat ky du lieu TienDo/BaiHoc nao — an toan tuyet doi, khong anh huong HS.
+function tkdResolveLessonName(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return '---';
+  // 1) Khop truc tiep theo MaBai trong danh sach bai hoc hien tai
+  const byMaBai = allLessons.find(r => String(r.MaBai || r.mabai || '').trim() === s);
+  if (byMaBai) return byMaBai.TenBai || byMaBai.tenbai || byMaBai.title || byMaBai.ten || s;
+  // 2) Fallback cho 6 bai da biet tung bi lac MaBai truoc 7/8/2026 (cung du lieu voi
+  //    MIGRATION_OLDKEYS trong openEditForm, chi giu 1 ban rieng vi bien do la local)
+  const _TKD_OLDKEYS = {
+    'B1036d251af19':'B1. Khai giảng GĐ1 + Cấu trúc của chất & Mô hình động học phân tử',
+    'B04e20f0ec67d':'B2. Lực liên kết và Sự chuyển thể của chất',
+    'Bfb85fde44802':'B3. Nhiệt độ – Thang nhiệt độ – Nhiệt kế',
+    'Bfc4552a2a3b2':'B4. Nhiệt dung riêng - Nóng chảy riêng - Hoá Hơi riêng',
+    'Be5b72ccf1261':'B5. Nội Năng – Định Luật I Nhiệt Động Lực Học',
+    'B04ff6fe289da':'Ngày 1: Ý NGHĨA CỦA ĐƠN VỊ TRONG VẬT LÝ'
+  };
+  if (_TKD_OLDKEYS[s]) return _TKD_OLDKEYS[s];
+  // 3) Key ghep dang "Khoa|||Chuong|||TenBai" (du lieu truoc migration MaBai)
+  if (s.includes('|||')) { const parts = s.split('|||'); return parts[parts.length - 1] || s; }
+  // 4) Khong nhan dien duoc — hien nguyen gia tri (vd ten bai da luu thuan tuy truoc day)
+  return s;
+}
+
 async function tkdLoadTienDo(sdt) {
   const el = document.getElementById('tkd-tiendo');
   try {
@@ -6079,7 +6135,7 @@ async function tkdLoadTienDo(sdt) {
     if (!list.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa hoàn thành bài học nào.</div>'; return; }
     el.innerHTML = list.slice().reverse().map(t => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
       <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(t.ngay)}</span>
-      <span>${esc(String(t.lesson||'').replace(/\|/g,' · '))}</span>
+      <span>${esc(tkdResolveLessonName(t.lesson))}</span>
       <span style="color:var(--gray)">${esc(t.khoa||'')}</span>
     </div>`).join('');
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
