@@ -664,6 +664,9 @@
         <i class="fa-solid fa-comment-dots"></i> Hỗ trợ HS
         <span id="ht-tab-badge" style="display:none;position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444"></span>
     </button>
+    <button class="tab-btn" onclick="switchTab('huongdan')" id="tab-huongdan-btn">
+        <i class="fa-solid fa-circle-play"></i> Hướng Dẫn
+    </button>
 </div>
 
 <!-- ════════════════════════════════════
@@ -1348,7 +1351,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1410,6 +1413,7 @@ function switchTab(name){
     if(name==='quanlylive') initLiveControl();
     if(name==='taikhoan' && !tkLoaded) loadTaiKhoan();
     if(name==='hotro') initSupportChat();
+    if(name==='huongdan' && !hdLoaded) loadHuongDan();
 }
 
 /* ════════════════════════════════════
@@ -1418,6 +1422,62 @@ function switchTab(name){
 function toast(msg,type){ const t=document.getElementById('toast'); t.className='toast show '+(type||''); t.innerHTML=msg; clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast',2800); }
 function esc(s){ return(s==null?'':s).toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function ytId(url){ if(!url) return ''; url=url.toString().trim(); if(/^[A-Za-z0-9_-]{11}$/.test(url)) return url; const m=url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/); return m?m[1]:''; }
+
+/* ════ HƯỚNG DẪN HỌC TẬP (popup video) ════ */
+const HD_KEYS = [
+  {key:'signup',        label:'Popup sau khi đăng ký tài khoản',       ph:'vd: Chào mừng em đến với Vật Lý Xuân Trường!'},
+  {key:'baihoc',        label:'Khu vực: Khóa Học',                     ph:'vd: Hướng dẫn học Khóa Học'},
+  {key:'danhsach-ly12', label:'Khu vực: Đề Thi',                       ph:'vd: Hướng dẫn làm Đề Thi'},
+  {key:'hoso',          label:'Khu vực: Hồ Sơ',                        ph:'vd: Hướng dẫn xem Hồ Sơ & Xếp hạng'},
+  {key:'live',          label:'Khu vực: Live',                         ph:'vd: Hướng dẫn học cùng Live'},
+  {key:'lichlive',      label:'Khu vực: Lịch Live',                    ph:'vd: Hướng dẫn xem Lịch Live'}
+];
+let hdLoaded = false;
+let hdData = {};
+async function loadHuongDan(force){
+  if(!force && hdLoaded) return;
+  document.getElementById('hd-list').innerHTML = '<div style="padding:30px;text-align:center;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div>';
+  try{
+    const r = await fetch(DB_URL+'?type=huongdan').then(r=>r.json());
+    hdData = {};
+    (r.data||[]).forEach(row=>{ if(row.key) hdData[row.key] = row; });
+    hdLoaded = true;
+    renderHuongDanList();
+  }catch(e){
+    document.getElementById('hd-list').innerHTML = '<div style="padding:30px;text-align:center;color:var(--red)">Lỗi tải dữ liệu: '+esc(e.message)+'</div>';
+  }
+}
+function renderHuongDanList(){
+  document.getElementById('hd-list').innerHTML = HD_KEYS.map(k=>{
+    const d = hdData[k.key] || {};
+    return `<div class="nh-card" style="margin-bottom:14px">
+      <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">${esc(k.label)}</h3>
+      <div class="form-field"><label>Tiêu đề</label><input type="text" id="hd-tt-${k.key}" placeholder="${esc(k.ph)}" value="${esc(d.tieuDe||'')}"></div>
+      <div class="form-field"><label>Link video YouTube</label><input type="text" id="hd-vid-${k.key}" placeholder="https://youtube.com/watch?v=..." value="${esc(d.videoUrl||'')}"></div>
+      <div class="form-field"><label>Nội dung hướng dẫn (text, hiện dưới video)</label><textarea id="hd-nd-${k.key}" rows="3" placeholder="Mô tả ngắn gọn cách dùng khu vực này...">${esc(d.noiDung||'')}</textarea></div>
+      <button class="btn-publish" id="hd-btn-${k.key}" onclick="saveHuongDanKey('${k.key}')"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+    </div>`;
+  }).join('');
+}
+async function saveHuongDanKey(key){
+  const tieuDe = document.getElementById('hd-tt-'+key).value.trim();
+  const videoUrl = document.getElementById('hd-vid-'+key).value.trim();
+  const noiDung = document.getElementById('hd-nd-'+key).value.trim();
+  const btn = document.getElementById('hd-btn-'+key);
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+  try{
+    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'savehuongdan', key, tieuDe, videoUrl, noiDung})});
+    await new Promise(r=>setTimeout(r,700));
+    hdData[key] = {key, tieuDe, videoUrl, noiDung};
+    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu hướng dẫn','ok');
+  }catch(e){
+    toast('Lỗi: '+e.message,'err');
+  }finally{
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu';
+  }
+}
+
 function todayStr(){ return new Date().toLocaleDateString('vi-VN'); }
 
 /* ════════════════════════════════════
@@ -5867,6 +5927,21 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 <div style="font-size:12px;color:var(--gray2);margin-top:10px">
   Mỗi thiết bị chỉ được tạo 1 tài khoản học thử. "Mở khoá" cho phép thiết bị đó đăng ký học thử lại (dùng khi học sinh dùng chung máy, đổi máy, hoặc cần hỗ trợ đặc biệt).
 </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════
+     TAB: HƯỚNG DẪN HỌC TẬP (popup video, 17/8/2026)
+════════════════════════════════════ -->
+<div class="tab-content" id="tab-huongdan">
+<div class="wrap" style="max-width:900px">
+<h2 style="font-size:20px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px">
+  <i class="fa-solid fa-circle-play" style="color:var(--blue)"></i> Hướng Dẫn Học Tập
+</h2>
+<div style="font-size:13px;color:var(--gray2);margin-bottom:20px">
+  Video + nội dung hướng dẫn hiện dưới dạng popup cho học sinh — 1 mục sau khi đăng ký, 5 mục còn lại hiện lần đầu khi vào mỗi khu vực (học sinh có thể bấm nút "❓ Hướng dẫn" để xem lại bất cứ lúc nào). Để trống mục nào thì khu vực đó tạm chưa hiện popup.
+</div>
+<div id="hd-list"></div>
 </div>
 </div>
 
