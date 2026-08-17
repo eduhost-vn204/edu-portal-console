@@ -4633,6 +4633,48 @@ function updateSelBar(){
     if(n===0){ document.getElementById('nh-exam-form').style.display='none'; document.getElementById('nh-bai-form').style.display='none'; document.getElementById('nh-word-form').style.display='none'; }
 }
 
+/* ── Tạo đề thi từ câu đã chọn trong Ngân hàng (trước đây nút này không có JS, không hoạt động) ── */
+function showBankExamForm(){
+    if(!bankSel.size){ toast('Chưa chọn câu nào','err'); return; }
+    document.getElementById('nh-bai-form').style.display='none';
+    document.getElementById('nh-word-form').style.display='none';
+    document.getElementById('nh-ef-count').textContent=bankSel.size;
+    document.getElementById('nh-exam-form').style.display='';
+    document.getElementById('nh-exam-form').scrollIntoView({behavior:'smooth'});
+}
+async function bankCreateExam(){
+    const ids=[...bankSel];
+    if(!ids.length) return;
+    const examId=(document.getElementById('nh-ef-examid').value||'').trim();
+    const tenDe=(document.getElementById('nh-ef-tende').value||'').trim();
+    const thoiGian=Number(document.getElementById('nh-ef-thoigian').value)||45;
+    const lop=document.getElementById('nh-ef-lop').value||'12';
+    const trangThai=document.getElementById('nh-ef-trangthai').value||'khoa';
+    if(!examId||!tenDe){ toast('Nhập đủ Mã đề và Tên đề','err'); return; }
+    const LOAI_TYPE={TN:'mc',DS:'tf',TLN:'short'};
+    const questions=ids.map(id=>{
+        const q=bankData.find(x=>x.id===id); if(!q) return null;
+        return { id:q.id, type:LOAI_TYPE[q.loai]||'mc', question:q.question,
+            optA:q.optA||'', optB:q.optB||'', optC:q.optC||'', optD:q.optD||'', correct:q.correct||'' };
+    }).filter(Boolean);
+    const btn=document.getElementById('nh-ef-create-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
+    try{
+        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify({action:'saveexam',examId,tenDe,thoiGian,trangThai,lop})});
+        await new Promise(r=>setTimeout(r,700));
+        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify({action:'savequestions',examId,clearFirst:true,questions})});
+        toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu','ok');
+        document.getElementById('nh-exam-form').style.display='none';
+        bankClearSelection();
+    }catch(e){
+        toast('Lỗi: '+e.message,'err');
+    }finally{
+        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rocket"></i> Tạo đề & đưa câu hỏi vào';
+    }
+}
+
 /* ── Gán "Bài học" hàng loạt cho các câu đã chọn ── */
 function bankAssignBaiOpen(){
     if(!bankSel.size){ toast('Chưa chọn câu nào','err'); return; }
