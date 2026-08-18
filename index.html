@@ -989,6 +989,7 @@
         <div class="stat-card"><div class="stat-label">Trắc nghiệm</div><div class="stat-val" id="nh-s-tn">—</div></div>
         <div class="stat-card"><div class="stat-label">Đúng / Sai</div><div class="stat-val" id="nh-s-ds">—</div></div>
         <div class="stat-card"><div class="stat-label">Trả lời ngắn</div><div class="stat-val green" id="nh-s-tln">—</div></div>
+        <div class="stat-card"><div class="stat-label">Câu tinh (đã rà soát)</div><div class="stat-val green" id="nh-s-tinh">—</div></div>
     </div>
 
     <div class="nh-grid">
@@ -1087,6 +1088,11 @@
                     <option value="TLN-CT">TLN: Tính toán</option><option value="TLN-KH">TLN: Khái quát</option><option value="TLN-TH">TLN: Tổng hợp</option>
                 </select>
                 <select id="nh-f-bai" onchange="renderBankList()"><option value="">Tất cả bài</option></select>
+                <select id="nh-f-chatluong" onchange="renderBankList()">
+                    <option value="">Câu thô + Câu tinh</option>
+                    <option value="tinh">🟢 Câu tinh (đã rà soát)</option>
+                    <option value="tho">🟡 Câu thô (chưa rà soát)</option>
+                </select>
                 <input id="nh-f-search" placeholder="Tìm trong nội dung câu hỏi..." oninput="renderBankList()">
             </div>
             <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;font-size:13px;color:var(--gray)">
@@ -1102,6 +1108,8 @@
                 <span class="ns-count"><i class="fa-solid fa-circle-check" style="color:#4ade80"></i> Đã chọn <span id="nh-sel-count">0</span> câu</span>
                 <button style="background:#2563eb;color:#fff" onclick="showBankExamForm()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo đề thi từ câu đã chọn</button>
                 <button style="background:#0e7490;color:#fff" onclick="bankAssignBaiOpen()"><i class="fa-solid fa-tag"></i> Gán vào Bài</button>
+                <button style="background:#16a34a;color:#fff" onclick="bankMarkChatLuong('tinh')"><i class="fa-solid fa-circle-check"></i> Đánh dấu Tinh</button>
+                <button style="background:#d97706;color:#fff" onclick="bankMarkChatLuong('tho')"><i class="fa-solid fa-triangle-exclamation"></i> Đánh dấu Thô</button>
                 <button style="background:#0f766e;color:#fff" onclick="bankExportWordOpen()"><i class="fa-solid fa-file-word"></i> Xuất Word</button>
                 <button style="background:#dc2626;color:#fff" onclick="bankDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa khỏi ngân hàng</button>
                 <button style="background:rgba(255,255,255,.15);color:#fff" onclick="bankClearSelection()">Bỏ chọn</button>
@@ -4508,10 +4516,12 @@ async function loadBank(force){
 function renderBankStats(){
     const c={TN:0,DS:0,TLN:0};
     bankData.forEach(q=>{ if(c[q.loai]!==undefined)c[q.loai]++; });
+    const tinhCount=bankData.filter(q=>q.chatLuong==='tinh').length;
     document.getElementById('nh-s-total').textContent=bankData.length;
     document.getElementById('nh-s-tn').textContent=c.TN;
     document.getElementById('nh-s-ds').textContent=c.DS;
     document.getElementById('nh-s-tln').textContent=c.TLN;
+    document.getElementById('nh-s-tinh').textContent=tinhCount;
 }
 function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
@@ -4534,10 +4544,12 @@ function bankFiltered(){
           fl=document.getElementById('nh-f-loai').value,
           fp=document.getElementById('nh-f-phanloai').value,
           fb=document.getElementById('nh-f-bai').value,
+          fcl=document.getElementById('nh-f-chatluong').value,
           fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
     return bankData.filter(q=>
         (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
         (!fp||q.phanLoai===fp)&&(!fb||(fb==='__EMPTY__'?!(q.baiHoc||'').trim():(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb)))&&
+        (!fcl||(q.chatLuong||'tho')===fcl)&&
         (!fs||((q.question||'')+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
@@ -4568,6 +4580,7 @@ function bankRowHtml(q,withCheck){
         <div class="nh-q-body">
             <div class="nh-meta">
                 <span class="nh-badge b-${q.loai.toLowerCase()}">${NH_LOAI_TEN[q.loai]||q.loai}</span>
+                ${q.chatLuong==='tinh'?'<span class="nh-badge" style="background:#dcfce7;color:#166534" title="Đã rà soát, đáp án và định dạng đúng"><i class="fa-solid fa-circle-check"></i> Tinh</span>':'<span class="nh-badge" style="background:#fef3c7;color:#92400e" title="Chưa rà soát — có thể sai đáp án / lỗi định dạng"><i class="fa-solid fa-triangle-exclamation"></i> Thô</span>'}
                 ${md?`<span class="nh-badge b-${md.toLowerCase()}">${md}</span>`:''}
                 ${q.chuong?`<span class="nh-badge b-ch">${nhEsc(q.chuong)}</span>`:''}
                 ${q.baiHoc?`<span class="nh-badge b-bai" title="Bài học liên quan"><i class="fa-solid fa-book"></i> ${nhEsc(q.baiHoc)}</span>`:''}
@@ -4777,6 +4790,18 @@ async function bankAssignBaiApply(){
     }finally{
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
     }
+}
+
+/* ── Đánh dấu "Chất lượng" (thô/tinh) hàng loạt cho các câu đã chọn ── */
+async function bankMarkChatLuong(chatLuong){
+    const ids=[...bankSel];
+    if(!ids.length){ toast('Chưa chọn câu nào','err'); return; }
+    const okWrite = await postAdminWriteWithRetry({action:'bulksetchatluongnganhang',ids,chatLuong});
+    if(!okWrite){ toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐÁNH DẤU THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+    ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.chatLuong=chatLuong; });
+    bankClearSelection();
+    renderBankStats(); renderBankList();
+    toast('<i class="fa-solid fa-circle-check"></i> Đã đánh dấu '+(chatLuong==='tinh'?'Tinh':'Thô')+' cho '+ids.length+' câu','ok');
 }
 
 /* ══════════════════════════════════════════════════════════
