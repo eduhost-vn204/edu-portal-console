@@ -1066,7 +1066,7 @@
         <!-- CỘT PHẢI: KHO CÂU HỎI -->
         <div>
             <div class="nh-filter-row">
-                <select id="nh-f-mon" onchange="renderBankList()"><option value="">Tất cả môn</option></select>
+                <select id="nh-f-mon" onchange="renderBankList()"><option value="">Tất cả lớp</option></select>
                 <select id="nh-f-chuong" onchange="renderBankList()"><option value="">Tất cả chương</option></select>
                 <select id="nh-f-mucdo" onchange="renderBankList()">
                     <option value="">Mọi mức độ</option>
@@ -4516,11 +4516,11 @@ function renderBankStats(){
 function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
     const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
-    const bais=[...new Set(bankData.flatMap(q=>(q.baiHoc||'').split(',').map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi'));
+    const bais=[...new Set(bankData.flatMap(q=>(q.baiHoc||'').split(',').map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi',{numeric:true}));
     const unsetCount=bankData.filter(q=>!(q.baiHoc||'').trim()).length;
     const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong'), sb=document.getElementById('nh-f-bai');
     const vm=sm.value, vc=sc.value, vb=sb.value;
-    sm.innerHTML='<option value="">Tất cả môn</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
+    sm.innerHTML='<option value="">Tất cả lớp</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
     sc.innerHTML='<option value="">Tất cả chương</option>'+chuongs.map(m=>`<option>${nhEsc(m)}</option>`).join('');
     sb.innerHTML='<option value="">Tất cả bài</option>'
         +`<option value="__EMPTY__">⚠️ Chưa gán bài (${unsetCount})</option>`
