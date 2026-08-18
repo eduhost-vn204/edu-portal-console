@@ -4353,17 +4353,21 @@ async function submitExamForm() {
         lop:       document.getElementById('ef-lop').value,
         trangThai: document.getElementById('ef-trangthai').value
     };
-    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const okWrite = await postAdminWriteWithRetry(payload);
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu đề';
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
     toast('<i class="fa-solid fa-circle-check"></i> Đã lưu đề!','ok');
     hideExamForm();
-    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu đề';
+    invalidateCache('vlxt_admin_soande');
     setTimeout(loadExamList, 1500);
 }
 
 async function toggleExamStatus(examId, curStatus) {
     const newStatus = curStatus==='mo'?'khoa':'mo';
-    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'saveExam',examId,trangThai:newStatus})});
+    const okWrite = await postAdminWriteWithRetry({action:'saveExam',examId,trangThai:newStatus});
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI TRẠNG THÁI THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
     toast(newStatus==='mo'?'✅ Đề đã được mở!':'🔒 Đề đã khóa!','ok');
+    invalidateCache('vlxt_admin_soande');
     setTimeout(loadExamList,1500);
 }
 
@@ -4380,9 +4384,12 @@ function confirmDeleteExam(examId, tenDe) {
 async function doDeleteExam() {
     closeConfirm();
     if (!_pendingDeleteExamId) return;
-    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deleteExam',examId:_pendingDeleteExamId})});
-    toast('<i class="fa-solid fa-trash"></i> Đã xóa đề!','ok');
+    const examId = _pendingDeleteExamId;
+    const okWrite = await postAdminWriteWithRetry({action:'deleteExam',examId});
     _pendingDeleteExamId = null;
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> XÓA ĐỀ THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+    toast('<i class="fa-solid fa-trash"></i> Đã xóa đề!','ok');
+    invalidateCache('vlxt_admin_soande');
     setTimeout(loadExamList,1500);
 }
 
