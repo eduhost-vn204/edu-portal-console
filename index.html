@@ -1363,7 +1363,7 @@ async function fetchPublicOrGas(file,type){
 }
 function invalidateCache(key){
     try{
-        const target = key || 'vlxt_admin_baihoc';
+        const target = key || 'vlxt_admin_baihoc_v2';
         localStorage.removeItem(target); ADMIN_FORCE_REFRESH.add(target);
     }catch(e){}
 }
@@ -2134,19 +2134,22 @@ async function saveLessonOrderFromDOM(wrap){
 }
 
 async function loadLessons(){
-    const CKEY = 'vlxt_admin_baihoc';
+    // v2 bo qua ban cache rong da phat sinh khi CDN vua chuyen kho.
+    const CKEY = 'vlxt_admin_baihoc_v2';
     const forceFresh = ADMIN_FORCE_REFRESH.delete(CKEY);
     const cached = aCache(CKEY);
     if(cached){
         allLessons = Array.isArray(cached.d) ? cached.d : (cached.d.baihoc || cached.d.data || []);
         renderLessonList();
-        if(aFresh(cached)) return;
+        // Tuyet doi khong coi cache rong la hop le: phai tai lai du lieu that.
+        if(allLessons.length && aFresh(cached)) return;
     } else {
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
     }
     try{
         const data = forceFresh ? await fetchJsonFast(DB_URL+'?type=baihoc&t='+Date.now()) : await fetchPublicOrGas('baihoc.json','baihoc');
         allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
+        if(!allLessons.length) throw new Error('Nguon du lieu tra ve danh sach bai hoc rong');
         aSetCache(CKEY, data);
     }catch(e){
         console.warn('Không kết nối được Sheets:', e);
