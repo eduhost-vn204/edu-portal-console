@@ -1342,7 +1342,6 @@
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu (one-way, khong the giai nguoc)
 const DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
-const PUBLIC_DATA_URL = 'https://vatlyxuantruong.io.vn/data/';
 const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634'; // = SHA-256 cua mat khau, dung chung voi ADMIN_PASSWORD_HASH (tab Tai khoan HS)
 
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
@@ -1350,21 +1349,10 @@ const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
 function aCache(key){ try{ const c=JSON.parse(localStorage.getItem(key)); return c||null; }catch{return null;} }
 function aSetCache(key,d){ try{ localStorage.setItem(key,JSON.stringify({t:Date.now(),d})); }catch{} }
 function aFresh(c){ return c && (Date.now()-c.t < ADMIN_CACHE_TTL); }
-const ADMIN_FORCE_REFRESH = new Set();
-async function fetchJsonFast(url, timeoutMs=15000){
-    const controller = new AbortController();
-    const timer = setTimeout(()=>controller.abort(), timeoutMs);
-    try{ const r=await fetch(url,{signal:controller.signal}); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
-    finally{ clearTimeout(timer); }
-}
-async function fetchPublicOrGas(file,type){
-    try{ return await fetchJsonFast(PUBLIC_DATA_URL+file); }
-    catch(e){ return fetchJsonFast(DB_URL+'?type='+encodeURIComponent(type),30000); }
-}
 function invalidateCache(key){
     try{
-        const target = key || 'vlxt_admin_baihoc';
-        localStorage.removeItem(target); ADMIN_FORCE_REFRESH.add(target);
+        if(key){ localStorage.removeItem(key); }
+        else { localStorage.removeItem('vlxt_admin_baihoc'); }
     }catch(e){}
 }
 
@@ -1458,7 +1446,7 @@ async function loadHuongDan(force){
   if(!force && hdLoaded) return;
   document.getElementById('hd-list').innerHTML = '<div style="padding:30px;text-align:center;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div>';
   try{
-    const r = force ? await fetchJsonFast(DB_URL+'?type=huongdan&t='+Date.now()) : await fetchPublicOrGas('huongdan.json','huongdan');
+    const r = await fetch(DB_URL+'?type=huongdan').then(r=>r.json());
     hdData = {};
     (r.data||[]).forEach(row=>{ if(row.key) hdData[row.key] = row; });
     hdLoaded = true;
@@ -1503,10 +1491,7 @@ function todayStr(){ return new Date().toLocaleDateString('vi-VN'); }
 /* ════════════════════════════════════
    INIT
 ════════════════════════════════════ */
-function initAdmin(){
-    loadLessons();
-    Promise.all([loadSettings(),loadKhoaConfig()]).then(()=>renderLessonList());
-}
+function initAdmin(){ Promise.all([loadSettings(), loadKhoaConfig()]).then(()=>loadLessons()); }
 
 /* ════════════════════════════════════
    TAB 5: LỊCH LIVE
@@ -1536,7 +1521,8 @@ async function loadLiveSessions(){
         document.getElementById('ll-list').innerHTML = '<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i></div>';
     }
     try{
-        const data = await fetchPublicOrGas('lichlive.json','lichlive');
+        const r = await fetch(DB_URL + '?type=lichlive');
+        const data = await r.json();
         allLiveSessions = Array.isArray(data) ? data : [];
         aSetCache(CKEY, data);
         liveLoaded = true;
@@ -1747,7 +1733,8 @@ let ADMIN_KHOACONFIG = {}; // { fullCourseName: { hienThi, thuTu, daKhaiGiang, l
 
 async function loadKhoaConfig(){
     try{
-        const d = await fetchPublicOrGas('khoaconfig.json','khoaconfig');
+        const r = await fetch(DB_URL + '?type=khoaconfig&t=' + Date.now());
+        const d = await r.json();
         ADMIN_KHOACONFIG = {};
         (Array.isArray(d) ? d : (d.data || [])).forEach(c => {
             ADMIN_KHOACONFIG[c.khoaHoc] = {
@@ -1783,7 +1770,8 @@ function toggleTheme(){
 
 async function loadSettings(){
     try{
-        const d = await fetchPublicOrGas('settings.json','settings');
+        const r = await fetch(DB_URL + '?type=settings&_t=' + Date.now());
+        const d = await r.json();
         if(d.ok && d.data) currentTeachingLesson = d.data.currentTeachingLesson || '';
     }catch(e){ console.warn('Không tải được settings:', e); }
 }
@@ -2135,7 +2123,6 @@ async function saveLessonOrderFromDOM(wrap){
 
 async function loadLessons(){
     const CKEY = 'vlxt_admin_baihoc';
-    const forceFresh = ADMIN_FORCE_REFRESH.delete(CKEY);
     const cached = aCache(CKEY);
     if(cached){
         allLessons = Array.isArray(cached.d) ? cached.d : (cached.d.baihoc || cached.d.data || []);
@@ -2145,7 +2132,8 @@ async function loadLessons(){
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
     }
     try{
-        const data = forceFresh ? await fetchJsonFast(DB_URL+'?type=baihoc&t='+Date.now()) : await fetchPublicOrGas('baihoc.json','baihoc');
+        const r = await fetch(DB_URL + '?type=baihoc');
+        const data = await r.json();
         allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
         aSetCache(CKEY, data);
     }catch(e){
@@ -2161,10 +2149,14 @@ async function loadLessons(){
 // rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
 async function loadQbCounts(){
     try{
+        const r = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
+        const j = await r.json();
         const map = {};
-        const j = await fetchPublicOrGas('quiz-index.json','baitaptracnghiem');
-        Object.entries(j.lessons||{}).forEach(([k,v])=>{ map[k]=Number(v.count)||0; });
-        (j.data||[]).forEach(rw=>{ const k=String(rw&&rw.baiKey||''); if(k) map[k]=(map[k]||0)+1; });
+        (j&&j.data||[]).forEach(rw=>{
+            const k = String(rw&&rw.baiKey||'');
+            if(!k) return;
+            map[k] = (map[k]||0) + 1;
+        });
         _qbCounts = map;
         renderLessonList();
     }catch(e){ if(_qbCounts===null) _qbCounts={}; }
@@ -4270,7 +4262,6 @@ let examListData = [];
 
 async function loadExamList() {
     const CKEY = 'vlxt_admin_soande';
-    const forceFresh = ADMIN_FORCE_REFRESH.delete(CKEY);
     const cached = aCache(CKEY);
     if(cached){
         examListData = cached.d || [];
@@ -4278,7 +4269,8 @@ async function loadExamList() {
         if(aFresh(cached)) return;
     }
     try {
-        const j = forceFresh ? await fetchJsonFast(DB_URL+'?type=danhsachde&t='+Date.now()) : await fetchPublicOrGas('danhsachde.json','danhsachde');
+        const r = await fetch(DB_URL + '?type=danhsachde');
+        const j = await r.json();
         examListData = (j.ok && j.data) ? j.data : [];
         aSetCache(CKEY, examListData);
     } catch(e) { if(!examListData.length) examListData = []; }
@@ -4509,16 +4501,11 @@ function nhKatex(el){ setTimeout(()=>{ if(typeof renderMathInElement==='function
 /* ── Tải ngân hàng từ Google Sheets ── */
 async function loadBank(force){
     if(force) bankLoaded=false;
-    const CKEY='vlxt_admin_nganhang', cached=!force&&aCache(CKEY);
     const list=document.getElementById('nh-list');
-    if(cached){
-        bankData=(Array.isArray(cached.d)?cached.d:(cached.d.data||[])).map(q=>{q={...q,loai:(q.loai||'TN').toString().toUpperCase().trim()};if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);return q;});
-        bankLoaded=true; bankSel.clear(); renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
-        if(aFresh(cached)) return;
-    } else list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng...</p></div>';
+    list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng...</p></div>';
     try{
-        const j=await fetchJsonFast(DB_URL+'?type=nganhang&t='+Date.now(),120000);
-        aSetCache(CKEY,j);
+        const r=await fetch(DB_URL+'?type=nganhang&t='+Date.now());
+        const j=await r.json();
         bankData=(j.data||[]).map(q=>{q={...q, loai:(q.loai||'TN').toString().toUpperCase().trim()}; if(!q.phanLoai) q.phanLoai=classifyTaxonomy(q); return q;});
         bankLoaded=true; bankSel.clear();
         renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
