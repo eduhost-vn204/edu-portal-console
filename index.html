@@ -1407,7 +1407,22 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
+// FIX (Codex review 19/8): 'bulksetbainganhang' và 'bulksetchatluongnganhang' đã
+// được gọi qua postAdminWriteWithRetry (xem bankAssignBaiApply/bankMarkChatLuong)
+// nhưng THIẾU trong whitelist này -> adminKey không được tự gắn vào payload của
+// 2 action này. apps-script-CAPNHAT.txt (bản tham khảo trong repo) KHÔNG định
+// nghĩa doPost handler cho 2 action này nên KHÔNG thể xác nhận từ repo là Apps
+// Script đang deploy thật có kiểm tra adminKey cho chúng hay không (script tham
+// khảo có thể đã cũ hơn bản deploy thật). Theo nguyên tắc an toàn: LUÔN gửi kèm
+// adminKey cho mọi action ghi hàng loạt (thêm 2 action này vào đây) - nếu backend
+// không cần thì trường thừa vô hại, còn nếu backend CÓ kiểm tra thì thiếu nó sẽ
+// làm ghi thất bại (an toàn) chứ không phải ghi "mở" không cần xác thực.
+// CẦN XÁC MINH THỦ CÔNG: mở Apps Script đang deploy (không phải file .txt tham
+// khảo), tìm handler 'bulksetbainganhang' và 'bulksetchatluongnganhang' trong
+// doPost, kiểm tra có so sánh data.adminKey với ADMIN_KEY (PropertiesService)
+// giống các action khác không. Nếu CHƯA có kiểm tra đó ở backend, đây là lỗ hổng
+// ghi không cần xác thực cần vá phía Apps Script, không thể vá được từ frontend.
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1538,13 +1553,27 @@ function todayStr(){ return new Date().toLocaleDateString('vi-VN'); }
 /* ════════════════════════════════════
    INIT
 ════════════════════════════════════ */
+// FIX (Codex review 19/8): trước đây chỉ gọi loadLessons() (nguồn thật GAS) khi
+// allLessons còn rỗng sau preview - nghĩa là nếu cache/CDN đã có dữ liệu, Admin
+// KHÔNG BAO GIỜ đối chiếu lại với nguồn thật nữa, có thể hiển thị dữ liệu cũ vô
+// thời hạn. Giờ LUÔN cho revalidate nền từ GAS dù preview đã có dữ liệu; cờ
+// _lessonsRevalidating đảm bảo chỉ 1 lượt revalidate chạy tại 1 thời điểm (tránh
+// gọi trùng nếu initAdmin/refresh thủ công chồng nhau).
+let _lessonsRevalidating = false;
+function revalidateLessonsInBackground(){
+    if(_lessonsRevalidating) return;
+    _lessonsRevalidating = true;
+    Promise.resolve(loadLessons()).catch(e=>console.warn('Revalidate bài học nền lỗi:',e)).finally(()=>{ _lessonsRevalidating = false; });
+}
 function initAdmin(){
     // Hien bai hoc ngay tu cache/CDN; settings va config van tai song song.
     // Doi script khai bao xong allLessons roi moi chay, tranh temporal dead zone.
     const preview=Promise.resolve().then(()=>loadLessonsPreview());
     Promise.all([loadSettings(),loadKhoaConfig(),preview]).then(()=>{
         renderLessonList();
-        if(!allLessons.length) loadLessons();
+        // Luôn revalidate nền từ nguồn thật (GAS), kể cả khi cache/CDN đã có dữ
+        // liệu - xem ghi chú trên revalidateLessonsInBackground().
+        revalidateLessonsInBackground();
     });
 }
 
@@ -2217,9 +2246,19 @@ async function loadLessons(){
     }
     try{
         const r = await fetch(DB_URL + '?type=baihoc');
+        if(!r.ok) throw new Error('HTTP '+r.status);
         const data = await r.json();
-        allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
-        aSetCache(CKEY, data);
+        const rows = Array.isArray(data) ? data : (data.baihoc || data.data || []);
+        // FIX (Codex review 19/8): JSON hợp lệ nhưng RỖNG trong khi đang có sẵn
+        // snapshot tốt (cache/CDN preview vừa render) rất có thể là lỗi tạm thời
+        // phía nguồn (GAS/Sheets đang thao tác giữa chừng), không phải thật sự
+        // rỗng - KHÔNG được ghi đè lên allLessons/cache đang có dữ liệu.
+        if(!rows.length && allLessons.length){
+            console.warn('Bài học: nguồn GAS trả về RỖNG trong khi đang có', allLessons.length, 'bài - GIỮ NGUYÊN, không ghi đè.');
+        } else {
+            allLessons = rows;
+            aSetCache(CKEY, data);
+        }
     }catch(e){
         console.warn('Không kết nối được Sheets:', e);
         if(!allLessons.length) toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa kết nối được Google Sheets.', 'err');
@@ -2644,11 +2683,22 @@ function filterCourse(f,el){
 // Gửi 1 request ghi và THỰC SỰ đọc phản hồi (KHÔNG dùng no-cors nữa —
 // no-cors khiến trình duyệt không bao giờ biết ghi thất bại, gây lệch dữ liệu
 // âm thầm giữa những gì hiển thị và những gì thực sự có trong Google Sheets).
+// FIX (Codex review 19/8): trước đây coi `json.ok !== false` là thành công, nghĩa
+// là {}' , {error:'Unauthorized'}, hay BẤT KỲ JSON nào thiếu hẳn field `ok` đều bị
+// hiểu NHẦM là ghi thành công (vì undefined !== false là true). Giờ CHỈ coi là
+// thành công khi (1) HTTP response hợp lệ (res.ok, tức status 2xx) VÀ (2) đọc được
+// JSON thật sự có json.ok === true. Mọi trường hợp khác (HTTP lỗi, HTML/trang lỗi
+// thay vì JSON, JSON null/rỗng/thiếu ok, timeout/abort, lỗi mạng) đều trả về false.
+// Logic giống hệt được kiểm thử độc lập bằng mock fetch (không gọi mạng thật) tại
+// scripts/postAdminWrite.mjs + scripts/test-postAdminWrite.mjs — 2 file đó KHÔNG
+// được tải vào trình duyệt, chỉ dùng để chạy `node scripts/test-postAdminWrite.mjs`
+// xác nhận logic. Nếu sửa hàm này, phải sửa đồng bộ cả scripts/postAdminWrite.mjs.
 async function postAdminWrite(payload){
     try{
         const res = await fetch(DB_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+        if(!res.ok) return false;
         const json = await res.json().catch(()=>null);
-        return !!(json && json.ok !== false);
+        return !!(json && typeof json==='object' && json.ok===true);
     }catch(e){ return false; }
 }
 function sleep(ms){ return new Promise(res=>setTimeout(res, ms)); }
