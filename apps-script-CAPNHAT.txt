@@ -15,6 +15,38 @@
 //   Tab "Settings"  : key | value   (cấu hình toàn trang, vd: currentTeachingLesson)
 //   Tab "ThietBiHocThu" : deviceId | sdt | hoten | trialStart | trialExpiry | soLanChan  ← chống học thử nhiều lần
 // ════════════════════════════════════════════════════════════════
+//
+// ════════════════════════════════════════════════════════════════
+// ĐỀ XUẤT (CHƯA DEPLOY, CHƯA WIRE VÀO doPost Ở DƯỚI) — action 'pingadmin'
+// Theo yêu cầu review CORS (Codex, 19/8, vòng 3): rà toàn bộ danh sách action
+// trong doPost() ở dưới thì KHÔNG có action nào chỉ-đọc/không-mutation nào có
+// thể dùng an toàn để kiểm tra CORS (mọi action hiện có đều ghi/xoá Sheets,
+// hoặc cần thông tin đăng nhập thật như 'login'/'register'). Vì vậy đề xuất
+// thêm 1 action MỚI, CHỈ xác thực adminKey rồi trả {ok:true} - KHÔNG đọc,
+// KHÔNG ghi bất kỳ sheet nào - để có thể gọi lại nhiều lần an toàn khi kiểm
+// tra CORS cho nhánh Admin perf/cache-integrity-audit-20260819 mà không đụng
+// tới dữ liệu Sheets thật.
+//
+// TRỢ LÝ AI KHÔNG TỰ DEPLOY ĐOẠN NÀY. Nếu thầy muốn dùng, làm thủ công:
+//   1) Mở Google Apps Script editor của project này (script.google.com).
+//   2) Trong hàm doPost(e) ở dưới, thêm 1 dòng vào danh sách if (thứ tự
+//      không quan trọng), ví dụ ngay sau dòng "if (action === 'login')...":
+//        if (action === 'pingadmin') return pingAdmin(data);
+//   3) Copy hàm pingAdmin(data) bên dưới (bỏ tiền tố // ở mỗi dòng) và dán
+//      vào project (cùng file này hoặc 1 file .gs khác trong cùng project).
+//   4) Trong Apps Script: Deploy > Manage deployments > (chọn deployment web
+//      app đang publish) > nút bút chì (Edit) > Version: New version > Deploy.
+//   5) Xem PROJECT_STATE.md (repo edu-portal-lms, mục "Hướng dẫn test CORS
+//      Admin") để biết cách kiểm tra bằng trình duyệt thật sau khi deploy.
+//
+// function pingAdmin(data) {
+//   const key = String(data.adminKey || '').trim();
+//   const ADMIN_KEY = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY') || 'vlxt_admin_2025';
+//   if (key !== ADMIN_KEY) return jsonOut({ ok: false, msg: 'Unauthorized' });
+//   // CHỦ Ý không đọc/ghi bất kỳ SpreadsheetApp/Sheet nào ở đây.
+//   return jsonOut({ ok: true, ping: 'pong', ts: Date.now() });
+// }
+// ════════════════════════════════════════════════════════════════
 
 function doGet(e) {
   const type   = (e.parameter.type || '').toLowerCase();
