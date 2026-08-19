@@ -1345,6 +1345,28 @@ const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634'; // = SHA-256 cua mat khau, dung chung voi ADMIN_PASSWORD_HASH (tab Tai khoan HS)
 
+/* ════ CHỐNG TREO SPINNER VÔ HẠN: timeout mặc định cho MỌI fetch ════
+   FIX 19/8: trước đây không có bất kỳ timeout nào cho fetch trong Admin (kể cả
+   đọc GET lẫn ghi POST) — nếu GAS/Google Sheets treo, spinner "Đang tải..."
+   có thể quay vô hạn, nút "Đang lưu..." không bao giờ tự bật lại. Bọc
+   window.fetch 1 lần duy nhất ở đây (trước mọi lớp bọc khác trong file này)
+   để tự hủy sau 15s cho GET, 55s cho POST (đúng khoảng 12–15s / 30–60s yêu
+   cầu) — CHỈ áp dụng khi lệnh gọi chưa tự cung cấp signal riêng, không đụng
+   tới các nơi đã tự quản lý AbortController của mình. */
+(function () {
+    const _fetch = window.fetch.bind(window);
+    window.fetch = function (url, opts) {
+        opts = opts || {};
+        if (opts.signal) return _fetch(url, opts);
+        const method = (opts.method || 'GET').toString().toUpperCase();
+        const timeoutMs = method === 'GET' ? 15000 : 55000;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        return _fetch(url, Object.assign({}, opts, { signal: controller.signal }))
+            .finally(() => clearTimeout(timer));
+    };
+})();
+
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
 const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
 // Don cache rong do ban toi uu 19/08/2026 tao ra, chi chay mot lan tren moi trinh duyet.
@@ -1499,17 +1521,16 @@ async function saveHuongDanKey(key){
   const noiDung = document.getElementById('hd-nd-'+key).value.trim();
   const btn = document.getElementById('hd-btn-'+key);
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-  try{
-    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({action:'savehuongdan', key, tieuDe, videoUrl, noiDung})});
-    await new Promise(r=>setTimeout(r,700));
-    hdData[key] = {key, tieuDe, videoUrl, noiDung};
-    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu hướng dẫn','ok');
-  }catch(e){
-    toast('Lỗi: '+e.message,'err');
-  }finally{
-    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu';
-  }
+  // FIX 19/8: trước đây dùng no-cors (không đọc được phản hồi thật) rồi báo
+  // "Đã lưu" ngay lập tức dù server có thể ghi thất bại. Giờ ghi bằng
+  // postAdminWriteWithRetry (đọc JSON xác nhận thật, savehuongdan là upsert
+  // theo key nên an toàn khi thử lại) — chỉ báo thành công/cập nhật dữ liệu
+  // cục bộ SAU KHI có xác nhận.
+  const okWrite = await postAdminWriteWithRetry({action:'savehuongdan', key, tieuDe, videoUrl, noiDung});
+  btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu';
+  if(!okWrite){ toast('<i class="fa-solid fa-triangle-exclamation"></i> LƯU THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+  hdData[key] = {key, tieuDe, videoUrl, noiDung};
+  toast('<i class="fa-solid fa-circle-check"></i> Đã lưu hướng dẫn','ok');
 }
 
 function todayStr(){ return new Date().toLocaleDateString('vi-VN'); }
@@ -1561,7 +1582,11 @@ async function loadLiveSessions(){
         aSetCache(CKEY, data);
         liveLoaded = true;
     } catch(e) {
-        allLiveSessions = [];
+        // FIX 19/8: trước đây lỗi mạng/timeout ở đây xoá SẠCH allLiveSessions
+        // (kể cả khi vừa hiện snapshot cache tốt ở trên) rồi vẽ lại rỗng —
+        // đúng kiểu "làm trống giao diện khi lỗi tạm thời" mà quy tắc cấm.
+        // Giờ giữ nguyên dữ liệu đang có (cache/lần tải trước), chỉ log cảnh báo.
+        console.warn('Không làm mới được Lịch Live (giữ dữ liệu cũ):', e);
     }
     renderLiveList();
 }
@@ -1709,32 +1734,47 @@ async function saveLive(){
         done:   document.getElementById('lf-done').checked ? '1' : '0',
     };
 
-    // Cập nhật local ngay
+    // FIX 19/8: trước đây cập nhật local + báo "Đã lưu" NGAY rồi mới gửi
+    // no-cors mù (không đọc được phản hồi) lên Sheets — nếu ghi thất bại thật,
+    // giao diện/cache vẫn hiện dữ liệu chưa từng được lưu mà không có cảnh báo
+    // nào. Giờ vẫn cập nhật giao diện ngay (mượt như cũ) nhưng LƯU LẠI ảnh chụp
+    // trước đó để hoàn tác nếu server không xác nhận ghi.
+    const prevSnapshot = allLiveSessions.slice();
     const idx = allLiveSessions.findIndex(s=>s.id===payload.id);
     const session = { ...payload, done: document.getElementById('lf-done').checked };
     if(idx>=0) allLiveSessions[idx] = session; else allLiveSessions.push(session);
     syncLiveCache();
     renderLiveList();
     closeLiveForm();
-    toast('✅ Đã lưu buổi live!','ok');
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu buổi live...','ok');
 
-    // Gửi lên Sheets
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',
-            headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify(payload)});
-    }catch(e){}
+    const okWrite = await postAdminWriteWithRetry(payload);
+    if(!okWrite){
+        allLiveSessions = prevSnapshot;
+        syncLiveCache();
+        renderLiveList();
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> LƯU BUỔI LIVE THẤT BẠI — server không xác nhận ghi. Đã hoàn tác, thử lại!','err');
+        return;
+    }
+    toast('✅ Đã lưu buổi live!','ok');
 }
 
 async function toggleLiveDone(id){
     const s = allLiveSessions.find(x=>x.id===id);
     if(!s) return;
+    const prevDone = s.done;
     s.done = !s.done;
     const payload = { action:'savelivesession', ...s, done: s.done ? '1':'0' };
     syncLiveCache();
     renderLiveList();
     toast(s.done ? '✅ Đã chuyển sang Record' : '🔄 Đã chuyển về Sắp tới','ok');
-    try{ await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }catch(e){}
+    const okWrite = await postAdminWriteWithRetry(payload);
+    if(!okWrite){
+        s.done = prevDone;
+        syncLiveCache();
+        renderLiveList();
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI TRẠNG THÁI THẤT BẠI — server không xác nhận ghi. Đã hoàn tác, thử lại!','err');
+    }
 }
 
 let _deleteLiveId = null;
@@ -1747,13 +1787,23 @@ function deleteLive(id, title){
 }
 async function confirmDeleteLive(){
     if(!_deleteLiveId) return;
-    allLiveSessions = allLiveSessions.filter(s=>s.id!==_deleteLiveId);
+    const deleteId = _deleteLiveId;
+    const prevSnapshot = allLiveSessions.slice();
+    allLiveSessions = allLiveSessions.filter(s=>s.id!==deleteId);
     syncLiveCache();
     renderLiveList();
     closeConfirm();
-    toast('🗑️ Đã xóa buổi live','ok');
-    try{ await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deletelivesession',id:_deleteLiveId})}); }catch(e){}
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang xoá buổi live...','ok');
     _deleteLiveId = null;
+    const okWrite = await postAdminWriteWithRetry({action:'deletelivesession',id:deleteId});
+    if(!okWrite){
+        allLiveSessions = prevSnapshot;
+        syncLiveCache();
+        renderLiveList();
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> XOÁ BUỔI LIVE THẤT BẠI — server không xác nhận ghi. Đã hoàn tác, thử lại!','err');
+        return;
+    }
+    toast('🗑️ Đã xóa buổi live','ok');
 }
 
 /* ════════════════════════════════════
@@ -2198,19 +2248,37 @@ async function loadLessonsPreview(){
 // Tai 1 lan toan bo sheet BaiTapTracNghiem de dem so cau/bai cho huy hieu trong
 // danh sach bai giang (khong the doc tu cot BaiTap cu nua vi da chuyen sang sheet
 // rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
+// FIX 19/8: truoc day luon tai NGUYEN sheet BaiTapTracNghiem (toan bo cau hoi
+// luyen tap cua TAT CA bai hoc) chi de dem so cau/bai hien badge - vi pham
+// "khong tai toan bo cau hoi chi de dem badge". Web hoc sinh da co san
+// data/quiz-index.json (metadata nhe, {lessons:{key:{count}}}) publish qua CDN
+// tu scripts/sync-public-data.mjs - dung lai luon, chi fallback ve GAS full-load
+// (hanh vi cu) khi khong lay duoc file tinh nay.
 async function loadQbCounts(){
     try{
-        const r = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
+        const r = await fetch('https://vatlyxuantruong.io.vn/data/quiz-index.json',{cache:'no-store'});
+        if(!r.ok) throw new Error('HTTP '+r.status);
         const j = await r.json();
+        const lessonsMeta = (j && j.lessons) || {};
         const map = {};
-        (j&&j.data||[]).forEach(rw=>{
-            const k = String(rw&&rw.baiKey||'');
-            if(!k) return;
-            map[k] = (map[k]||0) + 1;
-        });
+        Object.keys(lessonsMeta).forEach(k=>{ map[k] = Number(lessonsMeta[k].count)||0; });
         _qbCounts = map;
         renderLessonList();
-    }catch(e){ if(_qbCounts===null) _qbCounts={}; }
+    }catch(e){
+        console.warn('Không tải được quiz-index.json, dùng lại cách đếm cũ (tải toàn bộ sheet):', e);
+        try{
+            const r2 = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
+            const j2 = await r2.json();
+            const map = {};
+            (j2&&j2.data||[]).forEach(rw=>{
+                const k = String(rw&&rw.baiKey||'');
+                if(!k) return;
+                map[k] = (map[k]||0) + 1;
+            });
+            _qbCounts = map;
+            renderLessonList();
+        }catch(e2){ if(_qbCounts===null) _qbCounts={}; }
+    }
 }
 
 // Lấy giá trị KhoaHoc thực tế của 1 dòng, fallback 'Khác' giống groupLessons (đồng bộ để xoá/sửa/đổi tên khoá 'Khác' hoạt động đúng)
@@ -2242,13 +2310,17 @@ function groupLessons(rows){
         const ngaydang = r.NgayDang || r.ngaydang || r.date || '';
         const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
         const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
+        // FIX 19/8: giu lai MaBai (ma dinh danh on dinh) tren object da chuan hoa - can de
+        // tra dung so cau bai tap trac nghiem khi bai da migrate sang luu theo MaBai thay vi
+        // key ghep chuoi cu (xem loadQbCounts()/renderLessonList()).
+        const mabai = (r.MaBai || r.mabai || '').toString().trim();
         const sc = extractSC(khoa);
         const subj = sc.subject || khoa;
         const cname = sc.courseName || khoa; // tên khóa hiển thị
         if(!subjects[subj]) subjects[subj]={name:subj, courses:{}};
         if(!subjects[subj].courses[khoa]) subjects[subj].courses[khoa]={name:cname, fullName:khoa, chapters:{}};
         if(!subjects[subj].courses[khoa].chapters[chuong]) subjects[subj].courses[khoa].chapters[chuong]=[];
-        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb});
+        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb,mabai});
     });
     // Sắp xếp bài trong từng chương theo ThuTuBai (thầy tự kéo lên/xuống bằng nút mũi tên).
     // Bài chưa từng được sắp xếp (ttb=null) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
@@ -2498,7 +2570,11 @@ function renderCourseBlock(course){
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
             const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
-            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
+            // FIX 19/8: bai da migrate luu cau hoi theo MaBai (on dinh), khong con theo key
+            // ghep chuoi cu nua - phai thu MaBai TRUOC, key cu la fallback (bai chua co MaBai).
+            const qbLookupKey = l.mabai || key;
+            const qbCount = (_qbCounts && _qbCounts[qbLookupKey]!==undefined) ? _qbCounts[qbLookupKey]
+                : (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
             const isTeaching = (currentTeachingLesson === key);
             const safeKey = esc(key).replace(/'/g,"&#39;");
             const liSelected = bulkMode && bulkSelected.has(key);
@@ -4474,15 +4550,20 @@ async function publishExam(){
         action:'saveQuestions', examId:targetExam, clearFirst,
         questions:parsedQuestions.map((q,i)=>({id:i+1,type:q.type,question:q.question,optA:q.options.A,optB:q.options.B,optC:q.options.C,optD:q.options.D,correct:q.correct,giaiThich:q.giaiThich||''}))
     };
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-        btn.innerHTML=`<i class="fa-solid fa-circle-check"></i> Đã xuất bản ${parsedQuestions.length} câu!`;
-        toast(`<i class="fa-solid fa-circle-check"></i> Câu hỏi đã lên đề "${tenDe}"!`,'ok');
-        setTimeout(loadExamList,2000);
-    }catch(e){
+    // FIX 19/8: trước đây no-cors mù + báo "Đã xuất bản" ngay dù không biết
+    // server có ghi thật hay không. Khi clearFirst=false (chế độ "Thêm vào
+    // cuối đề"), đây là thao tác NỐI THÊM — không tự động thử lại (retry) vì
+    // nếu lần gửi trước đã thành công nhưng phản hồi bị mất trên đường về,
+    // gửi lại sẽ nhân đôi câu hỏi trong đề. Chỉ gửi 1 lần, đọc xác nhận thật.
+    const okWrite = await postAdminWrite(payload);
+    if(!okWrite){
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rocket"></i> Xuất Bản Lên Web';
-        setStatus2('<i class="fa-solid fa-bug"></i> Gửi thất bại: '+e.message,'err');
+        setStatus2('<i class="fa-solid fa-triangle-exclamation"></i> XUẤT BẢN CHƯA XÁC NHẬN — server không phản hồi thành công. Kiểm tra lại đề "'+tenDe+'" trước khi bấm gửi lại (tránh trùng câu nếu lần trước thực ra đã ghi).','err');
+        return;
     }
+    btn.innerHTML=`<i class="fa-solid fa-circle-check"></i> Đã xuất bản ${parsedQuestions.length} câu!`;
+    toast(`<i class="fa-solid fa-circle-check"></i> Câu hỏi đã lên đề "${tenDe}"!`,'ok');
+    setTimeout(loadExamList,2000);
 }
 
 function showSyncBadge(){
@@ -4753,21 +4834,24 @@ async function bankEditSave(){
     const btn=document.getElementById('nhe-save-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     document.getElementById('nhe-status').textContent='';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'updatenganhang',id:_nheCurrentId,q})});
-        await new Promise(r=>setTimeout(r,900));
-        const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
-        if(idx>-1){
-            bankData[idx]={...bankData[idx],...q};
-            bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
-        }
-        renderBankStats(); fillBankFilters(); renderBankList();
-        toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
-        bankEditClose();
-    }catch(e){
-        document.getElementById('nhe-status').textContent='Lỗi: '+e.message;
+    // FIX 19/8: trước đây no-cors mù, cập nhật bankData local dù không biết server
+    // có ghi thật hay không. updatenganhang là ghi-đè theo id (idempotent) nên
+    // dùng postAdminWriteWithRetry; chỉ cập nhật dữ liệu cục bộ SAU KHI xác nhận.
+    const okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q});
+    if(!okWrite){
+        document.getElementById('nhe-status').textContent='LƯU THẤT BẠI — server không xác nhận ghi. Thử lại!';
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
+        return;
     }
+    const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
+    if(idx>-1){
+        bankData[idx]={...bankData[idx],...q};
+        bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
+        adminDbSet('nganhang', bankData);
+    }
+    renderBankStats(); fillBankFilters(); renderBankList();
+    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
+    bankEditClose();
 }
 
 /* ── Chọn câu ── */
@@ -4808,20 +4892,25 @@ async function bankCreateExam(){
     }).filter(Boolean);
     const btn=document.getElementById('nh-ef-create-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify({action:'saveexam',examId,tenDe,thoiGian,trangThai,lop})});
-        await new Promise(r=>setTimeout(r,700));
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify({action:'savequestions',examId,clearFirst:true,questions})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu','ok');
-        document.getElementById('nh-exam-form').style.display='none';
-        bankClearSelection();
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
+    // FIX 19/8: trước đây 2 lệnh no-cors mù nối tiếp, báo "Đã tạo đề" dù không
+    // biết server ghi thật hay không. Cả 2 đều là upsert theo examId cố định
+    // + savequestions luôn clearFirst:true (ghi đè toàn bộ, không nối thêm)
+    // nên an toàn để dùng postAdminWriteWithRetry (thử lại không gây trùng).
+    const okExam = await postAdminWriteWithRetry({action:'saveexam',examId,tenDe,thoiGian,trangThai,lop});
+    if(!okExam){
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> TẠO ĐỀ THẤT BẠI — server không xác nhận ghi. Thử lại!','err');
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rocket"></i> Tạo đề & đưa câu hỏi vào';
+        return;
     }
+    const okQuestions = await postAdminWriteWithRetry({action:'savequestions',examId,clearFirst:true,questions});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rocket"></i> Tạo đề & đưa câu hỏi vào';
+    if(!okQuestions){
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Đề "'+tenDe+'" đã tạo nhưng NẠP CÂU HỎI THẤT BẠI — server không xác nhận. Vào tab Soạn đề thi kiểm tra và thử lại!','err');
+        return;
+    }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu','ok');
+    document.getElementById('nh-exam-form').style.display='none';
+    bankClearSelection();
 }
 
 /* ── Gán "Bài học" hàng loạt cho các câu đã chọn ── */
@@ -4847,18 +4936,19 @@ async function bankAssignBaiApply(){
     const baiHoc=document.getElementById('nh-bf-bai').value||'';
     const btn=document.getElementById('nh-bf-apply-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang gán...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bulksetbainganhang',ids,baiHoc})});
-        await new Promise(r=>setTimeout(r,900));
-        ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; bankSel.delete(id); });
-        fillBankFilters(); renderBankList(); updateSelBar();
-        toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
-        document.getElementById('nh-bai-form').style.display='none';
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
+    // FIX 19/8: bulksetbainganhang la ghi-de theo id (idempotent) - dung
+    // postAdminWriteWithRetry, chi cap nhat bankData/IndexedDB SAU KHI xac nhan.
+    const okWrite = await postAdminWriteWithRetry({action:'bulksetbainganhang',ids,baiHoc});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
+    if(!okWrite){
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> GÁN BÀI THẤT BẠI — server không xác nhận ghi. Thử lại!','err');
+        return;
     }
+    ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; bankSel.delete(id); });
+    adminDbSet('nganhang', bankData);
+    fillBankFilters(); renderBankList(); updateSelBar();
+    toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
+    document.getElementById('nh-bai-form').style.display='none';
 }
 
 /* ── Đánh dấu "Chất lượng" (thô/tinh) hàng loạt cho các câu đã chọn ── */
@@ -5207,13 +5297,22 @@ function bankDeleteSelected(){ _bankDeleteIds([...bankSel]); }
 function _bankDeleteIds(ids){
     if(!ids.length) return;
     openConfirm('Xóa '+ids.length+' câu khỏi ngân hàng? Hành động này không thể hoàn tác.', async ()=>{
-        try{
-            await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deleteNganHang',ids})});
-            bankData=bankData.filter(q=>!ids.includes(q.id));
-            ids.forEach(i=>bankSel.delete(i));
-            renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
-            toast('<i class="fa-solid fa-circle-check"></i> Đã xóa '+ids.length+' câu','ok');
-        }catch(e){ toast('Lỗi: '+e.message,'err'); }
+        // FIX 19/8: trước đây no-cors mù, xoá khỏi bankData local dù không biết
+        // server có xoá thật hay không (câu "đã xoá" trên UI có thể vẫn còn
+        // nguyên trong Sheets). deleteNganHang xoá theo id (idempotent, xoá lại
+        // câu đã xoá không gây hại) nên dùng postAdminWriteWithRetry; chỉ cập
+        // nhật giao diện/IndexedDB SAU KHI server xác nhận.
+        toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang xoá...','ok');
+        const okWrite = await postAdminWriteWithRetry({action:'deleteNganHang',ids});
+        if(!okWrite){
+            toast('<i class="fa-solid fa-triangle-exclamation"></i> XOÁ THẤT BẠI — server không xác nhận. Câu chưa bị xoá, thử lại!','err');
+            return;
+        }
+        bankData=bankData.filter(q=>!ids.includes(q.id));
+        ids.forEach(i=>bankSel.delete(i));
+        adminDbSet('nganhang', bankData);
+        renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+        toast('<i class="fa-solid fa-circle-check"></i> Đã xóa '+ids.length+' câu','ok');
     });
 }
 function resetConfirmDangerDefault(){
@@ -5391,19 +5490,23 @@ async function bankPublish(){
     if(!bankParsed.length) return;
     const btn=document.getElementById('nh-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankParsed.length+' câu vào ngân hàng!','ok');
-        bankParsed=[];
-        document.getElementById('nh-preview-zone').style.display='none';
-        document.getElementById('nh-file-input').value='';
-        nhStatus('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    // FIX 19/8: savenganhang ở đây là THÊM MỚI (append) — KHÔNG tự động thử lại
+    // (postAdminWriteWithRetry) vì nếu lần gửi trước thực ra đã ghi thành công
+    // nhưng phản hồi bị mất, gửi lại sẽ nạp trùng cả loạt câu. Chỉ gửi 1 lần,
+    // đọc xác nhận thật; nếu KHÔNG xác nhận, giữ nguyên bankParsed để thầy tự
+    // kiểm tra ngân hàng trước khi quyết định nạp lại (tránh trùng).
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nhStatus('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankParsed.length+' câu vào ngân hàng!','ok');
+    bankParsed=[];
+    document.getElementById('nh-preview-zone').style.display='none';
+    document.getElementById('nh-file-input').value='';
+    nhStatus('');
+    await loadBank(true);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -5566,19 +5669,19 @@ async function bankDocxPublish(){
     }
     const btn=document.getElementById('nh2-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankDocxParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankDocxParsed.length+' câu vào ngân hàng!','ok');
-        bankDocxParsed=[];
-        document.getElementById('nh2-preview-zone').style.display='none';
-        document.getElementById('nh2-file-input').value='';
-        nh2Status('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    // FIX 19/8: append (thêm mới) - KHÔNG tự retry, xem giải thích ở bankPublish().
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankDocxParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nh2Status('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankDocxParsed.length+' câu vào ngân hàng!','ok');
+    bankDocxParsed=[];
+    document.getElementById('nh2-preview-zone').style.display='none';
+    document.getElementById('nh2-file-input').value='';
+    nh2Status('');
+    await loadBank(true);
 }
 
 const nh2Drop=document.getElementById('nh2-dropzone'), nh2File=document.getElementById('nh2-file-input');
@@ -5741,19 +5844,19 @@ async function bankPdfPublish(){
     }
     const btn=document.getElementById('nh3-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankPdfParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankPdfParsed.length+' câu vào ngân hàng!','ok');
-        bankPdfParsed=[];
-        document.getElementById('nh3-preview-zone').style.display='none';
-        document.getElementById('nh3-file-input').value='';
-        nh3Status('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    // FIX 19/8: append (thêm mới) - KHÔNG tự retry, xem giải thích ở bankPublish().
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankPdfParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankPdfParsed.length+' câu vào ngân hàng!','ok');
+    bankPdfParsed=[];
+    document.getElementById('nh3-preview-zone').style.display='none';
+    document.getElementById('nh3-file-input').value='';
+    nh3Status('');
+    await loadBank(true);
 }
 
 const nh3Drop=document.getElementById('nh3-dropzone'), nh3File=document.getElementById('nh3-file-input');
