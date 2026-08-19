@@ -1346,6 +1346,16 @@ const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f
 
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
 const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
+// Don cache rong do ban toi uu 19/08/2026 tao ra, chi chay mot lan tren moi trinh duyet.
+(function(){
+    const recoveryKey='vlxt_admin_cache_recovered_20260819';
+    try{ if(!localStorage.getItem(recoveryKey)){
+        localStorage.removeItem('vlxt_admin_baihoc');
+        localStorage.removeItem('vlxt_admin_baihoc_v2');
+        localStorage.removeItem('vlxt_admin_nganhang');
+        localStorage.setItem(recoveryKey,'1');
+    }}catch(e){}
+})();
 function aCache(key){ try{ const c=JSON.parse(localStorage.getItem(key)); return c||null; }catch{return null;} }
 function aSetCache(key,d){ try{ localStorage.setItem(key,JSON.stringify({t:Date.now(),d})); }catch{} }
 function aFresh(c){ return c && (Date.now()-c.t < ADMIN_CACHE_TTL); }
