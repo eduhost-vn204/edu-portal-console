@@ -1342,6 +1342,7 @@
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu (one-way, khong the giai nguoc)
 const DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
+const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634'; // = SHA-256 cua mat khau, dung chung voi ADMIN_PASSWORD_HASH (tab Tai khoan HS)
 
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
@@ -1359,6 +1360,21 @@ const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
 function aCache(key){ try{ const c=JSON.parse(localStorage.getItem(key)); return c||null; }catch{return null;} }
 function aSetCache(key,d){ try{ localStorage.setItem(key,JSON.stringify({t:Date.now(),d})); }catch{} }
 function aFresh(c){ return c && (Date.now()-c.t < ADMIN_CACHE_TTL); }
+function adminDbOpen(){
+    return new Promise((resolve,reject)=>{
+        const req=indexedDB.open('vlxt_admin_cache',1);
+        req.onupgradeneeded=()=>{ if(!req.result.objectStoreNames.contains('snapshots')) req.result.createObjectStore('snapshots'); };
+        req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);
+    });
+}
+async function adminDbGet(key){
+    try{ const db=await adminDbOpen(); return await new Promise((resolve,reject)=>{ const r=db.transaction('snapshots','readonly').objectStore('snapshots').get(key); r.onsuccess=()=>resolve(r.result||null); r.onerror=()=>reject(r.error); }); }
+    catch(e){ return null; }
+}
+async function adminDbSet(key,value){
+    try{ const db=await adminDbOpen(); await new Promise((resolve,reject)=>{ const r=db.transaction('snapshots','readwrite').objectStore('snapshots').put({t:Date.now(),data:value},key); r.onsuccess=()=>resolve(); r.onerror=()=>reject(r.error); }); }
+    catch(e){ console.warn('Không lưu được cache Admin:',e); }
+}
 function invalidateCache(key){
     try{
         if(key){ localStorage.removeItem(key); }
@@ -1501,7 +1517,15 @@ function todayStr(){ return new Date().toLocaleDateString('vi-VN'); }
 /* ════════════════════════════════════
    INIT
 ════════════════════════════════════ */
-function initAdmin(){ Promise.all([loadSettings(), loadKhoaConfig()]).then(()=>loadLessons()); }
+function initAdmin(){
+    // Hien bai hoc ngay tu cache/CDN; settings va config van tai song song.
+    // Doi script khai bao xong allLessons roi moi chay, tranh temporal dead zone.
+    const preview=Promise.resolve().then(()=>loadLessonsPreview());
+    Promise.all([loadSettings(),loadKhoaConfig(),preview]).then(()=>{
+        renderLessonList();
+        if(!allLessons.length) loadLessons();
+    });
+}
 
 /* ════════════════════════════════════
    TAB 5: LỊCH LIVE
@@ -2152,6 +2176,23 @@ async function loadLessons(){
     }
     renderLessonList();
     loadQbCounts();
+}
+
+async function loadLessonsPreview(){
+    const CKEY='vlxt_admin_baihoc';
+    const cached=aCache(CKEY);
+    if(cached){
+        const rows=Array.isArray(cached.d)?cached.d:(cached.d.baihoc||cached.d.data||[]);
+        if(rows.length){ allLessons=rows; renderLessonList(); if(aFresh(cached)) return; }
+    }
+    try{
+        const r=await fetch(PUBLIC_LESSONS_URL,{cache:'no-store'});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        const data=await r.json();
+        const rows=Array.isArray(data)?data:(data.baihoc||data.data||[]);
+        if(!rows.length) throw new Error('JSON bài học rỗng');
+        allLessons=rows; aSetCache(CKEY,rows); renderLessonList();
+    }catch(e){ console.warn('Không tải được bản xem nhanh bài học:',e); }
 }
 
 // Tai 1 lan toan bo sheet BaiTapTracNghiem de dem so cau/bai cho huy hieu trong
@@ -4510,17 +4551,35 @@ function nhKatex(el){ setTimeout(()=>{ if(typeof renderMathInElement==='function
 
 /* ── Tải ngân hàng từ Google Sheets ── */
 async function loadBank(force){
-    if(force) bankLoaded=false;
     const list=document.getElementById('nh-list');
-    list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng...</p></div>';
+    if(!bankData.length){
+        const snapshot=await adminDbGet('nganhang');
+        if(snapshot&&Array.isArray(snapshot.data)&&snapshot.data.length){
+            applyBankRows(snapshot.data);
+            refreshBank(false); // cap nhat ngam, khong khoa giao dien
+            return;
+        }
+    }
+    if(force&&bankData.length){ refreshBank(true); return; }
+    if(!bankData.length) list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng lần đầu...</p></div>';
+    await refreshBank(true);
+}
+function applyBankRows(rows){
+    bankData=rows.map(q=>{q={...q,loai:(q.loai||'TN').toString().toUpperCase().trim()};if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);return q;});
+    bankLoaded=true; bankSel.clear(); renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+}
+async function refreshBank(showError){
+    const list=document.getElementById('nh-list');
     try{
         const r=await fetch(DB_URL+'?type=nganhang&t='+Date.now());
         const j=await r.json();
-        bankData=(j.data||[]).map(q=>{q={...q, loai:(q.loai||'TN').toString().toUpperCase().trim()}; if(!q.phanLoai) q.phanLoai=classifyTaxonomy(q); return q;});
-        bankLoaded=true; bankSel.clear();
-        renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+        const rows=Array.isArray(j)?j:(j.data||[]);
+        if(!rows.length) throw new Error('Nguồn dữ liệu trả về rỗng');
+        applyBankRows(rows); await adminDbSet('nganhang',rows);
+        if(showError) toast('<i class="fa-solid fa-circle-check"></i> Ngân hàng đã cập nhật','ok');
     }catch(e){
-        list.innerHTML='<div class="loading-row" style="padding:30px;color:var(--red)">Lỗi tải ngân hàng: '+nhEsc(e.message)+'</div>';
+        if(showError&&!bankData.length) list.innerHTML='<div class="loading-row" style="padding:30px;color:var(--red)">Lỗi tải ngân hàng: '+nhEsc(e.message)+'</div>';
+        else console.warn('Không làm mới được ngân hàng:',e);
     }
 }
 function renderBankStats(){
