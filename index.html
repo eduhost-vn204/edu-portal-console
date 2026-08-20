@@ -1093,7 +1093,7 @@
                     <option value="tinh">🟢 Câu tinh (đã rà soát)</option>
                     <option value="tho">🟡 Câu thô (chưa rà soát)</option>
                 </select>
-                <input id="nh-f-search" placeholder="Tìm trong nội dung câu hỏi..." oninput="bankSearchChanged()">
+                <input id="nh-f-search" placeholder="Tìm theo mã hoặc nội dung câu hỏi..." oninput="bankSearchChanged()">
             </div>
             <div style="display:flex;gap:10px;margin-bottom:10px;align-items:center;font-size:13px;color:var(--gray)">
                 <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="nh-check-all" onchange="bankToggleAll(this.checked)" style="width:15px;height:15px;accent-color:var(--blue)"> Chọn tất cả (theo bộ lọc)</label>
@@ -4619,7 +4619,7 @@ function bankFiltered(){
         (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
         (!fp||q.phanLoai===fp)&&(!fb||(fb==='__EMPTY__'?!(q.baiHoc||'').trim():(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb)))&&
         (!fcl||(q.chatLuong||'tho')===fcl)&&
-        (!fs||((q.question||'')+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
+        (!fs||((q.id||'')+' '+(q.question||'')+' '+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
 const NH_PAGE_SIZE=30;
