@@ -1385,7 +1385,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -6102,13 +6102,9 @@ function tkFmtNgayTao(v) {
 
 async function deleteTK(sdt, hoten) {
   if (!confirm(`⚠️ Xoá vĩnh viễn tài khoản "${hoten}" (SĐT ${sdt})?\nHọc sinh sẽ mất toàn bộ tiến độ, điểm số đã lưu theo tài khoản này. Không thể hoàn tác.`)) return;
-  try {
-    const r = await fetch(GAS_URL, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'deleteaccount', adminKey: ADMIN_KEY, sdt }) });
-    const d = await r.json();
-    toast(d.msg || (d.ok ? 'Đã xoá tài khoản!' : 'Lỗi!'), d.ok ? 'ok' : 'err');
-    if (d.ok) loadTaiKhoan(true);
-  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
+  const ok = await postAdminWriteWithRetry({ action:'deleteaccount', sdt });
+  if (ok) { toast('Đã xoá tài khoản và dữ liệu liên quan!', 'ok'); await loadTaiKhoan(true); }
+  else toast('Không xoá được tài khoản. Dữ liệu vẫn được giữ nguyên.', 'err');
 }
 
 function renderTK(list) {
@@ -6173,13 +6169,9 @@ function closeTkModal() { document.getElementById('tk-modal').style.display = 'n
 async function confirmSetVip() {
   const loaiTK = document.getElementById('tk-modal-loai').value;
   const days   = Number(document.getElementById('tk-modal-days').value) || 30;
-  try {
-    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action:'setvipstatus', adminKey: ADMIN_KEY, sdt: tkEditSdt, loaiTK, days }) });
-    const d = await r.json();
-    if (d.ok) { toast(d.msg || 'Đã cập nhật!', 'ok'); closeTkModal(); loadTaiKhoan(true); }
-    else toast(d.msg || 'Lỗi!', 'err');
-  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
+  const ok = await postAdminWriteWithRetry({ action:'setvipstatus', sdt:tkEditSdt, loaiTK, days });
+  if (ok) { toast(loaiTK==='premium' ? 'Đã nâng Premium vĩnh viễn!' : 'Đã cập nhật tài khoản!', 'ok'); closeTkModal(); await loadTaiKhoan(true); }
+  else toast('Không cập nhật được tài khoản. Dữ liệu chưa thay đổi.', 'err');
 }
 
 // Bật/tắt "Miễn điều kiện video/câu áp dụng" cho 1 học sinh (đã học trong lớp thầy + đã xem live
