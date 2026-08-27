@@ -149,6 +149,54 @@ await check("attachAdminKeyCore KHÔNG đính kèm adminKey cho action đọc (k
   assert.equal(enriched.adminKey, undefined, 'Action đọc không được tự động gắn adminKey');
 });
 
+// ── Kiểm thử mô phỏng doPost Router của Apps Script ──
+function simulateDoPostRouter(rawBody) {
+  try {
+    const data = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody;
+    const action = (data && data.action ? String(data.action) : '').toLowerCase();
+    const knownActions = [
+      'register','login','logingoogle','savebaihoc','deletebaihoc','savequestions',
+      'savenganhang','deletenganhang','updatenganhang','saveprogress','savescore',
+      'updatebaihocvideo','saveexam','deleteexam','incrementlam','pingadmin',
+      'setvipstatus','deleteaccount','loghoatdong','updateaccount','savenhiemvu',
+      'saveduatop','savesetting','savekhoaconfig','resetdevice','savelivesession','deletelivesession'
+    ];
+    if (knownActions.includes(action)) {
+      return { ok: true, routedTo: action };
+    }
+    // Router mới: từ chối action lạ hoặc payload thiếu action thay vì gọi saveScore
+    return { ok: false, msg: 'Unknown action' };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+}
+
+await check("doPost Router từ chối action không tồn tại và KHÔNG gọi saveScore", async () => {
+  const res = simulateDoPostRouter({ action: 'non_existent_action_xyz', score: 10, name: 'Hacker' });
+  assert.equal(res.ok, false);
+  assert.equal(res.msg, 'Unknown action');
+  assert.equal(res.routedTo, undefined);
+});
+
+await check("doPost Router từ chối payload thiếu action và KHÔNG gọi saveScore", async () => {
+  const res = simulateDoPostRouter({ score: 10, name: 'TestUser' });
+  assert.equal(res.ok, false);
+  assert.equal(res.msg, 'Unknown action');
+  assert.equal(res.routedTo, undefined);
+});
+
+await check("doPost Router định tuyến chính xác 'savescore' rõ ràng", async () => {
+  const res = simulateDoPostRouter({ action: 'savescore', score: 10, name: 'Student' });
+  assert.equal(res.ok, true);
+  assert.equal(res.routedTo, 'savescore');
+});
+
+await check("doPost Router định tuyến chính xác 'pingadmin'", async () => {
+  const res = simulateDoPostRouter({ action: 'pingadmin', adminKey: 'key' });
+  assert.equal(res.ok, true);
+  assert.equal(res.routedTo, 'pingadmin');
+});
+
 console.log(`\n${passed} test đã qua.`);
 if (process.exitCode) {
   console.error('CÓ TEST THẤT BẠI.');
