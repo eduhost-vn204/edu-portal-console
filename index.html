@@ -643,6 +643,9 @@
     <button class="tab-btn active" onclick="switchTab('baihoc')" id="tab-baihoc-btn">
         <i class="fa-solid fa-book-open"></i> Quản lý bài học
     </button>
+    <button class="tab-btn" onclick="switchTab('phongthithu')" id="tab-phongthithu-btn">
+        <i class="fa-solid fa-clipboard-check"></i> Phòng thi thử
+    </button>
     <button class="tab-btn" onclick="switchTab('soande')" id="tab-soande-btn">
         <i class="fa-solid fa-file-pen"></i> Phòng kiểm tra
     </button>
@@ -834,6 +837,32 @@
             </div>
         </div>
     </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════
+     TAB: PHÒNG THI THỬ (TÍNH NĂNG MỚI)
+════════════════════════════════════ -->
+<div class="tab-content" id="tab-phongthithu">
+<div class="wrap">
+  <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;max-width:800px;margin:30px auto;box-shadow:0 4px 20px rgba(0,0,0,0.03)">
+    <div style="width:72px;height:72px;border-radius:50%;background:rgba(11,132,243,0.1);color:var(--blue);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <i class="fa-solid fa-rocket"></i>
+    </div>
+    <span class="page-eyebrow" style="color:var(--blue);font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:10px">// tính năng mới</span>
+    <h2 style="font-size:26px;font-weight:900;margin-bottom:12px;color:var(--black)">Quản Lý &amp; Biên Soạn Phòng Thi Thử</h2>
+    <p style="font-size:14.5px;color:var(--gray);line-height:1.65;max-width:580px;margin:0 auto 24px">
+      Tính năng Phòng Thi Thử trực tuyến chuẩn cấu trúc THPT Quốc Gia với cơ chế thi theo thời gian thực và xếp hạng tự động đang được chuẩn bị. Thầy có thể quản lý và biên soạn các đề kiểm tra định kỳ trước tại tab <strong>Phòng kiểm tra</strong>.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-new" onclick="switchTab('soande')" style="padding:10px 22px;font-size:14px">
+        <i class="fa-solid fa-file-pen"></i> Đến Phòng kiểm tra
+      </button>
+      <button class="btn-new" onclick="switchTab('nganhang')" style="background:var(--bg2);color:var(--black);border:1.5px solid var(--border);padding:10px 22px;font-size:14px">
+        <i class="fa-solid fa-database"></i> Xem Ngân hàng đề
+      </button>
+    </div>
+  </div>
 </div>
 </div>
 
