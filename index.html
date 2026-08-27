@@ -1339,11 +1339,37 @@
 /* ════════════════════════════════════
    CẤU HÌNH
 ════════════════════════════════════ */
-const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu (one-way, khong the giai nguoc)
+const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
 const DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
-const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634'; // = SHA-256 cua mat khau, dung chung voi ADMIN_PASSWORD_HASH (tab Tai khoan HS)
+
+/* ════ QUẢN LÝ KHÓA KẾT NỐI BACKEND (ADMIN_KEY) ════
+   Khóa kết nối backend được lưu an toàn trong sessionStorage (hoặc localStorage nếu người dùng chọn ghi nhớ).
+   Tuyệt đối không hardcode trong mã nguồn.
+══════════════════════════════════════════════════════ */
+function getAdminKey() {
+    return sessionStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('adminKey')
+        || '';
+}
+
+function setAdminKey(key, remember) {
+    const cleanKey = String(key || '').trim();
+    if (cleanKey) {
+        sessionStorage.setItem('vlxt_backend_admin_key', cleanKey);
+        if (remember) {
+            localStorage.setItem('vlxt_backend_admin_key', cleanKey);
+        } else {
+            localStorage.removeItem('vlxt_backend_admin_key');
+        }
+    } else {
+        sessionStorage.removeItem('vlxt_backend_admin_key');
+        localStorage.removeItem('vlxt_backend_admin_key');
+        localStorage.removeItem('adminKey');
+    }
+}
 
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
 const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
@@ -1386,7 +1412,6 @@ function invalidateCache(key){
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
 const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting'];
-function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
     window.fetch = function(url, opts){
@@ -1405,7 +1430,7 @@ function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 })();
 
 /* ════════════════════════════════════
-   LOGIN
+   LOGIN GIAO DIỆN
 ════════════════════════════════════ */
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
@@ -1415,11 +1440,14 @@ async function sha256(message) {
 }
 
 async function checkLogin(){
-    const inputHash = await sha256(document.getElementById('admin-pass').value);
+    const inputPass = document.getElementById('admin-pass').value;
+    const inputHash = await sha256(inputPass);
     if(inputHash === ADMIN_PASSWORD_HASH){
         localStorage.setItem('adminLoggedIn','1');
-        // Luu HASH (mot chieu), KHONG luu mat khau that vao localStorage/gui qua mang
-        localStorage.setItem('adminKey', inputHash);
+        // Nếu chưa có khóa backend riêng trong session, tạm dùng hash đăng nhập làm khởi tạo
+        if (!getAdminKey()) {
+            setAdminKey(inputHash, false);
+        }
         document.getElementById('login-overlay').style.display='none';
         initAdmin();
     } else {
@@ -1427,7 +1455,7 @@ async function checkLogin(){
     }
 }
 // Tự động đăng nhập nếu đã có session
-if(localStorage.getItem('adminLoggedIn')==='1' && localStorage.getItem('adminKey')){
+if(localStorage.getItem('adminLoggedIn')==='1'){
     document.getElementById('login-overlay').style.display='none';
     initAdmin();
 }
@@ -5902,7 +5930,20 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
     <input type="text" id="tk-search" placeholder="🔍 Tìm tên hoặc SĐT..." oninput="filterTK()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;width:220px;font-family:inherit;outline:none">
     <button class="btn-new" onclick="loadTaiKhoan(true)" style="min-width:100px"><i class="fa-solid fa-rotate"></i> Làm mới</button>
     <button class="btn-new" onclick="runAdminCorsDiagnostic()" style="min-width:115px;background:rgba(124,58,237,.12);border:1.5px solid rgba(124,58,237,.35);color:#7c3aed" title="Gửi request pingadmin kiểm tra cấu hình CORS"><i class="fa-solid fa-network-wired"></i> Kiểm tra CORS</button>
+    <button class="btn-new" onclick="openBackendKeyModal()" style="min-width:120px;background:rgba(22,163,74,.12);border:1.5px solid rgba(22,163,74,.35);color:#16a34a" title="Cập nhật khóa bí mật kết nối Google Apps Script"><i class="fa-solid fa-key"></i> Khóa kết nối</button>
   </div>
+</div>
+
+<!-- Alert thông báo lỗi xác thực backend nếu có -->
+<div id="tk-auth-alert" style="display:none;margin-bottom:18px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:12px;padding:16px 20px;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:12px">
+    <i class="fa-solid fa-triangle-exclamation" style="color:var(--red);font-size:22px"></i>
+    <div>
+      <div style="font-weight:800;color:var(--red);font-size:14px">Khóa kết nối backend không hợp lệ hoặc đã thay đổi</div>
+      <div style="font-size:12.5px;color:var(--gray);margin-top:2px">Google Apps Script đã từ chối truy cập (Unauthorized). Thầy vui lòng cập nhật lại Khóa kết nối backend để tải danh sách.</div>
+    </div>
+  </div>
+  <button onclick="openBackendKeyModal()" style="padding:8px 16px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-key"></i> Cập nhật khóa backend</button>
 </div>
 
 <!-- Stats nhanh -->
@@ -6023,6 +6064,30 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
     </div>
   </div>
 </div>
+
+<!-- Modal cấu hình Khóa kết nối Backend -->
+<div id="backend-key-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);align-items:center;justify-content:center">
+  <div style="background:var(--bg);border-radius:16px;padding:26px;width:420px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.35)">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+      <i class="fa-solid fa-key" style="color:var(--blue)"></i> Khóa kết nối Google Apps Script
+    </h3>
+    <div style="font-size:12.5px;color:var(--gray);margin-bottom:16px;line-height:1.5">
+      Nhập giá trị <b>ADMIN_KEY</b> được cấu hình trong <i>Script Properties</i> của Apps Script để xác thực các thao tác quản trị và tải dữ liệu học sinh.
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;font-weight:700;color:var(--black);display:block;margin-bottom:6px">Khóa kết nối (ADMIN_KEY mới)</label>
+      <input type="password" id="backend-key-input" placeholder="Dán khóa ADMIN_KEY tại đây..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-family:monospace;outline:none;background:var(--bg2);color:var(--black)">
+    </div>
+    <div style="margin-bottom:18px;display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="backend-key-remember" style="width:16px;height:16px;cursor:pointer">
+      <label for="backend-key-remember" style="font-size:12px;color:var(--gray);cursor:pointer" title="Lưu vào localStorage để không phải nhập lại sau khi đóng trình duyệt">Ghi nhớ trên trình duyệt này (localStorage)</label>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveBackendKeyFromModal()" style="flex:1;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-floppy-disk"></i> Lưu & Tải lại</button>
+      <button onclick="closeBackendKeyModal()" style="padding:10px 16px;background:var(--bg2);border:1.5px solid var(--border);color:var(--gray);border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Đóng</button>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 
@@ -6095,18 +6160,88 @@ let allTK = [];
 let tkLoaded = false;
 let tkEditSdt = null;
 
+function openBackendKeyModal() {
+  const modal = document.getElementById('backend-key-modal');
+  const input = document.getElementById('backend-key-input');
+  const rem = document.getElementById('backend-key-remember');
+  if (modal) modal.style.display = 'flex';
+  if (input) input.value = getAdminKey();
+  if (rem) rem.checked = !!localStorage.getItem('vlxt_backend_admin_key');
+}
+
+function closeBackendKeyModal() {
+  const modal = document.getElementById('backend-key-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveBackendKeyFromModal() {
+  const input = document.getElementById('backend-key-input');
+  const rem = document.getElementById('backend-key-remember');
+  const val = input ? input.value.trim() : '';
+  const isRem = rem ? rem.checked : false;
+  if (!val) {
+    toast('Vui lòng nhập khóa kết nối backend!', 'err');
+    return;
+  }
+  setAdminKey(val, isRem);
+  closeBackendKeyModal();
+  toast('Đã lưu khóa kết nối! Đang tải lại danh sách tài khoản...', 'ok');
+  loadTaiKhoan(true);
+}
+
 async function loadTaiKhoan(force) {
   if (!force && tkLoaded) return;
-  document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gray2)">Đang tải...</td></tr>';
+  const authAlert = document.getElementById('tk-auth-alert');
+  const tkList = document.getElementById('tk-list');
+  const tkEmpty = document.getElementById('tk-empty');
+
+  if (authAlert) authAlert.style.display = 'none';
+  if (tkEmpty) tkEmpty.style.display = 'none';
+  if (tkList && allTK.length === 0) {
+    tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu tài khoản...</td></tr>';
+  }
+
+  const backendKey = getAdminKey();
+  if (!backendKey) {
+    if (authAlert) authAlert.style.display = 'flex';
+    if (tkList && allTK.length === 0) {
+      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa cấu hình khóa kết nối backend. Thầy vui lòng bấm nút "Khóa kết nối" để nhập.</td></tr>';
+    }
+    return;
+  }
+
   try {
-    const url = GAS_URL + '?type=danhsachtaikhoan&adminKey=' + encodeURIComponent(ADMIN_KEY);
+    const url = GAS_URL + '?type=danhsachtaikhoan&adminKey=' + encodeURIComponent(backendKey);
     const r = await fetch(url);
     const data = await r.json();
-    allTK = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
+
+    if (data && (data.error === 'Unauthorized' || data.msg === 'Unauthorized' || data.ok === false && data.msg === 'Unauthorized')) {
+      if (authAlert) authAlert.style.display = 'flex';
+      if (tkList && allTK.length === 0) {
+        tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ hoặc đã thay đổi (Unauthorized).</td></tr>';
+      }
+      toast('Khóa kết nối backend không hợp lệ hoặc đã thay đổi!', 'err');
+      return;
+    }
+
+    if (Array.isArray(data)) {
+      allTK = data;
+    } else if (data && Array.isArray(data.data)) {
+      allTK = data.data;
+    } else {
+      if (authAlert) authAlert.style.display = 'flex';
+      toast('Không thể giải mã dữ liệu danh sách tài khoản.', 'err');
+      return;
+    }
+
+    if (authAlert) authAlert.style.display = 'none';
     tkLoaded = true;
     renderTK(allTK);
   } catch(e) {
-    document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
+    if (tkList && allTK.length === 0) {
+      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
+    }
+    toast('Lỗi kết nối máy chủ: ' + e.message, 'err');
   }
 }
 
@@ -6379,10 +6514,14 @@ function tkdSameSdt(a, b) {
 async function tkdLoadAct(sdt) {
   const el = document.getElementById('tkd-act');
   try {
-    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(ADMIN_KEY) + '&hs=' + encodeURIComponent(sdt));
+    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(getAdminKey()) + '&hs=' + encodeURIComponent(sdt));
     const d = await r.json();
     if (tkdSdt !== sdt) return;
-    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu — cần cập nhật Apps Script (v50) rồi thử lại.</div>'; return; }
+    if (d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || d.ok === false && d.msg === 'Unauthorized')) {
+      el.innerHTML = '<div style="padding:14px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ (Unauthorized).</div>';
+      return;
+    }
+    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu hoạt động.</div>'; return; }
     if (!d.data.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa ghi nhận hoạt động nào. (Chỉ ghi từ khi web được cập nhật tính năng này)</div>'; return; }
     el.innerHTML = d.data.map(a => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
       <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(a.thoigian)}</span>
@@ -6725,13 +6864,23 @@ function htSend() {
 }
 
 async function loadThietBi() {
+    const tb = document.getElementById('ht-device-list');
+    const backendKey = getAdminKey();
+    if (!backendKey) {
+        if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa có khóa kết nối backend. Vui lòng cấu hình ở tab Tài khoản HS.</td></tr>';
+        return;
+    }
     try {
-        const r = await fetch(GAS_URL + '?type=danhsachthietbi&adminKey=' + encodeURIComponent(ADMIN_KEY));
+        const r = await fetch(GAS_URL + '?type=danhsachthietbi&adminKey=' + encodeURIComponent(backendKey));
         const d = await r.json();
+        if (d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || d.ok === false && d.msg === 'Unauthorized')) {
+            if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ (Unauthorized).</td></tr>';
+            toast('Khóa kết nối backend không hợp lệ khi tải thiết bị!', 'err');
+            return;
+        }
         htDevices = d.data || [];
         renderThietBi();
     } catch (e) {
-        const tb = document.getElementById('ht-device-list');
         if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
     }
 }
