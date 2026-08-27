@@ -644,7 +644,7 @@
         <i class="fa-solid fa-book-open"></i> Quản lý bài học
     </button>
     <button class="tab-btn" onclick="switchTab('soande')" id="tab-soande-btn">
-        <i class="fa-solid fa-file-import"></i> Soạn đề thi
+        <i class="fa-solid fa-file-pen"></i> Phòng kiểm tra
     </button>
     <button class="tab-btn" onclick="switchTab('nganhang')" id="tab-nganhang-btn">
         <i class="fa-solid fa-database"></i> Ngân hàng đề
@@ -838,16 +838,16 @@
 </div>
 
 <!-- ════════════════════════════════════
-     TAB 2: SOẠN ĐỀ THI
+     TAB 2: PHÒNG KIỂM TRA (SOẠN & QUẢN LÝ ĐỀ)
 ════════════════════════════════════ -->
 <div class="tab-content" id="tab-soande">
 <div class="wrap">
   <div class="soande-grid">
 
-    <!-- ── CỘT TRÁI: DANH SÁCH ĐỀ THI ── -->
+    <!-- ── CỘT TRÁI: DANH SÁCH ĐỀ KIỂM TRA ── -->
     <div class="em-left">
       <div class="em-toolbar">
-        <h2><i class="fa-solid fa-layer-group" style="color:var(--blue);font-size:16px"></i> Danh sách đề</h2>
+        <h2><i class="fa-solid fa-layer-group" style="color:var(--blue);font-size:16px"></i> Danh sách đề kiểm tra</h2>
         <button class="btn-new" style="padding:8px 16px;font-size:13px" onclick="showExamForm(null)">
           <i class="fa-solid fa-plus"></i> Tạo đề mới
         </button>
@@ -857,7 +857,7 @@
       <!-- Form thêm/sửa đề -->
       <div class="em-form" id="exam-form-panel" style="display:none">
         <div class="em-form-head">
-          <h3 id="exam-form-title">Tạo đề mới</h3>
+          <h3 id="exam-form-title">Tạo đề kiểm tra mới</h3>
           <button class="fp-close" onclick="hideExamForm()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="em-form-body">
@@ -868,7 +868,7 @@
           </div>
           <div class="form-field">
             <label>Tên đề <span>*</span></label>
-            <input type="text" id="ef-tende" placeholder="vd: Thi thử Tốt nghiệp THPT — Đề Số 1">
+            <input type="text" id="ef-tende" placeholder="vd: Đề Kiểm Tra Định Kỳ — Đề Số 1">
           </div>
           <div class="form-field">
             <label>Mô tả ngắn</label>
@@ -890,7 +890,7 @@
             <label>Trạng thái</label>
             <select id="ef-trangthai">
               <option value="khoa">🔒 Khóa (học sinh chưa thấy)</option>
-              <option value="mo">✅ Mở (học sinh vào thi được)</option>
+              <option value="mo">✅ Mở (học sinh vào kiểm tra được)</option>
             </select>
           </div>
         </div>
@@ -905,9 +905,9 @@
 
     <!-- ── CỘT PHẢI: UPLOAD .DOCX ── -->
     <div class="em-right">
-      <span class="page-eyebrow">// soạn đề · bóc tách</span>
-      <h1 class="page-title" style="font-size:32px">Upload Câu Hỏi.</h1>
-      <p class="page-sub" style="margin-bottom:20px">Kéo thả file Word <code>.docx</code> vào đây — hệ thống tự tách <strong>cả 3 phần</strong>: A/B/C/D, Đúng/Sai, Trả lời ngắn.</p>
+      <span class="page-eyebrow">// phòng kiểm tra · soạn đề &amp; bóc tách</span>
+      <h1 class="page-title" style="font-size:32px">Biên Soạn Câu Hỏi.</h1>
+      <p class="page-sub" style="margin-bottom:20px">Kéo thả file Word <code>.docx</code> vào đây — hệ thống tự tách <strong>cả 3 phần</strong>: A/B/C/D, Đúng/Sai, Trả lời ngắn vào đề kiểm tra.</p>
       <div class="dropzone" id="dropzone">
           <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
           <h3>Thả file Word (.docx) vào đây</h3>
