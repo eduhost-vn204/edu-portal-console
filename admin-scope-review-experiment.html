@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Teaching Scope & Review Queue (Experimental v2.1) — Vật Lý Xuân Trường</title>
+  <!-- KaTeX for formula rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+    .badge-test { background: #3b82f633; color: #60a5fa; border: 1px solid #3b82f6; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-proposed { background: #d9770633; color: #fbbf24; border: 1px solid #d97706; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+    .tab-btn.active { background: var(--primary); color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    input, select, textarea { width: 100%; background: #0f172a; border: 1px solid var(--border); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none; }
+    input:focus, select:focus { border-color: var(--primary); }
+
+    .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--success); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .btn { background: var(--primary); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-success { background: var(--success); }
+    .btn-success:hover { background: #15803d; }
+    .btn-danger { background: var(--danger); }
+
+    .state-banner { padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: none; }
+    .state-banner.loading { display: block; background: #1e3a8a33; border: 1px solid #1d4ed8; color: #93c5fd; }
+    .state-banner.error { display: block; background: #7f1d1d33; border: 1px solid var(--danger); color: #fca5a5; }
+    .state-banner.empty { display: block; background: #37415133; border: 1px solid #4b5563; color: #9ca3af; text-align: center; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+    th { color: var(--text-muted); font-weight: 600; background: #0f172a; }
+    tr:hover td { background: #33415533; }
+
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+    .chip-tho { background: #dc262633; color: #f87171; border: 1px solid #dc2626; }
+    .chip-tinh { background: #16a34a33; color: #4ade80; border: 1px solid #16a34a; }
+    .chip-flag { background: #d9770633; color: #fbbf24; border: 1px solid #d97706; }
+
+    .auth-banner { background: #1e1b4b; border: 1px solid #4338ca; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-body { font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1 style="font-size: 22px; margin-bottom: 4px;">🎓 BỘ ĐIỀU KHIỂN GIẢNG DẠY & DUYỆT CÂU HỎI V2.1</h1>
+        <p style="font-size: 13px; color: var(--text-muted);">Môi trường Thử nghiệm Tích hợp (Isolated Experimental Engine — Không ghi Google Sheets)</p>
+      </div>
+      <div>
+        <span class="badge-test">MOCK STORAGE ADAPTER</span>
+      </div>
+    </div>
+
+    <!-- Authenticated Session Identity Banner -->
+    <div class="auth-banner">
+      <div>
+        <span style="font-size: 12px; color: #a5b4fc; text-transform: uppercase; font-weight: 700;">Phiên Quản Trị Đã Xác Thực</span>
+        <div style="font-weight: 700; font-size: 15px; color: #e0e7ff;" id="authTeacherDisplay">👨‍🏫 Thầy Xuân Trường (ID: THAY_XUAN_TRUONG_ADMIN)</div>
+      </div>
+      <div>
+        <span class="chip chip-tinh" style="font-size: 12px;">Quyền Duyệt Tinh: ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- State Banners -->
+    <div id="stateLoading" class="state-banner loading">⏳ Đang tải dữ liệu từ Local Storage Adapter...</div>
+    <div id="stateError" class="state-banner error">❌ Đã xảy ra lỗi khi nạp dữ liệu.</div>
+
+    <!-- Tabs Header -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('scopeTab')">1. Teaching Scope (Tiến độ dạy)</button>
+      <button class="tab-btn" onclick="switchTab('reviewTab')">2. Duyệt Thô → Tinh (<span id="rawCountBadge">0</span> câu Thô)</button>
+      <button class="tab-btn" onclick="switchTab('pedagogicalTab')">3. Cấu hình Sư phạm (PROPOSED)</button>
+    </div>
+
+    <!-- TAB 1: TEACHING SCOPE -->
+    <div id="scopeTab" class="tab-content active">
+      <div class="card">
+        <div class="card-title">⚙️ CẤU HÌNH KHÓA HỌC & GIAI ĐOẠN ĐANG DẠY</div>
+        <div class="grid-2">
+          <div>
+            <label>Khóa học mục tiêu:</label>
+            <select id="scopeCourseSelect" onchange="markScopeDirty()">
+              <option value="XPS_2K9">Khóa XPS 2K9 - Vật Lý 12</option>
+              <option value="IPCLASS_2026">Khóa IPClass 2026</option>
+              <option value="CHUYEN_DE_12">Chuyên đề Vật Lý 12</option>
+            </select>
+          </div>
+          <div>
+            <label>Giai đoạn học tập:</label>
+            <select id="scopeStageSelect" onchange="markScopeDirty()">
+              <option value="GD1_LY_THUYET">GĐ1: Lý thuyết & Bản chất</option>
+              <option value="GD2_LUYEN_DANG">GĐ2: Luyện dạng bài tập</option>
+              <option value="GD3_TONG_ON">GĐ3: Tổng ôn toàn diện</option>
+              <option value="GD4_LUYEN_DE">GĐ4: Luyện đề THPTQG</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 16px;">
+          <div>
+            <label>Thời gian bắt đầu mở:</label>
+            <input type="datetime-local" id="scopeValidFrom" onchange="markScopeDirty()">
+          </div>
+          <div>
+            <label>Thời gian kết thúc:</label>
+            <input type="datetime-local" id="scopeValidTo" onchange="markScopeDirty()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📖 TẤT CẢ CHƯƠNG ĐANG MỞ (Đua Top & Solo tự động lấy câu thuộc các chương này)</div>
+        <div id="chaptersList">
+          <!-- Dynamic chapter toggles -->
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+          <div id="scopeSummaryText" style="font-size: 13px; color: #4ade80;">✅ Đang áp dụng 1 Chương mở (8 câu Tinh sẵn sàng)</div>
+          <button class="btn btn-success" onclick="openConfirmScopeModal()">💾 Lưu & Áp Dụng Scope</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: REVIEW QUEUE -->
+    <div id="reviewTab" class="tab-content">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div class="card-title" style="margin-bottom: 0;">📥 DANH SÁCH CÂU HỎI THÔ CHỜ THẦY DUYỆT TINH</div>
+          <div>
+            <button class="btn btn-success" onclick="bulkApproveSelected()">✅ Duyệt Tinh các câu đã chọn</button>
+          </div>
+        </div>
+
+        <div id="rawQuestionsContainer">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40px;"><input type="checkbox" id="selectAllRaw" onchange="toggleSelectAllRaw(this)"></th>
+                <th>Mã Câu Hỏi</th>
+                <th>Dạng Câu</th>
+                <th>Nội Dung (Stem)</th>
+                <th>Mức Độ</th>
+                <th>Cờ Cảnh Báo</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="rawQuestionsTableBody">
+              <!-- Raw questions dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PEDAGOGICAL PROPOSED CONFIG -->
+    <div id="pedagogicalTab" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>🎮 CẤU HÌNH THAM SỐ GAME SƯ PHẠM</span>
+          <span class="badge-proposed">PROPOSED_CONFIG (CHỜ THẦY CHỐT)</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+          Các giá trị dưới đây được thiết kế thành cấu hình động, không hardcode, giúp Thầy dễ dàng điều chỉnh định mức câu và độ khó.
+        </p>
+
+        <div class="grid-2">
+          <div style="background: #0f172a; padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <h4 style="color: #60a5fa; margin-bottom: 12px;">Đấu Trường Solo 1-1</h4>
+            <label>Định mức Nhận biết (NB):</label>
+            <input type="number" id="cfgSoloNB" value="3" style="margin-bottom: 10px;">
+            <label>Định mức Thông hiểu (TH):</label>
+            <input type="number" id="cfgSoloTH" value="3" style="margin-bottom: 10px;">
+            <label>Định mức Vận dụng (VD):</label>
+            <input type="number" id="cfgSoloVD" value="1" style="margin-bottom: 10px;">
+            <label>Định mức Vận dụng cao (VDC):</label>
+            <input type="number" id="cfgSoloVDC" value="1" style="margin-bottom: 10px;">
+            <label>Thuật toán Fallback khi thiếu câu:</label>
+            <select id="cfgSoloFallback">
+              <option value="ADJACENT_TIER">Mượn từ bậc liền kề (VD -> TH -> NB -> VDC)</option>
+              <option value="REPEAT_RANDOM">Lặp ngẫu nhiên các câu hợp lệ</option>
+            </select>
+          </div>
+
+          <div style="background: #0f172a; padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <h4 style="color: #fbbf24; margin-bottom: 12px;">Đua Top Nhanh</h4>
+            <label>Số câu tối đa mỗi lượt chơi:</label>
+            <input type="number" id="cfgDuaTopCount" value="20" style="margin-bottom: 10px;">
+            <label>Ngưỡng thưởng tốc độ (giây):</label>
+            <input type="number" id="cfgSpeedThreshold" value="30" style="margin-bottom: 10px;">
+            <label>Hệ số Streak 5 câu đúng liên tiếp:</label>
+            <input type="number" step="0.1" id="cfgStreak5" value="1.2" style="margin-bottom: 10px;">
+            <label>Hệ số Streak 10 câu đúng liên tiếp:</label>
+            <input type="number" step="0.1" id="cfgStreak10" value="1.5">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Question Modal -->
+  <div id="detailModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalQuestionId" style="color: #60a5fa;">Chi Tiết Câu Hỏi</h3>
+        <button onclick="closeDetailModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div class="modal-body" id="modalQuestionBody">
+        <!-- Rendered with KaTeX -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeDetailModal()">Đóng</button>
+        <button class="btn btn-success" id="btnModalApprove">✅ Duyệt Tinh Câu Này</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Scope Modal -->
+  <div id="confirmScopeModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Xác Nhận Thay Đổi Teaching Scope</h3>
+        <button onclick="closeConfirmScopeModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Thầy có chắc chắn muốn lưu và áp dụng phạm vi giảng dạy mới này?</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+          Học sinh trên toàn hệ thống (Đua Top, Solo, Bài học) sẽ ngay lập tức được cập nhật phạm vi câu hỏi theo các chương vừa chọn.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeConfirmScopeModal()">Hủy</button>
+        <button class="btn btn-success" onclick="executeSaveScope()">Xác Nhận & Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INLINE EXPERIMENTAL SCRIPT -->
+  <script type="module">
+    // Khởi tạo mock data & session context
+    const sessionContext = {
+      adminUser: {
+        id: 'THAY_XUAN_TRUONG_ADMIN',
+        name: 'Thầy Xuân Trường',
+        role: 'SUPER_ADMIN',
+        permissions: ['APPROVE_TINH', 'MANAGE_SCOPE', 'MANAGE_SETTINGS']
+      }
+    };
+
+    let syntheticBank = [
+      {
+        id: "VLXT-G12-C1-B01-Q0001",
+        stem: "Trong mô hình động học phân tử chất khí, khi nhiệt độ tuyệt đối của một khối khí lí tưởng tăng gấp đôi thì động năng tịnh tiến trung bình của các phân tử khí sẽ",
+        type: "MULTIPLE_CHOICE_4",
+        difficultyLevel: 1,
+        difficultyName: "NHAN_BIET",
+        rawTier: "TINH",
+        status: "TEACHER_APPROVED",
+        taxonomy: { chapterNumber: 1, chapterTitle: "Vật lí nhiệt", lessonCode: "G12_C1_B01" }
+      },
+      {
+        id: "VLXT-G12-C1-B03-Q0099",
+        stem: "[RAW OCR DRAFT] Một lượng khí lí tưởng chứa trong bình kín biến đổi đẳng áp từ $T_1 = 300\\text{ K}$ đến $T_2 = 600\\text{ K}$.",
+        type: "MULTIPLE_CHOICE_4",
+        difficultyLevel: 2,
+        difficultyName: "THONG_HIEU",
+        rawTier: "THO",
+        status: "QA_PASSED",
+        sourceProvenance: { sourceTitle: "Đề thi OCR 2026", sourceAuthor: "Bóc tách máy" },
+        qualityFlags: ["LOW_CONFIDENCE_OCR", "NEEDS_DIAGRAM_REDRAW"],
+        taxonomy: { chapterNumber: 1, chapterTitle: "Vật lí nhiệt", lessonCode: "G12_C1_B03" },
+        options: [
+          { key: "A", content: "Thể tích tăng gấp đôi." },
+          { key: "B", content: "Thể tích giảm một nửa." },
+          { key: "C", content: "Áp suất tăng gấp đôi." },
+          { key: "D", content: "Áp suất không đổi." }
+        ],
+        correctAnswer: "A",
+        explanation: "Quá trình đẳng áp tuân theo định luật Gay-Lussac: $\\frac{V}{T} = \\text{const}$."
+      }
+    ];
+
+    let currentScope = {
+      scopeId: "SCOPE_2026_GD1_ACTIVE",
+      courseId: "XPS_2K9",
+      stage: "GD1_LY_THUYET",
+      isActive: true,
+      activeChapters: [
+        { chapterNumber: 1, chapterTitle: "Chương 1: Vật lí nhiệt", isOpen: true, questionCount: 185 },
+        { chapterNumber: 2, chapterTitle: "Chương 2: Khí lí tưởng", isOpen: false, questionCount: 142 },
+        { chapterNumber: 3, chapterTitle: "Chương 3: Từ trường", isOpen: false, questionCount: 96 },
+        { chapterNumber: 4, chapterTitle: "Chương 4: Vật lí hạt nhân", isOpen: false, questionCount: 110 }
+      ]
+    };
+
+    window.switchTab = (tabId) => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      if (window.renderMathInElement) renderMathInElement(document.body);
+    };
+
+    function renderChapters() {
+      const container = document.getElementById('chaptersList');
+      container.innerHTML = '';
+      currentScope.activeChapters.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'chapter-item';
+        div.innerHTML = `
+          <div>
+            <strong style="font-size: 14px;">${c.chapterTitle}</strong>
+            <span style="font-size: 12px; color: var(--text-muted); margin-left: 8px;">(${c.questionCount || 0} câu Tinh)</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" ${c.isOpen ? 'checked' : ''} onchange="toggleChapter(${c.chapterNumber}, this.checked)">
+            <span class="slider"></span>
+          </label>
+        `;
+        container.appendChild(div);
+      });
+      updateScopeSummary();
+    }
+
+    function renderRawQuestions() {
+      const tbody = document.getElementById('rawQuestionsTableBody');
+      tbody.innerHTML = '';
+      const rawQuestions = syntheticBank.filter(q => q.rawTier === 'THO');
+      document.getElementById('rawCountBadge').innerText = rawQuestions.length;
+
+      if (rawQuestions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">🎉 Tuyệt vời! Không còn câu hỏi Thô nào cần duyệt.</td></tr>`;
+        return;
+      }
+
+      rawQuestions.forEach(q => {
+        const tr = document.createElement('tr');
+        const flagsHtml = (q.qualityFlags || []).map(f => `<span class="chip chip-flag">${f}</span>`).join('');
+        tr.innerHTML = `
+          <td><input type="checkbox" class="raw-checkbox" value="${q.id}"></td>
+          <td><code>${q.id}</code></td>
+          <td><span class="chip" style="background: #334155;">${q.type}</span></td>
+          <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${q.stem}</td>
+          <td>${q.difficultyName || 'THONG_HIEU'}</td>
+          <td>${flagsHtml || '<span style="color: var(--text-muted);">None</span>'}</td>
+          <td><span class="chip chip-tho">THÔ (${q.status})</span></td>
+          <td><button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="viewRawDetail('${q.id}')">Xem & Duyệt</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      if (window.renderMathInElement) renderMathInElement(tbody);
+    }
+
+    window.toggleChapter = (chapterNum, isOpen) => {
+      const c = currentScope.activeChapters.find(ch => ch.chapterNumber === chapterNum);
+      if (c) c.isOpen = isOpen;
+      updateScopeSummary();
+    };
+
+    function updateScopeSummary() {
+      const openChaps = currentScope.activeChapters.filter(c => c.isOpen);
+      const summary = document.getElementById('scopeSummaryText');
+      summary.innerText = `✅ Đang áp dụng ${openChaps.length} Chương mở (Đua Top & Solo tự động lấy câu thuộc các chương này)`;
+    }
+
+    window.viewRawDetail = (id) => {
+      const q = syntheticBank.find(item => item.id === id);
+      if (!q) return;
+      document.getElementById('modalQuestionId').innerText = `Chi Tiết: ${q.id}`;
+      document.getElementById('modalQuestionBody').innerHTML = `
+        <div style="margin-bottom: 12px;"><strong>Nguồn:</strong> ${q.sourceProvenance?.sourceTitle || 'N/A'} (${q.sourceProvenance?.sourceAuthor || 'N/A'})</div>
+        <div style="background: #0f172a; padding: 14px; border-radius: 8px; margin-bottom: 12px;"><strong>Đề bài:</strong><br>${q.stem}</div>
+        <div style="margin-bottom: 12px;"><strong>Đáp án đúng:</strong> <span style="color: #4ade80; font-weight: 700;">${q.correctAnswer || 'N/A'}</span></div>
+        <div style="background: #0f172a; padding: 14px; border-radius: 8px;"><strong>Lời giải:</strong><br>${q.explanation || 'Chưa có lời giải'}</div>
+      `;
+      document.getElementById('btnModalApprove').onclick = () => {
+        approveSingleQuestion(q.id);
+        closeDetailModal();
+      };
+      document.getElementById('detailModal').classList.add('active');
+      if (window.renderMathInElement) renderMathInElement(document.getElementById('modalQuestionBody'));
+    };
+
+    window.closeDetailModal = () => document.getElementById('detailModal').classList.remove('active');
+    window.openConfirmScopeModal = () => document.getElementById('confirmScopeModal').classList.add('active');
+    window.closeConfirmScopeModal = () => document.getElementById('confirmScopeModal').classList.remove('active');
+
+    window.executeSaveScope = () => {
+      closeConfirmScopeModal();
+      alert(`Đã lưu thành công Teaching Scope với Thầy duyệt: ${sessionContext.adminUser.name}`);
+    };
+
+    function approveSingleQuestion(qId) {
+      const q = syntheticBank.find(item => item.id === qId);
+      if (q) {
+        q.rawTier = 'TINH';
+        q.status = 'TEACHER_APPROVED';
+        q.reviewedBy = sessionContext.adminUser.id;
+        q.reviewedAt = new Date().toISOString();
+        renderRawQuestions();
+        alert(`Đã duyệt Tinh thành công cho câu ${qId} bởi ${sessionContext.adminUser.name}`);
+      }
+    }
+
+    window.bulkApproveSelected = () => {
+      const checkedBoxes = Array.from(document.querySelectorAll('.raw-checkbox:checked'));
+      if (checkedBoxes.length === 0) {
+        alert('Vui lòng chọn ít nhất 1 câu hỏi để duyệt!');
+        return;
+      }
+      const ids = checkedBoxes.map(b => b.value);
+      ids.forEach(id => {
+        const q = syntheticBank.find(item => item.id === id);
+        if (q) {
+          q.rawTier = 'TINH';
+          q.status = 'TEACHER_APPROVED';
+          q.reviewedBy = sessionContext.adminUser.id;
+          q.reviewedAt = new Date().toISOString();
+        }
+      });
+      renderRawQuestions();
+      alert(`Đã duyệt Tinh hàng loạt ${ids.length} câu bởi ${sessionContext.adminUser.name}`);
+    };
+
+    window.toggleSelectAllRaw = (masterCheckbox) => {
+      document.querySelectorAll('.raw-checkbox').forEach(cb => cb.checked = masterCheckbox.checked);
+    };
+
+    // Khởi tạo
+    renderChapters();
+    renderRawQuestions();
+  </script>
+</body>
+</html>
