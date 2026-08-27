@@ -51,3 +51,26 @@ export async function postAdminWriteCore(fetchImpl, url, payload, options = {}) 
     clearTimeout(timer);
   }
 }
+
+export const ADMIN_WRITE_ACTIONS = [
+  'savebaihoc', 'deletebaihoc', 'savequestions', 'savenganhang', 'deletenganhang',
+  'updatenganhang', 'updatebaihocvideo', 'saveexam', 'deleteexam', 'savelivesession',
+  'deletelivesession', 'setvipstatus', 'deleteaccount', 'savekhoaconfig', 'resetdevice',
+  'savevideocauhoi', 'savehuongdan', 'bulksetbainganhang', 'bulksetchatluongnganhang',
+  'pingadmin', 'updateaccount', 'savebaitaptracnghiem', 'savesetting'
+];
+
+/**
+ * Logic gắn adminKey tự động vào payload của thao tác ghi nếu action nằm trong whitelist.
+ * @param {any} body
+ * @param {string} adminKey
+ * @returns {any}
+ */
+export function attachAdminKeyCore(body, adminKey) {
+  if (!body || typeof body !== 'object') return body;
+  const action = String(body.action || '').toLowerCase();
+  if (ADMIN_WRITE_ACTIONS.includes(action)) {
+    return { ...body, adminKey: adminKey || '' };
+  }
+  return body;
+}

@@ -104,6 +104,51 @@ await check('Timeout/abort (fetch không bao giờ tự resolve) -> false, khôn
   assert.equal(result, false);
 });
 
+// ── Kiểm tra tự động đính kèm adminKey qua ADMIN_WRITE_ACTIONS ──
+import { ADMIN_WRITE_ACTIONS, attachAdminKeyCore } from './postAdminWrite.mjs';
+
+await check("ADMIN_WRITE_ACTIONS chứa đầy đủ 'savebaitaptracnghiem' và 'savesetting'", async () => {
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('savebaitaptracnghiem'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('savesetting'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('deleteaccount'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('setvipstatus'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('pingadmin'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('updateaccount'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('resetdevice'), true);
+  assert.equal(ADMIN_WRITE_ACTIONS.includes('savevideocauhoi'), true);
+});
+
+await check("attachAdminKeyCore tự động đính kèm adminKey cho 'savebaitaptracnghiem'", async () => {
+  const payload = { action: 'savebaitaptracnghiem', baiKey: 'B1', items: [{ q: '1+1=?' }] };
+  const enriched = attachAdminKeyCore(payload, 'test_key_123');
+  assert.equal(enriched.adminKey, 'test_key_123');
+  assert.equal(enriched.action, 'savebaitaptracnghiem');
+  assert.equal(enriched.baiKey, 'B1');
+});
+
+await check("attachAdminKeyCore tự động đính kèm adminKey cho 'savesetting'", async () => {
+  const payload = { action: 'savesetting', key: 'currentTeachingLesson', value: 'B1' };
+  const enriched = attachAdminKeyCore(payload, 'test_key_123');
+  assert.equal(enriched.adminKey, 'test_key_123');
+  assert.equal(enriched.action, 'savesetting');
+  assert.equal(enriched.key, 'currentTeachingLesson');
+  assert.equal(enriched.value, 'B1');
+});
+
+await check("attachAdminKeyCore tự động đính kèm adminKey cho TẤT CẢ các action trong ADMIN_WRITE_ACTIONS", async () => {
+  for (const act of ADMIN_WRITE_ACTIONS) {
+    const payload = { action: act, data: 123 };
+    const enriched = attachAdminKeyCore(payload, 'secret_adm_key');
+    assert.equal(enriched.adminKey, 'secret_adm_key', `Action ${act} phải được gắn adminKey`);
+  }
+});
+
+await check("attachAdminKeyCore KHÔNG đính kèm adminKey cho action đọc (không nằm trong whitelist)", async () => {
+  const payload = { action: 'getbaihoc', type: 'baihoc' };
+  const enriched = attachAdminKeyCore(payload, 'secret_adm_key');
+  assert.equal(enriched.adminKey, undefined, 'Action đọc không được tự động gắn adminKey');
+});
+
 console.log(`\n${passed} test đã qua.`);
 if (process.exitCode) {
   console.error('CÓ TEST THẤT BẠI.');
