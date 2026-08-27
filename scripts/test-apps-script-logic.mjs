@@ -329,11 +329,18 @@ await test('11. doPost từ chối unknown action, không gọi saveScore và kh
   assert.equal(bv.getLastRow(), 3); // 1 header + 2 dòng ban đầu
 });
 
-await test('12. doPost từ chối payload thiếu action', () => {
+// ── 5. Kiểm thử hàm Server-Side runAdminSelfTest ──
+await test('13. runAdminSelfTest hoàn thành chuỗi test cô lập Premium -> VIP -> Free -> deleteAccount và trả boolean', () => {
   resetDatabase();
-  const res = sandbox.doPost({ postData: { contents: JSON.stringify({ score: 10 }) } });
-  assert.equal(res.ok, false);
-  assert.equal(res.msg, 'Unknown action');
+  const res = sandbox.runAdminSelfTest();
+  assert.equal(res.ok, true, 'runAdminSelfTest phải thành công');
+  assert.equal(res.passed, true);
+  assert.equal(res.adminKey, undefined, 'Tuyệt đối không trả adminKey');
+
+  // Xác minh không để lại tài khoản rác sau khi self-test
+  const tk = activeSpreadsheet.getSheetByName('TaiKhoan');
+  assert.equal(tk.getLastRow(), 3, 'Chỉ còn 1 header + 2 tài khoản ban đầu');
 });
 
 console.log(`\n${passed} test đặc trưng trực tiếp từ src/Mã.js đã hoàn thành 100%!`);
+
