@@ -90,21 +90,21 @@
     <div class="header">
       <div>
         <h1 style="font-size: 22px; margin-bottom: 4px;">🎓 BỘ ĐIỀU KHIỂN GIẢNG DẠY & DUYỆT CÂU HỎI V2.1</h1>
-        <p style="font-size: 13px; color: var(--text-muted);">Môi trường Thử nghiệm Tích hợp (Isolated Experimental Engine — Không ghi Google Sheets)</p>
+        <p style="font-size: 13px; color: #f87171; font-weight: 600;">⚠️ GIAO DIỆN DEMO / MOCK — DỮ LIỆU TỔNG HỢP CÔ LẬP — KHÔNG GHI PRODUCTION</p>
       </div>
       <div>
-        <span class="badge-test">MOCK STORAGE ADAPTER</span>
+        <span class="badge-test">ISOLATED DEMO ADAPTER</span>
       </div>
     </div>
 
     <!-- Authenticated Session Identity Banner -->
     <div class="auth-banner">
       <div>
-        <span style="font-size: 12px; color: #a5b4fc; text-transform: uppercase; font-weight: 700;">Phiên Quản Trị Đã Xác Thực</span>
-        <div style="font-weight: 700; font-size: 15px; color: #e0e7ff;" id="authTeacherDisplay">👨‍🏫 Thầy Xuân Trường (ID: THAY_XUAN_TRUONG_ADMIN)</div>
+        <span style="font-size: 12px; color: #a5b4fc; text-transform: uppercase; font-weight: 700;">Phiên Giả Lập Kiểm Thử Giao Diện</span>
+        <div style="font-weight: 700; font-size: 15px; color: #e0e7ff;" id="authTeacherDisplay">🧪 SYNTHETIC_ADMIN_REVIEWER (ID: SYNTHETIC_DEMO_REVIEWER_01)</div>
       </div>
       <div>
-        <span class="chip chip-tinh" style="font-size: 12px;">Quyền Duyệt Tinh: ACTIVE</span>
+        <span class="chip chip-flag" style="font-size: 12px;">Môi trường Sandbox</span>
       </div>
     </div>
 
@@ -284,13 +284,13 @@
 
   <!-- INLINE EXPERIMENTAL SCRIPT -->
   <script type="module">
-    // Khởi tạo mock data & session context
+    // Khởi tạo mock data & synthetic session context
     const sessionContext = {
       adminUser: {
-        id: 'THAY_XUAN_TRUONG_ADMIN',
-        name: 'Thầy Xuân Trường',
-        role: 'SUPER_ADMIN',
-        permissions: ['APPROVE_TINH', 'MANAGE_SCOPE', 'MANAGE_SETTINGS']
+        id: 'SYNTHETIC_DEMO_REVIEWER_01',
+        name: 'SYNTHETIC_ADMIN_REVIEWER',
+        role: 'SYNTHETIC_SANDBOX_ROLE',
+        permissions: ['APPROVE_TINH_DEMO', 'MANAGE_SCOPE_DEMO']
       }
     };
 
