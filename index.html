@@ -629,6 +629,7 @@
     </a>
     <div class="nav-right">
         <button class="theme-toggle" onclick="toggleTheme()" title="Chuyển giao diện sáng/tối"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        <button class="theme-toggle" onclick="openBackendKeyModal()" title="Cài đặt khóa kết nối backend (ADMIN_KEY)"><i class="fa-solid fa-key"></i></button>
         <span class="sync-badge" id="sync-badge"><i class="fa-solid fa-circle-check"></i> Đã lưu</span>
         <a href="https://vatlyxuantruong.io.vn/baihoc.html" target="_blank" class="btn-deploy" style="text-decoration:none">
             <i class="fa-solid fa-eye"></i> Xem Web Học Sinh
@@ -5929,8 +5930,6 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <input type="text" id="tk-search" placeholder="🔍 Tìm tên hoặc SĐT..." oninput="filterTK()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;width:220px;font-family:inherit;outline:none">
     <button class="btn-new" onclick="loadTaiKhoan(true)" style="min-width:100px"><i class="fa-solid fa-rotate"></i> Làm mới</button>
-    <button class="btn-new" onclick="runAdminCorsDiagnostic()" style="min-width:115px;background:rgba(124,58,237,.12);border:1.5px solid rgba(124,58,237,.35);color:#7c3aed" title="Gửi request pingadmin kiểm tra cấu hình CORS"><i class="fa-solid fa-network-wired"></i> Kiểm tra CORS</button>
-    <button class="btn-new" onclick="openBackendKeyModal()" style="min-width:120px;background:rgba(22,163,74,.12);border:1.5px solid rgba(22,163,74,.35);color:#16a34a" title="Cập nhật khóa bí mật kết nối Google Apps Script"><i class="fa-solid fa-key"></i> Khóa kết nối</button>
   </div>
 </div>
 
@@ -5943,7 +5942,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
       <div style="font-size:12.5px;color:var(--gray);margin-top:2px">Google Apps Script đã từ chối truy cập (Unauthorized). Thầy vui lòng cập nhật lại Khóa kết nối backend để tải danh sách.</div>
     </div>
   </div>
-  <button onclick="openBackendKeyModal()" style="padding:8px 16px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-key"></i> Cập nhật khóa backend</button>
+  <button onclick="openBackendKeyModal()" style="padding:8px 16px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-key"></i> Nhập lại khóa backend</button>
 </div>
 
 <!-- Stats nhanh -->
@@ -6205,8 +6204,9 @@ async function loadTaiKhoan(force) {
   if (!backendKey) {
     if (authAlert) authAlert.style.display = 'flex';
     if (tkList && allTK.length === 0) {
-      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa cấu hình khóa kết nối backend. Thầy vui lòng bấm nút "Khóa kết nối" để nhập.</td></tr>';
+      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa cấu hình khóa kết nối backend. Vui lòng nhập khóa bên dưới.</td></tr>';
     }
+    openBackendKeyModal();
     return;
   }
 
@@ -6221,6 +6221,7 @@ async function loadTaiKhoan(force) {
         tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ hoặc đã thay đổi (Unauthorized).</td></tr>';
       }
       toast('Khóa kết nối backend không hợp lệ hoặc đã thay đổi!', 'err');
+      openBackendKeyModal();
       return;
     }
 
