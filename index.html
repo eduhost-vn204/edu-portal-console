@@ -948,9 +948,14 @@
     <div class="em-left">
       <div class="em-toolbar">
         <h2><i class="fa-solid fa-layer-group" style="color:var(--blue);font-size:16px"></i> Danh sách đề kiểm tra</h2>
-        <button class="btn-new" style="padding:8px 16px;font-size:13px" onclick="showExamForm(null)">
-          <i class="fa-solid fa-plus"></i> Tạo đề mới
-        </button>
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost2" style="padding:8px 14px;font-size:13px" onclick="showBulkExamModal()">
+            <i class="fa-solid fa-file-import"></i> Nạp hàng loạt
+          </button>
+          <button class="btn-new" style="padding:8px 16px;font-size:13px" onclick="showExamForm(null)">
+            <i class="fa-solid fa-plus"></i> Tạo đề mới
+          </button>
+        </div>
       </div>
       <div id="exam-list-panel"><div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div></div>
 
@@ -964,33 +969,47 @@
           <input type="hidden" id="ef-exam-id-hidden">
           <div class="form-field">
             <label>Mã đề (examId) <span>*</span></label>
-            <input type="text" id="ef-examid" placeholder="vd: de01, de02, chuong1..." maxlength="30">
+            <input type="text" id="ef-examid" placeholder="vd: de01, de02, thithu01..." maxlength="30">
           </div>
           <div class="form-field">
             <label>Tên đề <span>*</span></label>
-            <input type="text" id="ef-tende" placeholder="vd: Đề Kiểm Tra Định Kỳ — Đề Số 1">
+            <input type="text" id="ef-tende" placeholder="vd: Đề Thi Thử Thực Chiến THPTQG — Đề Số 01">
           </div>
           <div class="form-field">
-            <label>Mô tả ngắn</label>
-            <input type="text" id="ef-mota" placeholder="vd: 40 câu trắc nghiệm, 50 phút">
+            <label>Mô tả / Ghi chú</label>
+            <input type="text" id="ef-mota" placeholder="vd: 40 câu chuẩn cấu trúc, 50 phút">
+          </div>
+          <div class="form-field">
+            <label>Link Video Chữa Đề (YouTube / Google Drive)</label>
+            <input type="text" id="ef-videourl" placeholder="vd: https://www.youtube.com/watch?v=... hoặc drive link">
           </div>
           <div class="efd-row">
             <div class="form-field">
               <label>Thời gian (phút)</label>
-              <input type="number" id="ef-thoigian" value="45" min="5" max="180">
+              <input type="number" id="ef-thoigian" value="50" min="5" max="180">
+            </div>
+            <div class="form-field">
+              <label>Phân loại đề</label>
+              <select id="ef-loaide">
+                <option value="thithu">🎯 Phòng Thi Thử</option>
+                <option value="kiemtra">📝 Phòng Kiểm Tra</option>
+                <option value="luyentap">📚 Luyện Tập Tự Do</option>
+              </select>
             </div>
             <div class="form-field">
               <label>Lớp</label>
               <select id="ef-lop">
                 <option value="12">Vật Lý 12</option>
+                <option value="11">Vật Lý 11</option>
+                <option value="10">Vật Lý 10</option>
               </select>
             </div>
           </div>
           <div class="form-field">
             <label>Trạng thái</label>
             <select id="ef-trangthai">
-              <option value="khoa">🔒 Khóa (học sinh chưa thấy)</option>
-              <option value="mo">✅ Mở (học sinh vào kiểm tra được)</option>
+              <option value="mo">✅ Mở (học sinh vào thi / xem được)</option>
+              <option value="khoa">🔒 Khóa (tạm ẩn đối với học sinh)</option>
             </select>
           </div>
         </div>
@@ -1422,7 +1441,83 @@
 </div>
 </div>
 
-<!-- CONFIRM DELETE -->
+<!-- MODAL BULK IMPORT ĐỀ THI THỬ -->
+<div class="confirm-overlay" id="bulk-exam-overlay" style="z-index:9998">
+    <div class="confirm-box" style="max-width:780px;width:95%;text-align:left;max-height:90vh;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px">
+            <h3 style="font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px">
+                <i class="fa-solid fa-file-import" style="color:var(--blue)"></i> Nạp danh sách đề thi hàng loạt (Bulk Import)
+            </h3>
+            <button onclick="closeBulkExamModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div style="overflow-y:auto;flex:1;padding-right:4px">
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+                <button class="tab-btn active" id="bem-tab-json-btn" onclick="switchBulkExamTab('json')" style="padding:6px 14px;font-size:12.5px">
+                    <i class="fa-brands fa-square-js"></i> Dán JSON Manifest
+                </button>
+                <button class="tab-btn" id="bem-tab-excel-btn" onclick="switchBulkExamTab('excel')" style="padding:6px 14px;font-size:12.5px">
+                    <i class="fa-solid fa-table"></i> Dán Bảng Excel / TSV
+                </button>
+                <button class="btn-ghost2" onclick="fillBulkExamSample()" style="padding:6px 12px;font-size:12px;margin-left:auto">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Mẫu dữ liệu
+                </button>
+            </div>
+
+            <div id="bem-panel-json">
+                <textarea id="bem-json-input" placeholder='[&#10;  {&#10;    "examId": "thithu01",&#10;    "tenDe": "[Thi Thử THPTQG 2026] Đề Số 01",&#10;    "thoiGian": 50,&#10;    "soCau": 28,&#10;    "trangThai": "mo",&#10;    "videoUrl": "https://www.youtube.com/watch?v=...",&#10;    "moTa": "Đề thi thử chuẩn cấu trúc BGD",&#10;    "loaiDe": "thithu"&#10;  }&#10;]' style="width:100%;height:140px;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--black);font-family:'DM Mono',monospace;font-size:12.5px;outline:none"></textarea>
+            </div>
+
+            <div id="bem-panel-excel" style="display:none">
+                <div style="font-size:11.5px;color:var(--gray2);margin-bottom:6px">Cột yêu cầu (ngăn bằng Tab từ Excel): <code>Mã đề</code> · <code>Tên đề</code> · <code>Thời gian</code> · <code>Số câu</code> · <code>Trạng thái (mo/khoa)</code> · <code>Link video chữa</code> · <code>Mô tả</code></div>
+                <textarea id="bem-excel-input" placeholder="thithu01&#9;[Thi Thử] Đề Số 01&#9;50&#9;28&#9;mo&#9;https://youtube.com/...&#9;Đề thực chiến chuẩn cấu trúc" style="width:100%;height:140px;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--black);font-family:'DM Mono',monospace;font-size:12.5px;outline:none"></textarea>
+            </div>
+
+            <div style="margin-top:10px;display:flex;gap:8px">
+                <button class="btn-new" onclick="previewBulkExam()" style="padding:7px 16px;font-size:13px">
+                    <i class="fa-solid fa-magnifying-glass"></i> Phân tích &amp; Xem trước
+                </button>
+            </div>
+
+            <!-- PREVIEW AREA -->
+            <div id="bem-preview-area" style="display:none;margin-top:14px;border-top:1px dashed var(--border);padding-top:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <span style="font-size:13px;font-weight:700" id="bem-preview-count">Tìm thấy 0 đề hợp lệ</span>
+                </div>
+                <div style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+                    <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+                        <thead>
+                            <tr style="background:var(--bg2);border-bottom:1px solid var(--border)">
+                                <th style="padding:6px 10px">Mã đề</th>
+                                <th style="padding:6px 10px">Tên đề</th>
+                                <th style="padding:6px 10px">Thời gian</th>
+                                <th style="padding:6px 10px">Loại</th>
+                                <th style="padding:6px 10px">Video chữa</th>
+                                <th style="padding:6px 10px">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bem-preview-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROGRESS & LOGS -->
+            <div id="bem-progress-area" style="display:none;margin-top:14px">
+                <div style="height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:8px">
+                    <div id="bem-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0072ff,#00f0ff);transition:width 0.2s"></div>
+                </div>
+                <div id="bem-log-text" style="font-size:12px;color:var(--gray);font-family:'DM Mono',monospace;max-height:80px;overflow-y:auto"></div>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+            <button class="btn-confirm-cancel" onclick="closeBulkExamModal()">Đóng</button>
+            <button class="btn-new" id="bem-submit-btn" onclick="executeBulkExamImport()" style="min-width:140px" disabled>
+                <i class="fa-solid fa-cloud-arrow-up"></i> Bắt đầu Nạp đề
+            </button>
+        </div>
+    </div>
+</div>
 <div class="confirm-overlay" id="confirm-overlay">
     <div class="confirm-box">
         <h3 id="confirm-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Xác nhận xóa</h3>
@@ -4532,7 +4627,7 @@ function renderPreview2(skipped){
 }
 
 /* ═══════════════════════════════════════════
-   EXAM MANAGEMENT
+   EXAM MANAGEMENT & BULK IMPORT
 ═══════════════════════════════════════════ */
 
 let examListData = [];
@@ -4555,28 +4650,45 @@ async function loadExamList() {
     populateExamSelect();
 }
 
+function extractAdminExamVideo(ex) {
+    if (ex.videoUrl && String(ex.videoUrl).trim()) return String(ex.videoUrl).trim();
+    if (ex.moTa) {
+        const m = String(ex.moTa).match(/https?:\/\/[^\s"'<>]+/i);
+        if (m && (m[0].includes('youtube') || m[0].includes('youtu.be') || m[0].includes('drive.google.com'))) {
+            return m[0];
+        }
+    }
+    return '';
+}
+
 function renderExamList() {
     const el = document.getElementById('exam-list-panel');
     if (!el) return;
     if (!examListData.length) {
-        el.innerHTML = '<div class="empty-list"><i class="fa-solid fa-layer-group"></i><p>Chưa có đề nào.<br>Nhấn "+ Tạo đề mới" để bắt đầu.</p></div>';
+        el.innerHTML = '<div class="empty-list"><i class="fa-solid fa-layer-group"></i><p>Chưa có đề nào.<br>Nhấn "+ Tạo đề mới" hoặc "Nạp hàng loạt" để bắt đầu.</p></div>';
         return;
     }
     el.innerHTML = examListData.map(ex => {
         const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
         const stLabel = st === 'mo' ? '✅ Mở' : '🔒 Khóa';
         const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
+        const vUrl = extractAdminExamVideo(ex);
+        const loai = ex.loaiDe === 'thithu' ? '🎯 Thi Thử' : (ex.loaiDe === 'luyentap' ? '📚 Luyện tập' : '📝 Kiểm tra');
+        const vBadge = vUrl ? '<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;font-weight:700"><i class="fa-solid fa-play"></i> Video chữa</span>' : '';
         return `<div class="em-card" id="emc-${ex.examId}">
           <div class="em-card-body">
             <div class="em-card-top">
               <span class="em-id">${ex.examId}</span>
+              <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
               <span class="em-status ${st}">${stLabel}</span>
+              ${vBadge}
             </div>
             <div class="em-title">${ex.tenDe || '(chưa đặt tên)'}</div>
             <div class="em-meta">
-              <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||45} phút</span>
+              <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||50} phút</span>
               <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||0} câu</span>
               <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
+              <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
             </div>
           </div>
           <div class="em-actions">
@@ -4607,7 +4719,9 @@ function showExamForm(examId) {
         document.getElementById('ef-examid').disabled = true;
         document.getElementById('ef-tende').value   = ex.tenDe || '';
         document.getElementById('ef-mota').value    = ex.moTa  || '';
-        document.getElementById('ef-thoigian').value = ex.thoiGian || 45;
+        document.getElementById('ef-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
+        document.getElementById('ef-thoigian').value = ex.thoiGian || 50;
+        document.getElementById('ef-loaide').value   = ex.loaiDe || 'thithu';
         document.getElementById('ef-lop').value      = ex.lop  || '12';
         document.getElementById('ef-trangthai').value = ex.trangThai || 'khoa';
     } else {
@@ -4616,9 +4730,11 @@ function showExamForm(examId) {
         document.getElementById('ef-examid').disabled = false;
         document.getElementById('ef-tende').value = '';
         document.getElementById('ef-mota').value  = '';
-        document.getElementById('ef-thoigian').value = 45;
+        document.getElementById('ef-videourl').value = '';
+        document.getElementById('ef-thoigian').value = 50;
+        document.getElementById('ef-loaide').value = 'thithu';
         document.getElementById('ef-lop').value   = '12';
-        document.getElementById('ef-trangthai').value = 'khoa';
+        document.getElementById('ef-trangthai').value = 'mo';
     }
 }
 
@@ -4631,10 +4747,13 @@ async function submitExamForm() {
     if (!examId) { alert('Vui lòng nhập mã đề (examId).'); return; }
     if (!tenDe)  { alert('Vui lòng nhập tên đề.'); return; }
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+    const videoUrl = document.getElementById('ef-videourl').value.trim();
     const payload = {
         action:'saveExam', examId, tenDe,
         moTa:      document.getElementById('ef-mota').value.trim(),
-        thoiGian:  parseInt(document.getElementById('ef-thoigian').value)||45,
+        videoUrl:  videoUrl,
+        loaiDe:    document.getElementById('ef-loaide').value,
+        thoiGian:  parseInt(document.getElementById('ef-thoigian').value)||50,
         lop:       document.getElementById('ef-lop').value,
         trangThai: document.getElementById('ef-trangthai').value
     };
@@ -4676,6 +4795,200 @@ async function doDeleteExam() {
     toast('<i class="fa-solid fa-trash"></i> Đã xóa đề!','ok');
     invalidateCache('vlxt_admin_soande');
     setTimeout(loadExamList,1500);
+}
+
+/* ─── BULK EXAM IMPORT FUNCTIONS ─── */
+let bulkExamParsedList = [];
+let currentBulkTab = 'json';
+
+function showBulkExamModal() {
+    document.getElementById('bulk-exam-overlay').classList.add('show');
+    document.getElementById('bem-preview-area').style.display = 'none';
+    document.getElementById('bem-progress-area').style.display = 'none';
+    document.getElementById('bem-submit-btn').disabled = true;
+    bulkExamParsedList = [];
+}
+
+function closeBulkExamModal() {
+    document.getElementById('bulk-exam-overlay').classList.remove('show');
+}
+
+function switchBulkExamTab(tab) {
+    currentBulkTab = tab;
+    document.getElementById('bem-tab-json-btn').classList.toggle('active', tab === 'json');
+    document.getElementById('bem-tab-excel-btn').classList.toggle('active', tab === 'excel');
+    document.getElementById('bem-panel-json').style.display = tab === 'json' ? 'block' : 'none';
+    document.getElementById('bem-panel-excel').style.display = tab === 'excel' ? 'block' : 'none';
+}
+
+function fillBulkExamSample() {
+    if (currentBulkTab === 'json') {
+        const sample = [
+            {
+                "examId": "thithu_demo_01",
+                "tenDe": "[Thi Thử THPTQG 2026] Đề Thực Chiến Vật Lý Số 01 - Chuẩn cấu trúc BGD",
+                "thoiGian": 50,
+                "soCau": 28,
+                "trangThai": "mo",
+                "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "moTa": "Đề thi thử bao phủ toàn bộ kiến thức Trọng tâm Vật Lý 12. Có video chữa chi tiết từng câu.",
+                "loaiDe": "thithu",
+                "lop": 12
+            },
+            {
+                "examId": "thithu_demo_02",
+                "tenDe": "[Thi Thử THPTQG 2026] Đề Thực Chiến Số 02 - Nhiệt học & Khí lý tưởng",
+                "thoiGian": 50,
+                "soCau": 28,
+                "trangThai": "mo",
+                "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "moTa": "Đề số 2 rèn luyện kỹ năng phân tích đồ thị và bài toán định lượng nâng cao.",
+                "loaiDe": "thithu",
+                "lop": 12
+            }
+        ];
+        document.getElementById('bem-json-input').value = JSON.stringify(sample, null, 2);
+    } else {
+        const sampleTsv = "thithu_demo_01\t[Thi Thử THPTQG 2026] Đề Thực Chiến Số 01\t50\t28\tmo\thttps://www.youtube.com/watch?v=dQw4w9WgXcQ\tĐề chuẩn cấu trúc BGD\nthithu_demo_02\t[Thi Thử THPTQG 2026] Đề Thực Chiến Số 02\t50\t28\tmo\thttps://www.youtube.com/watch?v=dQw4w9WgXcQ\tĐề số 2 nâng cao";
+        document.getElementById('bem-excel-input').value = sampleTsv;
+    }
+    previewBulkExam();
+}
+
+function previewBulkExam() {
+    bulkExamParsedList = [];
+    if (currentBulkTab === 'json') {
+        const val = document.getElementById('bem-json-input').value.trim();
+        if (!val) { alert('Vui lòng nhập dữ liệu JSON!'); return; }
+        try {
+            const parsed = JSON.parse(val);
+            const arr = Array.isArray(parsed) ? parsed : (parsed.exams || parsed.data || [parsed]);
+            arr.forEach((item, idx) => {
+                if (item && item.examId && item.tenDe) {
+                    bulkExamParsedList.push({
+                        examId: String(item.examId).trim().replace(/\s+/g,'').toLowerCase(),
+                        tenDe: String(item.tenDe).trim(),
+                        thoiGian: parseInt(item.thoiGian) || 50,
+                        soCau: parseInt(item.soCau) || 0,
+                        trangThai: (item.trangThai === 'mo' || item.trangThai === true) ? 'mo' : 'khoa',
+                        videoUrl: item.videoUrl ? String(item.videoUrl).trim() : '',
+                        moTa: item.moTa ? String(item.moTa).trim() : '',
+                        loaiDe: item.loaiDe || 'thithu',
+                        lop: item.lop || '12'
+                    });
+                }
+            });
+        } catch(e) {
+            alert('Lỗi cú pháp JSON: ' + e.message);
+            return;
+        }
+    } else {
+        const val = document.getElementById('bem-excel-input').value.trim();
+        if (!val) { alert('Vui lòng dán dữ liệu bảng tính Excel!'); return; }
+        const lines = val.split('\n').map(l => l.trim()).filter(Boolean);
+        lines.forEach(line => {
+            const parts = line.split('\t');
+            if (parts.length >= 2) {
+                const eid = parts[0].trim().replace(/\s+/g,'').toLowerCase();
+                const ten = parts[1].trim();
+                if (eid && ten && eid !== 'mã đề' && eid !== 'examid') {
+                    bulkExamParsedList.push({
+                        examId: eid,
+                        tenDe: ten,
+                        thoiGian: parseInt(parts[2]) || 50,
+                        soCau: parseInt(parts[3]) || 0,
+                        trangThai: (parts[4] && parts[4].toLowerCase() === 'mo') ? 'mo' : 'khoa',
+                        videoUrl: parts[5] ? parts[5].trim() : '',
+                        moTa: parts[6] ? parts[6].trim() : '',
+                        loaiDe: 'thithu',
+                        lop: '12'
+                    });
+                }
+            }
+        });
+    }
+
+    const previewArea = document.getElementById('bem-preview-area');
+    const tbody = document.getElementById('bem-preview-tbody');
+    const countEl = document.getElementById('bem-preview-count');
+    const submitBtn = document.getElementById('bem-submit-btn');
+
+    if (!bulkExamParsedList.length) {
+        alert('Không tìm thấy đề thi hợp lệ nào trong dữ liệu nhập. Hãy kiểm tra lại định dạng!');
+        previewArea.style.display = 'none';
+        submitBtn.disabled = true;
+        return;
+    }
+
+    countEl.textContent = `Tìm thấy ${bulkExamParsedList.length} đề thi hợp lệ sẵn sàng nạp:`;
+    tbody.innerHTML = bulkExamParsedList.map((ex, i) => {
+        const stHtml = ex.trangThai === 'mo' ? '<span style="color:#10b981;font-weight:700">🟢 Mở</span>' : '<span style="color:#ef4444">🔒 Khóa</span>';
+        const vHtml = ex.videoUrl ? '<span style="color:#f59e0b;font-weight:600">🎬 Có video</span>' : '<span style="color:var(--gray2)">—</span>';
+        return `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-weight:700;color:var(--blue)">${ex.examId}</td>
+            <td style="padding:6px 10px;font-weight:600">${ex.tenDe}</td>
+            <td style="padding:6px 10px">${ex.thoiGian}p</td>
+            <td style="padding:6px 10px">${ex.loaiDe}</td>
+            <td style="padding:6px 10px">${vHtml}</td>
+            <td style="padding:6px 10px">${stHtml}</td>
+        </tr>`;
+    }).join('');
+
+    previewArea.style.display = 'block';
+    submitBtn.disabled = false;
+}
+
+async function executeBulkExamImport() {
+    if (!bulkExamParsedList.length) return;
+    const submitBtn = document.getElementById('bem-submit-btn');
+    const progressArea = document.getElementById('bem-progress-area');
+    const progressBar = document.getElementById('bem-progress-bar');
+    const logText = document.getElementById('bem-log-text');
+
+    submitBtn.disabled = true;
+    progressArea.style.display = 'block';
+    logText.innerHTML = 'Bắt đầu nạp hàng loạt...<br>';
+    progressBar.style.width = '5%';
+
+    let successCount = 0;
+    for (let i = 0; i < bulkExamParsedList.length; i++) {
+        const ex = bulkExamParsedList[i];
+        logText.innerHTML += `[${i+1}/${bulkExamParsedList.length}] Đang lưu đề "${ex.examId}"... `;
+        const payload = {
+            action: 'saveExam',
+            examId: ex.examId,
+            tenDe: ex.tenDe,
+            thoiGian: ex.thoiGian,
+            trangThai: ex.trangThai,
+            videoUrl: ex.videoUrl,
+            moTa: ex.moTa,
+            loaiDe: ex.loaiDe,
+            lop: ex.lop
+        };
+        const ok = await postAdminWriteWithRetry(payload);
+        if (ok) {
+            successCount++;
+            logText.innerHTML += '<span style="color:#10b981;font-weight:700">OK</span><br>';
+        } else {
+            logText.innerHTML += '<span style="color:#ef4444;font-weight:700">LỖI</span><br>';
+        }
+        const pct = Math.round(((i + 1) / bulkExamParsedList.length) * 100);
+        progressBar.style.width = pct + '%';
+        logText.scrollTop = logText.scrollHeight;
+    }
+
+    if (successCount === bulkExamParsedList.length) {
+        toast(`🎉 Nạp thành công ${successCount}/${bulkExamParsedList.length} đề thi!`, 'ok');
+    } else {
+        toast(`Đã nạp ${successCount}/${bulkExamParsedList.length} đề. Kiểm tra log chi tiết!`, 'err');
+    }
+
+    submitBtn.disabled = false;
+    invalidateCache('vlxt_admin_soande');
+    setTimeout(() => {
+        loadExamList();
+        closeBulkExamModal();
+    }, 1500);
 }
 
 /* ═══════════════════════════════════════════
