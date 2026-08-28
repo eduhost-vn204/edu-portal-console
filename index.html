@@ -5223,30 +5223,73 @@ function handleBatchFileSelect(event){
 
             _currentBatchId = file.name.replace(/\.[^/.]+$/, '');
             _currentBatchQuestions = rawList.map(q => {
+                const isDs = q.type === 'TRUE_FALSE_4PART' || String(q.loai || '').toUpperCase() === 'DS';
+                const loai = isDs ? 'DS' : 'TN';
+
                 let mon = String(q.mon || 'Vật lý').trim();
                 if(mon === 'Vật Lý 12' || mon === 'Vật lí 12') mon = 'Vật lý';
 
                 let chuong = String(q.chuong || '').trim();
-                if(/chương 1|vật l[yí] nhiệt/i.test(chuong)) chuong = 'Vật lí nhiệt';
+                if(/chương 1|vật l[yí] nhiệt/i.test(chuong) || !chuong) chuong = 'Vật lí nhiệt';
 
                 let baiHoc = String(q.baiHoc || '').trim();
-                if(/b3|thang nhiệt độ|nhiệt kế/i.test(baiHoc)) baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
+                if(/b3|thang nhiệt độ|nhiệt kế/i.test(baiHoc) || (q.taxonomy && q.taxonomy.lessonCode === 'G12_C1_B03')) {
+                    baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
+                } else if(/b5|định luật i|nội năng/i.test(baiHoc) || (q.taxonomy && q.taxonomy.lessonCode === 'G12_C1_B05')) {
+                    baiHoc = 'Bài 5. Định luật I của nhiệt động lực học';
+                } else if(!baiHoc) {
+                    baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
+                }
+
+                let optA = String(q.optA || '').trim();
+                let optB = String(q.optB || '').trim();
+                let optC = String(q.optC || '').trim();
+                let optD = String(q.optD || '').trim();
+                let correct = String(q.correct || q.correctAnswer || '').trim().toUpperCase();
+
+                if (isDs && Array.isArray(q.subItems) && q.subItems.length) {
+                    const subMap = {};
+                    q.subItems.forEach(s => { subMap[String(s.key || '').toLowerCase()] = s; });
+                    optA = subMap['a'] ? String(subMap['a'].statement || '').trim() : optA;
+                    optB = subMap['b'] ? String(subMap['b'].statement || '').trim() : optB;
+                    optC = subMap['c'] ? String(subMap['c'].statement || '').trim() : optC;
+                    optD = subMap['d'] ? String(subMap['d'].statement || '').trim() : optD;
+
+                    if (!correct || correct.length !== 4) {
+                        const ca = subMap['a'] && subMap['a'].isCorrect ? 'Đ' : 'S';
+                        const cb = subMap['b'] && subMap['b'].isCorrect ? 'Đ' : 'S';
+                        const cc = subMap['c'] && subMap['c'].isCorrect ? 'Đ' : 'S';
+                        const cd = subMap['d'] && subMap['d'].isCorrect ? 'Đ' : 'S';
+                        correct = `${ca}${cb}${cc}${cd}`;
+                    }
+                } else if (Array.isArray(q.options) && q.options.length) {
+                    const optMap = {};
+                    q.options.forEach(o => { optMap[String(o.key || '').toUpperCase()] = String(o.content || '').trim(); });
+                    optA = optMap['A'] || optA;
+                    optB = optMap['B'] || optB;
+                    optC = optMap['C'] || optC;
+                    optD = optMap['D'] || optD;
+                }
+
+                let hinhAnh = String(q.hinhAnh || '').trim();
+                if (!hinhAnh && q.id === 'VLXT-G12-C1-P16-RL1_21') hinhAnh = 'images/nganhang/VLXT-G12-C1-P16-RL1_21_diagram.png';
+                if (!hinhAnh && q.id === 'VLXT-G12-C1-P17-RL2_01') hinhAnh = 'images/nganhang/VLXT-G12-C1-P17-RL2_01_diagram.png';
 
                 return {
                     id: String(q.id || q.canonical_id || '').trim(),
                     mon: mon,
                     chuong: chuong,
                     baiHoc: baiHoc,
-                    mucDo: String(q.mucDo || 'VD').toUpperCase(),
-                    loai: String(q.loai || 'TN').toUpperCase(),
+                    mucDo: String(q.mucDo || q.difficultyLevel || 'VD').toUpperCase(),
+                    loai: loai,
                     question: String(q.question || q.stem || '').trim(),
-                    optA: String(q.optA || (q.options && q.options.A && q.options.A.content) || '').trim(),
-                    optB: String(q.optB || (q.options && q.options.B && q.options.B.content) || '').trim(),
-                    optC: String(q.optC || (q.options && q.options.C && q.options.C.content) || '').trim(),
-                    optD: String(q.optD || (q.options && q.options.D && q.options.D.content) || '').trim(),
-                    correct: String(q.correct || q.correctAnswer || '').trim().toUpperCase(),
+                    optA: optA,
+                    optB: optB,
+                    optC: optC,
+                    optD: optD,
+                    correct: correct,
                     giaiThich: String(q.giaiThich || q.explanation || '').trim(),
-                    hinhAnh: String(q.hinhAnh || '').trim(),
+                    hinhAnh: hinhAnh,
                     nhomId: String(q.nhomId || '').trim(),
                     deBaiChung: String(q.deBaiChung || '').trim(),
                     chatLuong: 'tinh'
