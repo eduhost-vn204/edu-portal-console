@@ -4811,7 +4811,7 @@ async function refreshBank(showError){
 function renderBankStats(){
     const c={TN:0,DS:0,TLN:0};
     bankData.forEach(q=>{ if(c[q.loai]!==undefined)c[q.loai]++; });
-    const tinhCount=bankData.filter(q=>q.chatLuong==='tinh').length;
+    const tinhCount = bankData.filter(q => String(q.chatLuong || '').trim().toLowerCase() === 'tinh' || String(q.rawTier || '').trim().toUpperCase() === 'TINH').length;
     document.getElementById('nh-s-total').textContent=bankData.length;
     document.getElementById('nh-s-tn').textContent=c.TN;
     document.getElementById('nh-s-ds').textContent=c.DS;
