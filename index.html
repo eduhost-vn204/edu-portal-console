@@ -5375,7 +5375,8 @@ async function commitBatchImport(){
                 </div>`;
             toast('<i class="fa-solid fa-circle-check"></i> Đã nạp thành công ' + res.inserted + ' câu Tinh!', 'ok');
             
-            if(typeof loadBank === 'function') loadBank();
+            try { await adminDbSet('nganhang', null); } catch(e){}
+            if(typeof loadBank === 'function') await loadBank(true);
         } else {
             const errMsg = res ? (res.msg || res.error || 'Lỗi ghi server') : 'Giao tiếp server thất bại';
             document.getElementById('nh-batch-status').innerHTML = `
