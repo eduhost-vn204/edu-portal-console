@@ -946,8 +946,7 @@ function updateNganHang(data) {
 
 // ── POST: Gán "Bài học" cho nhiều câu cùng lúc (phân loại hàng loạt) ──
 function bulkSetBaiHocNganHang(data) {
-  const adminKey = getAdminKey();
-  if (adminKey && String(data.adminKey || '').trim() !== adminKey) {
+  if (!requireAdmin(data.adminKey)) {
     return jsonOut({ ok: false, error: 'Unauthorized', msg: 'Khóa quản trị không hợp lệ' });
   }
 
