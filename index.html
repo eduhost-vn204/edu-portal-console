@@ -1190,9 +1190,10 @@
                 </select>
                 <select id="nh-f-bai" onchange="bankFiltersChanged()"><option value="">Tất cả bài</option></select>
                 <select id="nh-f-chatluong" onchange="bankFiltersChanged()">
-                    <option value="">Câu thô + Câu tinh</option>
-                    <option value="tinh">🟢 Câu tinh (đã rà soát)</option>
-                    <option value="tho">🟡 Câu thô (chưa rà soát)</option>
+                    <option value="">Tất cả chất lượng</option>
+                    <option value="chua_duyet">🟡 Chưa duyệt</option>
+                    <option value="tinh">🟢 Tinh (đã duyệt)</option>
+                    <option value="tho">🔴 Thô (bị chặn)</option>
                 </select>
                 <input id="nh-f-search" placeholder="Tìm theo mã hoặc nội dung câu hỏi..." oninput="bankSearchChanged()">
             </div>
@@ -1209,10 +1210,11 @@
                 <span class="ns-count"><i class="fa-solid fa-circle-check" style="color:#4ade80"></i> Đã chọn <span id="nh-sel-count">0</span> câu</span>
                 <button style="background:#2563eb;color:#fff" onclick="showBankExamForm()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo đề thi từ câu đã chọn</button>
                 <button style="background:#0e7490;color:#fff" onclick="bankAssignBaiOpen()"><i class="fa-solid fa-tag"></i> Gán vào Bài</button>
-                <button style="background:#16a34a;color:#fff" onclick="bankMarkChatLuong('tinh')"><i class="fa-solid fa-circle-check"></i> Đánh dấu Tinh</button>
-                <button style="background:#d97706;color:#fff" onclick="bankMarkChatLuong('tho')"><i class="fa-solid fa-triangle-exclamation"></i> Đánh dấu Thô</button>
+                <button style="background:#16a34a;color:#fff" onclick="bankMarkChatLuongPrompt('tinh')"><i class="fa-solid fa-circle-check"></i> Duyệt Tinh</button>
+                <button style="background:#dc2626;color:#fff" onclick="bankMarkChatLuongPrompt('tho')"><i class="fa-solid fa-ban"></i> Đánh dấu Thô</button>
+                <button style="background:#d97706;color:#fff" onclick="bankMarkChatLuongPrompt('')"><i class="fa-solid fa-hourglass-half"></i> Chuyển Chưa duyệt</button>
                 <button style="background:#0f766e;color:#fff" onclick="bankExportWordOpen()"><i class="fa-solid fa-file-word"></i> Xuất Word</button>
-                <button style="background:#dc2626;color:#fff" onclick="bankDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa khỏi ngân hàng</button>
+                <button style="background:#7f1d1d;color:#fff" onclick="bankDeleteSelected()"><i class="fa-solid fa-trash"></i> Xóa khỏi ngân hàng</button>
                 <button style="background:rgba(255,255,255,.15);color:#fff" onclick="bankClearSelection()">Bỏ chọn</button>
             </div>
 
@@ -3541,11 +3543,19 @@ function renderBPM(){
         } else {
             inner=`<div style="margin-bottom:5px">${nhSafe(item.question)}</div><div style="font-size:12px"><b>Đáp án:</b> ${nhEsc(item.correct||'')}</div>`;
         }
+        const cl = String(item.chatLuong || '').trim().toLowerCase();
+        const badgeCl = cl === 'tinh' 
+            ? '<span class="nh-badge" style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700">Tinh</span>'
+            : (cl === 'tho' 
+                ? '<span class="nh-badge" style="background:#fee2e2;color:#991b1b;font-size:10px;font-weight:700">Thô</span>'
+                : '<span class="nh-badge" style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:600">Chưa duyệt</span>');
+
         return `<label class="bpm-item ${sel?'selected':''}" id="bpm-r-${nhEsc(item.id)}" style="display:flex;cursor:pointer">
             <input type="checkbox" ${sel?'checked':''} onchange="bpmToggle('${nhEsc(item.id)}',this.checked)" onclick="event.stopPropagation()">
             <div class="bpm-q-text">
                 <div class="bpm-q-meta">
                     <span class="q-type-tag t-${typ}" style="font-size:10px">${TL[typ]}</span>
+                    ${badgeCl}
                     ${item.chuong?`<span class="nh-badge b-ch" style="font-size:10px">${nhEsc(item.chuong)}</span>`:''}
                     ${item.mucDo?`<span class="nh-badge" style="font-size:10px">${nhEsc(item.mucDo)}</span>`:''}
                 </div>
@@ -3569,9 +3579,36 @@ function updateBpmCount(){
     document.getElementById('bpm-add-btn').disabled=_bpmSel.size===0;
 }
 
-function addFromBankPicker(){
+async function addFromBankPicker(){
     if(!_bpmSel.size){ toast('Chưa chọn câu nào!','err'); return; }
     const chosen=bankData.filter(q=>_bpmSel.has(q.id));
+    const thoList = chosen.filter(q => String(q.chatLuong || '').toLowerCase() === 'tho');
+    const chuaDuyetList = chosen.filter(q => !String(q.chatLuong || '').trim());
+
+    if(thoList.length > 0) {
+        alert(`❌ KHÔNG THỂ THÊM: Có ${thoList.length} câu mang nhãn "Thô" (bị chặn):\n${thoList.map(x=>x.id).join(', ')}\n\nVui lòng bỏ chọn câu Thô hoặc sửa và duyệt lại.`);
+        return;
+    }
+
+    if(chuaDuyetList.length > 0) {
+        const cdIds = chuaDuyetList.map(x => x.id);
+        const confirmApprove = confirm(`⚠️ CẢNH BÁO: Có ${chuaDuyetList.length} câu CHƯA DUYỆT.\nNhấn [OK] để DUYỆT TINH toàn bộ các câu này và thêm vào bài học.\nNhấn [Cancel] để quay lại.`);
+        if(!confirmApprove) return;
+
+        toast('Đang duyệt Tinh ' + cdIds.length + ' câu...', 'ok');
+        const okBulk = await postAdminWriteWithRetry({action: 'bulksetchatluongnganhang', ids: cdIds, chatLuong: 'tinh'});
+        if(!okBulk) {
+            toast('Không thể duyệt Tinh câu hỏi.', 'err');
+            return;
+        }
+        cdIds.forEach(id => {
+            const q = bankData.find(x => x.id === id);
+            if(q) q.chatLuong = 'tinh';
+        });
+        renderBankStats();
+        renderBankList();
+    }
+
     if(_bpmTarget==='video'){
         chosen.forEach(q=>{
             const typ=q.loai==='DS'?'tf':(q.loai==='TLN'?'short':'mc');
@@ -3588,11 +3625,11 @@ function addFromBankPicker(){
     }
     chosen.forEach(q=>{
         const typ=q.loai==='DS'?'tf':(q.loai==='TLN'?'short':'mc');
-        if(typ==='mc') addQuestion({ type:'mc', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase() });
-        else if(typ==='tf') addQuestion({ type:'tf', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', correct:(q.correct||'').trim().toUpperCase() });
-        else addQuestion({ type:'short', q:q.question, correct:(q.correct||'').trim() });
+        if(typ==='mc') addQuestion({ type:'mc', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', ans:(q.correct||'').trim().toUpperCase(), chatLuong:'tinh' });
+        else if(typ==='tf') addQuestion({ type:'tf', q:q.question, A:q.optA||'', B:q.optB||'', C:q.optC||'', D:q.optD||'', correct:(q.correct||'').trim().toUpperCase(), chatLuong:'tinh' });
+        else addQuestion({ type:'short', q:q.question, correct:(q.correct||'').trim(), chatLuong:'tinh' });
     });
-    toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${chosen.length} câu từ ngân hàng!`,'ok');
+    toast(`<i class="fa-solid fa-circle-check"></i> Đã thêm ${chosen.length} câu Tinh từ ngân hàng!`,'ok');
     closeBankPicker();
 }
 
@@ -4758,11 +4795,18 @@ function bankFiltered(){
           fb=document.getElementById('nh-f-bai').value,
           fcl=document.getElementById('nh-f-chatluong').value,
           fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
-    return bankData.filter(q=>
-        (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
-        (!fp||q.phanLoai===fp)&&(!fb||(fb==='__EMPTY__'?!(q.baiHoc||'').trim():(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb)))&&
-        (!fcl||(q.chatLuong||'tho')===fcl)&&
-        (!fs||((q.id||'')+' '+(q.question||'')+' '+(q.deBaiChung||'')).toLowerCase().includes(fs)) );
+    return bankData.filter(q=>{
+        const clNorm = String(q.chatLuong || '').trim().toLowerCase();
+        let matchCl = true;
+        if(fcl === 'chua_duyet') matchCl = (clNorm === '');
+        else if(fcl === 'tinh') matchCl = (clNorm === 'tinh');
+        else if(fcl === 'tho') matchCl = (clNorm === 'tho');
+
+        return (!fm||q.mon===fm)&&(!fc||q.chuong===fc)&&(!fd||(q.mucDo||'').toUpperCase()===fd)&&(!fl||q.loai===fl)&&
+            (!fp||q.phanLoai===fp)&&(!fb||(fb==='__EMPTY__'?!(q.baiHoc||'').trim():(q.baiHoc||'').split(',').map(s=>s.trim()).includes(fb)))&&
+            matchCl&&
+            (!fs||((q.id||'')+' '+(q.question||'')+' '+(q.deBaiChung||'')).toLowerCase().includes(fs));
+    });
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
 const NH_PAGE_SIZE=30;
@@ -4801,12 +4845,19 @@ function bankRowHtml(q,withCheck){
     const img=q.hinhAnh?q.hinhAnh.split(',').map(u=>`<img class="nh-img-thumb" src="${nhEsc(driveImg(u.trim()))}" loading="lazy" onerror="this.style.display='none'">`).join(''):'';
     const ctx=q.deBaiChung?`<div class="nh-context">${nhSafe(q.deBaiChung)}</div>`:'';
     const md=(q.mucDo||'').toUpperCase();
+    const cl = String(q.chatLuong || '').trim().toLowerCase();
+    const badgeChatLuong = cl === 'tinh' 
+        ? '<span class="nh-badge" style="background:#dcfce7;color:#166534;font-weight:700" title="Đã duyệt Tinh — sẵn sàng phát hành"><i class="fa-solid fa-circle-check"></i> Tinh</span>'
+        : (cl === 'tho'
+            ? '<span class="nh-badge" style="background:#fee2e2;color:#991b1b;font-weight:700" title="Câu Thô — bị chặn khỏi đề & trò chơi"><i class="fa-solid fa-ban"></i> Thô</span>'
+            : '<span class="nh-badge" style="background:#fef3c7;color:#92400e;font-weight:600" title="Chưa duyệt — cần thẩm định trước khi dùng"><i class="fa-solid fa-hourglass-half"></i> Chưa duyệt</span>');
+
     return `<div class="nh-row ${sel?'selected':''}" id="nh-row-${nhEsc(q.id)}">
         ${withCheck?`<input type="checkbox" ${sel?'checked':''} onchange="bankToggle('${nhEsc(q.id)}',this.checked)">`:''}
         <div class="nh-q-body">
             <div class="nh-meta">
                 <span class="nh-badge b-${q.loai.toLowerCase()}">${NH_LOAI_TEN[q.loai]||q.loai}</span>
-                ${q.chatLuong==='tinh'?'<span class="nh-badge" style="background:#dcfce7;color:#166534" title="Đã rà soát, đáp án và định dạng đúng"><i class="fa-solid fa-circle-check"></i> Tinh</span>':'<span class="nh-badge" style="background:#fef3c7;color:#92400e" title="Chưa rà soát — có thể sai đáp án / lỗi định dạng"><i class="fa-solid fa-triangle-exclamation"></i> Thô</span>'}
+                ${badgeChatLuong}
                 ${md?`<span class="nh-badge b-${md.toLowerCase()}">${md}</span>`:''}
                 ${q.chuong?`<span class="nh-badge b-ch">${nhEsc(q.chuong)}</span>`:''}
                 ${q.baiHoc?`<span class="nh-badge b-bai" title="Bài học liên quan"><i class="fa-solid fa-book"></i> ${nhEsc(q.baiHoc)}</span>`:''}
@@ -4846,6 +4897,7 @@ function bankEditOpen(id){
     document.getElementById('nhe-id-label').textContent=id;
     document.getElementById('nhe-loai').value=(q.loai||'TN').toUpperCase();
     document.getElementById('nhe-mucdo').value=(q.mucDo||'TH').toUpperCase();
+    document.getElementById('nhe-chatluong').value=String(q.chatLuong||'').toLowerCase();
     const chuongs=[...new Set([...Object.keys(CHUONG_KEYWORDS),...bankData.map(x=>x.chuong).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'vi'));
     document.getElementById('nhe-chuong').innerHTML=chuongs.map(c=>`<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
     document.getElementById('nhe-chuong').value=q.chuong||chuongs[0]||'';
@@ -4893,12 +4945,14 @@ async function bankEditSave(){
     const loai=document.getElementById('nhe-loai').value;
     const question=document.getElementById('nhe-question').value.trim();
     if(!question){ toast('Câu hỏi không được để trống','err'); return; }
+    const chatLuong=document.getElementById('nhe-chatluong').value;
     const q={
         loai, mucDo:document.getElementById('nhe-mucdo').value, chuong:document.getElementById('nhe-chuong').value,
         baiHoc:document.getElementById('nhe-bai').value,
         deBaiChung:document.getElementById('nhe-debai').value.trim(),
         question,
-        giaiThich:document.getElementById('nhe-giaithich').value.trim()
+        giaiThich:document.getElementById('nhe-giaithich').value.trim(),
+        chatLuong:chatLuong
     };
     if(loai==='TN'){
         ['A','B','C','D'].forEach(L=>q['opt'+L]=document.getElementById('nhe-opt'+L).value.trim());
@@ -4914,7 +4968,7 @@ async function bankEditSave(){
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     document.getElementById('nhe-status').textContent='';
     try{
-        const okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q});
+        const okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q,chatLuong});
         if(okWrite){
             const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
             if(idx>-1){
@@ -4946,7 +5000,7 @@ function updateSelBar(){
     if(n===0){ document.getElementById('nh-exam-form').style.display='none'; document.getElementById('nh-bai-form').style.display='none'; document.getElementById('nh-word-form').style.display='none'; }
 }
 
-/* ── Tạo đề thi từ câu đã chọn trong Ngân hàng (trước đây nút này không có JS, không hoạt động) ── */
+/* ── Tạo đề thi từ câu đã chọn trong Ngân hàng ── */
 function showBankExamForm(){
     if(!bankSel.size){ toast('Chưa chọn câu nào','err'); return; }
     document.getElementById('nh-bai-form').style.display='none';
@@ -4964,12 +5018,52 @@ async function bankCreateExam(){
     const lop=document.getElementById('nh-ef-lop').value||'12';
     const trangThai=document.getElementById('nh-ef-trangthai').value||'khoa';
     if(!examId||!tenDe){ toast('Nhập đủ Mã đề và Tên đề','err'); return; }
+
+    const selectedObjs = ids.map(id => bankData.find(x => x.id === id)).filter(Boolean);
+    const thoList = selectedObjs.filter(q => String(q.chatLuong || '').toLowerCase() === 'tho');
+    const chuaDuyetList = selectedObjs.filter(q => !String(q.chatLuong || '').trim());
+
+    // 1. Chặn câu Thô
+    if(thoList.length > 0) {
+        alert(`❌ KHÔNG THỂ TẠO ĐỀ: Có ${thoList.length} câu mang nhãn "Thô" (bị chặn):\n${thoList.map(x=>x.id).join(', ')}\n\nVui lòng bỏ chọn câu Thô hoặc sửa và duyệt lại trước khi đưa vào đề.`);
+        return;
+    }
+
+    // 2. Cảnh báo và lựa chọn duyệt Tinh câu Chưa duyệt
+    if(chuaDuyetList.length > 0) {
+        const cdIds = chuaDuyetList.map(x => x.id);
+        const previewCd = cdIds.slice(0, 6).join(', ') + (cdIds.length > 6 ? '...' : '');
+        const confirmApprove = confirm(`⚠️ CẢNH BÁO: Trong ${ids.length} câu đã chọn, có ${chuaDuyetList.length} câu CHƯA DUYỆT:\n${previewCd}\n\nNhấn [OK] để DUYỆT TINH toàn bộ ${chuaDuyetList.length} câu này và tiếp tục tạo đề.\nNhấn [Cancel] để quay lại xem/sửa.`);
+        if(!confirmApprove) return;
+
+        toast('Đang duyệt Tinh ' + cdIds.length + ' câu trước khi tạo đề...', 'ok');
+        const okBulk = await postAdminWriteWithRetry({action: 'bulksetchatluongnganhang', ids: cdIds, chatLuong: 'tinh'});
+        if(!okBulk) {
+            toast('Không thể duyệt Tinh câu hỏi. Huỷ tạo đề.', 'err');
+            return;
+        }
+        cdIds.forEach(id => {
+            const q = bankData.find(x => x.id === id);
+            if(q) q.chatLuong = 'tinh';
+        });
+        renderBankStats();
+        renderBankList();
+    }
+
+    // 3. Tiến hành tạo đề
     const LOAI_TYPE={TN:'mc',DS:'tf',TLN:'short'};
     const questions=ids.map(id=>{
         const q=bankData.find(x=>x.id===id); if(!q) return null;
-        return { id:q.id, type:LOAI_TYPE[q.loai]||'mc', question:q.question,
-            optA:q.optA||'', optB:q.optB||'', optC:q.optC||'', optD:q.optD||'', correct:q.correct||'' };
+        return { 
+            id: q.id, 
+            type: LOAI_TYPE[q.loai]||'mc', 
+            question: q.question,
+            optA: q.optA||'', optB: q.optB||'', optC: q.optC||'', optD: q.optD||'', 
+            correct: q.correct||'',
+            chatLuong: 'tinh'
+        };
     }).filter(Boolean);
+
     const btn=document.getElementById('nh-ef-create-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
     try{
@@ -4984,7 +5078,7 @@ async function bankCreateExam(){
             toast('Đã tạo thông tin đề nhưng chưa lưu được câu hỏi.','err');
             return;
         }
-        toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu','ok');
+        toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu Tinh','ok');
         document.getElementById('nh-exam-form').style.display='none';
         bankClearSelection();
     }catch(e){
@@ -5034,16 +5128,31 @@ async function bankAssignBaiApply(){
     }
 }
 
-/* ── Đánh dấu "Chất lượng" (thô/tinh) hàng loạt cho các câu đã chọn ── */
-async function bankMarkChatLuong(chatLuong){
+/* ── Đánh dấu "Chất lượng" (thô/tinh/chưa duyệt) hàng loạt cho các câu đã chọn ── */
+async function bankMarkChatLuongPrompt(chatLuong){
     const ids=[...bankSel];
     if(!ids.length){ toast('Chưa chọn câu nào','err'); return; }
+    const targetLabel = chatLuong==='tinh' ? 'Tinh (Đã duyệt)' : (chatLuong==='tho' ? 'Thô (Bị chặn)' : 'Chưa duyệt (Trống)');
+    const sampleIds = ids.slice(0, 8).join(', ') + (ids.length > 8 ? '...' : '');
+    const msg = `Bạn có chắc chắn muốn chuyển ${ids.length} câu đã chọn sang trạng thái:\n👉 [ ${targetLabel} ]?\n\nDanh sách ID: ${sampleIds}`;
+    if(!confirm(msg)) return;
+
+    toast('Đang cập nhật chất lượng cho ' + ids.length + ' câu...', 'ok');
     const okWrite = await postAdminWriteWithRetry({action:'bulksetchatluongnganhang',ids,chatLuong});
-    if(!okWrite){ toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐÁNH DẤU THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.chatLuong=chatLuong; });
+    if(!okWrite){ 
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐÁNH DẤU THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); 
+        return; 
+    }
+    ids.forEach(id=>{ 
+        const q=bankData.find(x=>x.id===id); 
+        if(q) q.chatLuong=chatLuong; 
+    });
     bankClearSelection();
     renderBankStats(); renderBankList();
-    toast('<i class="fa-solid fa-circle-check"></i> Đã đánh dấu '+(chatLuong==='tinh'?'Tinh':'Thô')+' cho '+ids.length+' câu','ok');
+    toast('<i class="fa-solid fa-circle-check"></i> Đã cập nhật trạng thái "' + targetLabel + '" cho ' + ids.length + ' câu', 'ok');
+}
+function bankMarkChatLuong(chatLuong){
+    return bankMarkChatLuongPrompt(chatLuong);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -7904,6 +8013,13 @@ async function htResetDevice(deviceId) {
                 </div>
                 <div class="nhe-field"><label>Chương</label>
                     <select id="nhe-chuong" onchange="bankEditFillBai()"></select>
+                </div>
+                <div class="nhe-field"><label>Chất lượng</label>
+                    <select id="nhe-chatluong">
+                        <option value="">🟡 Chưa duyệt</option>
+                        <option value="tinh">🟢 Tinh (đã duyệt)</option>
+                        <option value="tho">🔴 Thô (bị chặn)</option>
+                    </select>
                 </div>
             </div>
             <div class="nhe-field"><label>Bài học liên quan (khóa Chuyên Đề Lí Thuyết GĐ1)</label><select id="nhe-bai"></select></div>
