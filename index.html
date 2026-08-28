@@ -1094,8 +1094,34 @@
     </div>
 
     <div class="nh-grid">
-        <!-- CỘT TRÁI: NẠP FILE EXCEL -->
+        <!-- CỘT TRÁI: NẠP FILE -->
         <div>
+            <!-- KHU VỰC NHẬP GÓI CÂU TINH (BATCH IMPORT) -->
+            <div class="nh-card" style="border-color:#16a34a;background:linear-gradient(to bottom, #f0fdf4, var(--bg))">
+                <h3 style="color:#166534"><i class="fa-solid fa-box-archive" style="color:#16a34a"></i> Nhập gói câu Tinh (JSON)</h3>
+                <p style="font-size:12.5px;color:var(--gray);margin-bottom:10px">Nhập trực tiếp các gói câu đã được Thầy thẩm định và duyệt Tinh từ Content Pipeline.</p>
+                
+                <div style="display:flex;flex-direction:column;gap:8px">
+                    <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;border:1px dashed #16a34a;border-radius:8px;background:#fff;cursor:pointer">
+                    
+                    <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border)">
+                        <div><b>Tệp:</b> <span id="nh-bi-filename"></span></div>
+                        <div><b>Số câu:</b> <span id="nh-bi-count" style="font-weight:700;color:#16a34a">0</span> câu</div>
+                        <div><b>Mã đợt:</b> <span id="nh-bi-batchid"></span></div>
+                    </div>
+                    
+                    <div style="display:flex;gap:8px;margin-top:6px">
+                        <button id="nh-bi-dryrun-btn" class="btn-publish" style="flex:1;background:#0284c7" onclick="runBatchDryRun()" disabled>
+                            <i class="fa-solid fa-stethoscope"></i> Kiểm tra trước – Dry run
+                        </button>
+                        <button id="nh-bi-commit-btn" class="btn-publish" style="flex:1;background:#16a34a" onclick="openCommitConfirmModal()" disabled>
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Nạp thật câu Tinh
+                        </button>
+                    </div>
+                </div>
+                <div id="nh-batch-status" style="margin-top:10px;font-size:12px"></div>
+            </div>
+
             <div class="nh-card" style="border-color:var(--blue)">
                 <h3><i class="fa-solid fa-file-word" style="color:var(--blue)"></i> Tải đề .docx — tự bóc tách</h3>
                 <div class="dropzone" id="nh2-dropzone" style="padding:28px 16px">
@@ -5153,6 +5179,185 @@ async function bankMarkChatLuongPrompt(chatLuong){
 }
 function bankMarkChatLuong(chatLuong){
     return bankMarkChatLuongPrompt(chatLuong);
+}
+
+/* ══════════════════════════════════════════════════════════
+   NHẬP GÓI CÂU HỎI TINH TỪ PIPELINE (JSON IMPORT WORKFLOW)
+══════════════════════════════════════════════════════════ */
+let _currentBatchQuestions = [];
+let _currentBatchId = '';
+
+function handleBatchFileSelect(event){
+    const file = event.target.files && event.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e){
+        try{
+            const json = JSON.parse(e.target.result);
+            let rawList = Array.isArray(json) ? json : (Array.isArray(json.questions) ? json.questions : (Array.isArray(json.items) ? json.items : []));
+            if(!rawList.length){
+                toast('Tệp JSON không chứa mảng câu hỏi hợp lệ', 'err');
+                return;
+            }
+
+            _currentBatchId = file.name.replace(/\.[^/.]+$/, '');
+            _currentBatchQuestions = rawList.map(q => {
+                let mon = String(q.mon || 'Vật lý').trim();
+                if(mon === 'Vật Lý 12' || mon === 'Vật lí 12') mon = 'Vật lý';
+
+                let chuong = String(q.chuong || '').trim();
+                if(/chương 1|vật l[yí] nhiệt/i.test(chuong)) chuong = 'Vật lí nhiệt';
+
+                let baiHoc = String(q.baiHoc || '').trim();
+                if(/b3|thang nhiệt độ|nhiệt kế/i.test(baiHoc)) baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
+
+                return {
+                    id: String(q.id || q.canonical_id || '').trim(),
+                    mon: mon,
+                    chuong: chuong,
+                    baiHoc: baiHoc,
+                    mucDo: String(q.mucDo || 'VD').toUpperCase(),
+                    loai: String(q.loai || 'TN').toUpperCase(),
+                    question: String(q.question || q.stem || '').trim(),
+                    optA: String(q.optA || (q.options && q.options.A && q.options.A.content) || '').trim(),
+                    optB: String(q.optB || (q.options && q.options.B && q.options.B.content) || '').trim(),
+                    optC: String(q.optC || (q.options && q.options.C && q.options.C.content) || '').trim(),
+                    optD: String(q.optD || (q.options && q.options.D && q.options.D.content) || '').trim(),
+                    correct: String(q.correct || q.correctAnswer || '').trim().toUpperCase(),
+                    giaiThich: String(q.giaiThich || q.explanation || '').trim(),
+                    hinhAnh: String(q.hinhAnh || '').trim(),
+                    nhomId: String(q.nhomId || '').trim(),
+                    deBaiChung: String(q.deBaiChung || '').trim(),
+                    chatLuong: 'tinh'
+                };
+            });
+
+            document.getElementById('nh-bi-filename').textContent = file.name;
+            document.getElementById('nh-bi-count').textContent = _currentBatchQuestions.length;
+            document.getElementById('nh-bi-batchid').textContent = _currentBatchId;
+            document.getElementById('nh-batch-info').style.display = 'block';
+
+            document.getElementById('nh-bi-dryrun-btn').disabled = false;
+            document.getElementById('nh-bi-commit-btn').disabled = true;
+
+            document.getElementById('nh-batch-status').innerHTML = `
+                <div style="color:#0369a1;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd">
+                    <i class="fa-solid fa-circle-info"></i> Đã đọc <b>${_currentBatchQuestions.length}</b> câu. Hãy bấm <b>"Kiểm tra trước – Dry run"</b> để thẩm định.
+                </div>`;
+        }catch(err){
+            toast('Lỗi đọc JSON: ' + err.message, 'err');
+        }
+    };
+    reader.readAsText(file);
+}
+
+async function runBatchDryRun(){
+    if(!_currentBatchQuestions.length){
+        toast('Chưa có câu hỏi nào trong đợt nạp', 'err');
+        return;
+    }
+    const btn = document.getElementById('nh-bi-dryrun-btn');
+    btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang Dry Run...';
+    document.getElementById('nh-batch-status').innerHTML = '<div style="color:var(--gray)"><i class="fa-solid fa-spinner fa-spin"></i> Đang gửi yêu cầu Dry Run lên server...</div>';
+
+    try{
+        const res = await postAdminWriteWithRetry({
+            action: 'importnganhang',
+            dryRun: true,
+            batchId: _currentBatchId,
+            questions: _currentBatchQuestions
+        });
+
+        if(res && res.ok && res.insertable === res.requested){
+            document.getElementById('nh-bi-commit-btn').disabled = false;
+            document.getElementById('nh-batch-status').innerHTML = `
+                <div style="color:#15803d;background:#dcfce7;padding:10px 14px;border-radius:8px;border:1px solid #86efac;line-height:1.6">
+                    <div style="font-weight:700;font-size:13px"><i class="fa-solid fa-circle-check"></i> DRY-RUN THÀNH CÔNG (100% HỢP LỆ)</div>
+                    <div>• Số câu hiện tại (countBefore): <b>${res.countBefore}</b> câu</div>
+                    <div>• Số câu thẩm định (requested): <b>${res.requested}</b> câu</div>
+                    <div>• Đủ điều kiện nạp (insertable): <b>${res.insertable}</b> câu</div>
+                    <div>• Trùng ID (duplicates): <b>0</b> câu</div>
+                    <div>• Dự kiến sau nạp (expectedCountAfter): <b>${res.expectedCountAfter}</b> câu</div>
+                    <div style="margin-top:6px;color:#166534;font-size:11.5px"><i>Nút "Nạp thật câu Tinh" đã được mở khóa.</i></div>
+                </div>`;
+            toast('<i class="fa-solid fa-circle-check"></i> Dry-run thành công: ' + res.insertable + ' câu hợp lệ', 'ok');
+        } else {
+            document.getElementById('nh-bi-commit-btn').disabled = true;
+            const errMsg = res ? (res.msg || 'Kiểm tra thất bại') : 'Không nhận được phản hồi từ server';
+            const invalidDetails = res && res.invalidItems && res.invalidItems.length 
+                ? '<div style="margin-top:6px;font-size:11px">' + res.invalidItems.map(x => `<b>${x.id}:</b> ${x.errors.join(', ')}`).join('<br>') + '</div>'
+                : '';
+            document.getElementById('nh-batch-status').innerHTML = `
+                <div style="color:#991b1b;background:#fee2e2;padding:10px 14px;border-radius:8px;border:1px solid #fca5a5;line-height:1.5">
+                    <div style="font-weight:700"><i class="fa-solid fa-triangle-exclamation"></i> DRY-RUN THẤT BẠI — BỊ CHẶN</div>
+                    <div>${errMsg}</div>
+                    ${invalidDetails}
+                </div>`;
+            toast('Dry-run thất bại: ' + errMsg, 'err');
+        }
+    }catch(e){
+        document.getElementById('nh-batch-status').innerHTML = `<div style="color:#991b1b;background:#fee2e2;padding:8px">Lỗi: ${e.message}</div>`;
+        toast('Lỗi: ' + e.message, 'err');
+    }finally{
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-stethoscope"></i> Kiểm tra trước – Dry run';
+    }
+}
+
+async function openCommitConfirmModal(){
+    if(!_currentBatchQuestions.length) return;
+    const count = _currentBatchQuestions.length;
+    const requiredPhrase = `NẠP ${count} CÂU TINH BATCH 001`;
+    const input = prompt(`⚠️ XÁC NHẬN GHI DỮ LIỆU PRODUCTION THẬT\n\nBạn đang chuẩn bị nạp thật ${count} câu Tinh vào Ngân hàng dữ liệu.\nThao tác này sẽ ghi vĩnh viễn vào Google Sheet.\n\nVui lòng nhập chính xác cụm từ sau để xác nhận:\n\n${requiredPhrase}`);
+    
+    if(input !== requiredPhrase){
+        toast('Cụm từ xác nhận không khớp. Đã hủy thao tác ghi thật.', 'err');
+        return;
+    }
+
+    await commitBatchImport();
+}
+
+async function commitBatchImport(){
+    const btn = document.getElementById('nh-bi-commit-btn');
+    btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp thật...';
+    document.getElementById('nh-batch-status').innerHTML = '<div style="color:var(--gray)"><i class="fa-solid fa-spinner fa-spin"></i> Đang nạp và xác thực từng dòng trên server...</div>';
+
+    try{
+        const res = await postAdminWriteWithRetry({
+            action: 'importnganhang',
+            dryRun: false,
+            batchId: _currentBatchId,
+            questions: _currentBatchQuestions
+        });
+
+        if(res && res.ok){
+            document.getElementById('nh-batch-status').innerHTML = `
+                <div style="color:#15803d;background:#dcfce7;padding:12px 16px;border-radius:8px;border:1px solid #86efac;line-height:1.6">
+                    <div style="font-weight:800;font-size:14px"><i class="fa-solid fa-circle-check"></i> ĐÃ NẠP THÀNH CÔNG ${res.inserted} CÂU TINH!</div>
+                    <div>• Số câu trước nạp: <b>${res.countBefore}</b> câu</div>
+                    <div>• Số câu đã nạp: <b>${res.inserted}</b> câu</div>
+                    <div>• Tổng ngân hàng mới: <b>${res.expectedCountAfter}</b> câu</div>
+                    <div style="margin-top:6px;font-size:11px;color:#166534">Mã IDs: ${res.insertedIds.join(', ')}</div>
+                </div>`;
+            toast('<i class="fa-solid fa-circle-check"></i> Đã nạp thành công ' + res.inserted + ' câu Tinh!', 'ok');
+            
+            // Nạp lại ngân hàng để cập nhật UI
+            if(typeof loadBank === 'function') loadBank();
+        } else {
+            const errMsg = res ? (res.msg || res.error || 'Lỗi ghi server') : 'Giao tiếp server thất bại';
+            document.getElementById('nh-batch-status').innerHTML = `
+                <div style="color:#991b1b;background:#fee2e2;padding:10px 14px;border-radius:8px;border:1px solid #fca5a5">
+                    <div style="font-weight:700"><i class="fa-solid fa-triangle-exclamation"></i> NẠP THẤT BẠI</div>
+                    <div>${errMsg}</div>
+                </div>`;
+            toast('Nạp thất bại: ' + errMsg, 'err');
+        }
+    }catch(e){
+        toast('Lỗi: ' + e.message, 'err');
+    }finally{
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Nạp thật câu Tinh';
+    }
 }
 
 /* ══════════════════════════════════════════════════════════
