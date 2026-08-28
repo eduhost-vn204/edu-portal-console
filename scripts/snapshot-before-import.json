@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-08-28T13:57:15+07:00",
+  "version": 81,
+  "countBefore": 5438,
+  "expectedCountAfter": 5443,
+  "rollbackIds": [
+    "VLXT-G12-C1-P07-VD03",
+    "VLXT-G12-C1-P07-VD04",
+    "VLXT-G12-C1-P07-VD05",
+    "VLXT-G12-C1-P08-VD07",
+    "VLXT-G12-C1-P09-VD08"
+  ],
+  "batchId": "PILOT_5_CHUONG_1_BATCH_001",
+  "questions": [
+    {
+      "id": "VLXT-G12-C1-P07-VD03",
+      "mon": "Vật lý",
+      "chuong": "Vật lí nhiệt",
+      "baiHoc": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "mucDo": "VD",
+      "loai": "TN",
+      "correct": "A",
+      "chatLuong": "tinh"
+    },
+    {
+      "id": "VLXT-G12-C1-P07-VD04",
+      "mon": "Vật lý",
+      "chuong": "Vật lí nhiệt",
+      "baiHoc": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "mucDo": "VD",
+      "loai": "TN",
+      "correct": "A",
+      "chatLuong": "tinh"
+    },
+    {
+      "id": "VLXT-G12-C1-P07-VD05",
+      "mon": "Vật lý",
+      "chuong": "Vật lí nhiệt",
+      "baiHoc": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "mucDo": "VD",
+      "loai": "TN",
+      "correct": "A",
+      "chatLuong": "tinh"
+    },
+    {
+      "id": "VLXT-G12-C1-P08-VD07",
+      "mon": "Vật lý",
+      "chuong": "Vật lí nhiệt",
+      "baiHoc": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "mucDo": "VD",
+      "loai": "TN",
+      "correct": "A",
+      "chatLuong": "tinh"
+    },
+    {
+      "id": "VLXT-G12-C1-P09-VD08",
+      "mon": "Vật lý",
+      "chuong": "Vật lí nhiệt",
+      "baiHoc": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "mucDo": "VD",
+      "loai": "TN",
+      "correct": "A",
+      "chatLuong": "tinh"
+    }
+  ]
+}
