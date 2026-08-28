@@ -489,7 +489,68 @@
         .esb-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
         .esb-label { font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
         .esb-select { width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); font-size:14px; font-family:'Inter',sans-serif; color:var(--black); outline:none; cursor:pointer; }
-        .esb-select:focus { border-color:var(--blue); }
+        /* ══════════════════════════════
+           TEACHING SCOPE
+        ══════════════════════════════ */
+        .ts-wrap { max-width:1100px; margin:0 auto; padding-bottom:40px; }
+        .ts-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+        .ts-header-title { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; }
+        .ts-header-sub { font-size:13.5px; color:var(--gray2); margin-top:4px; }
+        .ts-controls-card { background:var(--bg); border:1.5px solid var(--border); border-radius:14px; padding:20px 24px; margin-bottom:22px; }
+        .ts-controls-grid { display:grid; grid-template-columns:1.5fr 1fr 1.2fr 1fr; gap:16px; align-items:end; }
+        @media(max-width:960px){ .ts-controls-grid{ grid-template-columns:1fr 1fr; } }
+        @media(max-width:600px){ .ts-controls-grid{ grid-template-columns:1fr; } }
+        .ts-field-label { font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
+        .ts-select, .ts-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--black); font-size:14px; font-family:'Inter',sans-serif; outline:none; transition:border-color .15s; }
+        .ts-select:focus, .ts-input:focus { border-color:var(--blue); }
+        .ts-active-toggle-wrap { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg2); border:1.5px solid var(--border); border-radius:8px; cursor:pointer; user-select:none; }
+        .ts-active-toggle-wrap input[type=checkbox] { width:18px; height:18px; accent-color:var(--green); cursor:pointer; }
+        
+        .ts-preview-banner { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:24px; }
+        .ts-stat-box { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:14px; }
+        .ts-stat-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .ts-stat-icon.blue { background:rgba(11,132,243,.1); color:var(--blue); }
+        .ts-stat-icon.green { background:rgba(22,163,74,.1); color:var(--green); }
+        .ts-stat-icon.gold { background:rgba(245,158,11,.1); color:#d97706; }
+        .ts-stat-icon.purple { background:rgba(124,58,237,.1); color:var(--purple); }
+        .ts-stat-val { font-size:18px; font-weight:800; color:var(--black); }
+        .ts-stat-lbl { font-size:12px; color:var(--gray2); }
+        
+        .ts-chapter-card { background:var(--bg); border:1.5px solid var(--border); border-radius:14px; margin-bottom:18px; overflow:hidden; transition:border-color .15s; }
+        .ts-chapter-card.inactive { opacity:.6; border-color:var(--border); }
+        .ts-chapter-head { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg2); border-bottom:1px solid var(--border); gap:12px; flex-wrap:wrap; }
+        .ts-ch-left { display:flex; align-items:center; gap:12px; flex:1; }
+        .ts-ch-title { font-size:15px; font-weight:800; color:var(--black); letter-spacing:-.01em; }
+        .ts-ch-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; }
+        .ts-ch-badge.active { background:rgba(22,163,74,.12); color:#16a34a; }
+        .ts-ch-badge.inactive { background:var(--bg3); color:var(--gray2); }
+        .ts-ch-actions { display:flex; align-items:center; gap:8px; }
+        .ts-btn-sm { font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--gray); cursor:pointer; transition:all .15s; }
+        .ts-btn-sm:hover { border-color:var(--blue); color:var(--blue); }
+        
+        .ts-lessons-grid { padding:14px 20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:10px; }
+        .ts-lesson-pill { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; cursor:pointer; transition:all .15s; user-select:none; }
+        .ts-lesson-pill:hover { border-color:var(--blue); background:rgba(11,132,243,.04); }
+        .ts-lesson-pill.selected { border-color:var(--blue); background:rgba(11,132,243,.08); }
+        .ts-lesson-pill input[type=checkbox] { width:16px; height:16px; accent-color:var(--blue); cursor:pointer; }
+        .ts-lesson-info { flex:1; min-width:0; }
+        .ts-lesson-name { font-size:13.5px; font-weight:600; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ts-lesson-meta { font-size:11px; color:var(--gray2); margin-top:2px; }
+        
+        /* Modal Diff Trước / Sau */
+        .ts-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .ts-modal-box { background:var(--bg); border:1.5px solid var(--border); border-radius:16px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,.3); }
+        .ts-modal-head { padding:20px 24px; border-bottom:1.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg2); }
+        .ts-modal-head h3 { font-size:17px; font-weight:800; }
+        .ts-modal-body { padding:24px; }
+        .ts-diff-table { width:100%; border-collapse:collapse; margin-top:12px; font-size:13.5px; }
+        .ts-diff-table th, .ts-diff-table td { padding:10px 14px; border:1px solid var(--border); text-align:left; }
+        .ts-diff-table th { background:var(--bg2); font-weight:700; color:var(--gray); }
+        .ts-diff-tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; margin:2px; }
+        .ts-diff-tag.open { background:rgba(22,163,74,.15); color:#16a34a; }
+        .ts-diff-tag.closed { background:rgba(239,68,68,.15); color:#ef4444; }
+        .ts-diff-tag.same { background:var(--bg3); color:var(--gray); }
+        .ts-modal-foot { padding:16px 24px; border-top:1.5px solid var(--border); background:var(--bg2); display:flex; justify-content:flex-end; gap:10px; }
 
         /* ─── DARK MODE ─── */
         body.dark { --bg:#0d1117; --bg2:#161b22; --bg3:#21262d; --border:#30363d; --gray:#8b949e; --gray2:#6e7681; --black:#e6edf3; background:#0d1117; color:#e6edf3; }
@@ -594,8 +655,15 @@
         body.dark .ch-btn.del:hover { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.12); }
         body.dark .ch-btn.order:hover { border-color:#0b84f3; color:#0b84f3; background:rgba(11,132,243,.12); }
         body.dark .ch-order-badge { background:#21262d; border-color:#484f58; color:#8b949e; }
+        /* Teaching Scope Dark Mode */
+        body.dark .ts-controls-card, body.dark .ts-stat-box, body.dark .ts-chapter-card, body.dark .ts-modal-box { background:#161b22; border-color:#30363d; }
+        body.dark .ts-chapter-head, body.dark .ts-modal-head, body.dark .ts-modal-foot, body.dark .ts-diff-table th { background:#0d1117; border-color:#30363d; }
+        body.dark .ts-lesson-pill { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .ts-lesson-pill:hover, body.dark .ts-lesson-pill.selected { background:rgba(11,132,243,.15); border-color:#0b84f3; }
+        body.dark .ts-active-toggle-wrap { background:#0d1117; border-color:#30363d; }
+        body.dark .ts-btn-sm { background:#21262d; border-color:#484f58; color:#8b949e; }
+        body.dark .ts-btn-sm:hover { color:#0b84f3; border-color:#0b84f3; }
 
-    
         /* ═══ CÂU HỎI TRONG VIDEO ═══ */
         .vq-time { width:88px; padding:6px 8px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--black); font-size:13px; font-weight:700; text-align:center; }
         .vq-hint { font-size:12px; color:var(--gray2); margin:4px 0 8px; }
@@ -641,6 +709,9 @@
 <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('baihoc')" id="tab-baihoc-btn">
         <i class="fa-solid fa-book-open"></i> Quản lý bài học
+    </button>
+    <button class="tab-btn" onclick="switchTab('teachingscope')" id="tab-teachingscope-btn">
+        <i class="fa-solid fa-chalkboard-user"></i> Phạm vi giảng dạy
     </button>
     <button class="tab-btn" onclick="switchTab('soande')" id="tab-soande-btn">
         <i class="fa-solid fa-file-import"></i> Soạn đề thi
@@ -1385,7 +1456,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','bulksetbainganhang','bulksetchatluongnganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','saveteachingscope'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1443,6 +1514,7 @@ function switchTab(name){
     if(name==='ketqua' && allScores.length===0) loadScores();
     if(name==='soande') loadExamList();
     if(name==='nganhang' && !bankLoaded) loadBank();
+    if(name==='teachingscope') loadTeachingScope();
     if(name==='lichlive' && !liveLoaded) loadLiveSessions();
     if(name==='quanlylive') initLiveControl();
     if(name==='taikhoan' && !tkLoaded) loadTaiKhoan();
@@ -1524,6 +1596,7 @@ function initAdmin(){
     Promise.all([loadSettings(),loadKhoaConfig(),preview]).then(()=>{
         renderLessonList();
         if(!allLessons.length) loadLessons();
+        loadTeachingScope();
     });
 }
 
@@ -6063,6 +6136,154 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 </div>
 </div>
 
+<!-- ════════════════════════════════════
+     TAB: PHẠM VI GIẢNG DẠY (TEACHING SCOPE)
+════════════════════════════════════ -->
+<div class="tab-content" id="tab-teachingscope">
+<div class="wrap ts-wrap">
+    <div class="ts-header">
+        <div>
+            <div class="ts-header-title">
+                <i class="fa-solid fa-chalkboard-user" style="color:var(--blue)"></i> Cấu hình phạm vi giảng dạy (Teaching Scope)
+            </div>
+            <div class="ts-header-sub">
+                Chỉ định khóa học, giai đoạn, các chương và bài học được phép xuất hiện trong Đua Top và Solo.
+            </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+            <button class="btn-ghost2" onclick="loadTeachingScope(true)" style="padding:9px 16px;font-size:13px" title="Tải lại từ máy chủ">
+                <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+            </button>
+            <button class="btn-new" onclick="openTeachingScopeConfirmModal()" style="padding:9px 20px;font-size:13.5px;background:var(--blue)">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu cấu hình
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTROLS CARD -->
+    <div class="ts-controls-card">
+        <div class="ts-controls-grid">
+            <div>
+                <div class="ts-field-label">1. Chọn Khóa học</div>
+                <select id="ts-select-course" class="ts-select" onchange="onTeachingScopeCourseChange()">
+                    <option value="">-- Đang nạp danh sách khóa học... --</option>
+                </select>
+            </div>
+            <div>
+                <div class="ts-field-label">2. Chọn Giai đoạn</div>
+                <select id="ts-select-stage" class="ts-select" onchange="onTeachingScopeStageChange()">
+                    <option value="toan_khoa">Toàn khóa học</option>
+                    <option value="GĐ1">Giai đoạn 1 (GĐ1)</option>
+                    <option value="GĐ2">Giai đoạn 2 (GĐ2)</option>
+                    <option value="GĐ3">Giai đoạn 3 (GĐ3)</option>
+                    <option value="TongOn">Tổng ôn & Luyện đề</option>
+                </select>
+            </div>
+            <div>
+                <div class="ts-field-label">
+                    <span>3. Thời gian hiệu lực</span>
+                    <label style="font-size:11px;font-weight:600;cursor:pointer;text-transform:none"><input type="checkbox" id="ts-no-time-limit" onchange="onTeachingScopeTimeLimitToggle()" checked> Không giới hạn</label>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center" id="ts-time-inputs-wrap">
+                    <input type="datetime-local" id="ts-valid-from" class="ts-input" style="display:none;font-size:12px;padding:8px 10px" onchange="onTeachingScopeDraftChanged()" title="Bắt đầu từ">
+                    <span id="ts-time-sep" style="display:none;font-size:11px;color:var(--gray2)">→</span>
+                    <input type="datetime-local" id="ts-valid-to" class="ts-input" style="display:none;font-size:12px;padding:8px 10px" onchange="onTeachingScopeDraftChanged()" title="Hết hạn vào">
+                    <div id="ts-no-time-label" style="font-size:13px;color:var(--green);font-weight:600;padding:10px 0">
+                        <i class="fa-solid fa-infinity"></i> Luôn có hiệu lực khi kích hoạt
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="ts-field-label">4. Trạng thái</div>
+                <label class="ts-active-toggle-wrap">
+                    <input type="checkbox" id="ts-is-active" onchange="onTeachingScopeDraftChanged()" checked>
+                    <span style="font-size:13.5px;font-weight:700" id="ts-is-active-label">Đang kích hoạt</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREVIEW BANNER -->
+    <div class="ts-preview-banner">
+        <div class="ts-stat-box">
+            <div class="ts-stat-icon blue"><i class="fa-solid fa-folder-open"></i></div>
+            <div>
+                <div class="ts-stat-val" id="ts-stat-chapters">0 / 0</div>
+                <div class="ts-stat-lbl">Chương đang mở</div>
+            </div>
+        </div>
+        <div class="ts-stat-box">
+            <div class="ts-stat-icon green"><i class="fa-solid fa-book-open"></i></div>
+            <div>
+                <div class="ts-stat-val" id="ts-stat-lessons">0 / 0</div>
+                <div class="ts-stat-lbl">Bài học đang mở</div>
+            </div>
+        </div>
+        <div class="ts-stat-box">
+            <div class="ts-stat-icon gold"><i class="fa-solid fa-bullseye"></i></div>
+            <div>
+                <div class="ts-stat-val" id="ts-stat-status">Chưa cấu hình</div>
+                <div class="ts-stat-lbl">Trạng thái áp dụng</div>
+            </div>
+        </div>
+        <div class="ts-stat-box">
+            <div class="ts-stat-icon purple"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div>
+                <div class="ts-stat-val" id="ts-stat-rev">v0</div>
+                <div class="ts-stat-lbl" id="ts-stat-updated">Chưa lưu</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--black);display:flex;align-items:center;gap:8px">
+            <i class="fa-solid fa-list-check" style="color:var(--blue)"></i> Danh sách chương và bài học chi tiết:
+        </div>
+        <div style="display:flex;gap:8px">
+            <button class="ts-btn-sm" onclick="toggleAllTeachingScope(true)">
+                <i class="fa-solid fa-check-double"></i> Mở tất cả chương & bài
+            </button>
+            <button class="ts-btn-sm" onclick="toggleAllTeachingScope(false)">
+                <i class="fa-solid fa-ban"></i> Đóng tất cả
+            </button>
+        </div>
+    </div>
+
+    <!-- CHAPTERS & LESSONS CONTAINER -->
+    <div id="ts-chapters-container">
+        <div class="loading-row" style="padding:40px">
+            <i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i>
+            <p style="margin-top:12px;font-size:14px">Đang tải danh sách bài giảng...</p>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- SAVE CONFIRMATION MODAL -->
+<div class="ts-modal-overlay" id="ts-confirm-modal" style="display:none">
+    <div class="ts-modal-box">
+        <div class="ts-modal-head">
+            <h3 style="display:flex;align-items:center;gap:8px">
+                <i class="fa-solid fa-shield-halved" style="color:var(--blue)"></i> Xác nhận lưu Phạm vi giảng dạy
+            </h3>
+            <button class="fp-close" onclick="closeTeachingScopeConfirmModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="ts-modal-body">
+            <div style="font-size:13.5px;color:var(--gray2);margin-bottom:16px">
+                Vui lòng kiểm tra kỹ các thay đổi trước khi lưu lên máy chủ. Sau khi lưu, <strong>Đua Top</strong> và <strong>Solo</strong> sẽ lập tức áp dụng phạm vi này cho học sinh.
+            </div>
+            <div id="ts-diff-summary"></div>
+        </div>
+        <div class="ts-modal-foot">
+            <button class="btn-cancel-form" onclick="closeTeachingScopeConfirmModal()">Hủy bỏ</button>
+            <button class="btn-new" id="ts-btn-submit-save" onclick="executeSaveTeachingScope()" style="background:var(--blue)">
+                <i class="fa-solid fa-check"></i> Xác nhận & Ghi vào hệ thống
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 /* ════ TÀI KHOẢN HỌC SINH ════ */
 let allTK = [];
@@ -6374,19 +6595,682 @@ async function tkdLoadDiem(sdt) {
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
 }
 
-async function tkdSaveLop() {
-  const lop = document.getElementById('tkd-lop').value.trim();
-  if (!lop) { toast('Nhập lớp trước đã!', 'err'); return; }
-  try {
-    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt: tkdSdt, lop }) });
-    const d = await r.json();
-    if (d.ok) {
-      toast('Đã lưu lớp!', 'ok');
-      const row = allTK.find(x => String(x.sdt) === String(tkdSdt));
-      if (row) { row.lop = lop; filterTK(); }
-    } else toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script v50)', 'err');
-  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
+/* ════════════════════════════════════
+   TAB: PHẠM VI GIẢNG DẠY (TEACHING SCOPE)
+════════════════════════════════════ */
+let teachingScopeData = {}; // map key "courseId___stageId" -> Scope Object
+let teachingScopeDrafts = {}; // draft edits before saving
+let currentScopeCourse = '';
+let currentScopeStage = 'toan_khoa';
+let teachingScopeLoaded = false;
+
+function scopeKey(courseId, stageId) {
+    return (courseId || '').trim() + '___' + (stageId || 'toan_khoa').trim();
+}
+
+async function loadTeachingScope(force = false) {
+    if (!force && teachingScopeLoaded && Object.keys(teachingScopeData).length > 0) {
+        renderTeachingScopeCourseOptions();
+        renderTeachingScopeUI();
+        return;
+    }
+    const container = document.getElementById('ts-chapters-container');
+    if (container) {
+        container.innerHTML = `
+            <div class="loading-row" style="padding:40px">
+                <i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i>
+                <p style="margin-top:12px;font-size:14px">Đang tải phạm vi giảng dạy từ máy chủ...</p>
+            </div>
+        `;
+    }
+    try {
+        const url = DB_URL + '?type=teachingscope&adminKey=' + encodeURIComponent(getAdminKey()) + '&all=true&_t=' + Date.now();
+        const res = await fetch(url);
+        const json = await res.json();
+        
+        if (json.error === 'Unauthorized' || json.msg === 'Unauthorized') {
+            if (container) {
+                container.innerHTML = `
+                    <div class="loading-row" style="padding:40px;color:var(--red)">
+                        <i class="fa-solid fa-lock" style="font-size:24px;margin-bottom:8px"></i>
+                        <p>Phiên quản trị hết hạn hoặc không có quyền truy cập.</p>
+                        <button class="btn-new" onclick="openAdminLoginModal()" style="margin-top:12px;background:var(--blue)">Đăng nhập lại</button>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        teachingScopeData = {};
+        const list = Array.isArray(json) ? json : (json.data || []);
+        list.forEach(s => {
+            const key = scopeKey(s.courseId, s.stageId);
+            teachingScopeData[key] = {
+                courseId: s.courseId || '',
+                stageId: s.stageId || 'toan_khoa',
+                openChapterIds: Array.isArray(s.openChapterIds) ? s.openChapterIds : [],
+                activeLessonIds: s.activeLessonIds && typeof s.activeLessonIds === 'object' ? s.activeLessonIds : {},
+                validFrom: s.validFrom || '',
+                validTo: s.validTo || '',
+                isActive: s.isActive === true || s.isActive === 'true',
+                updatedAt: s.updatedAt || '',
+                updatedBy: s.updatedBy || '',
+                revision: Number(s.revision || 1)
+            };
+        });
+
+        teachingScopeLoaded = true;
+        renderTeachingScopeCourseOptions();
+        renderTeachingScopeUI();
+    } catch(err) {
+        console.warn('Lỗi tải Teaching Scope:', err);
+        if (container) {
+            container.innerHTML = `
+                <div class="loading-row" style="padding:40px;color:var(--red)">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:24px;margin-bottom:8px"></i>
+                    <p>Không thể tải phạm vi giảng dạy: ${esc(err.message)}</p>
+                    <button class="btn-new" onclick="loadTeachingScope(true)" style="margin-top:12px;background:var(--blue)">
+                        <i class="fa-solid fa-arrows-rotate"></i> Thử lại
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+function getTeachingScopeCourseList() {
+    const set = new Set();
+    // Lấy từ allLessons
+    allLessons.forEach(l => { if (l.KhoaHoc) set.add(l.KhoaHoc.trim()); });
+    // Lấy từ ADMIN_KHOACONFIG
+    Object.keys(ADMIN_KHOACONFIG || {}).forEach(k => {
+        if (k && k.indexOf('|||') === -1) set.add(k.trim());
+    });
+    // Lấy từ teachingScopeData
+    Object.values(teachingScopeData).forEach(s => { if (s.courseId) set.add(s.courseId.trim()); });
+    const arr = Array.from(set).filter(Boolean);
+    arr.sort((a, b) => a.localeCompare(b, 'vi'));
+    return arr;
+}
+
+function renderTeachingScopeCourseOptions() {
+    const select = document.getElementById('ts-select-course');
+    if (!select) return;
+    const courses = getTeachingScopeCourseList();
+    if (!courses.length) {
+        select.innerHTML = '<option value="">(Chưa có khóa học nào)</option>';
+        return;
+    }
+    if (!currentScopeCourse || !courses.includes(currentScopeCourse)) {
+        currentScopeCourse = courses[0];
+    }
+    select.innerHTML = courses.map(c => `<option value="${esc(c)}" ${c === currentScopeCourse ? 'selected' : ''}>${esc(c)}</option>`).join('');
+}
+
+function onTeachingScopeCourseChange() {
+    const select = document.getElementById('ts-select-course');
+    if (!select) return;
+    currentScopeCourse = select.value;
+    renderTeachingScopeUI();
+}
+
+function onTeachingScopeStageChange() {
+    const select = document.getElementById('ts-select-stage');
+    if (!select) return;
+    currentScopeStage = select.value || 'toan_khoa';
+    renderTeachingScopeUI();
+}
+
+function onTeachingScopeTimeLimitToggle() {
+    const noLimit = document.getElementById('ts-no-time-limit').checked;
+    const fromEl = document.getElementById('ts-valid-from');
+    const toEl = document.getElementById('ts-valid-to');
+    const sepEl = document.getElementById('ts-time-sep');
+    const labelEl = document.getElementById('ts-no-time-label');
+    
+    if (noLimit) {
+        fromEl.style.display = 'none';
+        toEl.style.display = 'none';
+        sepEl.style.display = 'none';
+        labelEl.style.display = 'block';
+        fromEl.value = '';
+        toEl.value = '';
+    } else {
+        fromEl.style.display = 'block';
+        toEl.style.display = 'block';
+        sepEl.style.display = 'inline';
+        labelEl.style.display = 'none';
+    }
+    onTeachingScopeDraftChanged();
+}
+
+function getOrCreateScopeDraft(courseId, stageId) {
+    const key = scopeKey(courseId, stageId);
+    if (!teachingScopeDrafts[key]) {
+        const saved = teachingScopeData[key];
+        if (saved) {
+            teachingScopeDrafts[key] = JSON.parse(JSON.stringify(saved));
+        } else {
+            // Mặc định ban đầu an toàn: chưa có gì mở, inactive
+            teachingScopeDrafts[key] = {
+                courseId: courseId,
+                stageId: stageId,
+                openChapterIds: [],
+                activeLessonIds: {},
+                openAllLessons: {},
+                validFrom: '',
+                validTo: '',
+                isActive: true,
+                updatedAt: '',
+                updatedBy: '',
+                revision: 0
+            };
+        }
+    }
+    if (!teachingScopeDrafts[key].openAllLessons) {
+        teachingScopeDrafts[key].openAllLessons = {};
+    }
+    return teachingScopeDrafts[key];
+}
+
+function onTeachingScopeDraftChanged() {
+    if (!currentScopeCourse) return;
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const activeCb = document.getElementById('ts-is-active');
+    const activeLabel = document.getElementById('ts-is-active-label');
+    const fromEl = document.getElementById('ts-valid-from');
+    const toEl = document.getElementById('ts-valid-to');
+    const noLimit = document.getElementById('ts-no-time-limit').checked;
+
+    draft.isActive = activeCb ? activeCb.checked : true;
+    if (activeLabel) activeLabel.textContent = draft.isActive ? 'Đang kích hoạt' : 'Đang tắt';
+    
+    if (noLimit) {
+        draft.validFrom = '';
+        draft.validTo = '';
+    } else {
+        draft.validFrom = fromEl ? fromEl.value : '';
+        draft.validTo = toEl ? toEl.value : '';
+    }
+
+    updateTeachingScopeStats();
+}
+
+function getLessonsForCourse(courseName) {
+    return allLessons.filter(l => (l.KhoaHoc || '').trim() === (courseName || '').trim());
+}
+
+function getChaptersMapForCourse(courseName) {
+    const lessons = getLessonsForCourse(courseName);
+    const map = {};
+    lessons.forEach(l => {
+        const ch = (l.Chuong || 'Chưa phân chương').trim();
+        if (!map[ch]) map[ch] = [];
+        map[ch].push(l);
+    });
+    return map;
+}
+
+function renderTeachingScopeUI() {
+    const container = document.getElementById('ts-chapters-container');
+    if (!container) return;
+
+    if (!currentScopeCourse) {
+        container.innerHTML = '<div class="loading-row" style="padding:30px;color:var(--gray)">Vui lòng chọn một khóa học.</div>';
+        return;
+    }
+
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const chapterNames = Object.keys(chMap);
+
+    // Cập nhật Controls
+    const activeCb = document.getElementById('ts-is-active');
+    const activeLabel = document.getElementById('ts-is-active-label');
+    const noLimitCb = document.getElementById('ts-no-time-limit');
+    const fromEl = document.getElementById('ts-valid-from');
+    const toEl = document.getElementById('ts-valid-to');
+    const sepEl = document.getElementById('ts-time-sep');
+    const labelEl = document.getElementById('ts-no-time-label');
+
+    if (activeCb) {
+        activeCb.checked = draft.isActive !== false;
+        if (activeLabel) activeLabel.textContent = activeCb.checked ? 'Đang kích hoạt' : 'Đang tắt';
+    }
+
+    const hasTimeLimit = Boolean(draft.validFrom || draft.validTo);
+    if (noLimitCb) noLimitCb.checked = !hasTimeLimit;
+    if (fromEl) fromEl.value = draft.validFrom ? draft.validFrom.slice(0, 16) : '';
+    if (toEl) toEl.value = draft.validTo ? draft.validTo.slice(0, 16) : '';
+    
+    if (fromEl && toEl && sepEl && labelEl) {
+        if (!hasTimeLimit) {
+            fromEl.style.display = 'none';
+            toEl.style.display = 'none';
+            sepEl.style.display = 'none';
+            labelEl.style.display = 'block';
+        } else {
+            fromEl.style.display = 'block';
+            toEl.style.display = 'block';
+            sepEl.style.display = 'inline';
+            labelEl.style.display = 'none';
+        }
+    }
+
+    if (!chapterNames.length) {
+        container.innerHTML = `
+            <div class="ts-chapter-card" style="padding:40px;text-align:center;color:var(--gray)">
+                <i class="fa-solid fa-folder-open" style="font-size:32px;margin-bottom:12px;opacity:.5"></i>
+                <div style="font-size:15px;font-weight:700">Khóa học này chưa có bài giảng nào</div>
+                <div style="font-size:13px;color:var(--gray2);margin-top:6px">Hãy vào tab "Quản lý bài học" để thêm bài trước khi cấu hình phạm vi.</div>
+            </div>
+        `;
+        updateTeachingScopeStats();
+        return;
+    }
+
+    let html = '';
+    chapterNames.forEach(chName => {
+        const lessons = chMap[chName];
+        const isChOpen = draft.openChapterIds && draft.openChapterIds.includes(chName);
+        const openLessonsInCh = (draft.activeLessonIds && draft.activeLessonIds[chName]) || [];
+        const isAllOpen = draft.openAllLessons && draft.openAllLessons[chName] === true;
+        const openCount = isChOpen ? (isAllOpen ? lessons.length : openLessonsInCh.length) : 0;
+
+        html += `
+            <div class="ts-chapter-card ${isChOpen ? '' : 'inactive'}" id="ts-ch-card-${esc(chName)}">
+                <div class="ts-chapter-head">
+                    <div class="ts-ch-left">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
+                            <input type="checkbox" style="width:18px;height:18px;accent-color:var(--blue)" ${isChOpen ? 'checked' : ''} onchange="toggleTeachingScopeChapter('${esc(chName)}', this.checked)">
+                            <span class="ts-ch-title">${esc(chName)}</span>
+                        </label>
+                        <span class="ts-ch-badge ${isChOpen ? 'active' : 'inactive'}">
+                            ${isChOpen ? '<i class="fa-solid fa-circle-check"></i> Đang mở (' + openCount + '/' + lessons.length + ' bài)' : '<i class="fa-solid fa-circle-xmark"></i> Đang đóng'}
+                        </span>
+                    </div>
+                    <div class="ts-ch-actions">
+                        <button class="ts-btn-sm" onclick="toggleAllTeachingScopeLessonsInChapter('${esc(chName)}', true)">
+                            <i class="fa-solid fa-check"></i> Chọn tất cả bài
+                        </button>
+                        <button class="ts-btn-sm" onclick="toggleAllTeachingScopeLessonsInChapter('${esc(chName)}', false)">
+                            <i class="fa-solid fa-xmark"></i> Bỏ chọn tất cả
+                        </button>
+                    </div>
+                </div>
+                <div class="ts-lessons-grid" id="ts-lessons-grid-${esc(chName)}" style="${isChOpen ? '' : 'opacity:.4;pointer-events:none'}">
+        `;
+
+        lessons.forEach(l => {
+            const lessonKey = l.MaBai || l.TenBai || '';
+            const isLessonOpen = isChOpen && (isAllOpen || openLessonsInCh.includes(lessonKey));
+            const subText = l.MaBai ? `Mã: ${l.MaBai}` : (l.ThuTuBai ? `Bài số ${l.ThuTuBai}` : '');
+
+            html += `
+                <label class="ts-lesson-pill ${isLessonOpen ? 'selected' : ''}" id="ts-lp-${esc(lessonKey)}">
+                    <input type="checkbox" ${isLessonOpen ? 'checked' : ''} onchange="toggleTeachingScopeLesson('${esc(chName)}', '${esc(lessonKey)}', this.checked)">
+                    <div class="ts-lesson-info">
+                        <div class="ts-lesson-name" title="${esc(l.TenBai || '')}">${esc(l.TenBai || 'Chưa đặt tên bài')}</div>
+                        <div class="ts-lesson-meta">${esc(subText)}</div>
+                    </div>
+                </label>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+    updateTeachingScopeStats();
+}
+
+function toggleTeachingScopeChapter(chName, isOpen) {
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    if (!draft.openChapterIds) draft.openChapterIds = [];
+    if (!draft.activeLessonIds) draft.activeLessonIds = {};
+    if (!draft.openAllLessons) draft.openAllLessons = {};
+
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const lessons = chMap[chName] || [];
+
+    if (isOpen) {
+        if (!draft.openChapterIds.includes(chName)) draft.openChapterIds.push(chName);
+        draft.openAllLessons[chName] = true;
+        draft.activeLessonIds[chName] = lessons.map(l => l.MaBai || l.TenBai || '').filter(Boolean);
+    } else {
+        draft.openChapterIds = draft.openChapterIds.filter(c => c !== chName);
+        draft.openAllLessons[chName] = false;
+    }
+
+    renderTeachingScopeUI();
+}
+
+function toggleTeachingScopeLesson(chName, lessonKey, isOpen) {
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    if (!draft.openChapterIds) draft.openChapterIds = [];
+    if (!draft.activeLessonIds) draft.activeLessonIds = {};
+    if (!draft.openAllLessons) draft.openAllLessons = {};
+
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const lessons = chMap[chName] || [];
+
+    if (!draft.activeLessonIds[chName]) {
+        if (draft.openAllLessons[chName] === true) {
+            draft.activeLessonIds[chName] = lessons.map(l => l.MaBai || l.TenBai || '').filter(Boolean);
+        } else {
+            draft.activeLessonIds[chName] = [];
+        }
+    }
+
+    if (isOpen) {
+        if (!draft.activeLessonIds[chName].includes(lessonKey)) {
+            draft.activeLessonIds[chName].push(lessonKey);
+        }
+        if (!draft.openChapterIds.includes(chName)) {
+            draft.openChapterIds.push(chName);
+        }
+        if (draft.activeLessonIds[chName].length === lessons.length) {
+            draft.openAllLessons[chName] = true;
+        } else {
+            draft.openAllLessons[chName] = false;
+        }
+    } else {
+        draft.activeLessonIds[chName] = draft.activeLessonIds[chName].filter(k => k !== lessonKey);
+        draft.openAllLessons[chName] = false;
+        if (draft.activeLessonIds[chName].length === 0) {
+            draft.openChapterIds = draft.openChapterIds.filter(c => c !== chName);
+        }
+    }
+
+    renderTeachingScopeUI();
+}
+
+function toggleAllTeachingScopeLessonsInChapter(chName, isOpen) {
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    if (!draft.openChapterIds) draft.openChapterIds = [];
+    if (!draft.activeLessonIds) draft.activeLessonIds = {};
+    if (!draft.openAllLessons) draft.openAllLessons = {};
+
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const lessons = chMap[chName] || [];
+
+    if (isOpen) {
+        draft.openAllLessons[chName] = true;
+        draft.activeLessonIds[chName] = lessons.map(l => l.MaBai || l.TenBai || '').filter(Boolean);
+        if (!draft.openChapterIds.includes(chName)) draft.openChapterIds.push(chName);
+    } else {
+        draft.openAllLessons[chName] = false;
+        draft.activeLessonIds[chName] = [];
+        draft.openChapterIds = draft.openChapterIds.filter(c => c !== chName);
+    }
+
+    renderTeachingScopeUI();
+}
+
+function toggleAllTeachingScope(isOpen) {
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const chapterNames = Object.keys(chMap);
+
+    if (isOpen) {
+        draft.openChapterIds = [...chapterNames];
+        draft.activeLessonIds = {};
+        draft.openAllLessons = {};
+        chapterNames.forEach(ch => {
+            draft.openAllLessons[ch] = true;
+            draft.activeLessonIds[ch] = (chMap[ch] || []).map(l => l.MaBai || l.TenBai || '').filter(Boolean);
+        });
+    } else {
+        draft.openChapterIds = [];
+        draft.activeLessonIds = {};
+        draft.openAllLessons = {};
+    }
+
+    renderTeachingScopeUI();
+}
+
+function updateTeachingScopeStats() {
+    if (!currentScopeCourse) return;
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const totalChapters = Object.keys(chMap).length;
+    const openChapters = (draft.openChapterIds || []).length;
+
+    let totalLessons = 0;
+    Object.values(chMap).forEach(arr => { totalLessons += arr.length; });
+
+    let openLessons = 0;
+    (draft.openChapterIds || []).forEach(ch => {
+        const isAllOpen = draft.openAllLessons && draft.openAllLessons[ch] === true;
+        if (isAllOpen) {
+            openLessons += (chMap[ch] || []).length;
+        } else {
+            const arr = (draft.activeLessonIds && draft.activeLessonIds[ch]) || [];
+            openLessons += arr.length;
+        }
+    });
+
+    const elCh = document.getElementById('ts-stat-chapters');
+    const elLe = document.getElementById('ts-stat-lessons');
+    const elSt = document.getElementById('ts-stat-status');
+    const elRev = document.getElementById('ts-stat-rev');
+    const elUp = document.getElementById('ts-stat-updated');
+
+    if (elCh) elCh.textContent = `${openChapters} / ${totalChapters}`;
+    if (elLe) elLe.textContent = `${openLessons} / ${totalLessons}`;
+
+    // Kiểm tra trạng thái hiệu lực
+    let statusText = '🔴 Đang tắt';
+    let statusColor = 'var(--red)';
+    if (draft.isActive) {
+        const now = Date.now();
+        const fromTime = draft.validFrom ? Date.parse(draft.validFrom) : null;
+        const toTime = draft.validTo ? Date.parse(draft.validTo) : null;
+        
+        if (fromTime && now < fromTime) {
+            statusText = '🟡 Chưa đến giờ';
+            statusColor = '#d97706';
+        } else if (toTime && now > toTime) {
+            statusText = '⚪ Đã hết hạn';
+            statusColor = 'var(--gray2)';
+        } else if (openLessons === 0) {
+            statusText = '⚠️ Chưa mở bài nào';
+            statusColor = '#d97706';
+        } else {
+            statusText = '🟢 Đang áp dụng';
+            statusColor = 'var(--green)';
+        }
+    }
+
+    if (elSt) {
+        elSt.textContent = statusText;
+        elSt.style.color = statusColor;
+    }
+
+    const key = scopeKey(currentScopeCourse, currentScopeStage);
+    const saved = teachingScopeData[key];
+    if (elRev) elRev.textContent = saved ? `v${saved.revision || 1}` : 'v0 (chưa lưu)';
+    if (elUp) {
+        if (saved && saved.updatedAt) {
+            try {
+                const d = new Date(saved.updatedAt);
+                elUp.textContent = d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+            } catch(e) { elUp.textContent = 'Đã lưu'; }
+        } else {
+            elUp.textContent = 'Bản nháp mới';
+        }
+    }
+}
+
+/* ── Modal xác nhận lưu & Diff trước/sau ── */
+function openTeachingScopeConfirmModal() {
+    if (!currentScopeCourse) {
+        toast('Vui lòng chọn một khóa học trước khi lưu.', 'err');
+        return;
+    }
+    const key = scopeKey(currentScopeCourse, currentScopeStage);
+    const saved = teachingScopeData[key] || {
+        openChapterIds: [],
+        activeLessonIds: {},
+        openAllLessons: {},
+        validFrom: '',
+        validTo: '',
+        isActive: false,
+        revision: 0
+    };
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+
+    let savedOpenLessonsCount = 0;
+    (saved.openChapterIds || []).forEach(ch => {
+        if (saved.openAllLessons && saved.openAllLessons[ch] === true) {
+            savedOpenLessonsCount += (chMap[ch] || []).length;
+        } else {
+            savedOpenLessonsCount += ((saved.activeLessonIds && saved.activeLessonIds[ch]) || []).length;
+        }
+    });
+
+    let draftOpenLessonsCount = 0;
+    (draft.openChapterIds || []).forEach(ch => {
+        if (draft.openAllLessons && draft.openAllLessons[ch] === true) {
+            draftOpenLessonsCount += (chMap[ch] || []).length;
+        } else {
+            draftOpenLessonsCount += ((draft.activeLessonIds && draft.activeLessonIds[ch]) || []).length;
+        }
+    });
+
+    const diffContainer = document.getElementById('ts-diff-summary');
+    if (!diffContainer) return;
+
+    let warningHtml = '';
+    if (!draft.isActive) {
+        warningHtml = '<div style="padding:10px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;color:#ef4444;font-weight:600;font-size:13px;margin-bottom:14px"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo: Phạm vi này đang TẮT. Đua Top và Solo sẽ không phát câu hỏi từ phạm vi này.</div>';
+    } else if (draftOpenLessonsCount === 0) {
+        warningHtml = '<div style="padding:10px 14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;color:#d97706;font-weight:600;font-size:13px;margin-bottom:14px"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo: Bạn chưa chọn bài học nào đang mở.</div>';
+    }
+
+    diffContainer.innerHTML = `
+        ${warningHtml}
+        <table class="ts-diff-table">
+            <thead>
+                <tr>
+                    <th style="width:30%">Hạng mục</th>
+                    <th style="width:35%">Hiện tại trên máy chủ</th>
+                    <th style="width:35%">Sau khi lưu (Dự kiến)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Khóa học</strong></td>
+                    <td>${esc(currentScopeCourse)}</td>
+                    <td><strong>${esc(currentScopeCourse)}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Giai đoạn</strong></td>
+                    <td>${esc(currentScopeStage)}</td>
+                    <td><strong>${esc(currentScopeStage)}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Trạng thái kích hoạt</strong></td>
+                    <td>${saved.isActive ? '<span class="ts-diff-tag open">Đang kích hoạt</span>' : '<span class="ts-diff-tag closed">Đang tắt</span>'}</td>
+                    <td>${draft.isActive ? '<span class="ts-diff-tag open">Đang kích hoạt</span>' : '<span class="ts-diff-tag closed">Đang tắt</span>'}</td>
+                </tr>
+                <tr>
+                    <td><strong>Số chương mở</strong></td>
+                    <td>${(saved.openChapterIds || []).length} chương</td>
+                    <td><strong>${(draft.openChapterIds || []).length} chương</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Số bài học mở</strong></td>
+                    <td>${savedOpenLessonsCount} bài</td>
+                    <td><strong style="color:var(--blue)">${draftOpenLessonsCount} bài</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Thời gian hiệu lực</strong></td>
+                    <td>${(saved.validFrom || saved.validTo) ? (esc(saved.validFrom) + ' → ' + esc(saved.validTo)) : 'Không giới hạn'}</td>
+                    <td>${(draft.validFrom || draft.validTo) ? (esc(draft.validFrom) + ' → ' + esc(draft.validTo)) : '<strong>Không giới hạn</strong>'}</td>
+                </tr>
+                <tr>
+                    <td><strong>Phiên bản (Revision)</strong></td>
+                    <td>v${saved.revision || 0}</td>
+                    <td><strong>v${(saved.revision || 0) + 1}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+
+    document.getElementById('ts-confirm-modal').style.display = 'flex';
+}
+
+function closeTeachingScopeConfirmModal() {
+    const modal = document.getElementById('ts-confirm-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function executeSaveTeachingScope() {
+    const btn = document.getElementById('ts-btn-submit-save');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu lên máy chủ...';
+    }
+
+    const key = scopeKey(currentScopeCourse, currentScopeStage);
+    const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
+    const saved = teachingScopeData[key];
+    const expectedRevision = saved ? Number(saved.revision || 1) : 0;
+
+    const payload = {
+        action: 'saveteachingscope',
+        adminKey: getAdminKey(),
+        courseId: draft.courseId,
+        stageId: draft.stageId,
+        openChapterIds: draft.openChapterIds || [],
+        activeLessonIds: draft.activeLessonIds || {},
+        openAllLessons: draft.openAllLessons || {},
+        validFrom: draft.validFrom || '',
+        validTo: draft.validTo || '',
+        isActive: draft.isActive !== false,
+        expectedRevision: expectedRevision
+    };
+
+    try {
+        const okWrite = await postAdminWrite(payload);
+        if (!okWrite) {
+            toast('Không thể lưu Teaching Scope: Máy chủ từ chối hoặc lỗi mạng.', 'err');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác nhận & Ghi vào hệ thống'; }
+            return;
+        }
+
+        // Cập nhật state cục bộ
+        const newRevision = expectedRevision + 1;
+        teachingScopeData[key] = {
+            courseId: draft.courseId,
+            stageId: draft.stageId,
+            openChapterIds: [...(draft.openChapterIds || [])],
+            activeLessonIds: JSON.parse(JSON.stringify(draft.activeLessonIds || {})),
+            openAllLessons: JSON.parse(JSON.stringify(draft.openAllLessons || {})),
+            validFrom: draft.validFrom || '',
+            validTo: draft.validTo || '',
+            isActive: draft.isActive !== false,
+            updatedAt: new Date().toISOString(),
+            updatedBy: 'admin',
+            revision: newRevision
+        };
+        // Xóa draft đã lưu
+        delete teachingScopeDrafts[key];
+
+        closeTeachingScopeConfirmModal();
+        toast('🎉 Đã lưu cấu hình Phạm vi giảng dạy thành công! (v' + newRevision + ')', 'ok');
+        renderTeachingScopeUI();
+    } catch(err) {
+        console.error('Lỗi khi lưu Teaching Scope:', err);
+        toast('Lỗi lưu cấu hình: ' + err.message, 'err');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác nhận & Ghi vào hệ thống'; }
+    }
 }
 </script>
 
