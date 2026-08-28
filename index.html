@@ -1385,7 +1385,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','savesetting','bulksetbainganhang','bulksetchatluongnganhang'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1814,26 +1814,19 @@ async function markTeachingLesson(key){
     const prev = currentTeachingLesson;
     currentTeachingLesson = (currentTeachingLesson === key) ? '' : key; // toggle
     renderLessonList();
-    try{
-        const r = await fetch(DB_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'text/plain;charset=utf-8'},
-            body: JSON.stringify({
-                action: 'savesetting',
-                adminKey: getAdminKey(),
-                key: 'currentTeachingLesson',
-                value: currentTeachingLesson
-            })
-        });
-        const d = await r.json();
-        if(!d.ok) throw new Error(d.msg || 'GAS lỗi');
+    const ok = await postAdminWriteWithRetry({
+        action: 'savesetting',
+        key: 'currentTeachingLesson',
+        value: currentTeachingLesson
+    });
+    if(ok){
         toast(currentTeachingLesson
             ? '⭐ Đã đánh dấu bài đang dạy'
             : '☆ Đã bỏ đánh dấu', 'ok');
-    }catch(e){
+    }else{
         currentTeachingLesson = prev;
         renderLessonList();
-        toast('Lỗi lưu bài đang dạy: ' + e.message, 'err');
+        toast('Lỗi lưu bài đang dạy: không lưu được sau khi thử lại', 'err');
     }
 }
 
