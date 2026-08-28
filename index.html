@@ -697,6 +697,7 @@
     </a>
     <div class="nav-right">
         <button class="theme-toggle" onclick="toggleTheme()" title="Chuyển giao diện sáng/tối"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        <button class="theme-toggle" onclick="openBackendKeyModal()" title="Cài đặt khóa kết nối backend (ADMIN_KEY)"><i class="fa-solid fa-key"></i></button>
         <span class="sync-badge" id="sync-badge"><i class="fa-solid fa-circle-check"></i> Đã lưu</span>
         <a href="https://vatlyxuantruong.io.vn/baihoc.html" target="_blank" class="btn-deploy" style="text-decoration:none">
             <i class="fa-solid fa-eye"></i> Xem Web Học Sinh
@@ -713,8 +714,11 @@
     <button class="tab-btn" onclick="switchTab('teachingscope')" id="tab-teachingscope-btn">
         <i class="fa-solid fa-chalkboard-user"></i> Phạm vi giảng dạy
     </button>
+    <button class="tab-btn" onclick="switchTab('phongthithu')" id="tab-phongthithu-btn">
+        <i class="fa-solid fa-clipboard-check"></i> Phòng thi thử
+    </button>
     <button class="tab-btn" onclick="switchTab('soande')" id="tab-soande-btn">
-        <i class="fa-solid fa-file-import"></i> Soạn đề thi
+        <i class="fa-solid fa-file-pen"></i> Phòng kiểm tra
     </button>
     <button class="tab-btn" onclick="switchTab('nganhang')" id="tab-nganhang-btn">
         <i class="fa-solid fa-database"></i> Ngân hàng đề
@@ -908,16 +912,42 @@
 </div>
 
 <!-- ════════════════════════════════════
-     TAB 2: SOẠN ĐỀ THI
+     TAB: PHÒNG THI THỬ (TÍNH NĂNG MỚI)
+════════════════════════════════════ -->
+<div class="tab-content" id="tab-phongthithu">
+<div class="wrap">
+  <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;max-width:800px;margin:30px auto;box-shadow:0 4px 20px rgba(0,0,0,0.03)">
+    <div style="width:72px;height:72px;border-radius:50%;background:rgba(11,132,243,0.1);color:var(--blue);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <i class="fa-solid fa-rocket"></i>
+    </div>
+    <span class="page-eyebrow" style="color:var(--blue);font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:10px">// tính năng mới</span>
+    <h2 style="font-size:26px;font-weight:900;margin-bottom:12px;color:var(--black)">Quản Lý &amp; Biên Soạn Phòng Thi Thử</h2>
+    <p style="font-size:14.5px;color:var(--gray);line-height:1.65;max-width:580px;margin:0 auto 24px">
+      Tính năng Phòng Thi Thử trực tuyến chuẩn cấu trúc THPT Quốc Gia với cơ chế thi theo thời gian thực và xếp hạng tự động đang được chuẩn bị. Thầy có thể quản lý và biên soạn các đề kiểm tra định kỳ trước tại tab <strong>Phòng kiểm tra</strong>.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-new" onclick="switchTab('soande')" style="padding:10px 22px;font-size:14px">
+        <i class="fa-solid fa-file-pen"></i> Đến Phòng kiểm tra
+      </button>
+      <button class="btn-new" onclick="switchTab('nganhang')" style="background:var(--bg2);color:var(--black);border:1.5px solid var(--border);padding:10px 22px;font-size:14px">
+        <i class="fa-solid fa-database"></i> Xem Ngân hàng đề
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════
+     TAB 2: PHÒNG KIỂM TRA (SOẠN & QUẢN LÝ ĐỀ)
 ════════════════════════════════════ -->
 <div class="tab-content" id="tab-soande">
 <div class="wrap">
   <div class="soande-grid">
 
-    <!-- ── CỘT TRÁI: DANH SÁCH ĐỀ THI ── -->
+    <!-- ── CỘT TRÁI: DANH SÁCH ĐỀ KIỂM TRA ── -->
     <div class="em-left">
       <div class="em-toolbar">
-        <h2><i class="fa-solid fa-layer-group" style="color:var(--blue);font-size:16px"></i> Danh sách đề</h2>
+        <h2><i class="fa-solid fa-layer-group" style="color:var(--blue);font-size:16px"></i> Danh sách đề kiểm tra</h2>
         <button class="btn-new" style="padding:8px 16px;font-size:13px" onclick="showExamForm(null)">
           <i class="fa-solid fa-plus"></i> Tạo đề mới
         </button>
@@ -927,7 +957,7 @@
       <!-- Form thêm/sửa đề -->
       <div class="em-form" id="exam-form-panel" style="display:none">
         <div class="em-form-head">
-          <h3 id="exam-form-title">Tạo đề mới</h3>
+          <h3 id="exam-form-title">Tạo đề kiểm tra mới</h3>
           <button class="fp-close" onclick="hideExamForm()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="em-form-body">
@@ -938,7 +968,7 @@
           </div>
           <div class="form-field">
             <label>Tên đề <span>*</span></label>
-            <input type="text" id="ef-tende" placeholder="vd: Thi thử Tốt nghiệp THPT — Đề Số 1">
+            <input type="text" id="ef-tende" placeholder="vd: Đề Kiểm Tra Định Kỳ — Đề Số 1">
           </div>
           <div class="form-field">
             <label>Mô tả ngắn</label>
@@ -960,7 +990,7 @@
             <label>Trạng thái</label>
             <select id="ef-trangthai">
               <option value="khoa">🔒 Khóa (học sinh chưa thấy)</option>
-              <option value="mo">✅ Mở (học sinh vào thi được)</option>
+              <option value="mo">✅ Mở (học sinh vào kiểm tra được)</option>
             </select>
           </div>
         </div>
@@ -975,9 +1005,9 @@
 
     <!-- ── CỘT PHẢI: UPLOAD .DOCX ── -->
     <div class="em-right">
-      <span class="page-eyebrow">// soạn đề · bóc tách</span>
-      <h1 class="page-title" style="font-size:32px">Upload Câu Hỏi.</h1>
-      <p class="page-sub" style="margin-bottom:20px">Kéo thả file Word <code>.docx</code> vào đây — hệ thống tự tách <strong>cả 3 phần</strong>: A/B/C/D, Đúng/Sai, Trả lời ngắn.</p>
+      <span class="page-eyebrow">// phòng kiểm tra · soạn đề &amp; bóc tách</span>
+      <h1 class="page-title" style="font-size:32px">Biên Soạn Câu Hỏi.</h1>
+      <p class="page-sub" style="margin-bottom:20px">Kéo thả file Word <code>.docx</code> vào đây — hệ thống tự tách <strong>cả 3 phần</strong>: A/B/C/D, Đúng/Sai, Trả lời ngắn vào đề kiểm tra.</p>
       <div class="dropzone" id="dropzone">
           <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
           <h3>Thả file Word (.docx) vào đây</h3>
@@ -1410,11 +1440,37 @@
 /* ════════════════════════════════════
    CẤU HÌNH
 ════════════════════════════════════ */
-const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu (one-way, khong the giai nguoc)
+const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
 const DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
-const ADMIN_KEY = '686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634'; // = SHA-256 cua mat khau, dung chung voi ADMIN_PASSWORD_HASH (tab Tai khoan HS)
+
+/* ════ QUẢN LÝ KHÓA KẾT NỐI BACKEND (ADMIN_KEY) ════
+   Khóa kết nối backend được lưu an toàn trong sessionStorage (hoặc localStorage nếu người dùng chọn ghi nhớ).
+   Tuyệt đối không hardcode trong mã nguồn.
+══════════════════════════════════════════════════════ */
+function getAdminKey() {
+    return sessionStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('adminKey')
+        || '';
+}
+
+function setAdminKey(key, remember) {
+    const cleanKey = String(key || '').trim();
+    if (cleanKey) {
+        sessionStorage.setItem('vlxt_backend_admin_key', cleanKey);
+        if (remember) {
+            localStorage.setItem('vlxt_backend_admin_key', cleanKey);
+        } else {
+            localStorage.removeItem('vlxt_backend_admin_key');
+        }
+    } else {
+        sessionStorage.removeItem('vlxt_backend_admin_key');
+        localStorage.removeItem('vlxt_backend_admin_key');
+        localStorage.removeItem('adminKey');
+    }
+}
 
 /* ════ CACHE TỐC ĐỘ — stale-while-revalidate ════ */
 const ADMIN_CACHE_TTL = 5 * 60 * 1000; // 5 phút
@@ -1456,7 +1512,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','bulksetbainganhang','bulksetchatluongnganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','saveteachingscope'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope'];
 function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 (function(){
     const _fetch = window.fetch.bind(window);
@@ -1476,7 +1532,7 @@ function getAdminKey(){ return localStorage.getItem('adminKey') || ''; }
 })();
 
 /* ════════════════════════════════════
-   LOGIN
+   LOGIN GIAO DIỆN
 ════════════════════════════════════ */
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
@@ -1486,11 +1542,14 @@ async function sha256(message) {
 }
 
 async function checkLogin(){
-    const inputHash = await sha256(document.getElementById('admin-pass').value);
+    const inputPass = document.getElementById('admin-pass').value;
+    const inputHash = await sha256(inputPass);
     if(inputHash === ADMIN_PASSWORD_HASH){
         localStorage.setItem('adminLoggedIn','1');
-        // Luu HASH (mot chieu), KHONG luu mat khau that vao localStorage/gui qua mang
-        localStorage.setItem('adminKey', inputHash);
+        // Nếu chưa có khóa backend riêng trong session, tạm dùng hash đăng nhập làm khởi tạo
+        if (!getAdminKey()) {
+            setAdminKey(inputHash, false);
+        }
         document.getElementById('login-overlay').style.display='none';
         initAdmin();
     } else {
@@ -1498,7 +1557,7 @@ async function checkLogin(){
     }
 }
 // Tự động đăng nhập nếu đã có session
-if(localStorage.getItem('adminLoggedIn')==='1' && localStorage.getItem('adminKey')){
+if(localStorage.getItem('adminLoggedIn')==='1'){
     document.getElementById('login-overlay').style.display='none';
     initAdmin();
 }
@@ -1572,11 +1631,13 @@ async function saveHuongDanKey(key){
   const btn = document.getElementById('hd-btn-'+key);
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
   try{
-    await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({action:'savehuongdan', key, tieuDe, videoUrl, noiDung})});
-    await new Promise(r=>setTimeout(r,700));
-    hdData[key] = {key, tieuDe, videoUrl, noiDung};
-    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu hướng dẫn','ok');
+    const ok = await postAdminWriteWithRetry({action:'savehuongdan', key, tieuDe, videoUrl, noiDung});
+    if(ok){
+      hdData[key] = {key, tieuDe, videoUrl, noiDung};
+      toast('<i class="fa-solid fa-circle-check"></i> Đã lưu hướng dẫn','ok');
+    } else {
+      toast('Lưu hướng dẫn thất bại. Vui lòng thử lại!','err');
+    }
   }catch(e){
     toast('Lỗi: '+e.message,'err');
   }finally{
@@ -1789,14 +1850,11 @@ async function saveLive(){
     syncLiveCache();
     renderLiveList();
     closeLiveForm();
-    toast('✅ Đã lưu buổi live!','ok');
 
     // Gửi lên Sheets
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',
-            headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify(payload)});
-    }catch(e){}
+    const ok = await postAdminWriteWithRetry(payload);
+    if(ok) toast('✅ Đã lưu buổi live!','ok');
+    else toast('⚠️ Lưu buổi live chưa được máy chủ xác nhận. Dữ liệu tạm lưu trên máy.','err');
 }
 
 async function toggleLiveDone(id){
@@ -1806,8 +1864,9 @@ async function toggleLiveDone(id){
     const payload = { action:'savelivesession', ...s, done: s.done ? '1':'0' };
     syncLiveCache();
     renderLiveList();
-    toast(s.done ? '✅ Đã chuyển sang Record' : '🔄 Đã chuyển về Sắp tới','ok');
-    try{ await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }catch(e){}
+    const ok = await postAdminWriteWithRetry(payload);
+    if(ok) toast(s.done ? '✅ Đã chuyển sang Record' : '🔄 Đã chuyển về Sắp tới','ok');
+    else toast('⚠️ Chưa đồng bộ được trạng thái lên máy chủ.','err');
 }
 
 let _deleteLiveId = null;
@@ -1820,12 +1879,14 @@ function deleteLive(id, title){
 }
 async function confirmDeleteLive(){
     if(!_deleteLiveId) return;
-    allLiveSessions = allLiveSessions.filter(s=>s.id!==_deleteLiveId);
+    const idToDelete = _deleteLiveId;
+    allLiveSessions = allLiveSessions.filter(s=>s.id!==idToDelete);
     syncLiveCache();
     renderLiveList();
     closeConfirm();
-    toast('🗑️ Đã xóa buổi live','ok');
-    try{ await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deletelivesession',id:_deleteLiveId})}); }catch(e){}
+    const ok = await postAdminWriteWithRetry({action:'deletelivesession',id:idToDelete});
+    if(ok) toast('🗑️ Đã xóa buổi live','ok');
+    else toast('⚠️ Xóa buổi live chưa được máy chủ xác nhận.','err');
     _deleteLiveId = null;
 }
 
@@ -1887,26 +1948,19 @@ async function markTeachingLesson(key){
     const prev = currentTeachingLesson;
     currentTeachingLesson = (currentTeachingLesson === key) ? '' : key; // toggle
     renderLessonList();
-    try{
-        const r = await fetch(DB_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'text/plain;charset=utf-8'},
-            body: JSON.stringify({
-                action: 'savesetting',
-                adminKey: getAdminKey(),
-                key: 'currentTeachingLesson',
-                value: currentTeachingLesson
-            })
-        });
-        const d = await r.json();
-        if(!d.ok) throw new Error(d.msg || 'GAS lỗi');
+    const ok = await postAdminWriteWithRetry({
+        action: 'savesetting',
+        key: 'currentTeachingLesson',
+        value: currentTeachingLesson
+    });
+    if(ok){
         toast(currentTeachingLesson
             ? '⭐ Đã đánh dấu bài đang dạy'
             : '☆ Đã bỏ đánh dấu', 'ok');
-    }catch(e){
+    }else{
         currentTeachingLesson = prev;
         renderLessonList();
-        toast('Lỗi lưu bài đang dạy: ' + e.message, 'err');
+        toast('Lỗi lưu bài đang dạy lên máy chủ.', 'err');
     }
 }
 
@@ -2642,11 +2696,29 @@ function filterCourse(f,el){
 // no-cors khiến trình duyệt không bao giờ biết ghi thất bại, gây lệch dữ liệu
 // âm thầm giữa những gì hiển thị và những gì thực sự có trong Google Sheets).
 async function postAdminWrite(payload){
+    const timeoutMs = 55000;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try{
-        const res = await fetch(DB_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-        const json = await res.json().catch(()=>null);
-        return !!(json && json.ok !== false);
-    }catch(e){ return false; }
+        const res = await fetch(DB_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        if(!res || !res.ok) return false;
+        let json;
+        try{
+            json = await res.json();
+        }catch{
+            return false;
+        }
+        return !!(json && typeof json === 'object' && json.ok === true);
+    }catch{
+        return false;
+    }finally{
+        clearTimeout(timer);
+    }
 }
 function sleep(ms){ return new Promise(res=>setTimeout(res, ms)); }
 // Dung cho thao tac GHI HANG LOAT (doi ten khoa/chuong, xoa khoa/chuong) - tu dong thu lai
@@ -3380,8 +3452,7 @@ async function vqSaveToGAS(newKey, origKey){
             const correct=type==='mc'?(it.ans||''):(it.correct||'');
             return {t:(it.t===null?'':(Number(it.t)||0)),nhId:it.nhId||'',type,q:it.q||'',A:it.A||'',B:it.B||'',C:it.C||'',D:it.D||'',ans:it.ans||'',correct};
         });
-    await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items})});
+    await postAdminWriteWithRetry({action:'savevideocauhoi',baiKey:newKey,originalKey:origKey||'',items});
 }
 
 /* ── Bài tập trắc nghiệm: lưu vào sheet riêng BaiTapTracNghiem (1 hàng/câu, không
@@ -3413,9 +3484,8 @@ async function qbLoadFromGAS(key, ...altKeys){
 }
 async function qbSaveToGAS(newKey, origKey){
     const qs = getQuestionsFromForm();
-    await fetch(DB_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify({action:'savebaitaptracnghiem',baiKey:newKey,originalKey:origKey||'',items:qs})});
-    if(_qbCounts){ _qbCounts[newKey]=qs.length; if(origKey&&origKey!==newKey) delete _qbCounts[origKey]; }
+    const ok = await postAdminWriteWithRetry({action:'savebaitaptracnghiem',baiKey:newKey,originalKey:origKey||'',items:qs});
+    if(ok && _qbCounts){ _qbCounts[newKey]=qs.length; if(origKey&&origKey!==newKey) delete _qbCounts[origKey]; }
 }
 
 /* ════ BANK PICKER ════ */
@@ -4547,14 +4617,14 @@ async function publishExam(){
         action:'saveQuestions', examId:targetExam, clearFirst,
         questions:parsedQuestions.map((q,i)=>({id:i+1,type:q.type,question:q.question,optA:q.options.A,optB:q.options.B,optC:q.options.C,optD:q.options.D,correct:q.correct,giaiThich:q.giaiThich||''}))
     };
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const okWrite = await postAdminWrite(payload);
+    if(okWrite){
         btn.innerHTML=`<i class="fa-solid fa-circle-check"></i> Đã xuất bản ${parsedQuestions.length} câu!`;
         toast(`<i class="fa-solid fa-circle-check"></i> Câu hỏi đã lên đề "${tenDe}"!`,'ok');
         setTimeout(loadExamList,2000);
-    }catch(e){
+    }else{
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rocket"></i> Xuất Bản Lên Web';
-        setStatus2('<i class="fa-solid fa-bug"></i> Gửi thất bại: '+e.message,'err');
+        setStatus2('<i class="fa-solid fa-triangle-exclamation"></i> Gửi thất bại — server không phản hồi thành công.','err');
     }
 }
 
@@ -4844,16 +4914,20 @@ async function bankEditSave(){
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     document.getElementById('nhe-status').textContent='';
     try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'updatenganhang',id:_nheCurrentId,q})});
-        await new Promise(r=>setTimeout(r,900));
-        const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
-        if(idx>-1){
-            bankData[idx]={...bankData[idx],...q};
-            bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
+        const okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q});
+        if(okWrite){
+            const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
+            if(idx>-1){
+                bankData[idx]={...bankData[idx],...q};
+                bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
+            }
+            renderBankStats(); fillBankFilters(); renderBankList();
+            toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
+            bankEditClose();
+        }else{
+            document.getElementById('nhe-status').textContent='Lỗi: Không thể lưu câu hỏi lên server.';
+            btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
         }
-        renderBankStats(); fillBankFilters(); renderBankList();
-        toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
-        bankEditClose();
     }catch(e){
         document.getElementById('nhe-status').textContent='Lỗi: '+e.message;
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
@@ -4899,11 +4973,17 @@ async function bankCreateExam(){
     const btn=document.getElementById('nh-ef-create-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
     try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify({action:'saveexam',examId,tenDe,thoiGian,trangThai,lop})});
-        await new Promise(r=>setTimeout(r,700));
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
-            body:JSON.stringify({action:'savequestions',examId,clearFirst:true,questions})});
+        const okExam = await postAdminWriteWithRetry({action:'saveexam',examId,tenDe,thoiGian,trangThai,lop});
+        if(!okExam){
+            toast('Lỗi tạo đề thi trên server.','err');
+            return;
+        }
+        await new Promise(r=>setTimeout(r,500));
+        const okQs = await postAdminWriteWithRetry({action:'savequestions',examId,clearFirst:true,questions});
+        if(!okQs){
+            toast('Đã tạo thông tin đề nhưng chưa lưu được câu hỏi.','err');
+            return;
+        }
         toast('<i class="fa-solid fa-circle-check"></i> Đã tạo đề "'+tenDe+'" với '+questions.length+' câu','ok');
         document.getElementById('nh-exam-form').style.display='none';
         bankClearSelection();
@@ -4938,12 +5018,15 @@ async function bankAssignBaiApply(){
     const btn=document.getElementById('nh-bf-apply-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang gán...';
     try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bulksetbainganhang',ids,baiHoc})});
-        await new Promise(r=>setTimeout(r,900));
-        ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; bankSel.delete(id); });
-        fillBankFilters(); renderBankList(); updateSelBar();
-        toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
-        document.getElementById('nh-bai-form').style.display='none';
+        const okWrite = await postAdminWriteWithRetry({action:'bulksetbainganhang',ids,baiHoc});
+        if(okWrite){
+            ids.forEach(id=>{ const q=bankData.find(x=>x.id===id); if(q) q.baiHoc=baiHoc; bankSel.delete(id); });
+            fillBankFilters(); renderBankList(); updateSelBar();
+            toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài cho '+ids.length+' câu','ok');
+            document.getElementById('nh-bai-form').style.display='none';
+        } else {
+            toast('Không thể gán bài học trên server. Vui lòng thử lại.','err');
+        }
     }catch(e){
         toast('Lỗi: '+e.message,'err');
     }finally{
@@ -5298,11 +5381,15 @@ function _bankDeleteIds(ids){
     if(!ids.length) return;
     openConfirm('Xóa '+ids.length+' câu khỏi ngân hàng? Hành động này không thể hoàn tác.', async ()=>{
         try{
-            await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deleteNganHang',ids})});
-            bankData=bankData.filter(q=>!ids.includes(q.id));
-            ids.forEach(i=>bankSel.delete(i));
-            renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
-            toast('<i class="fa-solid fa-circle-check"></i> Đã xóa '+ids.length+' câu','ok');
+            const okWrite = await postAdminWriteWithRetry({action:'deletenganhang',ids});
+            if(okWrite){
+                bankData=bankData.filter(q=>!ids.includes(q.id));
+                ids.forEach(i=>bankSel.delete(i));
+                renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+                toast('<i class="fa-solid fa-circle-check"></i> Đã xóa '+ids.length+' câu','ok');
+            } else {
+                toast('Không thể xóa câu hỏi trên server. Dữ liệu chưa thay đổi.','err');
+            }
         }catch(e){ toast('Lỗi: '+e.message,'err'); }
     });
 }
@@ -5481,19 +5568,18 @@ async function bankPublish(){
     if(!bankParsed.length) return;
     const btn=document.getElementById('nh-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankParsed.length+' câu vào ngân hàng!','ok');
-        bankParsed=[];
-        document.getElementById('nh-preview-zone').style.display='none';
-        document.getElementById('nh-file-input').value='';
-        nhStatus('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nhStatus('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankParsed.length+' câu vào ngân hàng!','ok');
+    bankParsed=[];
+    document.getElementById('nh-preview-zone').style.display='none';
+    document.getElementById('nh-file-input').value='';
+    nhStatus('');
+    await loadBank(true);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -5656,19 +5742,18 @@ async function bankDocxPublish(){
     }
     const btn=document.getElementById('nh2-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankDocxParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankDocxParsed.length+' câu vào ngân hàng!','ok');
-        bankDocxParsed=[];
-        document.getElementById('nh2-preview-zone').style.display='none';
-        document.getElementById('nh2-file-input').value='';
-        nh2Status('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankDocxParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nh2Status('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankDocxParsed.length+' câu vào ngân hàng!','ok');
+    bankDocxParsed=[];
+    document.getElementById('nh2-preview-zone').style.display='none';
+    document.getElementById('nh2-file-input').value='';
+    nh2Status('');
+    await loadBank(true);
 }
 
 const nh2Drop=document.getElementById('nh2-dropzone'), nh2File=document.getElementById('nh2-file-input');
@@ -5831,19 +5916,18 @@ async function bankPdfPublish(){
     }
     const btn=document.getElementById('nh3-publish-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang nạp...';
-    try{
-        await fetch(DB_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'savenganhang',questions:bankPdfParsed})});
-        toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankPdfParsed.length+' câu vào ngân hàng!','ok');
-        bankPdfParsed=[];
-        document.getElementById('nh3-preview-zone').style.display='none';
-        document.getElementById('nh3-file-input').value='';
-        nh3Status('');
-        await loadBank(true);
-    }catch(e){
-        toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    const okWrite = await postAdminWrite({action:'savenganhang',questions:bankPdfParsed});
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng';
+    if(!okWrite){
+        nh3Status('<i class="fa-solid fa-triangle-exclamation"></i> NẠP CHƯA XÁC NHẬN — server không phản hồi thành công. Hãy kiểm tra Ngân hàng (làm mới) trước khi bấm "Nạp" lại, tránh nạp trùng nếu lần trước thực ra đã ghi.',true);
+        return;
     }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã nạp '+bankPdfParsed.length+' câu vào ngân hàng!','ok');
+    bankPdfParsed=[];
+    document.getElementById('nh3-preview-zone').style.display='none';
+    document.getElementById('nh3-file-input').value='';
+    nh3Status('');
+    await loadBank(true);
 }
 
 const nh3Drop=document.getElementById('nh3-dropzone'), nh3File=document.getElementById('nh3-file-input');
@@ -5946,10 +6030,22 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 <div class="wrap" style="max-width:1000px">
 <div class="lm-toolbar" style="margin-bottom:20px">
   <h2><i class="fa-solid fa-users" style="color:var(--blue);font-size:20px"></i> Quản lý Tài khoản Học sinh</h2>
-  <div style="display:flex;gap:10px;align-items:center">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <input type="text" id="tk-search" placeholder="🔍 Tìm tên hoặc SĐT..." oninput="filterTK()" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;width:220px;font-family:inherit;outline:none">
     <button class="btn-new" onclick="loadTaiKhoan(true)" style="min-width:100px"><i class="fa-solid fa-rotate"></i> Làm mới</button>
   </div>
+</div>
+
+<!-- Alert thông báo lỗi xác thực backend nếu có -->
+<div id="tk-auth-alert" style="display:none;margin-bottom:18px;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:12px;padding:16px 20px;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:12px">
+    <i class="fa-solid fa-triangle-exclamation" style="color:var(--red);font-size:22px"></i>
+    <div>
+      <div style="font-weight:800;color:var(--red);font-size:14px">Khóa kết nối backend không hợp lệ hoặc đã thay đổi</div>
+      <div style="font-size:12.5px;color:var(--gray);margin-top:2px">Google Apps Script đã từ chối truy cập (Unauthorized). Thầy vui lòng cập nhật lại Khóa kết nối backend để tải danh sách.</div>
+    </div>
+  </div>
+  <button onclick="openBackendKeyModal()" style="padding:8px 16px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-key"></i> Nhập lại khóa backend</button>
 </div>
 
 <!-- Stats nhanh -->
@@ -6054,19 +6150,43 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:600;color:var(--gray);display:block;margin-bottom:5px">Loại tài khoản</label>
-      <select id="tk-modal-loai" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none">
-        <option value="vip">⭐ VIP</option>
-        <option value="premium">💎 Premium</option>
-        <option value="free">🆓 Miễn phí (hạ cấp)</option>
+      <select id="tk-modal-loai" onchange="updateTkModalDaysVisibility()" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none">
+        <option value="vip">⭐ VIP Trial</option>
+        <option value="premium">💎 Premium (Vĩnh viễn)</option>
+        <option value="free">🆓 Miễn phí (Hạ cấp)</option>
       </select>
     </div>
-    <div style="margin-bottom:18px">
-      <label style="font-size:12px;font-weight:600;color:var(--gray);display:block;margin-bottom:5px">Số ngày</label>
+    <div id="tk-modal-days-wrap" style="margin-bottom:18px">
+      <label style="font-size:12px;font-weight:600;color:var(--gray);display:block;margin-bottom:5px">Số ngày VIP</label>
       <input type="number" id="tk-modal-days" value="30" min="1" max="365" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none">
     </div>
     <div style="display:flex;gap:10px">
       <button onclick="confirmSetVip()" style="flex:1;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Xác nhận</button>
       <button onclick="closeTkModal()" style="padding:11px 16px;background:var(--bg2);border:1.5px solid var(--border);color:var(--gray);border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cấu hình Khóa kết nối Backend -->
+<div id="backend-key-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);align-items:center;justify-content:center">
+  <div style="background:var(--bg);border-radius:16px;padding:26px;width:420px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.35)">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+      <i class="fa-solid fa-key" style="color:var(--blue)"></i> Khóa kết nối Google Apps Script
+    </h3>
+    <div style="font-size:12.5px;color:var(--gray);margin-bottom:16px;line-height:1.5">
+      Nhập giá trị <b>ADMIN_KEY</b> được cấu hình trong <i>Script Properties</i> của Apps Script để xác thực các thao tác quản trị và tải dữ liệu học sinh.
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;font-weight:700;color:var(--black);display:block;margin-bottom:6px">Khóa kết nối (ADMIN_KEY mới)</label>
+      <input type="password" id="backend-key-input" placeholder="Dán khóa ADMIN_KEY tại đây..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-family:monospace;outline:none;background:var(--bg2);color:var(--black)">
+    </div>
+    <div style="margin-bottom:18px;display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="backend-key-remember" style="width:16px;height:16px;cursor:pointer">
+      <label for="backend-key-remember" style="font-size:12px;color:var(--gray);cursor:pointer" title="Lưu vào localStorage để không phải nhập lại sau khi đóng trình duyệt">Ghi nhớ trên trình duyệt này (localStorage)</label>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveBackendKeyFromModal()" style="flex:1;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-solid fa-floppy-disk"></i> Lưu & Tải lại</button>
+      <button onclick="closeBackendKeyModal()" style="padding:10px 16px;background:var(--bg2);border:1.5px solid var(--border);color:var(--gray);border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Đóng</button>
     </div>
   </div>
 </div>
@@ -6290,18 +6410,90 @@ let allTK = [];
 let tkLoaded = false;
 let tkEditSdt = null;
 
+function openBackendKeyModal() {
+  const modal = document.getElementById('backend-key-modal');
+  const input = document.getElementById('backend-key-input');
+  const rem = document.getElementById('backend-key-remember');
+  if (modal) modal.style.display = 'flex';
+  if (input) input.value = getAdminKey();
+  if (rem) rem.checked = !!localStorage.getItem('vlxt_backend_admin_key');
+}
+
+function closeBackendKeyModal() {
+  const modal = document.getElementById('backend-key-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveBackendKeyFromModal() {
+  const input = document.getElementById('backend-key-input');
+  const rem = document.getElementById('backend-key-remember');
+  const val = input ? input.value.trim() : '';
+  const isRem = rem ? rem.checked : false;
+  if (!val) {
+    toast('Vui lòng nhập khóa kết nối backend!', 'err');
+    return;
+  }
+  setAdminKey(val, isRem);
+  closeBackendKeyModal();
+  toast('Đã lưu khóa kết nối! Đang tải lại danh sách tài khoản...', 'ok');
+  loadTaiKhoan(true);
+}
+
 async function loadTaiKhoan(force) {
   if (!force && tkLoaded) return;
-  document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gray2)">Đang tải...</td></tr>';
+  const authAlert = document.getElementById('tk-auth-alert');
+  const tkList = document.getElementById('tk-list');
+  const tkEmpty = document.getElementById('tk-empty');
+
+  if (authAlert) authAlert.style.display = 'none';
+  if (tkEmpty) tkEmpty.style.display = 'none';
+  if (tkList && allTK.length === 0) {
+    tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--gray2)"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu tài khoản...</td></tr>';
+  }
+
+  const backendKey = getAdminKey();
+  if (!backendKey) {
+    if (authAlert) authAlert.style.display = 'flex';
+    if (tkList && allTK.length === 0) {
+      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa cấu hình khóa kết nối backend. Vui lòng nhập khóa bên dưới.</td></tr>';
+    }
+    openBackendKeyModal();
+    return;
+  }
+
   try {
-    const url = GAS_URL + '?type=danhsachtaikhoan&adminKey=' + encodeURIComponent(ADMIN_KEY);
+    const url = GAS_URL + '?type=danhsachtaikhoan&adminKey=' + encodeURIComponent(backendKey);
     const r = await fetch(url);
     const data = await r.json();
-    allTK = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
+
+    if (data && (data.error === 'Unauthorized' || data.msg === 'Unauthorized' || data.ok === false && data.msg === 'Unauthorized')) {
+      if (authAlert) authAlert.style.display = 'flex';
+      if (tkList && allTK.length === 0) {
+        tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ hoặc đã thay đổi (Unauthorized).</td></tr>';
+      }
+      toast('Khóa kết nối backend không hợp lệ hoặc đã thay đổi!', 'err');
+      openBackendKeyModal();
+      return;
+    }
+
+    if (Array.isArray(data)) {
+      allTK = data;
+    } else if (data && Array.isArray(data.data)) {
+      allTK = data.data;
+    } else {
+      if (authAlert) authAlert.style.display = 'flex';
+      toast('Không thể giải mã dữ liệu danh sách tài khoản.', 'err');
+      return;
+    }
+
+    if (authAlert) authAlert.style.display = 'none';
     tkLoaded = true;
     renderTK(allTK);
   } catch(e) {
-    document.getElementById('tk-list').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
+    if (tkList && allTK.length === 0) {
+      tkList.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
+    }
+    toast('Lỗi kết nối máy chủ: ' + e.message, 'err');
   }
 }
 
@@ -6381,34 +6573,89 @@ function renderTK(list) {
 
 function openTkModal(sdt, hoten) {
   tkEditSdt = sdt;
+  const tk = allTK.find(r => String(r.sdt) === String(sdt));
   document.getElementById('tk-modal-name').textContent = hoten;
   document.getElementById('tk-modal-sdt').textContent = sdt;
+  const sel = document.getElementById('tk-modal-loai');
+  if (sel) sel.value = (tk && tk.loaiTK) ? tk.loaiTK : 'vip';
+  updateTkModalDaysVisibility();
   document.getElementById('tk-modal').style.display = 'flex';
+}
+function updateTkModalDaysVisibility() {
+  const loai = document.getElementById('tk-modal-loai').value;
+  const daysWrap = document.getElementById('tk-modal-days-wrap');
+  if (daysWrap) {
+    daysWrap.style.display = (loai === 'vip') ? 'block' : 'none';
+  }
 }
 function closeTkModal() { document.getElementById('tk-modal').style.display = 'none'; }
 
 async function confirmSetVip() {
+  if (!tkEditSdt) return;
   const loaiTK = document.getElementById('tk-modal-loai').value;
   const days   = Number(document.getElementById('tk-modal-days').value) || 30;
   const ok = await postAdminWriteWithRetry({ action:'setvipstatus', sdt:tkEditSdt, loaiTK, days });
-  if (ok) { toast(loaiTK==='premium' ? 'Đã nâng Premium vĩnh viễn!' : 'Đã cập nhật tài khoản!', 'ok'); closeTkModal(); await loadTaiKhoan(true); }
-  else toast('Không cập nhật được tài khoản. Dữ liệu chưa thay đổi.', 'err');
+  if (ok) {
+    let msg = 'Đã cập nhật tài khoản!';
+    if (loaiTK === 'premium') msg = 'Đã nâng Premium vĩnh viễn!';
+    else if (loaiTK === 'free') msg = 'Đã chuyển tài khoản về Miễn phí (Free)!';
+    else if (loaiTK === 'vip') msg = `Đã cập nhật VIP (${days} ngày)!`;
+    toast(msg, 'ok');
+    closeTkModal();
+    await loadTaiKhoan(true);
+  } else {
+    toast('Không cập nhật được tài khoản. Dữ liệu chưa thay đổi.', 'err');
+  }
 }
+
+// ── Kiểm tra CORS & Ping Admin ──
+async function pingAdminCorsTest(){
+  const start = performance.now();
+  try {
+    const res = await fetch(DB_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'pingadmin', adminKey: getAdminKey() })
+    });
+    const elapsed = Math.round(performance.now() - start);
+    if (!res.ok) {
+      console.error('[CORS Ping] HTTP Error:', res.status, res.statusText);
+      return { ok: false, status: res.status, error: 'HTTP ' + res.status, elapsed };
+    }
+    const json = await res.json().catch(() => null);
+    const success = !!(json && typeof json === 'object' && json.ok === true);
+    console.log('[CORS Ping] Kết quả:', { ok: success, status: res.status, response: json, elapsed: elapsed + 'ms' });
+    return { ok: success, status: res.status, json, elapsed };
+  } catch(err) {
+    console.error('[CORS Ping] Fetch/CORS Error:', err);
+    return { ok: false, error: err.message, elapsed: Math.round(performance.now() - start) };
+  }
+}
+window.pingAdminCorsTest = pingAdminCorsTest;
+
+async function runAdminCorsDiagnostic() {
+  toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang kiểm tra kết nối CORS...', 'ok');
+  const result = await pingAdminCorsTest();
+  if (result.ok) {
+    toast(`<i class="fa-solid fa-circle-check"></i> CORS & Admin Ping OK (${result.elapsed}ms)!`, 'ok');
+  } else {
+    toast(`<i class="fa-solid fa-triangle-exclamation"></i> Lỗi Ping CORS: ${result.error || 'Thất bại'}`, 'err');
+  }
+}
+window.runAdminCorsDiagnostic = runAdminCorsDiagnostic;
 
 // Bật/tắt "Miễn điều kiện video/câu áp dụng" cho 1 học sinh (đã học trong lớp thầy + đã xem live
 // rồi thì không cần ép xem lại video/làm câu áp dụng trên web — chỉ cần ≥90% Luyện tập trắc nghiệm).
 async function tkToggleMienVideo(sdt, checked, cb) {
   if (cb) cb.disabled = true;
   try {
-    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, mienVideo: checked }) });
-    const d = await r.json();
-    if (d.ok) {
+    const ok = await postAdminWriteWithRetry({ action: 'updateaccount', sdt, mienVideo: checked });
+    if (ok) {
       toast(checked ? 'Đã miễn điều kiện video cho học sinh này!' : 'Đã bỏ miễn điều kiện video.', 'ok');
       const row = allTK.find(x => String(x.sdt) === String(sdt));
       if (row) row.mienVideo = checked;
     } else {
-      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      toast('Không thể cập nhật quyền video trên máy chủ.', 'err');
       if (cb) cb.checked = !checked;
     }
   } catch(e) {
@@ -6426,15 +6673,13 @@ async function tkToggleMienVideo(sdt, checked, cb) {
 async function tkToggleTracNghiemVideo(sdt, checked, cb) {
   if (cb) cb.disabled = true;
   try {
-    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, tracNghiemVideo: checked }) });
-    const d = await r.json();
-    if (d.ok) {
+    const ok = await postAdminWriteWithRetry({ action: 'updateaccount', sdt, tracNghiemVideo: checked });
+    if (ok) {
       toast(checked ? 'HS sẽ làm trắc nghiệm cùng video như bình thường.' : 'Video sẽ phát liền mạch, không dừng hỏi bài.', 'ok');
       const row = allTK.find(x => String(x.sdt) === String(sdt));
       if (row) row.tracNghiemVideo = checked;
     } else {
-      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      toast('Không thể cập nhật cài đặt video trên máy chủ.', 'err');
       if (cb) cb.checked = !checked;
     }
   } catch(e) {
@@ -6451,15 +6696,13 @@ async function tkToggleTracNghiemVideo(sdt, checked, cb) {
 async function tkToggleMienLuyenTap(sdt, checked, cb) {
   if (cb) cb.disabled = true;
   try {
-    const r = await fetch(GAS_URL, { method:'POST', mode:'cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ action:'updateaccount', adminKey: ADMIN_KEY, sdt, mienLuyenTap: checked }) });
-    const d = await r.json();
-    if (d.ok) {
+    const ok = await postAdminWriteWithRetry({ action: 'updateaccount', sdt, mienLuyenTap: checked });
+    if (ok) {
       toast(checked ? 'Đã miễn điều kiện luyện tập cho học sinh này — chỉ cần xem hết video là qua bài.' : 'Đã bỏ miễn điều kiện luyện tập.', 'ok');
       const row = allTK.find(x => String(x.sdt) === String(sdt));
       if (row) row.mienLuyenTap = checked;
     } else {
-      toast(d.msg || 'Lỗi! (Cần cập nhật Apps Script mới)', 'err');
+      toast('Không thể cập nhật quyền luyện tập trên máy chủ.', 'err');
       if (cb) cb.checked = !checked;
     }
   } catch(e) {
@@ -6523,10 +6766,14 @@ function tkdSameSdt(a, b) {
 async function tkdLoadAct(sdt) {
   const el = document.getElementById('tkd-act');
   try {
-    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(ADMIN_KEY) + '&hs=' + encodeURIComponent(sdt));
+    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(getAdminKey()) + '&hs=' + encodeURIComponent(sdt));
     const d = await r.json();
     if (tkdSdt !== sdt) return;
-    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu — cần cập nhật Apps Script (v50) rồi thử lại.</div>'; return; }
+    if (d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || d.ok === false && d.msg === 'Unauthorized')) {
+      el.innerHTML = '<div style="padding:14px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ (Unauthorized).</div>';
+      return;
+    }
+    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu hoạt động.</div>'; return; }
     if (!d.data.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa ghi nhận hoạt động nào. (Chỉ ghi từ khi web được cập nhật tính năng này)</div>'; return; }
     el.innerHTML = d.data.map(a => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
       <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(a.thoigian)}</span>
@@ -6593,6 +6840,21 @@ async function tkdLoadDiem(sdt) {
       <span style="color:var(--gray)">${esc(x.name||'')} · ${esc(x.studentClass||'')}</span>
     </div>`).join('');
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
+}
+
+async function tkdSaveLop() {
+  const lop = document.getElementById('tkd-lop').value.trim();
+  if (!lop) { toast('Nhập lớp trước đã!', 'err'); return; }
+  try {
+    const ok = await postAdminWriteWithRetry({ action: 'updateaccount', sdt: tkdSdt, lop });
+    if (ok) {
+      toast('Đã lưu lớp!', 'ok');
+      const row = allTK.find(x => String(x.sdt) === String(tkdSdt));
+      if (row) { row.lop = lop; filterTK(); }
+    } else {
+      toast('Không thể lưu lớp học trên máy chủ.', 'err');
+    }
+  } catch(e) { toast('Lỗi: ' + e.message, 'err'); }
 }
 
 /* ════════════════════════════════════
@@ -7532,13 +7794,23 @@ function htSend() {
 }
 
 async function loadThietBi() {
+    const tb = document.getElementById('ht-device-list');
+    const backendKey = getAdminKey();
+    if (!backendKey) {
+        if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Chưa có khóa kết nối backend. Vui lòng cấu hình ở tab Tài khoản HS.</td></tr>';
+        return;
+    }
     try {
-        const r = await fetch(GAS_URL + '?type=danhsachthietbi&adminKey=' + encodeURIComponent(ADMIN_KEY));
+        const r = await fetch(GAS_URL + '?type=danhsachthietbi&adminKey=' + encodeURIComponent(backendKey));
         const d = await r.json();
+        if (d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || d.ok === false && d.msg === 'Unauthorized')) {
+            if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ (Unauthorized).</td></tr>';
+            toast('Khóa kết nối backend không hợp lệ khi tải thiết bị!', 'err');
+            return;
+        }
         htDevices = d.data || [];
         renderThietBi();
     } catch (e) {
-        const tb = document.getElementById('ht-device-list');
         if (tb) tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--red)">Lỗi tải dữ liệu: ' + e.message + '</td></tr>';
     }
 }
@@ -7558,11 +7830,13 @@ function renderThietBi() {
 async function htResetDevice(deviceId) {
     if (!confirm('Mở khoá thiết bị này để học sinh có thể đăng ký học thử lại?')) return;
     try {
-        const r = await fetch(GAS_URL, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'resetdevice', adminKey: ADMIN_KEY, deviceId }) });
-        const d = await r.json();
-        toast(d.msg || (d.ok ? 'Đã mở khoá!' : 'Lỗi!'), d.ok ? 'ok' : 'err');
-        if (d.ok) loadThietBi();
+        const ok = await postAdminWriteWithRetry({ action: 'resetdevice', deviceId });
+        if (ok) {
+            toast('Đã mở khoá thiết bị!', 'ok');
+            loadThietBi();
+        } else {
+            toast('Không thể mở khoá thiết bị trên máy chủ.', 'err');
+        }
     } catch (e) { toast('Lỗi: ' + e.message, 'err'); }
 }
 </script>
