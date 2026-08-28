@@ -6997,13 +6997,9 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
                 </select>
             </div>
             <div>
-                <div class="ts-field-label">2. Chọn Giai đoạn</div>
-                <select id="ts-select-stage" class="ts-select" onchange="onTeachingScopeStageChange()">
-                    <option value="toan_khoa">Toàn khóa học</option>
-                    <option value="GĐ1">Giai đoạn 1 (GĐ1)</option>
-                    <option value="GĐ2">Giai đoạn 2 (GĐ2)</option>
-                    <option value="GĐ3">Giai đoạn 3 (GĐ3)</option>
-                    <option value="TongOn">Tổng ôn & Luyện đề</option>
+                <div class="ts-field-label">2. Chọn Chương</div>
+                <select id="ts-select-chapter" class="ts-select" onchange="onTeachingScopeChapterChange()">
+                    <option value="all">Tất cả các chương (Toàn khóa học)</option>
                 </select>
             </div>
             <div>
@@ -7572,6 +7568,7 @@ let teachingScopeDrafts = {}; // draft edits before saving
 let currentScopeCourse = '';
 let currentScopeStage = 'toan_khoa';
 let teachingScopeLoaded = false;
+let currentScopeChapterFilter = 'all';
 
 function scopeKey(courseId, stageId) {
     return (courseId || '').trim() + '___' + (stageId || 'toan_khoa').trim();
@@ -7649,14 +7646,17 @@ async function loadTeachingScope(force = false) {
 
 function getTeachingScopeCourseList() {
     const set = new Set();
-    // Lấy từ allLessons
-    allLessons.forEach(l => { if (l.KhoaHoc) set.add(l.KhoaHoc.trim()); });
-    // Lấy từ ADMIN_KHOACONFIG
-    Object.keys(ADMIN_KHOACONFIG || {}).forEach(k => {
-        if (k && k.indexOf('|||') === -1) set.add(k.trim());
+    // Chỉ lấy từ các khóa học thật sự có bài giảng trong allLessons
+    allLessons.forEach(l => {
+        const k = (l.KhoaHoc || '').trim();
+        if (k) set.add(k);
     });
-    // Lấy từ teachingScopeData
-    Object.values(teachingScopeData).forEach(s => { if (s.courseId) set.add(s.courseId.trim()); });
+    // Nếu allLessons chưa nạp xong, thử lấy từ ADMIN_KHOACONFIG các khóa có bài
+    if (set.size === 0 && typeof ADMIN_KHOACONFIG === 'object') {
+        Object.keys(ADMIN_KHOACONFIG || {}).forEach(k => {
+            if (k && k.indexOf('|||') === -1) set.add(k.trim());
+        });
+    }
     const arr = Array.from(set).filter(Boolean);
     arr.sort((a, b) => a.localeCompare(b, 'vi'));
     return arr;
@@ -7668,25 +7668,43 @@ function renderTeachingScopeCourseOptions() {
     const courses = getTeachingScopeCourseList();
     if (!courses.length) {
         select.innerHTML = '<option value="">(Chưa có khóa học nào)</option>';
+        renderTeachingScopeChapterOptions();
         return;
     }
     if (!currentScopeCourse || !courses.includes(currentScopeCourse)) {
         currentScopeCourse = courses[0];
     }
     select.innerHTML = courses.map(c => `<option value="${esc(c)}" ${c === currentScopeCourse ? 'selected' : ''}>${esc(c)}</option>`).join('');
+    renderTeachingScopeChapterOptions();
+}
+
+function renderTeachingScopeChapterOptions() {
+    const select = document.getElementById('ts-select-chapter');
+    if (!select) return;
+    const chMap = getChaptersMapForCourse(currentScopeCourse);
+    const chapters = Object.keys(chMap);
+    
+    let html = '<option value="all">Tất cả các chương (Toàn khóa học)</option>';
+    chapters.forEach(ch => {
+        const count = (chMap[ch] || []).length;
+        html += `<option value="${esc(ch)}" ${ch === currentScopeChapterFilter ? 'selected' : ''}>${esc(ch)} (${count} bài)</option>`;
+    });
+    select.innerHTML = html;
 }
 
 function onTeachingScopeCourseChange() {
     const select = document.getElementById('ts-select-course');
     if (!select) return;
     currentScopeCourse = select.value;
+    currentScopeChapterFilter = 'all';
+    renderTeachingScopeChapterOptions();
     renderTeachingScopeUI();
 }
 
-function onTeachingScopeStageChange() {
-    const select = document.getElementById('ts-select-stage');
+function onTeachingScopeChapterChange() {
+    const select = document.getElementById('ts-select-chapter');
     if (!select) return;
-    currentScopeStage = select.value || 'toan_khoa';
+    currentScopeChapterFilter = select.value || 'all';
     renderTeachingScopeUI();
 }
 
@@ -7791,7 +7809,10 @@ function renderTeachingScopeUI() {
 
     const draft = getOrCreateScopeDraft(currentScopeCourse, currentScopeStage);
     const chMap = getChaptersMapForCourse(currentScopeCourse);
-    const chapterNames = Object.keys(chMap);
+    let chapterNames = Object.keys(chMap);
+    if (currentScopeChapterFilter && currentScopeChapterFilter !== 'all') {
+        chapterNames = chapterNames.filter(ch => ch === currentScopeChapterFilter);
+    }
 
     // Cập nhật Controls
     const activeCb = document.getElementById('ts-is-active');
