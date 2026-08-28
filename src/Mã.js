@@ -14,6 +14,7 @@
 //   Tab "KhoaConfig" : khoaHoc | loaiTK   (free,vip,premium hoặc vip,premium hoặc premium)
 //   Tab "NhiemVu"   : sdt | nhipHoc | conTro | lastMissionDate | startDate | chuoiDung | tongDiemDuaTop
 //   Tab "Settings"  : key | value   (cấu hình toàn trang, vd: currentTeachingLesson)
+//   Tab "TeachingScope" : courseId | stageId | openChapterIds | activeLessonIds | validFrom | validTo | isActive | updatedAt | updatedBy | revision
 //   Tab "ThietBiHocThu" : deviceId | sdt | hoten | trialStart | trialExpiry | soLanChan  ← chống học thử nhiều lần
 // ════════════════════════════════════════════════════════════════
 const DEVICE_LOCK_ENABLED = false; // 18/7 TAM THOI TAT de thay lam video (theo yeu cau) -- doi lai thanh true + Trien khai > Phien ban moi de BAT LAI chan hoc thu nhieu lan
@@ -41,6 +42,7 @@ function doGet(e) {
     if (type === 'examsolutions')    return getExamSolutions(examId || 'de01');
     if (type === 'nhiemvu')          return getNhiemVu(hs);
     if (type === 'settings')         return getSettings();
+    if (type === 'teachingscope')    return getTeachingScope(e);
     if (type === 'danhsachthietbi')  return getDanhSachThietBi(e);
         if (type === 'searchprofiles')   return searchPublicProfiles(e);
     if (type === 'lichlive')          return getLiveSessions();
@@ -67,9 +69,7 @@ function doPost(e) {
     if (action === 'savenganhang')       return saveNganHang(data);
     if (action === 'savehuongdan')     return saveHuongDan(data);
     if (action === 'deletenganhang')     return deleteNganHang(data);
-    if (action === 'updatenganhang')     return updateNganHang(data);
-    if (action === 'bulksetbainganhang') return bulkSetBaiHocNganHang(data);
-    if (action === 'bulksetchatluongnganhang') return bulkSetChatLuongNganHang(data);
+    if (action === 'bulksetbainganhang') return typeof bulkSetBaiHocNganHang === 'function' ? bulkSetBaiHocNganHang(data) : bulkSetBaiNganHang(data);
     if (action === 'saveprogress')       return saveProgress(data);
     if (action === 'savescore')          return saveScore(data);
     if (action === 'updatebaihocvideo')  return updateBaiHocVideo(data);
@@ -85,6 +85,7 @@ function doPost(e) {
     if (action === 'saveduatop')         return saveDuaTop(data);
     if (action === 'savesoloresult')     return saveSoloResult(data);
     if (action === 'savesetting')        return saveSetting(data);
+    if (action === 'saveteachingscope')  return saveTeachingScope(data);
     if (action === 'savekhoaconfig')     return saveKhoaConfig(data);
     if (action === 'resetdevice')        return resetDevice(data);
     if (action === 'savelivesession')    return saveLiveSession(data);
@@ -824,17 +825,22 @@ function saveQuestions(data) {
 // ════════════════════════════════════════════════════════════════
 
 const NH_HEADERS = ['id','mon','chuong','mucDo','loai','nhomId','deBaiChung','question','optA','optB','optC','optD','correct','hinhAnh','giaiThich','ngayThem','baiHoc','chatLuong'];
+
 // ── GET: Toàn bộ ngân hàng câu hỏi ───────────────────────────
 function getNganHang() {
   const sheet = getOrCreate('NganHang', NH_HEADERS);
   const data  = sheet.getDataRange().getValues();
   if (data.length < 2) return jsonOut({ ok: true, data: [] });
+  const headers = data[0].map(String);
+  const baiCol = headers.indexOf('baiHoc');
+  const clCol  = headers.indexOf('chatLuong');
   const rows = data.slice(1).map(r => ({
     id: r[0], mon: r[1], chuong: r[2], mucDo: r[3], loai: r[4] || 'TN',
     nhomId: r[5], deBaiChung: r[6], question: r[7],
     optA: r[8], optB: r[9], optC: r[10], optD: r[11],
     correct: r[12], hinhAnh: r[13], giaiThich: r[14], ngayThem: r[15],
-    baiHoc: r[16] || '', chatLuong: r[17] || 'tho'
+    baiHoc: baiCol !== -1 ? r[baiCol] : (r[16] || ''),
+    chatLuong: clCol !== -1 ? r[clCol] : (r[17] || 'tho')
   })).filter(r => r.question);
   return jsonOut({ ok: true, data: rows });
 }
@@ -885,6 +891,10 @@ function updateNganHang(data) {
   if (!id) return jsonOut({ ok: false, msg: 'Thiếu id' });
   const sheet = getOrCreate('NganHang', NH_HEADERS);
   const rows = sheet.getDataRange().getValues();
+  const headers = rows[0] ? rows[0].map(String) : [];
+  const baiCol = headers.indexOf('baiHoc') !== -1 ? headers.indexOf('baiHoc') : 16;
+  const clCol = headers.indexOf('chatLuong') !== -1 ? headers.indexOf('chatLuong') : 17;
+
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]).trim() === id) {
       const q = data.q || data;
@@ -899,9 +909,9 @@ function updateNganHang(data) {
         q.optD !== undefined ? q.optD : rows[i][11],
         q.correct !== undefined ? q.correct : rows[i][12],
         q.hinhAnh !== undefined ? q.hinhAnh : rows[i][13],
-        q.giaiThich !== undefined ? q.giaiThich : rows[i][14],
-        rows[i][15],
-        q.baiHoc !== undefined ? q.baiHoc : rows[i][16], q.chatLuong !== undefined ? q.chatLuong : (rows[i][17] || 'tho')
+        rows[i][15] || now,
+        q.baiHoc !== undefined ? q.baiHoc : (rows[i][baiCol] || ''),
+        q.chatLuong !== undefined ? q.chatLuong : (rows[i][clCol] || 'tho')
       ]]);
       return jsonOut({ ok: true });
     }
@@ -915,36 +925,51 @@ function bulkSetBaiHocNganHang(data) {
   if (!ids.length) return jsonOut({ ok: false, msg: 'Thiếu ids' });
   const baiHoc = (data.baiHoc || '').toString();
   const sheet = getOrCreate('NganHang', NH_HEADERS);
-  const col = NH_HEADERS.indexOf('baiHoc') + 1;
   const rows = sheet.getDataRange().getValues();
+  const headers = rows[0] ? rows[0].map(String) : [];
+  let baiCol = headers.indexOf('baiHoc');
+  if (baiCol === -1) {
+    baiCol = headers.length;
+    sheet.getRange(1, baiCol + 1).setValue('baiHoc');
+  }
   let updated = 0;
   for (let i = 1; i < rows.length; i++) {
     if (ids.indexOf(String(rows[i][0]).trim()) !== -1) {
-      sheet.getRange(i + 1, col).setValue(baiHoc);
+      sheet.getRange(i + 1, baiCol + 1).setValue(baiHoc);
       updated++;
     }
   }
   return jsonOut({ ok: true, updated });
 }
 
+function bulkSetBaiNganHang(data) {
+  return bulkSetBaiHocNganHang(data);
+}
+
+// ── POST: Đánh dấu chất lượng câu hỏi ngân hàng hàng loạt ────
 function bulkSetChatLuongNganHang(data) {
   const ids = (data.ids || []).map(x => String(x).trim()).filter(Boolean);
   if (!ids.length) return jsonOut({ ok: false, msg: 'Thiếu ids' });
-  const chatLuong = (data.chatLuong || 'tho').toString();
+  const chatLuong = (data.chatLuong || 'tho').toString().toLowerCase();
   const sheet = getOrCreate('NganHang', NH_HEADERS);
-  const col = NH_HEADERS.indexOf('chatLuong') + 1;
   const rows = sheet.getDataRange().getValues();
+  const headers = rows[0] ? rows[0].map(String) : [];
+  let clCol = headers.indexOf('chatLuong');
+  if (clCol === -1) {
+    clCol = headers.length;
+    sheet.getRange(1, clCol + 1).setValue('chatLuong');
+  }
   let updated = 0;
   for (let i = 1; i < rows.length; i++) {
     if (ids.indexOf(String(rows[i][0]).trim()) !== -1) {
-      sheet.getRange(i + 1, col).setValue(chatLuong);
+      sheet.getRange(i + 1, clCol + 1).setValue(chatLuong);
       updated++;
     }
   }
   return jsonOut({ ok: true, updated });
 }
 
-  // ── GET: Lấy link video từ Sheet nguồn (khoá luyện đề 2k8) ──
+// ── GET: Lấy link video từ Sheet nguồn (khoá luyện đề 2k8) ──
 
 function getSourceVideoLinks() {
   try {
@@ -1585,6 +1610,173 @@ function updateAccount(data) {
   return jsonOut({ ok: false, msg: 'Không tìm thấy học sinh.' });
 }
 
+// ════════════════════════════════════════════════════════════════
+// TEACHING SCOPE — Quản lý phạm vi giảng dạy (Đua Top & Solo)
+// ════════════════════════════════════════════════════════════════
+
+const TEACHING_SCOPE_HEADERS = ['courseId', 'stageId', 'openChapterIds', 'activeLessonIds', 'openAllLessons', 'validFrom', 'validTo', 'isActive', 'updatedAt', 'updatedBy', 'revision'];
+
+function checkAdminKey(key) {
+  const k = String(key || '').trim();
+  const ADMIN_KEY = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY') || 'vlxt_admin_2025';
+  return k === ADMIN_KEY;
+}
+
+// ── GET: Lấy cấu hình Teaching Scope ─────────────────────────
+function getTeachingScope(e) {
+  const adminKey = (e && e.parameter && e.parameter.adminKey) || '';
+  const courseId = (e && e.parameter && e.parameter.courseId) || '';
+  const stageId  = (e && e.parameter && e.parameter.stageId)  || '';
+  const isAdmin  = checkAdminKey(adminKey);
+
+  const sheet = getOrCreate('TeachingScope', TEACHING_SCOPE_HEADERS);
+  const rows  = sheetToJson(sheet);
+
+  const parsedRows = rows.map(r => {
+    let openChapters = [];
+    try { openChapters = JSON.parse(r.openChapterIds || '[]'); } catch (err) { openChapters = []; }
+    let activeLessons = {};
+    try { activeLessons = JSON.parse(r.activeLessonIds || '{}'); } catch (err) { activeLessons = {}; }
+    let openAll = false;
+    try {
+      if (r.openAllLessons === 'true' || r.openAllLessons === true) openAll = true;
+      else if (r.openAllLessons) openAll = JSON.parse(r.openAllLessons);
+    } catch (_) { openAll = false; }
+
+    return {
+      courseId: String(r.courseId || ''),
+      stageId: String(r.stageId || ''),
+      openChapterIds: Array.isArray(openChapters) ? openChapters : [],
+      activeLessonIds: activeLessons && typeof activeLessons === 'object' ? activeLessons : {},
+      openAllLessons: openAll,
+      validFrom: r.validFrom || '',
+      validTo: r.validTo || '',
+      isActive: r.isActive === true || r.isActive === 'true',
+      updatedAt: r.updatedAt || '',
+      updatedBy: isAdmin ? (r.updatedBy || '') : undefined,
+      revision: Number(r.revision || 1)
+    };
+  });
+
+  let filtered = parsedRows;
+  if (courseId) filtered = filtered.filter(s => s.courseId === courseId);
+  if (stageId)  filtered = filtered.filter(s => s.stageId === stageId);
+
+  // Nếu là public request (học sinh/web), chỉ trả scope đang active VÀ trong hạn thời gian
+  if (!isAdmin && !(e && e.parameter && (e.parameter.all === 'true' || e.parameter.all === true))) {
+    const now = Date.now();
+    filtered = filtered.filter(s => {
+      if (!s.isActive) return false;
+      if (s.validFrom) {
+        const t = Date.parse(s.validFrom);
+        if (!isNaN(t) && now < t) return false;
+      }
+      if (s.validTo) {
+        const t = Date.parse(s.validTo);
+        if (!isNaN(t) && now > t) return false;
+      }
+      return true;
+    });
+  }
+
+  return jsonOut({ ok: true, data: filtered });
+}
+
+// ── POST: Lưu cấu hình Teaching Scope (bắt buộc adminKey, optimistic lock) ──
+function saveTeachingScope(data) {
+  if (!checkAdminKey(data.adminKey)) {
+    return jsonOut({ ok: false, error: 'Unauthorized', msg: 'Khóa quản trị không hợp lệ' });
+  }
+
+  const courseId = String(data.courseId || '').trim();
+  const stageId  = String(data.stageId || '').trim() || 'toan_khoa';
+  if (!courseId) {
+    return jsonOut({ ok: false, msg: 'Thiếu courseId' });
+  }
+
+  const sheet = getOrCreate('TeachingScope', TEACHING_SCOPE_HEADERS);
+  const rows  = sheetToJson(sheet);
+  const existing = rows.find(r => String(r.courseId || '').trim() === courseId && String(r.stageId || '').trim() === stageId);
+
+  // Optimistic Concurrency Check
+  if (existing && data.expectedRevision !== undefined && data.expectedRevision !== null && data.expectedRevision !== '') {
+    const currentRev = Number(existing.revision || 1);
+    const expRev = Number(data.expectedRevision);
+    if (currentRev !== expRev) {
+      return jsonOut({
+        ok: false,
+        conflict: true,
+        msg: 'Dữ liệu đã bị thay đổi bởi phiên làm việc khác (phiên bản máy chủ: ' + currentRev + ', phiên bản gửi lên: ' + expRev + '). Vui lòng tải lại trang.',
+        serverRevision: currentRev
+      });
+    }
+  }
+
+  const nextRevision = existing ? (Number(existing.revision || 1) + 1) : 1;
+  const now = new Date().toISOString();
+
+  let openChapterIds = data.openChapterIds || [];
+  if (typeof openChapterIds !== 'string') openChapterIds = JSON.stringify(openChapterIds);
+
+  let activeLessonIds = data.activeLessonIds || {};
+  if (typeof activeLessonIds !== 'string') activeLessonIds = JSON.stringify(activeLessonIds);
+
+  let openAllLessons = data.openAllLessons !== undefined ? data.openAllLessons : false;
+  if (typeof openAllLessons !== 'string') openAllLessons = JSON.stringify(openAllLessons);
+
+  const payload = {
+    courseId: courseId,
+    stageId: stageId,
+    openChapterIds: openChapterIds,
+    activeLessonIds: activeLessonIds,
+    openAllLessons: openAllLessons,
+    validFrom: data.validFrom || '',
+    validTo: data.validTo || '',
+    isActive: data.isActive === true || data.isActive === 'true' ? 'true' : 'false',
+    updatedAt: now,
+    updatedBy: 'admin',
+    revision: nextRevision
+  };
+
+  if (existing) {
+    writeRowNamed(sheet, existing._rowIndex, payload);
+  } else {
+    appendRowNamed(sheet, payload);
+  }
+
+  // Đồng thời lưu bản ghi tóm tắt vào Settings để backward compat nếu cần
+  try {
+    const settingsSheet = getOrCreate('Settings', ['key', 'value']);
+    const setRows = sheetToJson(settingsSheet);
+    const setKey = 'teachingScope_' + courseId + '_' + stageId;
+    const existingSetting = setRows.find(r => String(r.key) === setKey);
+    const setVal = JSON.stringify(payload);
+    if (existingSetting) {
+      settingsSheet.getRange(existingSetting._rowIndex, 1, 1, 2).setValues([[setKey, setVal]]);
+    } else {
+      settingsSheet.appendRow([setKey, setVal]);
+    }
+  } catch(e) {}
+
+  return jsonOut({
+    ok: true,
+    revision: nextRevision,
+    scope: {
+      courseId: courseId,
+      stageId: stageId,
+      openChapterIds: typeof data.openChapterIds === 'string' ? JSON.parse(data.openChapterIds) : (data.openChapterIds || []),
+      activeLessonIds: typeof data.activeLessonIds === 'string' ? JSON.parse(data.activeLessonIds) : (data.activeLessonIds || {}),
+      openAllLessons: typeof data.openAllLessons === 'string' ? JSON.parse(data.openAllLessons) : (data.openAllLessons || false),
+      validFrom: data.validFrom || '',
+      validTo: data.validTo || '',
+      isActive: data.isActive === true || data.isActive === 'true',
+      updatedAt: now,
+      updatedBy: 'admin',
+      revision: nextRevision
+    }
+  });
+}
+
 // ── SERVER-SIDE SELF-TEST: Chạy nội bộ qua OAuth/clasp run (không in/trả secret) ──
 function runAdminSelfTest() {
   const adminKey = getAdminKey();
@@ -1796,4 +1988,5 @@ function searchPublicProfiles(e) {
 function normalizeSearchText(value) {
   return String(value || '').toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/\s+/g, ' ').trim();
+>>>>>>> origin/main
 }
