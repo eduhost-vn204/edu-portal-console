@@ -5386,7 +5386,11 @@ async function openCommitConfirmModal(){
     const requiredPhrase = `NẠP ${count} CÂU TINH BATCH 001`;
     const input = prompt(`⚠️ XÁC NHẬN GHI DỮ LIỆU PRODUCTION THẬT\n\nBạn đang chuẩn bị nạp thật ${count} câu Tinh vào Ngân hàng dữ liệu.\nThao tác này sẽ ghi vĩnh viễn vào Google Sheet.\n\nVui lòng nhập chính xác cụm từ sau để xác nhận:\n\n${requiredPhrase}`);
     
-    if(input !== requiredPhrase){
+    const cleanIn = String(input || '').trim().replace(/\s+/g, ' ').toUpperCase();
+    const cleanReq = requiredPhrase.replace(/\s+/g, ' ').toUpperCase();
+    const cleanAlt = `NẠP ${count} CÂU TINH CÒN LẠI BATCH 001`.replace(/\s+/g, ' ').toUpperCase();
+
+    if(cleanIn !== cleanReq && cleanIn !== cleanAlt){
         toast('Cụm từ xác nhận không khớp. Đã hủy thao tác ghi thật.', 'err');
         return;
     }
