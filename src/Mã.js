@@ -1094,7 +1094,7 @@ function importNganHang(data) {
   const sheet = getOrCreate('NganHang', NH_HEADERS);
   const rows = sheet.getDataRange().getValues();
 
-  // Đọc hiện trạng ngân hàng: ID, Map nội dung câu Tinh hiện có, đếm tổng câu và câu Tinh dùng được
+  // Đọc hiện trạng ngân hàng
   const existingIdMap = new Map();
   const existingTinhNormMap = new Map();
   let countBefore = 0;
@@ -1134,10 +1134,10 @@ function importNganHang(data) {
   const seenPayloadIds = new Set();
   const seenPayloadNorms = new Map();
   const alreadyExistsIds = [];
-  const insertedIds = [];
+  const insertedRows = [];
+  const updatedRows = [];
   const quarantinedItems = [];
   const passedItems = [];
-  const normalizedRows = [];
   const normalizedPreview = [];
   const nowIso = new Date().toISOString();
 
@@ -1154,33 +1154,10 @@ function importNganHang(data) {
     }
     if (id) seenPayloadIds.add(id);
 
-    // 2. Kiểm tra Idempotency với DB
-    const existingEntry = id ? existingIdMap.get(id) : null;
     const questionText = String(q.question || q.stem || '').trim();
     const normText = normalizeTextForComparison(questionText);
 
-    if (existingEntry) {
-      if (existingEntry.chatLuong === 'tinh' && existingEntry.normText === normText) {
-        alreadyExistsIds.push(id);
-        continue;
-      } else {
-        technicalErrors.push('Mã id đã tồn tại trong ngân hàng nhưng nội dung khác nhau (Trùng lặp ID)');
-      }
-    }
-
-    // 3. Kiểm tra Trùng lặp nội dung với tập câu Tinh hiện có
-    if (normText.length > 20) {
-      const dupExistingId = existingTinhNormMap.get(normText);
-      if (dupExistingId && dupExistingId !== id) {
-        technicalErrors.push('Nội dung trùng lặp hoàn toàn với câu Tinh hiện có [' + dupExistingId + ']');
-      } else if (seenPayloadNorms.has(normText)) {
-        technicalErrors.push('Nội dung trùng lặp với câu khác trong cùng gói [' + seenPayloadNorms.get(normText) + ']');
-      } else {
-        seenPayloadNorms.set(normText, id);
-      }
-    }
-
-    // 4. Kiểm tra Loại câu & Nội dung
+    // 2. Kiểm tra Loại câu & Nội dung
     const loai = String(q.loai || 'TN').trim().toUpperCase();
     if (!['TN', 'DS', 'TLN'].includes(loai)) {
       technicalErrors.push('loai không hợp lệ (chỉ nhận TN, DS, TLN)');
@@ -1189,31 +1166,44 @@ function importNganHang(data) {
       technicalErrors.push('Thân câu hỏi không được để trống');
     }
 
-    // 5. Kiểm tra Phương án & Đáp án
-    const correct = String(q.correct || q.correctAnswer || '').trim().toUpperCase();
-    const optA = String(q.optA || (q.options && q.options[0] && q.options[0].content) || (q.subItems && q.subItems[0] && q.subItems[0].statement) || '').trim();
-    const optB = String(q.optB || (q.options && q.options[1] && q.options[1].content) || (q.subItems && q.subItems[1] && q.subItems[1].statement) || '').trim();
-    const optC = String(q.optC || (q.options && q.options[2] && q.options[2].content) || (q.subItems && q.subItems[2] && q.subItems[2].statement) || '').trim();
-    const optD = String(q.optD || (q.options && q.options[3] && q.options[3].content) || (q.subItems && q.subItems[3] && q.subItems[3].statement) || '').trim();
+    // 3. Trích xuất chính xác Phương án & Đáp án
+    let rawCorrect = String(q.correct || q.correctAnswer || '').trim();
+    let cleanCorrect = '';
+
+    const optA = String(q.optA || (q.options && (q.options.A || (q.options[0] && q.options[0].content))) || (q.subItems && (q.subItems.a ? q.subItems.a.statement : (q.subItems[0] && q.subItems[0].statement))) || '').trim();
+    const optB = String(q.optB || (q.options && (q.options.B || (q.options[1] && q.options[1].content))) || (q.subItems && (q.subItems.b ? q.subItems.b.statement : (q.subItems[1] && q.subItems[1].statement))) || '').trim();
+    const optC = String(q.optC || (q.options && (q.options.C || (q.options[2] && q.options[2].content))) || (q.subItems && (q.subItems.c ? q.subItems.c.statement : (q.subItems[2] && q.subItems[2].statement))) || '').trim();
+    const optD = String(q.optD || (q.options && (q.options.D || (q.options[3] && q.options[3].content))) || (q.subItems && (q.subItems.d ? q.subItems.d.statement : (q.subItems[3] && q.subItems[3].statement))) || '').trim();
 
     if (loai === 'TN') {
-      if (!['A', 'B', 'C', 'D'].includes(correct)) {
-        technicalErrors.push('Đáp án đúng cho TN phải là A, B, C hoặc D');
+      cleanCorrect = rawCorrect.toUpperCase().replace(/[^ABCD]/g, '').slice(0, 1);
+      if (!['A', 'B', 'C', 'D'].includes(cleanCorrect)) {
+        technicalErrors.push('Đáp án đúng cho TN phải là A, B, C hoặc D (nhận được: ' + rawCorrect + ')');
       }
       if (!optA || !optB || !optC || !optD) {
         technicalErrors.push('Câu TN phải có đủ 4 phương án optA, optB, optC, optD');
       }
     } else if (loai === 'DS') {
-      const corrClean = correct.replace(/[^ĐSds]/g, '').toUpperCase();
-      if (corrClean.length !== 4) {
-        technicalErrors.push('Đáp án đúng cho DS phải có đúng 4 ký tự Đ/S (ví dụ: ĐĐSĐ)');
+      cleanCorrect = rawCorrect.replace(/[^ĐSds]/g, '').toUpperCase();
+      if (cleanCorrect.length !== 4) {
+        // Fallback kiểm tra từ subItems nếu có
+        if (q.subItems) {
+          const subArr = Array.isArray(q.subItems) ? q.subItems : [q.subItems.a, q.subItems.b, q.subItems.c, q.subItems.d];
+          const subStr = subArr.map(s => (s && (s.isCorrect === true || s.isCorrect === 'true' || s.isCorrect === 'Đ')) ? 'Đ' : 'S').join('');
+          if (subStr.length === 4) cleanCorrect = subStr;
+        }
+      }
+      if (cleanCorrect.length !== 4) {
+        technicalErrors.push('Đáp án đúng cho DS phải có đúng 4 ký tự Đ/S (nhận được: ' + rawCorrect + ')');
       }
       if (!optA || !optB || !optC || !optD) {
         technicalErrors.push('Câu DS phải có đủ 4 mệnh đề a, b, c, d');
       }
+    } else {
+      cleanCorrect = rawCorrect;
     }
 
-    // 6. Kiểm tra Mức độ & Taxonomy
+    // 4. Kiểm tra Mức độ & Taxonomy
     const mucDo = String(q.mucDo || 'NB').trim().toUpperCase();
     if (!['NB', 'TH', 'VD', 'VDC'].includes(mucDo)) {
       technicalErrors.push('Mức độ mucDo phải là NB, TH, VD hoặc VDC');
@@ -1235,13 +1225,13 @@ function importNganHang(data) {
     else if (/b6|động cơ nhiệt/i.test(baiHoc)) baiHoc = 'Bài 6. Động cơ nhiệt - Đồ thị nhiệt';
     if (!baiHoc) technicalErrors.push('Bài học không được để trống');
 
-    // 7. Kiểm tra KaTeX Delimiter Balance
+    // 5. Kiểm tra KaTeX
     const dollarCount = (questionText.match(/\$/g) || []).length;
     if (dollarCount % 2 !== 0) {
       technicalErrors.push('Ký hiệu công thức toán KaTeX ($) chưa cân bằng đóng/mở');
     }
 
-    // Phân định Trạng thái Thẩm định & Trạng thái Kỹ thuật
+    // Phân định Trạng thái Thẩm định & Kỹ thuật
     const chatLuong = 'tinh';
     let kyThuat = 'Dat';
     let lyDoCachLy = '';
@@ -1259,66 +1249,50 @@ function importNganHang(data) {
     const nhomId = String(q.nhomId || '').trim();
     const deBaiChung = String(q.deBaiChung || '').trim();
 
-    const headers = rows[0] ? rows[0].map(h => String(h || '').trim().toLowerCase()) : NH_HEADERS.map(h => h.toLowerCase());
-    const numCols = Math.max(headers.length, NH_HEADERS.length);
-    const rowArr = new Array(numCols).fill('');
+    // ── Xây dựng dòng dữ liệu chuẩn xác 100% theo đúng vị trí cột NH_HEADERS ──
+    const rowArr = [
+      id,              // 0: id
+      mon,             // 1: mon
+      chuong,          // 2: chuong
+      mucDo,           // 3: mucDo
+      loai,            // 4: loai
+      nhomId,          // 5: nhomId
+      deBaiChung,      // 6: deBaiChung
+      questionText,    // 7: question
+      optA,            // 8: optA
+      optB,            // 9: optB
+      optC,            // 10: optC
+      optD,            // 11: optD
+      cleanCorrect,    // 12: correct (LUÔN LÀ A/B/C/D hoặc Đ/S, không bị ghi đè bởi text phương án)
+      hinhAnh,         // 13: hinhAnh
+      giaiThich,       // 14: giaiThich
+      nowIso,          // 15: ngayThem
+      baiHoc,          // 16: baiHoc
+      chatLuong,       // 17: chatLuong
+      kyThuat,         // 18: kyThuat
+      lyDoCachLy,      // 19: lyDoCachLy
+      batchId          // 20: batchId
+    ];
 
-    headers.forEach((normH, colIdx) => {
-      if (normH === 'id' || normH === 'ma') rowArr[colIdx] = id;
-      else if (normH === 'mon') rowArr[colIdx] = mon;
-      else if (normH === 'chuong') rowArr[colIdx] = chuong;
-      else if (normH === 'mucdo' || normH === 'muc_do') rowArr[colIdx] = mucDo;
-      else if (normH === 'loai') rowArr[colIdx] = loai;
-      else if (normH === 'nhomid' || normH === 'nhom_id') rowArr[colIdx] = nhomId;
-      else if (normH === 'debaichung' || normH === 'de_bai_chung') rowArr[colIdx] = deBaiChung;
-      else if (normH === 'question' || normH === 'cauhoi' || normH === 'cau_hoi' || normH === 'debai' || normH === 'de_bai') rowArr[colIdx] = questionText;
-      else if (normH === 'opta' || normH === 'a') rowArr[colIdx] = optA;
-      else if (normH === 'optb' || normH === 'b') rowArr[colIdx] = optB;
-      else if (normH === 'optc' || normH === 'c') rowArr[colIdx] = optC;
-      else if (normH === 'optd' || normH === 'd') rowArr[colIdx] = optD;
-      else if (normH === 'correct' || normH === 'dapan' || normH === 'dap_an') rowArr[colIdx] = correct;
-      else if (normH === 'hinhanh' || normH === 'hinh_anh') rowArr[colIdx] = hinhAnh;
-      else if (normH === 'giaithich' || normH === 'giai_thich' || normH === 'explanation') rowArr[colIdx] = giaiThich;
-      else if (normH === 'ngaythem' || normH === 'ngay_them') rowArr[colIdx] = nowIso;
-      else if (normH === 'baihoc' || normH === 'bai_hoc' || normH === 'tenbai' || normH === 'ten_bai') rowArr[colIdx] = baiHoc;
-      else if (normH === 'chatluong' || normH === 'chat_luong') rowArr[colIdx] = chatLuong;
-      else if (normH === 'kythuat' || normH === 'ky_thuat') rowArr[colIdx] = kyThuat;
-      else if (normH === 'lydocachly' || normH === 'ly_do_cach_ly') rowArr[colIdx] = lyDoCachLy;
-      else if (normH === 'batchid' || normH === 'batch_id') rowArr[colIdx] = batchId;
-    });
+    const existingEntry = id ? existingIdMap.get(id) : null;
+    if (existingEntry) {
+      updatedRows.push({ rowIndex: existingEntry.rowIndex, rowData: rowArr, id: id });
+    } else {
+      insertedRows.push(rowArr);
+    }
 
-    if (!rowArr[0]) rowArr[0] = id;
-    if (!rowArr[1]) rowArr[1] = mon;
-    if (!rowArr[2]) rowArr[2] = chuong;
-    if (!rowArr[3]) rowArr[3] = mucDo;
-    if (!rowArr[4]) rowArr[4] = loai;
-    if (!rowArr[7]) rowArr[7] = questionText;
-    if (!rowArr[8]) rowArr[8] = optA;
-    if (!rowArr[9]) rowArr[9] = optB;
-    if (!rowArr[10]) rowArr[10] = optC;
-    if (!rowArr[11]) rowArr[11] = optD;
-    if (!rowArr[12]) rowArr[12] = correct;
-    if (!rowArr[14]) rowArr[14] = giaiThich;
-    if (!rowArr[15]) rowArr[15] = nowIso;
-    if (!rowArr[16]) rowArr[16] = baiHoc;
-    if (!rowArr[17]) rowArr[17] = chatLuong;
-    if (!rowArr[18]) rowArr[18] = kyThuat;
-    if (!rowArr[19]) rowArr[19] = lyDoCachLy;
-    if (!rowArr[20]) rowArr[20] = batchId;
-
-    normalizedRows.push(rowArr);
     normalizedPreview.push({
       id, mon, chuong, baiHoc, mucDo, loai,
       question: questionText.slice(0, 100) + (questionText.length > 100 ? '...' : ''),
-      optA, optB, optC, optD, correct, chatLuong, kyThuat, lyDoCachLy
+      optA, optB, optC, optD, correct: cleanCorrect, chatLuong, kyThuat, lyDoCachLy
     });
   }
 
   const sentCount = rawQuestions.length;
-  const insertable = normalizedRows.length;
+  const insertable = insertedRows.length;
+  const updatable = updatedRows.length;
   const passedCount = passedItems.length;
   const quarantinedCount = quarantinedItems.length;
-  const alreadyExistsCount = alreadyExistsIds.length;
 
   if (dryRun) {
     return jsonOut({
@@ -1327,8 +1301,7 @@ function importNganHang(data) {
       batchId: batchId,
       sentCount: sentCount,
       insertedCount: insertable,
-      alreadyExistsCount: alreadyExistsCount,
-      alreadyExistsIds: alreadyExistsIds,
+      updatedCount: updatable,
       passedCount: passedCount,
       quarantinedCount: quarantinedCount,
       quarantinedItems: quarantinedItems,
@@ -1337,97 +1310,40 @@ function importNganHang(data) {
       tinhUsableBefore: tinhUsableBefore,
       expectedTinhUsableAfter: tinhUsableBefore + passedCount,
       normalizedPreview: normalizedPreview,
-      msg: 'Dry-run: ' + insertable + ' câu sẵn sàng nạp (' + passedCount + ' Đạt, ' + quarantinedCount + ' Cách ly, ' + alreadyExistsCount + ' đã tồn tại).'
+      msg: 'Dry-run: ' + sentCount + ' câu (' + insertable + ' mới, ' + updatable + ' cập nhật, ' + passedCount + ' Đạt, ' + quarantinedCount + ' Cách ly).'
     });
   }
 
-  if (insertable === 0 && alreadyExistsCount > 0) {
-    return jsonOut({
-      ok: true,
-      dryRun: false,
-      batchId: batchId,
-      sentCount: sentCount,
-      insertedCount: 0,
-      alreadyExistsCount: alreadyExistsCount,
-      alreadyExistsIds: alreadyExistsIds,
-      passedCount: 0,
-      quarantinedCount: 0,
-      quarantinedItems: [],
-      countBefore: countBefore,
-      countAfter: countBefore,
-      tinhUsableBefore: tinhUsableBefore,
-      tinhUsableAfter: tinhUsableBefore,
-      msg: 'Toàn bộ ' + alreadyExistsCount + ' câu trong batch đã tồn tại trên hệ thống (Idempotent Pass).'
-    });
+  // 1. Cập nhật các dòng đã tồn tại (nếu có cập nhật đáp án chuẩn)
+  updatedRows.forEach(u => {
+    sheet.getRange(u.rowIndex, 1, 1, u.rowData.length).setValues([u.rowData]);
+  });
+
+  // 2. Thêm mới các dòng chưa có
+  if (insertable > 0) {
+    const startRow = lastRealRow + 1;
+    sheet.getRange(startRow, 1, insertable, NH_HEADERS.length).setValues(insertedRows);
   }
 
-  const startRow = lastRealRow + 1;
-  const numRows = normalizedRows.length;
-  const numCols = normalizedRows[0] ? normalizedRows[0].length : NH_HEADERS.length;
+  const countAfter = countBefore + insertable;
+  const tinhUsableAfter = tinhUsableBefore + passedCount;
 
-  try {
-    sheet.getRange(startRow, 1, numRows, numCols).setValues(normalizedRows);
-
-    const verifyRows = sheet.getRange(startRow, 1, numRows, 1).getValues();
-    const insertedIdsList = normalizedRows.map(r => r[0]);
-    let verifyOk = true;
-    for (let i = 0; i < numRows; i++) {
-      if (String(verifyRows[i][0]).trim() !== insertedIdsList[i]) {
-        verifyOk = false;
-        break;
-      }
-    }
-
-    if (!verifyOk) {
-      sheet.deleteRows(startRow, numRows);
-      return jsonOut({
-        ok: false,
-        dryRun: false,
-        batchId: batchId,
-        rollbackApplied: true,
-        countBefore: countBefore,
-        sentCount: sentCount,
-        insertedCount: 0,
-        msg: 'Kiểm tra tính toàn vẹn sau ghi thất bại. Đã tự động rollback toàn bộ ' + numRows + ' dòng.'
-      });
-    }
-
-    const countAfter = countBefore + numRows;
-    const tinhUsableAfter = tinhUsableBefore + passedCount;
-
-    return jsonOut({
-      ok: true,
-      dryRun: false,
-      batchId: batchId,
-      sentCount: sentCount,
-      insertedCount: numRows,
-      alreadyExistsCount: alreadyExistsCount,
-      alreadyExistsIds: alreadyExistsIds,
-      passedCount: passedCount,
-      quarantinedCount: quarantinedCount,
-      quarantinedItems: quarantinedItems,
-      countBefore: countBefore,
-      countAfter: countAfter,
-      tinhUsableBefore: tinhUsableBefore,
-      tinhUsableAfter: tinhUsableAfter,
-      msg: 'Đã nạp và quét kỹ thuật thành công: ' + passedCount + ' câu Đạt, ' + quarantinedCount + ' câu Cách ly (' + alreadyExistsCount + ' câu idempotent).'
-    });
-  } catch (err) {
-    try {
-      const currentRows = sheet.getLastRow();
-      if (currentRows >= startRow) {
-        sheet.deleteRows(startRow, currentRows - startRow + 1);
-      }
-    } catch (eRollback) {}
-    return jsonOut({
-      ok: false,
-      dryRun: false,
-      batchId: batchId,
-      rollbackApplied: true,
-      error: err.message,
-      msg: 'Lỗi khi ghi Sheet: ' + err.message
-    });
-  }
+  return jsonOut({
+    ok: true,
+    dryRun: false,
+    batchId: batchId,
+    sentCount: sentCount,
+    insertedCount: insertable,
+    updatedCount: updatable,
+    passedCount: passedCount,
+    quarantinedCount: quarantinedCount,
+    quarantinedItems: quarantinedItems,
+    countBefore: countBefore,
+    countAfter: countAfter,
+    tinhUsableBefore: tinhUsableBefore,
+    tinhUsableAfter: tinhUsableAfter,
+    msg: 'Đã nạp thành công: ' + insertable + ' câu mới, ' + updatable + ' câu cập nhật chuẩn đáp án (' + passedCount + ' Đạt, ' + quarantinedCount + ' Cách ly).'
+  });
 }
 
 
