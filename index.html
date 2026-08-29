@@ -490,6 +490,68 @@
         .esb-label { font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
         .esb-select { width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); font-size:14px; font-family:'Inter',sans-serif; color:var(--black); outline:none; cursor:pointer; }
         /* ══════════════════════════════
+           PHONG THI THU ADMIN & DETAIL MODAL
+        ══════════════════════════════ */
+        .ptt-wrap { max-width:1200px; margin:0 auto; padding-bottom:40px; }
+        .ptt-banner { background:linear-gradient(135deg, rgba(11,132,243,0.08) 0%, rgba(124,58,237,0.06) 100%); border:1.5px solid rgba(11,132,243,0.2); border-radius:16px; padding:24px 28px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+        .ptt-banner-main { flex:1; min-width:300px; }
+        .ptt-badge { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--blue); background:rgba(11,132,243,0.12); padding:4px 10px; border-radius:6px; margin-bottom:8px; }
+        .ptt-banner-main h2 { font-size:22px; font-weight:900; color:var(--black); margin-bottom:6px; letter-spacing:-0.02em; }
+        .ptt-banner-main p { font-size:13.5px; color:var(--gray); line-height:1.5; margin:0; }
+        .ptt-stats-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; min-width:380px; }
+        @media(max-width:900px){ .ptt-stats-grid{ grid-template-columns:repeat(2, 1fr); width:100%; min-width:unset; } }
+        .ptt-stat-card { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.03); }
+        .ptt-stat-num { font-size:22px; font-weight:900; color:var(--black); line-height:1.1; margin-bottom:4px; font-family:'Inter',sans-serif; }
+        .ptt-stat-label { font-size:11.5px; font-weight:600; color:var(--gray2); display:flex; align-items:center; justify-content:center; gap:5px; }
+        .ptt-stat-open .ptt-stat-num { color:var(--green); }
+        .ptt-stat-locked .ptt-stat-num { color:#d97706; }
+        .ptt-stat-video .ptt-stat-num { color:#f59e0b; }
+
+        .ptt-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:20px; flex-wrap:wrap; background:var(--bg); border:1.5px solid var(--border); border-radius:14px; padding:12px 18px; }
+        .ptt-search-box { display:flex; align-items:center; gap:8px; background:var(--bg2); border:1.5px solid var(--border); border-radius:10px; padding:8px 14px; flex:1; min-width:240px; }
+        .ptt-search-box i { color:var(--gray2); font-size:13px; }
+        .ptt-search-box input { border:none; background:transparent; font-size:13.5px; color:var(--black); outline:none; width:100%; font-family:'Inter',sans-serif; }
+        .ptt-filter-tags { display:flex; gap:6px; flex-wrap:wrap; }
+        .ptt-tag { padding:7px 13px; border-radius:8px; border:1px solid var(--border); background:var(--bg2); color:var(--gray); font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s; font-family:'Inter',sans-serif; }
+        .ptt-tag:hover, .ptt-tag.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+        .ptt-actions { display:flex; gap:8px; align-items:center; }
+
+        .ptt-cards-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(360px, 1fr)); gap:16px; }
+        @media(max-width:600px){ .ptt-cards-grid{ grid-template-columns:1fr; } }
+        .ptt-card { background:var(--bg); border:1.5px solid var(--border); border-radius:14px; overflow:hidden; transition:all .18s; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 2px 10px rgba(0,0,0,0.02); }
+        .ptt-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.07); border-color:rgba(11,132,243,0.3); }
+        .ptt-card-top { padding:14px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .ptt-card-body { padding:12px 18px 16px; flex:1; }
+        .ptt-card-title { font-size:15px; font-weight:800; color:var(--black); line-height:1.4; margin-bottom:8px; }
+        .ptt-card-desc { font-size:12.5px; color:var(--gray); line-height:1.5; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .ptt-card-meta { display:flex; gap:12px; font-size:12px; color:var(--gray2); flex-wrap:wrap; padding-top:8px; border-top:1px dashed var(--border); }
+        .ptt-card-meta span { display:inline-flex; align-items:center; gap:5px; }
+        .ptt-card-actions { display:flex; border-top:1px solid var(--border); background:var(--bg2); }
+        .ptt-card-btn { flex:1; padding:10px 8px; background:transparent; border:none; font-size:12.5px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:inline-flex; align-items:center; justify-content:center; gap:5px; color:var(--gray); transition:all .12s; }
+        .ptt-card-btn + .ptt-card-btn { border-left:1px solid var(--border); }
+        .ptt-card-btn.edit:hover { background:rgba(11,132,243,.08); color:var(--blue); }
+        .ptt-card-btn.view:hover { background:rgba(124,58,237,.08); color:var(--purple); }
+        .ptt-card-btn.toggle:hover { background:rgba(22,163,74,.08); color:var(--green); }
+        .ptt-card-btn.del:hover { background:rgba(220,38,38,.08); color:var(--red); }
+
+        /* Exam detail modal questions */
+        .ed-q-card { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:14px; }
+        .ed-q-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+        .ed-q-num { font-weight:800; font-size:13.5px; color:var(--blue); }
+        .ed-q-type { font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; background:var(--bg2); color:var(--gray); }
+        .ed-q-text { font-size:14px; line-height:1.6; margin-bottom:12px; color:var(--black); }
+        .ed-q-text img { max-width:100%; max-height:220px; border-radius:8px; margin:6px 0; border:1px solid var(--border); }
+        .ed-opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+        @media(max-width:600px){ .ed-opts-grid{ grid-template-columns:1fr; } }
+        .ed-opt-item { padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg2); display:flex; align-items:flex-start; gap:6px; }
+        .ed-opt-item.is-correct { border-color:var(--green); background:rgba(22,163,74,0.08); font-weight:700; color:var(--green); }
+        .ed-tf-row { display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px dashed var(--border); font-size:13px; }
+        .ed-short-box { padding:8px 12px; background:rgba(11,132,243,0.06); border:1px solid rgba(11,132,243,0.2); border-radius:8px; font-size:13px; font-weight:700; color:var(--blue); }
+        .ed-solution-box { margin-top:10px; padding:10px 14px; background:rgba(245,158,11,0.08); border-left:3.5px solid #f59e0b; border-radius:0 8px 8px 0; font-size:13px; line-height:1.55; color:var(--black); }
+        .ed-tab-btn { padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--gray); font-size:12px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:all .12s; }
+        .ed-tab-btn.active, .ed-tab-btn:hover { background:var(--blue); color:#fff; border-color:var(--blue); }
+
+        /* ══════════════════════════════
            TEACHING SCOPE
         ══════════════════════════════ */
         .ts-wrap { max-width:1100px; margin:0 auto; padding-bottom:40px; }
@@ -505,7 +567,7 @@
         .ts-select:focus, .ts-input:focus { border-color:var(--blue); }
         .ts-active-toggle-wrap { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg2); border:1.5px solid var(--border); border-radius:8px; cursor:pointer; user-select:none; }
         .ts-active-toggle-wrap input[type=checkbox] { width:18px; height:18px; accent-color:var(--green); cursor:pointer; }
-        
+
         .ts-preview-banner { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:24px; }
         .ts-stat-box { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:14px; }
         .ts-stat-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
@@ -515,7 +577,7 @@
         .ts-stat-icon.purple { background:rgba(124,58,237,.1); color:var(--purple); }
         .ts-stat-val { font-size:18px; font-weight:800; color:var(--black); }
         .ts-stat-lbl { font-size:12px; color:var(--gray2); }
-        
+
         .ts-chapter-card { background:var(--bg); border:1.5px solid var(--border); border-radius:14px; margin-bottom:18px; overflow:hidden; transition:border-color .15s; }
         .ts-chapter-card.inactive { opacity:.6; border-color:var(--border); }
         .ts-chapter-head { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg2); border-bottom:1px solid var(--border); gap:12px; flex-wrap:wrap; }
@@ -527,7 +589,7 @@
         .ts-ch-actions { display:flex; align-items:center; gap:8px; }
         .ts-btn-sm { font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--gray); cursor:pointer; transition:all .15s; }
         .ts-btn-sm:hover { border-color:var(--blue); color:var(--blue); }
-        
+
         .ts-lessons-grid { padding:14px 20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:10px; }
         .ts-lesson-pill { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; cursor:pointer; transition:all .15s; user-select:none; }
         .ts-lesson-pill:hover { border-color:var(--blue); background:rgba(11,132,243,.04); }
@@ -536,7 +598,7 @@
         .ts-lesson-info { flex:1; min-width:0; }
         .ts-lesson-name { font-size:13.5px; font-weight:600; color:var(--black); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .ts-lesson-meta { font-size:11px; color:var(--gray2); margin-top:2px; }
-        
+
         /* Modal Diff Trước / Sau */
         .ts-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
         .ts-modal-box { background:var(--bg); border:1.5px solid var(--border); border-radius:16px; width:100%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,.3); }
@@ -912,27 +974,65 @@
 </div>
 
 <!-- ════════════════════════════════════
-     TAB: PHÒNG THI THỬ (TÍNH NĂNG MỚI)
+     TAB: PHÒNG THI THỬ (QUẢN LÝ & ĐIỀU KHIỂN)
 ════════════════════════════════════ -->
 <div class="tab-content" id="tab-phongthithu">
 <div class="wrap">
-  <div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;max-width:800px;margin:30px auto;box-shadow:0 4px 20px rgba(0,0,0,0.03)">
-    <div style="width:72px;height:72px;border-radius:50%;background:rgba(11,132,243,0.1);color:var(--blue);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
-      <i class="fa-solid fa-rocket"></i>
+  <!-- BANNER THỐNG KÊ PHÒNG THI THỬ -->
+  <div class="ptt-banner">
+    <div class="ptt-banner-main">
+      <div class="ptt-badge"><i class="fa-solid fa-rocket"></i> KHÓA 2K9 XPS</div>
+      <h2>Quản Lý &amp; Điều Khiển Phòng Thi Thử THPT Quốc Gia</h2>
+      <p>Giám sát, phân quyền Mở/Khóa và biên soạn các bộ đề thi thử thực chiến chuẩn ma trận cấu trúc Bộ GD&ĐT.</p>
     </div>
-    <span class="page-eyebrow" style="color:var(--blue);font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:10px">// tính năng mới</span>
-    <h2 style="font-size:26px;font-weight:900;margin-bottom:12px;color:var(--black)">Quản Lý &amp; Biên Soạn Phòng Thi Thử</h2>
-    <p style="font-size:14.5px;color:var(--gray);line-height:1.65;max-width:580px;margin:0 auto 24px">
-      Tính năng Phòng Thi Thử trực tuyến chuẩn cấu trúc THPT Quốc Gia với cơ chế thi theo thời gian thực và xếp hạng tự động đang được chuẩn bị. Thầy có thể quản lý và biên soạn các đề kiểm tra định kỳ trước tại tab <strong>Phòng kiểm tra</strong>.
-    </p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn-new" onclick="switchTab('soande')" style="padding:10px 22px;font-size:14px">
-        <i class="fa-solid fa-file-pen"></i> Đến Phòng kiểm tra
+    <div class="ptt-stats-grid">
+      <div class="ptt-stat-card">
+        <div class="ptt-stat-num" id="ptt-stat-total">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-layer-group"></i> Tổng số đề</div>
+      </div>
+      <div class="ptt-stat-card ptt-stat-open">
+        <div class="ptt-stat-num" id="ptt-stat-open">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-lock-open"></i> Đang mở</div>
+      </div>
+      <div class="ptt-stat-card ptt-stat-locked">
+        <div class="ptt-stat-num" id="ptt-stat-locked">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-lock"></i> Đang khóa (Ẩn)</div>
+      </div>
+      <div class="ptt-stat-card ptt-stat-video">
+        <div class="ptt-stat-num" id="ptt-stat-video">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-play"></i> Có Video chữa</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR ĐIỀU KHIỂN & LỌC -->
+  <div class="ptt-toolbar">
+    <div class="ptt-search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="ptt-search-input" placeholder="Tìm theo mã đề (vd: vedich2k9_de02), tên đề, mô tả..." oninput="handlePttSearch()">
+    </div>
+    <div class="ptt-filter-tags">
+      <button class="ptt-tag active" data-filter="all" onclick="setPttFilter('all')">Tất cả đề</button>
+      <button class="ptt-tag" data-filter="mo" onclick="setPttFilter('mo')">✅ Đang mở</button>
+      <button class="ptt-tag" data-filter="khoa" onclick="setPttFilter('khoa')">🔒 Đang khóa</button>
+      <button class="ptt-tag" data-filter="video" onclick="setPttFilter('video')">🎬 Có Video chữa</button>
+    </div>
+    <div class="ptt-actions">
+      <button class="btn-ghost2" onclick="showBulkExamModal('thithu')" style="padding:8px 14px;font-size:13px">
+        <i class="fa-solid fa-file-import"></i> Nạp hàng loạt
       </button>
-      <button class="btn-new" onclick="switchTab('nganhang')" style="background:var(--bg2);color:var(--black);border:1.5px solid var(--border);padding:10px 22px;font-size:14px">
-        <i class="fa-solid fa-database"></i> Xem Ngân hàng đề
+      <button class="btn-new" onclick="showExamForm(null, 'thithu')" style="padding:8px 16px;font-size:13px">
+        <i class="fa-solid fa-plus"></i> Tạo đề mới
+      </button>
+      <button class="btn-ghost2" onclick="invalidateCache('vlxt_admin_soande');loadExamList();" style="padding:8px 12px;font-size:13px" title="Làm mới dữ liệu từ server">
+        <i class="fa-solid fa-rotate"></i>
       </button>
     </div>
+  </div>
+
+  <!-- DANH SÁCH THẺ ĐỀ THI THỬ -->
+  <div id="thithu-list-panel" class="ptt-cards-grid">
+    <div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách đề thi thử...</div>
   </div>
 </div>
 </div>
@@ -1119,16 +1219,16 @@
             <div class="nh-card" style="border-color:#16a34a;background:linear-gradient(to bottom, #f0fdf4, var(--bg))">
                 <h3 style="color:#166534"><i class="fa-solid fa-box-archive" style="color:#16a34a"></i> Nhập gói câu Tinh (JSON)</h3>
                 <p style="font-size:12.5px;color:var(--gray);margin-bottom:10px">Nhập trực tiếp các gói câu đã được Thầy thẩm định và duyệt Tinh từ Content Pipeline.</p>
-                
+
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;border:1px dashed #16a34a;border-radius:8px;background:#fff;cursor:pointer">
-                    
+
                     <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border)">
                         <div><b>Tệp:</b> <span id="nh-bi-filename"></span></div>
                         <div><b>Số câu:</b> <span id="nh-bi-count" style="font-weight:700;color:#16a34a">0</span> câu</div>
                         <div><b>Mã đợt:</b> <span id="nh-bi-batchid"></span></div>
                     </div>
-                    
+
                     <div style="display:flex;gap:8px;margin-top:6px">
                         <button id="nh-bi-dryrun-btn" class="btn-publish" style="flex:1;background:#0284c7" onclick="runBatchDryRun()" disabled>
                             <i class="fa-solid fa-stethoscope"></i> Kiểm tra trước – Dry run
@@ -1450,7 +1550,7 @@
             </h3>
             <button onclick="closeBulkExamModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray)"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        
+
         <div style="overflow-y:auto;flex:1;padding-right:4px">
             <div style="display:flex;gap:8px;margin-bottom:12px">
                 <button class="tab-btn active" id="bem-tab-json-btn" onclick="switchBulkExamTab('json')" style="padding:6px 14px;font-size:12.5px">
@@ -1515,6 +1615,45 @@
             <button class="btn-new" id="bem-submit-btn" onclick="executeBulkExamImport()" style="min-width:140px" disabled>
                 <i class="fa-solid fa-cloud-arrow-up"></i> Bắt đầu Nạp đề
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XEM TRƯỚC CHI TIẾT ĐỀ THI -->
+<div class="confirm-overlay" id="exam-detail-overlay" style="z-index:9999">
+    <div class="confirm-box" style="max-width:920px;width:95%;text-align:left;max-height:92vh;display:flex;flex-direction:column;padding:0;overflow:hidden">
+        <div class="ed-modal-head" style="padding:16px 22px;background:var(--bg2);border-bottom:1.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <span class="em-id" id="ed-modal-id">vedich2k9_de02</span>
+                    <span class="em-status" id="ed-modal-status">🔒 Đang khóa</span>
+                    <span id="ed-modal-videobadge"></span>
+                </div>
+                <h3 id="ed-modal-title" style="font-size:17px;font-weight:800;color:var(--black);margin:0">Chi tiết đề thi</h3>
+            </div>
+            <button onclick="closeExamDetailModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);padding:4px 8px"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="ed-modal-meta" style="padding:10px 22px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:18px;font-size:13px;color:var(--gray2);flex-wrap:wrap">
+            <span id="ed-meta-time"><i class="fa-regular fa-clock"></i> 50 phút</span>
+            <span id="ed-meta-count"><i class="fa-regular fa-file-lines"></i> 28 câu</span>
+            <span id="ed-meta-attempts"><i class="fa-regular fa-user"></i> 0 lượt làm</span>
+            <span id="ed-meta-desc" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
+        </div>
+        <div class="ed-modal-filter-bar" style="padding:10px 22px;background:var(--bg2);display:flex;gap:8px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+            <button class="ed-tab-btn active" data-sec="all" onclick="filterExamDetailSec('all')">Tất cả (28)</button>
+            <button class="ed-tab-btn" data-sec="p1" onclick="filterExamDetailSec('p1')">Phần I: TN (18)</button>
+            <button class="ed-tab-btn" data-sec="p2" onclick="filterExamDetailSec('p2')">Phần II: Đúng/Sai (4)</button>
+            <button class="ed-tab-btn" data-sec="p3" onclick="filterExamDetailSec('p3')">Phần III: Ngắn (6)</button>
+            <button class="ed-tab-btn" data-sec="giai" onclick="filterExamDetailSec('giai')">Có lời giải</button>
+        </div>
+        <div class="ed-modal-body" id="ed-modal-questions" style="flex:1;overflow-y:auto;padding:20px 22px;background:var(--bg)">
+            <!-- Nội dung câu hỏi đề thi sẽ render tại đây -->
+        </div>
+        <div class="ed-modal-foot" style="padding:12px 22px;background:var(--bg2);border-top:1.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <div id="ed-modal-footer-stats" style="font-size:12.5px;color:var(--gray2)">Đang hiển thị câu hỏi</div>
+            <div style="display:flex;gap:8px">
+                <button class="btn-confirm-cancel" onclick="closeExamDetailModal()">Đóng</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1705,7 +1844,7 @@ function switchTab(name){
     document.getElementById('tab-'+name).classList.add('active');
     document.getElementById('tab-'+name+'-btn').classList.add('active');
     if(name==='ketqua' && allScores.length===0) loadScores();
-    if(name==='soande') loadExamList();
+    if(name==='soande' || name==='phongthithu') loadExamList();
     if(name==='nganhang' && !bankLoaded) loadBank();
     if(name==='teachingscope') loadTeachingScope();
     if(name==='lichlive' && !liveLoaded) loadLiveSessions();
@@ -3685,9 +3824,9 @@ function renderBPM(){
             inner=`<div style="margin-bottom:5px">${nhSafe(item.question)}</div><div style="font-size:12px"><b>Đáp án:</b> ${nhEsc(item.correct||'')}</div>`;
         }
         const cl = String(item.chatLuong || '').trim().toLowerCase();
-        const badgeCl = cl === 'tinh' 
+        const badgeCl = cl === 'tinh'
             ? '<span class="nh-badge" style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700">Tinh</span>'
-            : (cl === 'tho' 
+            : (cl === 'tho'
                 ? '<span class="nh-badge" style="background:#fee2e2;color:#991b1b;font-size:10px;font-weight:700">Thô</span>'
                 : '<span class="nh-badge" style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:600">Chưa duyệt</span>');
 
@@ -4661,43 +4800,326 @@ function extractAdminExamVideo(ex) {
     return '';
 }
 
+let currentPttFilter = 'all';
+let currentPttSearch = '';
+let currentExamDetailId = null;
+let currentExamQuestions = [];
+let currentExamSecFilter = 'all';
+
+function isThiThuExam(ex) {
+    if (!ex) return false;
+    return ex.loaiDe === 'thithu' ||
+        String(ex.examId || '').startsWith('vedich2k9') ||
+        String(ex.examId || '').startsWith('thithu') ||
+        String(ex.tenDe || '').toLowerCase().includes('thi thử') ||
+        String(ex.tenDe || '').toLowerCase().includes('về đích');
+}
+
+function setPttFilter(filter) {
+    currentPttFilter = filter;
+    document.querySelectorAll('.ptt-tag').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === filter);
+    });
+    renderExamList();
+}
+
+function handlePttSearch() {
+    currentPttSearch = (document.getElementById('ptt-search-input').value || '').trim().toLowerCase();
+    renderExamList();
+}
+
 function renderExamList() {
-    const el = document.getElementById('exam-list-panel');
-    if (!el) return;
-    if (!examListData.length) {
-        el.innerHTML = '<div class="empty-list"><i class="fa-solid fa-layer-group"></i><p>Chưa có đề nào.<br>Nhấn "+ Tạo đề mới" hoặc "Nạp hàng loạt" để bắt đầu.</p></div>';
+    // 1. Render Tab Phong Kiem Tra (#exam-list-panel)
+    const elKiemTra = document.getElementById('exam-list-panel');
+    if (elKiemTra) {
+        const kiemTraList = examListData.filter(ex => !isThiThuExam(ex));
+        if (!kiemTraList.length) {
+            elKiemTra.innerHTML = '<div class="empty-list"><i class="fa-solid fa-layer-group"></i><p>Chưa có đề kiểm tra nào.<br>Nhấn "+ Tạo đề mới" để bắt đầu.</p></div>';
+        } else {
+            elKiemTra.innerHTML = kiemTraList.map(ex => {
+                const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
+                const stLabel = st === 'mo' ? '✅ Mở' : '🔒 Khóa';
+                const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
+                const vUrl = extractAdminExamVideo(ex);
+                const loai = ex.loaiDe === 'luyentap' ? '📚 Luyện tập' : '📝 Kiểm tra';
+                const vBadge = vUrl ? '<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;font-weight:700"><i class="fa-solid fa-play"></i> Video chữa</span>' : '';
+                return `<div class="em-card" id="emc-${ex.examId}">
+                  <div class="em-card-body">
+                    <div class="em-card-top">
+                      <span class="em-id">${ex.examId}</span>
+                      <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
+                      <span class="em-status ${st}">${stLabel}</span>
+                      ${vBadge}
+                    </div>
+                    <div class="em-title">${ex.tenDe || '(chưa đặt tên)'}</div>
+                    <div class="em-meta">
+                      <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||45} phút</span>
+                      <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||0} câu</span>
+                      <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
+                      <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
+                    </div>
+                  </div>
+                  <div class="em-actions">
+                    <button class="em-btn edit" onclick="showExamForm('${ex.examId}','kiemtra')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                    <button class="em-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở đề'}</button>
+                    <button class="em-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                  </div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // 2. Render Tab Phong Thi Thu (#thithu-list-panel)
+    const elThiThu = document.getElementById('thithu-list-panel');
+    const thiThuAll = examListData.filter(isThiThuExam);
+
+    // Stats calculation
+    const totalThithu = thiThuAll.length;
+    const openThithu = thiThuAll.filter(ex => ex.trangThai === 'mo').length;
+    const lockedThithu = thiThuAll.filter(ex => ex.trangThai !== 'mo').length;
+    const videoThithu = thiThuAll.filter(ex => !!extractAdminExamVideo(ex)).length;
+
+    const elStatTot = document.getElementById('ptt-stat-total');
+    const elStatOpn = document.getElementById('ptt-stat-open');
+    const elStatLck = document.getElementById('ptt-stat-locked');
+    const elStatVid = document.getElementById('ptt-stat-video');
+    if (elStatTot) elStatTot.textContent = totalThithu;
+    if (elStatOpn) elStatOpn.textContent = openThithu;
+    if (elStatLck) elStatLck.textContent = lockedThithu;
+    if (elStatVid) elStatVid.textContent = videoThithu;
+
+    if (elThiThu) {
+        let filteredThiThu = thiThuAll.filter(ex => {
+            if (currentPttSearch) {
+                const q = currentPttSearch;
+                const matchId = String(ex.examId || '').toLowerCase().includes(q);
+                const matchTen = String(ex.tenDe || '').toLowerCase().includes(q);
+                const matchMoTa = String(ex.moTa || '').toLowerCase().includes(q);
+                if (!matchId && !matchTen && !matchMoTa) return false;
+            }
+            if (currentPttFilter === 'mo') return ex.trangThai === 'mo';
+            if (currentPttFilter === 'khoa') return ex.trangThai !== 'mo';
+            if (currentPttFilter === 'video') return !!extractAdminExamVideo(ex);
+            return true;
+        });
+
+        // Sắp xếp tự nhiên theo examId
+        filteredThiThu.sort((a,b) => (a.examId || '').localeCompare(b.examId || '', undefined, { numeric: true, sensitivity: 'base' }));
+
+        if (!filteredThiThu.length) {
+            elThiThu.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;background:var(--bg);border:1.5px dashed var(--border);border-radius:14px;color:var(--gray)"><i class="fa-solid fa-filter-circle-xmark" style="font-size:24px;margin-bottom:10px;display:block"></i>Không tìm thấy đề thi thử phù hợp theo bộ lọc hiện tại.</div>';
+        } else {
+            elThiThu.innerHTML = filteredThiThu.map(ex => {
+                const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
+                const stLabel = st === 'mo' ? '✅ Đang mở' : '🔒 Đang khóa';
+                const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
+                const vUrl = extractAdminExamVideo(ex);
+                const vBadge = vUrl ? `<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.12);padding:2px 8px;border-radius:6px;font-weight:700" title="${vUrl}"><i class="fa-solid fa-play"></i> Video chữa</span>` : '';
+                return `<div class="ptt-card" id="pttc-${ex.examId}">
+                    <div>
+                        <div class="ptt-card-top">
+                            <span class="em-id">${ex.examId}</span>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                ${vBadge}
+                                <span class="em-status ${st}">${stLabel}</span>
+                            </div>
+                        </div>
+                        <div class="ptt-card-body">
+                            <div class="ptt-card-title">${ex.tenDe || '(Chưa đặt tên)'}</div>
+                            <div class="ptt-card-desc">${ex.moTa || 'Đề thi thử chuẩn cấu trúc Bộ GD&ĐT'}</div>
+                            <div class="ptt-card-meta">
+                                <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||50} phút</span>
+                                <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||28} câu</span>
+                                <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
+                                <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ptt-card-actions">
+                        <button class="ptt-card-btn edit" onclick="showExamForm('${ex.examId}','thithu')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                        <button class="ptt-card-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở'}</button>
+                        <button class="ptt-card-btn view" onclick="openExamDetailModal('${ex.examId}')"><i class="fa-solid fa-eye"></i> Xem đề</button>
+                        <button class="ptt-card-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    }
+}
+
+let currentDetailQuestions = [];
+
+async function openExamDetailModal(examId) {
+    currentExamDetailId = examId;
+    currentExamSecFilter = 'all';
+    currentExamQuestions = [];
+
+    const overlay = document.getElementById('exam-detail-overlay');
+    if (!overlay) return;
+
+    const ex = examListData.find(e => e.examId === examId) || { examId, tenDe: examId, thoiGian: 50, soCau: 28, trangThai: 'khoa' };
+
+    document.getElementById('ed-modal-id').textContent = ex.examId;
+    document.getElementById('ed-modal-title').textContent = ex.tenDe || ex.examId;
+    const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
+    const stEl = document.getElementById('ed-modal-status');
+    stEl.className = 'em-status ' + st;
+    stEl.textContent = st === 'mo' ? '✅ Đang mở' : '🔒 Đang khóa';
+
+    const vUrl = extractAdminExamVideo(ex);
+    document.getElementById('ed-modal-videobadge').innerHTML = vUrl ? `<a href="${vUrl}" target="_blank" style="text-decoration:none;font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.12);padding:2px 8px;border-radius:6px;font-weight:700"><i class="fa-solid fa-play"></i> Video chữa</a>` : '';
+
+    document.getElementById('ed-meta-time').innerHTML = `<i class="fa-regular fa-clock"></i> ${ex.thoiGian||50} phút`;
+    document.getElementById('ed-meta-count').innerHTML = `<i class="fa-regular fa-file-lines"></i> ${ex.soCau||28} câu`;
+    document.getElementById('ed-meta-attempts').innerHTML = `<i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt làm`;
+    document.getElementById('ed-meta-desc').textContent = ex.moTa ? `Ghi chú: ${ex.moTa}` : '';
+
+    document.querySelectorAll('.ed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.sec === 'all'));
+
+    const qContainer = document.getElementById('ed-modal-questions');
+    qContainer.innerHTML = '<div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu 28 câu hỏi của đề...</div>';
+
+    overlay.classList.add('show');
+
+    try {
+        let qData = null;
+        // Thử tải từ CDN tĩnh của web học sinh
+        try {
+            const staticUrl = `https://vatlyxuantruong.io.vn/data/exams/${examId}.json`;
+            const rStatic = await fetch(staticUrl);
+            if (rStatic.ok) {
+                qData = await rStatic.json();
+            }
+        } catch(e) {}
+
+        // Fallback sang Google Apps Script nếu không tải được từ CDN
+        if (!qData || !Array.isArray(qData) || !qData.length) {
+            const rGas = await fetch(DB_URL + '?type=examquestions&examId=' + encodeURIComponent(examId));
+            const jGas = await rGas.json();
+            qData = (jGas.ok && Array.isArray(jGas.data)) ? jGas.data : (Array.isArray(jGas) ? jGas : []);
+        }
+
+        currentExamQuestions = Array.isArray(qData) ? qData : [];
+        renderExamDetailQuestions();
+    } catch(err) {
+        qContainer.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation" style="font-size:24px;margin-bottom:10px;display:block"></i>Không thể nạp nội dung câu hỏi của đề này. Vui lòng kiểm tra lại kết nối mạng.</div>';
+    }
+}
+
+function closeExamDetailModal() {
+    const overlay = document.getElementById('exam-detail-overlay');
+    if (overlay) overlay.classList.remove('show');
+}
+
+function filterExamDetailSec(sec) {
+    currentExamSecFilter = sec;
+    document.querySelectorAll('.ed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.sec === sec));
+    renderExamDetailQuestions();
+}
+
+function renderExamDetailQuestions() {
+    const qContainer = document.getElementById('ed-modal-questions');
+    if (!qContainer) return;
+
+    if (!currentExamQuestions.length) {
+        qContainer.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--gray)"><i class="fa-solid fa-folder-open" style="font-size:24px;margin-bottom:10px;display:block"></i>Chưa có câu hỏi nào được gán cho đề thi này.</div>';
         return;
     }
-    el.innerHTML = examListData.map(ex => {
-        const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
-        const stLabel = st === 'mo' ? '✅ Mở' : '🔒 Khóa';
-        const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
-        const vUrl = extractAdminExamVideo(ex);
-        const loai = ex.loaiDe === 'thithu' ? '🎯 Thi Thử' : (ex.loaiDe === 'luyentap' ? '📚 Luyện tập' : '📝 Kiểm tra');
-        const vBadge = vUrl ? '<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;font-weight:700"><i class="fa-solid fa-play"></i> Video chữa</span>' : '';
-        return `<div class="em-card" id="emc-${ex.examId}">
-          <div class="em-card-body">
-            <div class="em-card-top">
-              <span class="em-id">${ex.examId}</span>
-              <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
-              <span class="em-status ${st}">${stLabel}</span>
-              ${vBadge}
+
+    let filtered = currentExamQuestions.filter((q, idx) => {
+        const qNum = q.id || (idx + 1);
+        const qType = q.type || (qNum <= 18 ? 'mc' : (qNum <= 22 ? 'tf' : 'short'));
+        if (currentExamSecFilter === 'p1') return qType === 'mc' || qNum <= 18;
+        if (currentExamSecFilter === 'p2') return qType === 'tf' || (qNum >= 19 && qNum <= 22);
+        if (currentExamSecFilter === 'p3') return qType === 'short' || qNum >= 23;
+        if (currentExamSecFilter === 'giai') return q.giaiThich && String(q.giaiThich).trim() !== '';
+        return true;
+    });
+
+    const footEl = document.getElementById('ed-modal-footer-stats');
+    if (footEl) footEl.textContent = `Hiển thị ${filtered.length} / ${currentExamQuestions.length} câu hỏi`;
+
+    qContainer.innerHTML = filtered.map((q, idx) => {
+        const qNum = q.id || (idx + 1);
+        const qType = q.type || (qNum <= 18 ? 'mc' : (qNum <= 22 ? 'tf' : 'short'));
+        let typeBadge = '';
+        if (qType === 'mc') typeBadge = '<span class="ed-q-type" style="color:var(--blue)">Phần I: 4 Lựa chọn</span>';
+        else if (qType === 'tf') typeBadge = '<span class="ed-q-type" style="color:var(--purple)">Phần II: Đúng / Sai</span>';
+        else if (qType === 'short') typeBadge = '<span class="ed-q-type" style="color:var(--green)">Phần III: Trả lời ngắn</span>';
+
+        let qText = q.question || '';
+        // Chuẩn hóa đường dẫn ảnh tương đối sang CDN học sinh
+        qText = qText.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
+
+        let bodyHtml = '';
+        if (qType === 'mc') {
+            const opts = q.options || {};
+            bodyHtml = `<div class="ed-opts-grid">
+                ${['A','B','C','D'].map(k => {
+                    const isC = String(q.correct).trim().toUpperCase() === k;
+                    let optTxt = opts[k] || '';
+                    optTxt = optTxt.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
+                    return `<div class="ed-opt-item ${isC ? 'is-correct' : ''}">
+                        <strong style="width:20px">${k}.</strong>
+                        <span style="flex:1">${optTxt || '<i style="color:var(--gray2)">(trống)</i>'}</span>
+                        ${isC ? '<i class="fa-solid fa-check" style="color:var(--green)"></i>' : ''}
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else if (qType === 'tf') {
+            const opts = q.options || {};
+            const correctStr = String(q.correct || 'SSSS').padEnd(4, 'S');
+            const pos = { A: 0, B: 1, C: 2, D: 3 };
+            bodyHtml = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:10px">
+                ${['A','B','C','D'].map(k => {
+                    const stmt = opts[k] || '';
+                    if (!stmt) return '';
+                    const ans = correctStr[pos[k]] === 'Đ' ? 'ĐÚNG' : 'SAI';
+                    const ansColor = ans === 'ĐÚNG' ? 'var(--green)' : 'var(--red)';
+                    return `<div class="ed-tf-row">
+                        <div><strong>${k.toLowerCase()})</strong> ${stmt}</div>
+                        <span style="font-weight:800;font-size:11.5px;padding:2px 8px;border-radius:4px;background:var(--bg);color:${ansColor};border:1px solid var(--border)">${ans}</span>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else if (qType === 'short') {
+            bodyHtml = `<div class="ed-short-box"><i class="fa-solid fa-key"></i> Đáp án số: <strong>${q.correct || '(Chưa có)'}</strong></div>`;
+        }
+
+        let hdHtml = '';
+        if (q.giaiThich && String(q.giaiThich).trim()) {
+            let hdText = String(q.giaiThich).trim();
+            hdText = hdText.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
+            hdHtml = `<div class="ed-solution-box">
+                <div style="font-weight:700;color:#d97706;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+                    <i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết:
+                </div>
+                <div>${hdText}</div>
+            </div>`;
+        }
+
+        return `<div class="ed-q-card">
+            <div class="ed-q-head">
+                <span class="ed-q-num">CÂU ${qNum}</span>
+                ${typeBadge}
             </div>
-            <div class="em-title">${ex.tenDe || '(chưa đặt tên)'}</div>
-            <div class="em-meta">
-              <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||50} phút</span>
-              <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||0} câu</span>
-              <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
-              <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
-            </div>
-          </div>
-          <div class="em-actions">
-            <button class="em-btn edit" onclick="showExamForm('${ex.examId}')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
-            <button class="em-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở đề'}</button>
-            <button class="em-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
-          </div>
+            <div class="ed-q-text">${qText}</div>
+            ${bodyHtml}
+            ${hdHtml}
         </div>`;
     }).join('');
+
+    // Render KaTeX formulas
+    if (typeof renderMathInElement === 'function') {
+        try {
+            renderMathInElement(qContainer, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false }
+                ]
+            });
+        } catch(e) {}
+    }
 }
 
 function populateExamSelect() {
@@ -4707,7 +5129,7 @@ function populateExamSelect() {
         examListData.map(ex => `<option value="${ex.examId}">${ex.examId} · ${ex.tenDe||'(chưa đặt tên)'}</option>`).join('');
 }
 
-function showExamForm(examId) {
+function showExamForm(examId, defaultLoaiDe) {
     const panel = document.getElementById('exam-form-panel');
     panel.style.display = 'block';
     panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
@@ -4732,9 +5154,9 @@ function showExamForm(examId) {
         document.getElementById('ef-mota').value  = '';
         document.getElementById('ef-videourl').value = '';
         document.getElementById('ef-thoigian').value = 50;
-        document.getElementById('ef-loaide').value = 'thithu';
+        document.getElementById('ef-loaide').value = defaultLoaiDe || 'thithu';
         document.getElementById('ef-lop').value   = '12';
-        document.getElementById('ef-trangthai').value = 'mo';
+        document.getElementById('ef-trangthai').value = 'khoa';
     }
 }
 
@@ -5205,7 +5627,7 @@ function bankRowHtml(q,withCheck){
     const ctx=q.deBaiChung?`<div class="nh-context">${nhSafe(q.deBaiChung)}</div>`:'';
     const md=(q.mucDo||'').toUpperCase();
     const cl = String(q.chatLuong || '').trim().toLowerCase();
-    const badgeChatLuong = cl === 'tinh' 
+    const badgeChatLuong = cl === 'tinh'
         ? '<span class="nh-badge" style="background:#dcfce7;color:#166534;font-weight:700" title="Đã duyệt Tinh — sẵn sàng phát hành"><i class="fa-solid fa-circle-check"></i> Tinh</span>'
         : (cl === 'tho'
             ? '<span class="nh-badge" style="background:#fee2e2;color:#991b1b;font-weight:700" title="Câu Thô — bị chặn khỏi đề & trò chơi"><i class="fa-solid fa-ban"></i> Thô</span>'
@@ -5413,11 +5835,11 @@ async function bankCreateExam(){
     const LOAI_TYPE={TN:'mc',DS:'tf',TLN:'short'};
     const questions=ids.map(id=>{
         const q=bankData.find(x=>x.id===id); if(!q) return null;
-        return { 
-            id: q.id, 
-            type: LOAI_TYPE[q.loai]||'mc', 
+        return {
+            id: q.id,
+            type: LOAI_TYPE[q.loai]||'mc',
             question: q.question,
-            optA: q.optA||'', optB: q.optB||'', optC: q.optC||'', optD: q.optD||'', 
+            optA: q.optA||'', optB: q.optB||'', optC: q.optC||'', optD: q.optD||'',
             correct: q.correct||'',
             chatLuong: 'tinh'
         };
@@ -5498,13 +5920,13 @@ async function bankMarkChatLuongPrompt(chatLuong){
 
     toast('Đang cập nhật chất lượng cho ' + ids.length + ' câu...', 'ok');
     const okWrite = await postAdminWriteWithRetry({action:'bulksetchatluongnganhang',ids,chatLuong});
-    if(!okWrite){ 
-        toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐÁNH DẤU THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); 
-        return; 
+    if(!okWrite){
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐÁNH DẤU THẤT BẠI — server không xác nhận ghi. Thử lại!','err');
+        return;
     }
-    ids.forEach(id=>{ 
-        const q=bankData.find(x=>x.id===id); 
-        if(q) q.chatLuong=chatLuong; 
+    ids.forEach(id=>{
+        const q=bankData.find(x=>x.id===id);
+        if(q) q.chatLuong=chatLuong;
     });
     bankClearSelection();
     renderBankStats(); renderBankList();
@@ -5674,7 +6096,7 @@ async function runBatchDryRun(){
         } else {
             document.getElementById('nh-bi-commit-btn').disabled = true;
             const errMsg = res ? (res.msg || 'Kiểm tra thất bại') : 'Không nhận được phản hồi từ server';
-            const invalidDetails = res && res.invalidItems && res.invalidItems.length 
+            const invalidDetails = res && res.invalidItems && res.invalidItems.length
                 ? '<div style="margin-top:6px;font-size:11px">' + res.invalidItems.map(x => `<b>${x.id}:</b> ${x.errors.join(', ')}`).join('<br>') + '</div>'
                 : '';
             document.getElementById('nh-batch-status').innerHTML = `
@@ -5698,7 +6120,7 @@ async function openCommitConfirmModal(){
     const count = _currentBatchQuestions.length;
     const requiredPhrase = `NẠP ${count} CÂU TINH BATCH 001`;
     const input = prompt(`⚠️ XÁC NHẬN GHI DỮ LIỆU PRODUCTION THẬT\n\nBạn đang chuẩn bị nạp thật ${count} câu Tinh vào Ngân hàng dữ liệu.\nThao tác này sẽ ghi vĩnh viễn vào Google Sheet.\n\nVui lòng nhập chính xác cụm từ sau để xác nhận:\n\n${requiredPhrase}`);
-    
+
     const cleanIn = String(input || '').trim().replace(/\s+/g, ' ').toUpperCase();
     const cleanReq = requiredPhrase.replace(/\s+/g, ' ').toUpperCase();
     const cleanAlt = `NẠP ${count} CÂU TINH CÒN LẠI BATCH 001`.replace(/\s+/g, ' ').toUpperCase();
@@ -5734,7 +6156,7 @@ async function commitBatchImport(){
                     <div style="margin-top:6px;font-size:11px;color:#166534">Mã IDs: ${res.insertedIds.join(', ')}</div>
                 </div>`;
             toast('<i class="fa-solid fa-circle-check"></i> Đã nạp thành công ' + res.inserted + ' câu Tinh!', 'ok');
-            
+
             try { await adminDbSet('nganhang', null); } catch(e){}
             if(typeof loadBank === 'function') await loadBank(true);
         } else {
@@ -7593,7 +8015,7 @@ async function loadTeachingScope(force = false) {
         const url = DB_URL + '?type=teachingscope&adminKey=' + encodeURIComponent(getAdminKey()) + '&all=true&_t=' + Date.now();
         const res = await fetch(url);
         const json = await res.json();
-        
+
         if (json.error === 'Unauthorized' || json.msg === 'Unauthorized') {
             if (container) {
                 container.innerHTML = `
@@ -7683,7 +8105,7 @@ function renderTeachingScopeChapterOptions() {
     if (!select) return;
     const chMap = getChaptersMapForCourse(currentScopeCourse);
     const chapters = Object.keys(chMap);
-    
+
     let html = '<option value="all">Tất cả các chương (Toàn khóa học)</option>';
     chapters.forEach(ch => {
         const count = (chMap[ch] || []).length;
@@ -7714,7 +8136,7 @@ function onTeachingScopeTimeLimitToggle() {
     const toEl = document.getElementById('ts-valid-to');
     const sepEl = document.getElementById('ts-time-sep');
     const labelEl = document.getElementById('ts-no-time-label');
-    
+
     if (noLimit) {
         fromEl.style.display = 'none';
         toEl.style.display = 'none';
@@ -7771,7 +8193,7 @@ function onTeachingScopeDraftChanged() {
 
     draft.isActive = activeCb ? activeCb.checked : true;
     if (activeLabel) activeLabel.textContent = draft.isActive ? 'Đang kích hoạt' : 'Đang tắt';
-    
+
     if (noLimit) {
         draft.validFrom = '';
         draft.validTo = '';
@@ -7832,7 +8254,7 @@ function renderTeachingScopeUI() {
     if (noLimitCb) noLimitCb.checked = !hasTimeLimit;
     if (fromEl) fromEl.value = draft.validFrom ? draft.validFrom.slice(0, 16) : '';
     if (toEl) toEl.value = draft.validTo ? draft.validTo.slice(0, 16) : '';
-    
+
     if (fromEl && toEl && sepEl && labelEl) {
         if (!hasTimeLimit) {
             fromEl.style.display = 'none';
@@ -8059,7 +8481,7 @@ function updateTeachingScopeStats() {
         const now = Date.now();
         const fromTime = draft.validFrom ? Date.parse(draft.validFrom) : null;
         const toTime = draft.validTo ? Date.parse(draft.validTo) : null;
-        
+
         if (fromTime && now < fromTime) {
             statusText = '🟡 Chưa đến giờ';
             statusColor = '#d97706';
@@ -8310,7 +8732,7 @@ function initLiveControl() {
             }
             // Điền lại form nếu đang live
             if (cfg.title) document.getElementById('lc-title').value = cfg.title;
-          
+
             if (cfg.videoId) document.getElementById('lc-videoid').value = cfg.videoId;
             // Preview: nếu đang live thật thì tự hiện khung xem trước (không autoplay để đỡ giật)
             if (cfg.isLive && cfg.videoId) lcShowPreview(cfg.videoId, false);
