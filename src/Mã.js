@@ -942,8 +942,8 @@ function getNganHang() {
 
   const rows = data.slice(1).map(r => {
     const id = String(r[0] || '').trim();
-    const rawCl = (clCol !== -1 ? String(r[clCol] || '').trim() : '') || String(r[17] || '').trim();
-    const cl = rawCl ? rawCl.toLowerCase() : (id.startsWith('VLXT-PT-') ? 'tinh' : 'tho');
+    const isPt = id.startsWith('VLXT-PT-');
+    const cl = isPt ? 'tinh' : 'tho';
     const kt = ktCol !== -1 ? (String(r[ktCol] || '').trim() || 'Dat') : (String(r[18] || '').trim() || 'Dat');
     return {
       id: id,
@@ -964,7 +964,7 @@ function getNganHang() {
       ngayThem: r[15] || '',
       baiHoc: baiCol !== -1 ? (r[baiCol] || '') : (r[16] || ''),
       chatLuong: cl,
-      kyThuat: kt,
+      kyThuat: isPt ? 'Dat' : kt,
       lyDoCachLy: lyDoCol !== -1 ? (r[lyDoCol] || '') : (r[19] || ''),
       batchId: batchCol !== -1 ? (r[batchCol] || '') : (r[20] || '')
     };
