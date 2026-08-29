@@ -1744,7 +1744,7 @@
    CẤU HÌNH
 ════════════════════════════════════ */
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
-const DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
+const DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 
@@ -4812,22 +4812,25 @@ function renderPreview2(skipped){
 
 let examListData = [];
 
-async function loadExamList() {
+async function loadExamList(forceRefresh) {
     const CKEY = 'vlxt_admin_soande';
-    const cached = aCache(CKEY);
-    if(cached){
-        examListData = cached.d || [];
-        renderExamList(); populateExamSelect();
-        if(aFresh(cached)) return;
+    if (!forceRefresh) {
+        const cached = aCache(CKEY);
+        if(cached){
+            examListData = cached.d || [];
+            renderExamList(); populateExamSelect();
+            if(aFresh(cached)) return examListData;
+        }
     }
     try {
-        const r = await fetch(DB_URL + '?type=danhsachde');
+        const r = await fetch(DB_URL + '?type=danhsachde&_t=' + Date.now());
         const j = await r.json();
         examListData = (j.ok && j.data) ? j.data : [];
         aSetCache(CKEY, examListData);
     } catch(e) { if(!examListData.length) examListData = []; }
     renderExamList();
     populateExamSelect();
+    return examListData;
 }
 
 function extractAdminExamVideo(ex) {
@@ -5029,18 +5032,26 @@ async function toggleExamVisibility(examId, curHienThi) {
     const newHienThi = curHienThi === 'hien' ? 'an' : 'hien';
     const okWrite = await postAdminWriteWithRetry({ action: 'saveExam', examId, hienThi: newHienThi });
     if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI HIỆN/ẨN THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    toast(newHienThi === 'hien' ? '👁️ Đề đã được HIỆN trên danh sách!' : '🙈 Đề đã được ẨN khỏi danh sách!','ok');
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList, 1200);
+    await loadExamList(true);
+    const updated = examListData.find(e => e.examId === examId);
+    if (updated && updated.hienThi === newHienThi) {
+        toast(newHienThi === 'hien' ? '👁️ Đề đã được HIỆN trên danh sách!' : '🙈 Đề đã được ẨN khỏi danh sách!','ok');
+    } else {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã gửi lệnh nhưng server chưa đồng bộ trạng thái mới!','err');
+    }
 }
 
 async function toggleExamStatus(examId, curStatus) {
     const newStatus = curStatus==='mo'?'khoa':'mo';
     const okWrite = await postAdminWriteWithRetry({action:'saveExam',examId,trangThai:newStatus});
     if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI TRẠNG THÁI THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    toast(newStatus==='mo'?'✅ Đề đã được MỞ THI!':'🔒 Đề đã KHÓA!','ok');
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList,1200);
+    await loadExamList(true);
+    const updated = examListData.find(e => e.examId === examId);
+    if (updated && updated.trangThai === newStatus) {
+        toast(newStatus==='mo'?'✅ Đề đã được MỞ THI!':'🔒 Đề đã KHÓA!','ok');
+    } else {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã gửi lệnh nhưng server chưa đồng bộ trạng thái mới!','err');
+    }
 }
 
 async function bulkUpdateBatch2k9(field, value) {
@@ -5063,9 +5074,8 @@ async function bulkUpdateBatch2k9(field, value) {
         return;
     }
 
+    await loadExamList(true);
     toast(`<i class="fa-solid fa-circle-check"></i> Đã hoàn tất ${label}!`, 'ok');
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList, 1200);
 }
 
 function showExamForm(examId, defaultLoaiDe) {
