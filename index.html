@@ -983,25 +983,55 @@
     <div class="ptt-banner-main">
       <div class="ptt-badge"><i class="fa-solid fa-rocket"></i> KHÓA 2K9 XPS</div>
       <h2>Quản Lý &amp; Điều Khiển Phòng Thi Thử THPT Quốc Gia</h2>
-      <p>Giám sát, phân quyền Mở/Khóa và biên soạn các bộ đề thi thử thực chiến chuẩn ma trận cấu trúc Bộ GD&ĐT.</p>
+      <p>Giám sát, phân quyền Hiện/Ẩn, Mở/Khóa và biên soạn các bộ đề thi thử thực chiến chuẩn ma trận cấu trúc Bộ GD&ĐT.</p>
     </div>
     <div class="ptt-stats-grid">
       <div class="ptt-stat-card">
         <div class="ptt-stat-num" id="ptt-stat-total">0</div>
         <div class="ptt-stat-label"><i class="fa-solid fa-layer-group"></i> Tổng số đề</div>
       </div>
+      <div class="ptt-stat-card" style="border-left:3px solid #10b981">
+        <div class="ptt-stat-num" id="ptt-stat-hien" style="color:#10b981">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-eye"></i> Đang hiện</div>
+      </div>
+      <div class="ptt-stat-card" style="border-left:3px solid #6b7280">
+        <div class="ptt-stat-num" id="ptt-stat-an" style="color:#6b7280">0</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-eye-slash"></i> Đang ẩn</div>
+      </div>
       <div class="ptt-stat-card ptt-stat-open">
         <div class="ptt-stat-num" id="ptt-stat-open">0</div>
-        <div class="ptt-stat-label"><i class="fa-solid fa-lock-open"></i> Đang mở</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-lock-open"></i> Đang mở thi</div>
       </div>
       <div class="ptt-stat-card ptt-stat-locked">
         <div class="ptt-stat-num" id="ptt-stat-locked">0</div>
-        <div class="ptt-stat-label"><i class="fa-solid fa-lock"></i> Đang khóa (Ẩn)</div>
+        <div class="ptt-stat-label"><i class="fa-solid fa-lock"></i> Đang khóa</div>
       </div>
       <div class="ptt-stat-card ptt-stat-video">
         <div class="ptt-stat-num" id="ptt-stat-video">0</div>
         <div class="ptt-stat-label"><i class="fa-solid fa-play"></i> Có Video chữa</div>
       </div>
+    </div>
+  </div>
+
+  <!-- BULK ACTION BAR CHO 14 ĐỀ THI THỬ 2K9 -->
+  <div class="ptt-bulk-bar" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:12px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-weight:800;font-size:13px;color:var(--black)"><i class="fa-solid fa-bolt" style="color:#f59e0b"></i> Điều khiển hàng loạt 14 đề 2k9:</span>
+      <span id="ptt-batch-status-summary" style="font-size:12px;color:var(--gray);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border);font-weight:600">Đang tính toán...</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-ghost2" style="font-size:12px;padding:6px 12px;color:#10b981;border-color:rgba(16,185,129,0.3)" onclick="bulkUpdateBatch2k9('hienThi', 'hien')" title="Hiện tất cả 14 đề trên web học sinh">
+        <i class="fa-solid fa-eye"></i> Hiện tất cả 14 đề
+      </button>
+      <button class="btn-ghost2" style="font-size:12px;padding:6px 12px;color:#6b7280;border-color:rgba(107,114,128,0.3)" onclick="bulkUpdateBatch2k9('hienThi', 'an')" title="Ẩn tất cả 14 đề khỏi danh sách học sinh">
+        <i class="fa-solid fa-eye-slash"></i> Ẩn tất cả 14 đề
+      </button>
+      <button class="btn-ghost2" style="font-size:12px;padding:6px 12px;color:var(--blue);border-color:rgba(11,132,243,0.3)" onclick="bulkUpdateBatch2k9('trangThai', 'mo')" title="Mở quyền làm bài thi cho tất cả 14 đề">
+        <i class="fa-solid fa-lock-open"></i> Mở tất cả 14 đề
+      </button>
+      <button class="btn-ghost2" style="font-size:12px;padding:6px 12px;color:#ef4444;border-color:rgba(239,68,68,0.3)" onclick="bulkUpdateBatch2k9('trangThai', 'khoa')" title="Khóa quyền làm bài thi cho tất cả 14 đề">
+        <i class="fa-solid fa-lock"></i> Khóa tất cả 14 đề
+      </button>
     </div>
   </div>
 
@@ -1013,6 +1043,8 @@
     </div>
     <div class="ptt-filter-tags">
       <button class="ptt-tag active" data-filter="all" onclick="setPttFilter('all')">Tất cả đề</button>
+      <button class="ptt-tag" data-filter="hien" onclick="setPttFilter('hien')">👁️ Đang hiện</button>
+      <button class="ptt-tag" data-filter="an" onclick="setPttFilter('an')">🙈 Đang ẩn</button>
       <button class="ptt-tag" data-filter="mo" onclick="setPttFilter('mo')">✅ Đang mở</button>
       <button class="ptt-tag" data-filter="khoa" onclick="setPttFilter('khoa')">🔒 Đang khóa</button>
       <button class="ptt-tag" data-filter="video" onclick="setPttFilter('video')">🎬 Có Video chữa</button>
@@ -1105,12 +1137,21 @@
               </select>
             </div>
           </div>
-          <div class="form-field">
-            <label>Trạng thái</label>
-            <select id="ef-trangthai">
-              <option value="mo">✅ Mở (học sinh vào thi / xem được)</option>
-              <option value="khoa">🔒 Khóa (tạm ẩn đối với học sinh)</option>
-            </select>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Hiển thị danh sách <span>*</span></label>
+              <select id="ef-hienthi">
+                <option value="an">🙈 Ẩn (Không hiện trên danh sách web học sinh)</option>
+                <option value="hien">👁️ Hiện (Hiển thị thẻ đề cho học sinh)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Quyền làm bài thi <span>*</span></label>
+              <select id="ef-trangthai">
+                <option value="khoa">🔒 Khóa (Chưa cho phép vào thi)</option>
+                <option value="mo">✅ Mở (Cho phép học sinh vào thi ngay)</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="em-form-foot">
@@ -1789,7 +1830,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope'];
 (function(){
     const _fetch = window.fetch.bind(window);
     window.fetch = function(url, opts){
@@ -4837,8 +4878,11 @@ function renderExamList() {
             elKiemTra.innerHTML = '<div class="empty-list"><i class="fa-solid fa-layer-group"></i><p>Chưa có đề kiểm tra nào.<br>Nhấn "+ Tạo đề mới" để bắt đầu.</p></div>';
         } else {
             elKiemTra.innerHTML = kiemTraList.map(ex => {
-                const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
-                const stLabel = st === 'mo' ? '✅ Mở' : '🔒 Khóa';
+                const isMo = ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo';
+                const isHien = ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true';
+                const st = isMo ? 'mo' : 'khoa';
+                const stLabel = isMo ? '✅ Mở' : '🔒 Khóa';
+                const hienLabel = isHien ? '👁️ Hiện' : '🙈 Ẩn';
                 const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
                 const vUrl = extractAdminExamVideo(ex);
                 const loai = ex.loaiDe === 'luyentap' ? '📚 Luyện tập' : '📝 Kiểm tra';
@@ -4848,6 +4892,7 @@ function renderExamList() {
                     <div class="em-card-top">
                       <span class="em-id">${ex.examId}</span>
                       <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
+                      <span class="em-status ${isHien?'mo':'khoa'}">${hienLabel}</span>
                       <span class="em-status ${st}">${stLabel}</span>
                       ${vBadge}
                     </div>
@@ -4861,6 +4906,7 @@ function renderExamList() {
                   </div>
                   <div class="em-actions">
                     <button class="em-btn edit" onclick="showExamForm('${ex.examId}','kiemtra')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                    <button class="em-btn toggle" onclick="toggleExamVisibility('${ex.examId}','${isHien?'hien':'an'}')">${isHien?'<i class="fa-solid fa-eye-slash"></i> Ẩn':'<i class="fa-solid fa-eye"></i> Hiện'}</button>
                     <button class="em-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở đề'}</button>
                     <button class="em-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
                   </div>
@@ -4875,18 +4921,41 @@ function renderExamList() {
 
     // Stats calculation
     const totalThithu = thiThuAll.length;
-    const openThithu = thiThuAll.filter(ex => ex.trangThai === 'mo').length;
-    const lockedThithu = thiThuAll.filter(ex => ex.trangThai !== 'mo').length;
+    const hienThithu = thiThuAll.filter(ex => ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true').length;
+    const anThithu = totalThithu - hienThithu;
+    const openThithu = thiThuAll.filter(ex => ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo').length;
+    const lockedThithu = totalThithu - openThithu;
     const videoThithu = thiThuAll.filter(ex => !!extractAdminExamVideo(ex)).length;
 
     const elStatTot = document.getElementById('ptt-stat-total');
+    const elStatHien = document.getElementById('ptt-stat-hien');
+    const elStatAn = document.getElementById('ptt-stat-an');
     const elStatOpn = document.getElementById('ptt-stat-open');
     const elStatLck = document.getElementById('ptt-stat-locked');
     const elStatVid = document.getElementById('ptt-stat-video');
     if (elStatTot) elStatTot.textContent = totalThithu;
+    if (elStatHien) elStatHien.textContent = hienThithu;
+    if (elStatAn) elStatAn.textContent = anThithu;
     if (elStatOpn) elStatOpn.textContent = openThithu;
     if (elStatLck) elStatLck.textContent = lockedThithu;
     if (elStatVid) elStatVid.textContent = videoThithu;
+
+    // Batch summary
+    const batch2k9 = thiThuAll.filter(ex => String(ex.examId).startsWith('vedich2k9'));
+    const elBatchSum = document.getElementById('ptt-batch-status-summary');
+    if (elBatchSum) {
+        if (!batch2k9.length) {
+            elBatchSum.textContent = 'Chưa có đề 2k9 trong dữ liệu';
+        } else {
+            const bHien = batch2k9.filter(ex => ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true').length;
+            const bMo = batch2k9.filter(ex => ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo').length;
+            if (bHien === 0 && bMo === 0) {
+                elBatchSum.innerHTML = '<span style="color:#6b7280"><i class="fa-solid fa-shield-halved"></i> 14 đề đang ẨN &amp; KHÓA (An toàn)</span>';
+            } else {
+                elBatchSum.innerHTML = `<span style="color:#10b981;font-weight:700">👁️ ${bHien}/${batch2k9.length} đề Hiện</span> · <span style="color:var(--blue);font-weight:700">✅ ${bMo}/${batch2k9.length} đề Mở</span>`;
+            }
+        }
+    }
 
     if (elThiThu) {
         let filteredThiThu = thiThuAll.filter(ex => {
@@ -4897,8 +4966,12 @@ function renderExamList() {
                 const matchMoTa = String(ex.moTa || '').toLowerCase().includes(q);
                 if (!matchId && !matchTen && !matchMoTa) return false;
             }
-            if (currentPttFilter === 'mo') return ex.trangThai === 'mo';
-            if (currentPttFilter === 'khoa') return ex.trangThai !== 'mo';
+            const isHien = (ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true');
+            const isMo = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo');
+            if (currentPttFilter === 'hien') return isHien;
+            if (currentPttFilter === 'an') return !isHien;
+            if (currentPttFilter === 'mo') return isMo;
+            if (currentPttFilter === 'khoa') return !isMo;
             if (currentPttFilter === 'video') return !!extractAdminExamVideo(ex);
             return true;
         });
@@ -4910,8 +4983,11 @@ function renderExamList() {
             elThiThu.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px 20px;background:var(--bg);border:1.5px dashed var(--border);border-radius:14px;color:var(--gray)"><i class="fa-solid fa-filter-circle-xmark" style="font-size:24px;margin-bottom:10px;display:block"></i>Không tìm thấy đề thi thử phù hợp theo bộ lọc hiện tại.</div>';
         } else {
             elThiThu.innerHTML = filteredThiThu.map(ex => {
-                const st = ex.trangThai === 'mo' ? 'mo' : 'khoa';
-                const stLabel = st === 'mo' ? '✅ Đang mở' : '🔒 Đang khóa';
+                const isMo = ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo';
+                const isHien = ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true';
+                const st = isMo ? 'mo' : 'khoa';
+                const stLabel = isMo ? '✅ Đang mở' : '🔒 Đang khóa';
+                const hienLabel = isHien ? '👁️ Đang hiện' : '🙈 Đang ẩn';
                 const safeTen = (ex.tenDe||'').replace(/'/g,"\\'");
                 const vUrl = extractAdminExamVideo(ex);
                 const vBadge = vUrl ? `<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.12);padding:2px 8px;border-radius:6px;font-weight:700" title="${vUrl}"><i class="fa-solid fa-play"></i> Video chữa</span>` : '';
@@ -4921,6 +4997,7 @@ function renderExamList() {
                             <span class="em-id">${ex.examId}</span>
                             <div style="display:flex;align-items:center;gap:6px">
                                 ${vBadge}
+                                <span class="em-status ${isHien?'mo':'khoa'}" style="${isHien?'background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3)':'background:rgba(107,114,128,0.12);color:#6b7280;border:1px solid rgba(107,114,128,0.3)'}">${hienLabel}</span>
                                 <span class="em-status ${st}">${stLabel}</span>
                             </div>
                         </div>
@@ -4937,6 +5014,7 @@ function renderExamList() {
                     </div>
                     <div class="ptt-card-actions">
                         <button class="ptt-card-btn edit" onclick="showExamForm('${ex.examId}','thithu')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                        <button class="ptt-card-btn toggle" style="color:${isHien?'#6b7280':'#10b981'}" onclick="toggleExamVisibility('${ex.examId}','${isHien?'hien':'an'}')">${isHien?'<i class="fa-solid fa-eye-slash"></i> Ẩn':'<i class="fa-solid fa-eye"></i> Hiện'}</button>
                         <button class="ptt-card-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở'}</button>
                         <button class="ptt-card-btn view" onclick="openExamDetailModal('${ex.examId}')"><i class="fa-solid fa-eye"></i> Xem đề</button>
                         <button class="ptt-card-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
@@ -4945,6 +5023,110 @@ function renderExamList() {
             }).join('');
         }
     }
+}
+
+async function toggleExamVisibility(examId, curHienThi) {
+    const newHienThi = curHienThi === 'hien' ? 'an' : 'hien';
+    const okWrite = await postAdminWriteWithRetry({ action: 'saveExam', examId, hienThi: newHienThi });
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI HIỆN/ẨN THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+    toast(newHienThi === 'hien' ? '👁️ Đề đã được HIỆN trên danh sách!' : '🙈 Đề đã được ẨN khỏi danh sách!','ok');
+    invalidateCache('vlxt_admin_soande');
+    setTimeout(loadExamList, 1200);
+}
+
+async function toggleExamStatus(examId, curStatus) {
+    const newStatus = curStatus==='mo'?'khoa':'mo';
+    const okWrite = await postAdminWriteWithRetry({action:'saveExam',examId,trangThai:newStatus});
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI TRẠNG THÁI THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+    toast(newStatus==='mo'?'✅ Đề đã được MỞ THI!':'🔒 Đề đã KHÓA!','ok');
+    invalidateCache('vlxt_admin_soande');
+    setTimeout(loadExamList,1200);
+}
+
+async function bulkUpdateBatch2k9(field, value) {
+    const batchIds = [];
+    for (let i = 2; i <= 15; i++) {
+        batchIds.push(`vedich2k9_de${String(i).padStart(2, '0')}`);
+    }
+    const label = (field === 'hienThi') ? (value === 'hien' ? 'HIỆN tất cả 14 đề' : 'ẨN tất cả 14 đề') : (value === 'mo' ? 'MỞ THI tất cả 14 đề' : 'KHÓA tất cả 14 đề');
+    if (!confirm(`Xác nhận thực hiện: ${label}?`)) return;
+
+    toast('<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật 14 đề...', 'info');
+    const okWrite = await postAdminWriteWithRetry({
+        action: 'bulkupdateexams',
+        examIds: batchIds,
+        [field]: value
+    });
+
+    if (!okWrite) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> CẬP NHẬT HÀNG LOẠT THẤT BẠI — server không xác nhận ghi. Thử lại!', 'err');
+        return;
+    }
+
+    toast(`<i class="fa-solid fa-circle-check"></i> Đã hoàn tất ${label}!`, 'ok');
+    invalidateCache('vlxt_admin_soande');
+    setTimeout(loadExamList, 1200);
+}
+
+function showExamForm(examId, defaultLoaiDe) {
+    const panel = document.getElementById('exam-form-panel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    if (examId) {
+        const ex = examListData.find(e => e.examId === examId);
+        if (!ex) return;
+        document.getElementById('exam-form-title').textContent = 'Sửa đề: ' + examId;
+        document.getElementById('ef-examid').value = examId;
+        document.getElementById('ef-examid').disabled = true;
+        document.getElementById('ef-tende').value   = ex.tenDe || '';
+        document.getElementById('ef-mota').value    = ex.moTa  || '';
+        document.getElementById('ef-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
+        document.getElementById('ef-thoigian').value = ex.thoiGian || 50;
+        document.getElementById('ef-loaide').value   = ex.loaiDe || 'thithu';
+        document.getElementById('ef-lop').value      = ex.lop  || '12';
+        const isHien = (ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true');
+        document.getElementById('ef-hienthi').value = isHien ? 'hien' : 'an';
+        document.getElementById('ef-trangthai').value = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo') ? 'mo' : 'khoa';
+    } else {
+        document.getElementById('exam-form-title').textContent = 'Tạo đề mới';
+        document.getElementById('ef-examid').value = '';
+        document.getElementById('ef-examid').disabled = false;
+        document.getElementById('ef-tende').value = '';
+        document.getElementById('ef-mota').value  = '';
+        document.getElementById('ef-videourl').value = '';
+        document.getElementById('ef-thoigian').value = 50;
+        document.getElementById('ef-loaide').value = defaultLoaiDe || 'thithu';
+        document.getElementById('ef-lop').value   = '12';
+        document.getElementById('ef-hienthi').value = 'an'; // Mặc định ẩn an toàn
+        document.getElementById('ef-trangthai').value = 'khoa'; // Mặc định khóa an toàn
+    }
+}
+
+async function submitExamForm() {
+    const btn = document.getElementById('ef-save-btn');
+    const examId  = (document.getElementById('ef-examid').value||'').trim().replace(/\s+/g,'').toLowerCase();
+    const tenDe   = document.getElementById('ef-tende').value.trim();
+    if (!examId) { alert('Vui lòng nhập mã đề (examId).'); return; }
+    if (!tenDe)  { alert('Vui lòng nhập tên đề.'); return; }
+    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+    const videoUrl = document.getElementById('ef-videourl').value.trim();
+    const payload = {
+        action:'saveExam', examId, tenDe,
+        moTa:      document.getElementById('ef-mota').value.trim(),
+        videoUrl:  videoUrl,
+        loaiDe:    document.getElementById('ef-loaide').value,
+        thoiGian:  parseInt(document.getElementById('ef-thoigian').value)||50,
+        lop:       document.getElementById('ef-lop').value,
+        hienThi:   document.getElementById('ef-hienthi') ? document.getElementById('ef-hienthi').value : 'an',
+        trangThai: document.getElementById('ef-trangthai').value
+    };
+    const okWrite = await postAdminWriteWithRetry(payload);
+    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu đề';
+    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
+    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu đề!','ok');
+    hideExamForm();
+    invalidateCache('vlxt_admin_soande');
+    setTimeout(loadExamList, 1200);
 }
 
 let currentDetailQuestions = [];

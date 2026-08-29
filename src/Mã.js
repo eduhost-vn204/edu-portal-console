@@ -75,8 +75,8 @@ function doPost(e) {
     if (action === 'bulksetchatluongnganhang') return bulkSetChatLuongNganHang(data);
     if (action === 'saveprogress')       return saveProgress(data);
     if (action === 'savescore')          return saveScore(data);
-    if (action === 'updatebaihocvideo')  return updateBaiHocVideo(data);
-    if (action === 'saveexam')           return saveExam(data);
+    if(action === 'saveexam')           return saveExam(data);
+    if (action === 'bulkupdateexams')   return bulkUpdateExams(data);
     if (action === 'deleteexam')         return deleteExam(data);
     if (action === 'incrementlam')       return incrementLam(data);
     if (action === 'pingadmin')          return pingAdmin(data);
@@ -423,19 +423,32 @@ function getBaiHoc() {
 // Schema DanhSachDe: examId(0) | tenDe(1) | moTa(2) | thoiGian(3) | trangThai(4) | lop(5) | soLuotLam(6)
 
 function getDanhSachDe() {
-  const sheet = getOrCreate('DanhSachDe', ['examId','tenDe','moTa','thoiGian','trangThai','lop','soLuotLam']);
+  const sheet = getOrCreate('DanhSachDe', ['examId','tenDe','moTa','thoiGian','trangThai','lop','soLuotLam','hienThi','videoUrl','loaiDe','soCau','updatedAt']);
   const rows  = sheetToJson(sheet);
 
-  // Đếm số câu từ NganHangDe cho mỗi đề
+  // Đếm số câu từ NganHangDe cho mỗi đề (nếu có)
   const ngh    = getOrCreate('NganHangDe', ['id','type','question','optA','optB','optC','optD','correct','examId']);
   const nghData = ngh.getDataRange().getValues();
   const count  = {};
   for (let i = 1; i < nghData.length; i++) {
-    const eid = String(nghData[i][8] || 'de01').trim();
+    const eid = String(nghData[i][8] || 'de01').trim().toLowerCase();
     if (nghData[i][2]) count[eid] = (count[eid] || 0) + 1;
   }
 
-  return jsonOut({ ok: true, data: rows.map(r => ({ ...r, soCau: count[r.examId] || 0 })) });
+  return jsonOut({
+    ok: true,
+    data: rows.map(r => {
+      const eid = String(r.examId || '').trim().toLowerCase();
+      const hVal = (r.hienThi === true || String(r.hienThi).toLowerCase() === 'hien' || String(r.hienThi).toLowerCase() === 'true' || String(r.hienThi) === '1');
+      return {
+        ...r,
+        examId: eid,
+        hienThi: hVal ? 'hien' : 'an',
+        trangThai: String(r.trangThai || 'khoa').toLowerCase() === 'mo' ? 'mo' : 'khoa',
+        soCau: Number(r.soCau) || count[eid] || 28
+      };
+    })
+  });
 }
 
 // ── GET: Câu hỏi theo examId ─────────────────────────────────
@@ -714,38 +727,90 @@ function deleteLiveSession(id) {
 }
 
 // ── POST: Lưu/cập nhật đề thi ────────────────────────────────
-// Schema: examId(0) | tenDe(1) | moTa(2) | thoiGian(3) | trangThai(4) | lop(5) | soLuotLam(6)
+// Schema: examId(0) | tenDe(1) | moTa(2) | thoiGian(3) | trangThai(4) | lop(5) | soLuotLam(6) | hienThi(7) | videoUrl(8) | loaiDe(9) | soCau(10) | updatedAt(11)
 
 function saveExam(data) {
-  const sheet = getOrCreate('DanhSachDe', ['examId','tenDe','moTa','thoiGian','trangThai','lop','soLuotLam']);
-  if (!data.examId) return jsonOut({ ok: false, msg: 'Thiếu examId' });
+  if (!requireAdmin(data.adminKey)) return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  const sheet = getOrCreate('DanhSachDe', ['examId','tenDe','moTa','thoiGian','trangThai','lop','soLuotLam','hienThi','videoUrl','loaiDe','soCau','updatedAt']);
+  const examId = String(data.examId || '').trim().replace(/\s+/g,'').toLowerCase();
+  if (!examId) return jsonOut({ ok: false, msg: 'Thiếu examId' });
+
+  const hienThiVal = (data.hienThi === true || String(data.hienThi) === 'true' || String(data.hienThi) === 'hien') ? 'hien' : 'an';
+  const trangThaiVal = String(data.trangThai || 'khoa').toLowerCase() === 'mo' ? 'mo' : 'khoa';
+  const thoiGianVal = Number(data.thoiGian) || 50;
+  const loaiDeVal = String(data.loaiDe || 'thithu').toLowerCase();
+  const lopVal = String(data.lop || '12');
+  const nowStr = new Date().toISOString();
+
   const rows = sheet.getDataRange().getValues();
   for (let i = 1; i < rows.length; i++) {
-    if (String(rows[i][0]).trim() === String(data.examId).trim()) {
-      // Update — giữ nguyên soLuotLam
-      sheet.getRange(i+1, 1, 1, 7).setValues([[
-        data.examId,
-        data.tenDe  || rows[i][1],
-        data.moTa   || rows[i][2],
-        data.thoiGian !== undefined ? data.thoiGian : rows[i][3],
-        data.trangThai || rows[i][4],
-        data.lop    || rows[i][5],
-        rows[i][6] || 0
+    if (String(rows[i][0]).trim().toLowerCase() === examId) {
+      sheet.getRange(i+1, 1, 1, 12).setValues([[
+        examId,
+        data.tenDe !== undefined ? String(data.tenDe) : rows[i][1],
+        data.moTa !== undefined ? String(data.moTa) : rows[i][2],
+        data.thoiGian !== undefined ? thoiGianVal : rows[i][3],
+        data.trangThai !== undefined ? trangThaiVal : (rows[i][4] || 'khoa'),
+        data.lop !== undefined ? lopVal : (rows[i][5] || '12'),
+        rows[i][6] || 0,
+        data.hienThi !== undefined ? hienThiVal : (rows[i][7] || 'an'),
+        data.videoUrl !== undefined ? String(data.videoUrl) : (rows[i][8] || ''),
+        data.loaiDe !== undefined ? loaiDeVal : (rows[i][9] || 'thithu'),
+        data.soCau !== undefined ? (Number(data.soCau) || 28) : (rows[i][10] || 28),
+        nowStr
       ]]);
-      return jsonOut({ ok: true, action: 'updated' });
+      return jsonOut({ ok: true, action: 'updated', examId, hienThi: hienThiVal, trangThai: trangThaiVal, updatedAt: nowStr });
     }
   }
-  // Thêm mới
+
   sheet.appendRow([
-    data.examId,
-    data.tenDe    || '',
-    data.moTa     || '',
-    data.thoiGian || 45,
-    data.trangThai || 'khoa',
-    data.lop      || '12',
-    0
+    examId,
+    data.tenDe || '',
+    data.moTa || '',
+    thoiGianVal,
+    trangThaiVal,
+    lopVal,
+    0,
+    hienThiVal,
+    data.videoUrl || '',
+    loaiDeVal,
+    data.soCau !== undefined ? Number(data.soCau) : 28,
+    nowStr
   ]);
-  return jsonOut({ ok: true, action: 'created' });
+  return jsonOut({ ok: true, action: 'created', examId, hienThi: hienThiVal, trangThai: trangThaiVal, updatedAt: nowStr });
+}
+
+function bulkUpdateExams(data) {
+  if (!requireAdmin(data.adminKey)) return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  const sheet = getOrCreate('DanhSachDe', ['examId','tenDe','moTa','thoiGian','trangThai','lop','soLuotLam','hienThi','videoUrl','loaiDe','soCau','updatedAt']);
+  const examIds = Array.isArray(data.examIds) ? data.examIds.map(id => String(id).trim().toLowerCase()) : [];
+  if (!examIds.length) return jsonOut({ ok: false, msg: 'Thiếu danh sách examIds' });
+
+  const nowStr = new Date().toISOString();
+  const rows = sheet.getDataRange().getValues();
+  let updatedCount = 0;
+
+  for (let i = 1; i < rows.length; i++) {
+    const rowId = String(rows[i][0]).trim().toLowerCase();
+    if (examIds.includes(rowId)) {
+      const curHienThi = rows[i][7] || 'an';
+      const curTrangThai = rows[i][4] || 'khoa';
+
+      const newHienThi = data.hienThi !== undefined
+        ? ((data.hienThi === true || String(data.hienThi) === 'true' || String(data.hienThi) === 'hien') ? 'hien' : 'an')
+        : curHienThi;
+      const newTrangThai = data.trangThai !== undefined
+        ? (String(data.trangThai).toLowerCase() === 'mo' ? 'mo' : 'khoa')
+        : curTrangThai;
+
+      sheet.getRange(i+1, 5, 1, 1).setValue(newTrangThai);
+      sheet.getRange(i+1, 8, 1, 1).setValue(newHienThi);
+      sheet.getRange(i+1, 12, 1, 1).setValue(nowStr);
+      updatedCount++;
+    }
+  }
+
+  return jsonOut({ ok: true, count: updatedCount, updatedAt: nowStr });
 }
 
 // ── POST: Xóa đề thi + toàn bộ câu hỏi ───────────────────────
