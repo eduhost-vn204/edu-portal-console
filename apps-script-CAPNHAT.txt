@@ -940,17 +940,35 @@ function getNganHang() {
   const qCol   = headers.findIndex(h => h === 'question' || h === 'cauhoi' || h === 'debai');
   const actualQCol = qCol !== -1 ? qCol : 7;
 
-  const rows = data.slice(1).map(r => ({
-    id: r[0], mon: r[1], chuong: r[2], mucDo: r[3], loai: r[4] || 'TN',
-    nhomId: r[5], deBaiChung: r[6], question: r[actualQCol] || r[7] || '',
-    optA: r[8], optB: r[9], optC: r[10], optD: r[11],
-    correct: r[12], hinhAnh: r[13], giaiThich: r[14], ngayThem: r[15],
-    baiHoc: baiCol !== -1 ? r[baiCol] : (r[16] || ''),
-    chatLuong: clCol !== -1 ? r[clCol] : (r[17] || ''),
-    kyThuat: ktCol !== -1 ? (r[ktCol] || 'Dat') : 'Dat',
-    lyDoCachLy: lyDoCol !== -1 ? r[lyDoCol] : '',
-    batchId: batchCol !== -1 ? r[batchCol] : ''
-  })).filter(r => r.id && String(r.id).trim().length > 0);
+  const rows = data.slice(1).map(r => {
+    const id = String(r[0] || '').trim();
+    const rawCl = (clCol !== -1 ? String(r[clCol] || '').trim() : '') || String(r[17] || '').trim();
+    const cl = rawCl ? rawCl.toLowerCase() : (id.startsWith('VLXT-PT-') ? 'tinh' : 'tho');
+    const kt = ktCol !== -1 ? (String(r[ktCol] || '').trim() || 'Dat') : (String(r[18] || '').trim() || 'Dat');
+    return {
+      id: id,
+      mon: r[1] || 'Vật lý',
+      chuong: r[2] || 'Vật lí nhiệt',
+      mucDo: r[3] || 'NB',
+      loai: r[4] || 'TN',
+      nhomId: r[5] || '',
+      deBaiChung: r[6] || '',
+      question: r[actualQCol] || r[7] || '',
+      optA: r[8] || '',
+      optB: r[9] || '',
+      optC: r[10] || '',
+      optD: r[11] || '',
+      correct: r[12] || '',
+      hinhAnh: r[13] || '',
+      giaiThich: r[14] || '',
+      ngayThem: r[15] || '',
+      baiHoc: baiCol !== -1 ? (r[baiCol] || '') : (r[16] || ''),
+      chatLuong: cl,
+      kyThuat: kt,
+      lyDoCachLy: lyDoCol !== -1 ? (r[lyDoCol] || '') : (r[19] || ''),
+      batchId: batchCol !== -1 ? (r[batchCol] || '') : (r[20] || '')
+    };
+  }).filter(r => r.id && String(r.id).trim().length > 0);
   return jsonOut({ ok: true, data: rows });
 }
 
@@ -1298,6 +1316,11 @@ function importNganHang(data) {
       }
       if (!optA || !optB || !optC || !optD) {
         technicalErrors.push('Câu DS phải có đủ 4 mệnh đề a, b, c, d');
+      }
+    } else if (loai === 'TLN') {
+      cleanCorrect = rawCorrect;
+      if (!cleanCorrect) {
+        technicalErrors.push('Câu TLN phải có đáp số trả lời ngắn');
       }
     } else {
       cleanCorrect = rawCorrect;
