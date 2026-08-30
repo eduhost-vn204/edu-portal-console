@@ -5705,6 +5705,11 @@ function nhKatex(el){ setTimeout(()=>{ if(typeof renderMathInElement==='function
 /* ── Tải ngân hàng từ Google Sheets ── */
 async function loadBank(force){
     const list=document.getElementById('nh-list');
+    if(force){
+        if(window.clearVlxtCache) window.clearVlxtCache();
+        await refreshBank(true);
+        return;
+    }
     if(!bankData.length){
         const snapshot=await adminDbGet('nganhang');
         if(snapshot&&Array.isArray(snapshot.data)&&snapshot.data.length){
@@ -5713,12 +5718,23 @@ async function loadBank(force){
             return;
         }
     }
-    if(force&&bankData.length){ refreshBank(true); return; }
     if(!bankData.length) list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng lần đầu...</p></div>';
     await refreshBank(true);
 }
 function applyBankRows(rows){
-    bankData=rows.map(q=>{q={...q,loai:(q.loai||'TN').toString().toUpperCase().trim()};if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);return q;});
+    bankData=rows.map(q=>{
+        const isPt = String(q.id || '').startsWith('VLXT-PT-');
+        const rawCl = String(q.chatLuong || '').trim().toLowerCase();
+        const cl = isPt ? 'tinh' : (rawCl === 'tinh' ? 'tho' : (rawCl || 'tho'));
+        q={
+            ...q,
+            loai:(q.loai||'TN').toString().toUpperCase().trim(),
+            chatLuong: cl,
+            kyThuat: isPt ? 'Dat' : (q.kyThuat || 'Dat')
+        };
+        if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);
+        return q;
+    });
     bankLoaded=true; bankSel.clear(); renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
 }
 async function refreshBank(showError){
