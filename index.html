@@ -23,6 +23,23 @@
         body { background:var(--bg2); color:var(--black); font-family:'Inter',ui-sans-serif,sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh; }
         a { color:var(--blue); text-decoration:none; }
 
+        /* ─── IMAGE LAYOUT ARCHITECTURE (ISSUE #14) ─── */
+        .q-layout-side { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; justify-content: space-between; }
+        .q-layout-side .q-text-body { flex: 1; min-width: 0; }
+        .q-layout-side .q-img-col { flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+        .q-side-img { max-width: 250px; max-height: 220px; width: auto; height: auto; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin: 0 !important; }
+        .q-block-wrap { margin: 14px 0 10px; display: flex; justify-content: center; align-items: center; }
+        .q-block-img { max-width: 100%; max-height: 380px; width: auto; height: auto; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin: 0 auto !important; }
+        .q-multi-img-grid { display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; margin: 14px 0 10px; }
+        .q-grid-img { max-width: min(320px, 100%); max-height: 260px; width: auto; height: auto; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin: 0 !important; }
+        @media (max-width: 680px) {
+            .q-layout-side { flex-direction: column-reverse; gap: 14px; }
+            .q-layout-side .q-img-col { width: 100%; justify-content: center; }
+            .q-side-img { max-width: 100%; max-height: 260px; }
+            .q-grid-img { max-width: 100%; }
+        }
+
+
         /* ── LOGIN ── */
         .login-overlay { position:fixed; inset:0; z-index:9999; background:rgba(255,255,255,.97); backdrop-filter:blur(8px); display:flex; justify-content:center; align-items:center; padding:20px; }
         .login-box { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:44px 40px; width:100%; max-width:380px; text-align:center; box-shadow:0 8px 40px rgba(0,0,0,.07); }
