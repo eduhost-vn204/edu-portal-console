@@ -1105,78 +1105,8 @@
         </div>
       </div>
       <div id="exam-list-panel"><div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div></div>
-
-      <!-- Form thêm/sửa đề -->
-      <div class="em-form" id="exam-form-panel" style="display:none">
-        <div class="em-form-head">
-          <h3 id="exam-form-title">Tạo đề kiểm tra mới</h3>
-          <button class="fp-close" onclick="hideExamForm()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="em-form-body">
-          <input type="hidden" id="ef-exam-id-hidden">
-          <div class="form-field">
-            <label>Mã đề (examId) <span>*</span></label>
-            <input type="text" id="ef-examid" placeholder="vd: de01, de02, thithu01..." maxlength="30">
-          </div>
-          <div class="form-field">
-            <label>Tên đề <span>*</span></label>
-            <input type="text" id="ef-tende" placeholder="vd: Đề Thi Thử Thực Chiến THPTQG — Đề Số 01">
-          </div>
-          <div class="form-field">
-            <label>Mô tả / Ghi chú</label>
-            <input type="text" id="ef-mota" placeholder="vd: 40 câu chuẩn cấu trúc, 50 phút">
-          </div>
-          <div class="form-field">
-            <label>Link Video Chữa Đề (YouTube / Google Drive)</label>
-            <input type="text" id="ef-videourl" placeholder="vd: https://www.youtube.com/watch?v=... hoặc drive link">
-          </div>
-          <div class="efd-row">
-            <div class="form-field">
-              <label>Thời gian (phút)</label>
-              <input type="number" id="ef-thoigian" value="50" min="5" max="180">
-            </div>
-            <div class="form-field">
-              <label>Phân loại đề</label>
-              <select id="ef-loaide">
-                <option value="thithu">🎯 Phòng Thi Thử</option>
-                <option value="kiemtra">📝 Phòng Kiểm Tra</option>
-                <option value="luyentap">📚 Luyện Tập Tự Do</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label>Lớp</label>
-              <select id="ef-lop">
-                <option value="12">Vật Lý 12</option>
-                <option value="11">Vật Lý 11</option>
-                <option value="10">Vật Lý 10</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label>Hiển thị danh sách <span>*</span></label>
-              <select id="ef-hienthi">
-                <option value="an">🙈 Ẩn (Không hiện trên danh sách web học sinh)</option>
-                <option value="hien">👁️ Hiện (Hiển thị thẻ đề cho học sinh)</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label>Quyền làm bài thi <span>*</span></label>
-              <select id="ef-trangthai">
-                <option value="khoa">🔒 Khóa (Chưa cho phép vào thi)</option>
-                <option value="mo">✅ Mở (Cho phép học sinh vào thi ngay)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="em-form-foot">
-          <button class="btn-save" id="ef-save-btn" onclick="submitExamForm()">
-            <i class="fa-solid fa-floppy-disk"></i> Lưu đề
-          </button>
-          <button class="btn-cancel-form" onclick="hideExamForm()">Hủy</button>
-        </div>
-      </div>
     </div>
+
 
     <!-- ── CỘT PHẢI: UPLOAD .DOCX ── -->
     <div class="em-right">
@@ -1713,6 +1643,88 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL THÊM / SỬA THÔNG TIN ĐỀ THI (GLOBAL) -->
+<div class="confirm-overlay" id="exam-form-modal-overlay" style="z-index:9999">
+    <div class="confirm-box" style="max-width:680px;width:95%;text-align:left;max-height:92vh;display:flex;flex-direction:column;padding:0;overflow:hidden;border-radius:14px;box-shadow:0 12px 48px rgba(0,0,0,0.2)">
+        <div class="em-form-head" style="padding:16px 22px;background:var(--bg2);border-bottom:1.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <h3 id="exam-form-modal-title" style="font-size:17px;font-weight:800;color:var(--black);margin:0;display:flex;align-items:center;gap:8px">
+                <i class="fa-solid fa-pen-to-square" style="color:var(--blue)"></i> <span id="efm-title-text">Sửa thông tin đề thi</span>
+            </h3>
+            <button onclick="hideExamFormModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);padding:4px 8px"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="em-form-body" style="flex:1;overflow-y:auto;padding:22px;background:var(--bg)">
+            <input type="hidden" id="efm-mode" value="edit">
+            <div class="form-field" style="margin-bottom:14px">
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Mã đề (examId) <span style="color:var(--red)">*</span></label>
+                <input type="text" id="efm-examid" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--black);font-size:14px;font-weight:600;outline:none" placeholder="vd: vedich2k9_de02, thithu01..." maxlength="40">
+                <div style="font-size:11.5px;color:var(--gray2);margin-top:4px">Mã định danh duy nhất của đề (không thể sửa sau khi tạo).</div>
+            </div>
+            <div class="form-field" style="margin-bottom:14px">
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Tên đề thi <span style="color:var(--red)">*</span></label>
+                <input type="text" id="efm-tende" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none" placeholder="vd: Đề Về Đích 2k9 — Đề Số 02">
+            </div>
+            <div class="form-field" style="margin-bottom:14px">
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Mô tả / Ghi chú</label>
+                <input type="text" id="efm-mota" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none" placeholder="vd: 28 câu chuẩn cấu trúc Bộ GD&ĐT 2026, 50 phút">
+            </div>
+            <div class="form-field" style="margin-bottom:14px">
+                <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Link Video Chữa Đề (YouTube / Google Drive)</label>
+                <input type="text" id="efm-videourl" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none" placeholder="vd: https://www.youtube.com/watch?v=... hoặc drive link">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Thời gian (phút)</label>
+                    <input type="number" id="efm-thoigian" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none" value="50" min="5" max="180">
+                </div>
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Số câu hỏi</label>
+                    <input type="number" id="efm-socau" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none" value="28" min="1" max="100">
+                </div>
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Khối lớp</label>
+                    <select id="efm-lop" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none">
+                        <option value="12">Vật Lý 12</option>
+                        <option value="11">Vật Lý 11</option>
+                        <option value="10">Vật Lý 10</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Phân loại đề</label>
+                    <select id="efm-loaide" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none">
+                        <option value="thithu">🎯 Phòng Thi Thử</option>
+                        <option value="kiemtra">📝 Phòng Kiểm Tra</option>
+                        <option value="luyentap">📚 Luyện Tập Tự Do</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Hiển thị danh sách <span style="color:var(--red)">*</span></label>
+                    <select id="efm-hienthi" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none">
+                        <option value="an">🙈 Ẩn (Không hiện học sinh)</option>
+                        <option value="hien">👁️ Hiện (Hiển thị thẻ đề)</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--black)">Trạng thái thi <span style="color:var(--red)">*</span></label>
+                    <select id="efm-trangthai" style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--black);font-size:14px;outline:none">
+                        <option value="khoa">🔒 Khóa (Chưa cho vào thi)</option>
+                        <option value="mo">✅ Mở (Cho phép thi ngay)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="efm-error-msg" style="display:none;margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);font-size:13px"></div>
+        </div>
+        <div class="em-form-foot" style="padding:14px 22px;background:var(--bg2);border-top:1.5px solid var(--border);display:flex;justify-content:flex-end;gap:10px;align-items:center">
+            <button type="button" class="btn-confirm-cancel" onclick="hideExamFormModal()" style="padding:9px 18px;font-size:14px">Hủy / Đóng</button>
+            <button type="button" class="btn-save" id="efm-save-btn" onclick="submitExamFormModal()" style="padding:9px 20px;font-size:14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="confirm-overlay" id="confirm-overlay">
     <div class="confirm-box">
         <h3 id="confirm-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i> Xác nhận xóa</h3>
@@ -5093,66 +5105,146 @@ async function bulkUpdateBatch2k9(field, value) {
     toast(`<i class="fa-solid fa-circle-check"></i> Đã hoàn tất ${label}!`, 'ok');
 }
 
-function showExamForm(examId, defaultLoaiDe) {
-    const panel = document.getElementById('exam-form-panel');
-    panel.style.display = 'block';
-    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+function showExamFormModal(examId, defaultLoaiDe) {
+    const overlay = document.getElementById('exam-form-modal-overlay');
+    if (!overlay) return;
+    
+    const errEl = document.getElementById('efm-error-msg');
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+    
     if (examId) {
-        const ex = examListData.find(e => e.examId === examId);
-        if (!ex) return;
-        document.getElementById('exam-form-title').textContent = 'Sửa đề: ' + examId;
-        document.getElementById('ef-examid').value = examId;
-        document.getElementById('ef-examid').disabled = true;
-        document.getElementById('ef-tende').value   = ex.tenDe || '';
-        document.getElementById('ef-mota').value    = ex.moTa  || '';
-        document.getElementById('ef-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
-        document.getElementById('ef-thoigian').value = ex.thoiGian || 50;
-        document.getElementById('ef-loaide').value   = ex.loaiDe || 'thithu';
-        document.getElementById('ef-lop').value      = ex.lop  || '12';
+        const ex = examListData.find(e => e.examId === examId) || { examId };
+        document.getElementById('efm-title-text').textContent = 'Sửa thông tin đề thi: ' + examId;
+        document.getElementById('efm-mode').value = 'edit';
+        
+        const idInput = document.getElementById('efm-examid');
+        idInput.value = examId;
+        idInput.disabled = true;
+        idInput.style.background = 'var(--bg2)';
+        idInput.style.cursor = 'not-allowed';
+        
+        document.getElementById('efm-tende').value = ex.tenDe || '';
+        document.getElementById('efm-mota').value = ex.moTa || '';
+        document.getElementById('efm-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
+        document.getElementById('efm-thoigian').value = ex.thoiGian || 50;
+        document.getElementById('efm-socau').value = ex.soCau || 28;
+        document.getElementById('efm-lop').value = ex.lop || '12';
+        document.getElementById('efm-loaide').value = ex.loaiDe || defaultLoaiDe || 'thithu';
+        
         const isHien = (ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true');
-        document.getElementById('ef-hienthi').value = isHien ? 'hien' : 'an';
-        document.getElementById('ef-trangthai').value = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo') ? 'mo' : 'khoa';
+        document.getElementById('efm-hienthi').value = isHien ? 'hien' : 'an';
+        
+        const isMo = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo');
+        document.getElementById('efm-trangthai').value = isMo ? 'mo' : 'khoa';
     } else {
-        document.getElementById('exam-form-title').textContent = 'Tạo đề mới';
-        document.getElementById('ef-examid').value = '';
-        document.getElementById('ef-examid').disabled = false;
-        document.getElementById('ef-tende').value = '';
-        document.getElementById('ef-mota').value  = '';
-        document.getElementById('ef-videourl').value = '';
-        document.getElementById('ef-thoigian').value = 50;
-        document.getElementById('ef-loaide').value = defaultLoaiDe || 'thithu';
-        document.getElementById('ef-lop').value   = '12';
-        document.getElementById('ef-hienthi').value = 'an'; // Mặc định ẩn an toàn
-        document.getElementById('ef-trangthai').value = 'khoa'; // Mặc định khóa an toàn
+        document.getElementById('efm-title-text').textContent = 'Tạo đề thi mới';
+        document.getElementById('efm-mode').value = 'create';
+        
+        const idInput = document.getElementById('efm-examid');
+        idInput.value = '';
+        idInput.disabled = false;
+        idInput.style.background = 'var(--bg)';
+        idInput.style.cursor = 'text';
+        
+        document.getElementById('efm-tende').value = '';
+        document.getElementById('efm-mota').value = '';
+        document.getElementById('efm-videourl').value = '';
+        document.getElementById('efm-thoigian').value = 50;
+        document.getElementById('efm-socau').value = 28;
+        document.getElementById('efm-lop').value = '12';
+        document.getElementById('efm-loaide').value = defaultLoaiDe || 'thithu';
+        document.getElementById('efm-hienthi').value = 'an'; // Mặc định ẩn an toàn
+        document.getElementById('efm-trangthai').value = 'khoa'; // Mặc định khóa an toàn
     }
+    
+    overlay.classList.add('show');
 }
 
-async function submitExamForm() {
-    const btn = document.getElementById('ef-save-btn');
-    const examId  = (document.getElementById('ef-examid').value||'').trim().replace(/\s+/g,'').toLowerCase();
-    const tenDe   = document.getElementById('ef-tende').value.trim();
-    if (!examId) { alert('Vui lòng nhập mã đề (examId).'); return; }
-    if (!tenDe)  { alert('Vui lòng nhập tên đề.'); return; }
-    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-    const videoUrl = document.getElementById('ef-videourl').value.trim();
-    const payload = {
-        action:'saveExam', examId, tenDe,
-        moTa:      document.getElementById('ef-mota').value.trim(),
-        videoUrl:  videoUrl,
-        loaiDe:    document.getElementById('ef-loaide').value,
-        thoiGian:  parseInt(document.getElementById('ef-thoigian').value)||50,
-        lop:       document.getElementById('ef-lop').value,
-        hienThi:   document.getElementById('ef-hienthi') ? document.getElementById('ef-hienthi').value : 'an',
-        trangThai: document.getElementById('ef-trangthai').value
-    };
-    const okWrite = await postAdminWriteWithRetry(payload);
-    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu đề';
-    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu đề!','ok');
-    hideExamForm();
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList, 1200);
+function hideExamFormModal() {
+    const overlay = document.getElementById('exam-form-modal-overlay');
+    if (overlay) overlay.classList.remove('show');
 }
+
+const showExamForm = showExamFormModal;
+const hideExamForm = hideExamFormModal;
+
+async function submitExamFormModal() {
+    const btn = document.getElementById('efm-save-btn');
+    const errEl = document.getElementById('efm-error-msg');
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+    
+    const examId = (document.getElementById('efm-examid').value || '').trim().replace(/\s+/g, '').toLowerCase();
+    const tenDe = (document.getElementById('efm-tende').value || '').trim();
+    const moTa = (document.getElementById('efm-mota').value || '').trim();
+    const videoUrl = (document.getElementById('efm-videourl').value || '').trim();
+    const thoiGian = parseInt(document.getElementById('efm-thoigian').value) || 50;
+    const soCau = parseInt(document.getElementById('efm-socau').value) || 28;
+    const lop = document.getElementById('efm-lop').value || '12';
+    const loaiDe = document.getElementById('efm-loaide').value || 'thithu';
+    const hienThi = document.getElementById('efm-hienthi').value || 'an';
+    const trangThai = document.getElementById('efm-trangthai').value || 'khoa';
+    
+    if (!examId) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ Vui lòng nhập mã đề (examId).'; }
+        else alert('Vui lòng nhập mã đề (examId).');
+        return;
+    }
+    if (!tenDe) {
+        if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ Vui lòng nhập tên đề thi.'; }
+        else alert('Vui lòng nhập tên đề thi.');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+    
+    const payload = {
+        action: 'saveExam',
+        examId,
+        tenDe,
+        moTa,
+        videoUrl,
+        loaiDe,
+        thoiGian,
+        soCau,
+        lop,
+        hienThi,
+        trangThai
+    };
+    
+    const res = await postAdminWriteJson(payload);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
+    
+    if (!res || res.ok !== true) {
+        const errMsg = (res && res.msg) ? res.msg : 'Lỗi máy chủ không xác định';
+        if (errEl) {
+            errEl.style.display = 'block';
+            errEl.textContent = '❌ Lưu đề thất bại: ' + errMsg + '. Vui lòng kiểm tra lại.';
+        }
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI: ' + errMsg, 'err');
+        return; // Giữ nguyên form để Thầy không mất nội dung vừa gõ
+    }
+    
+    // Cập nhật ngay trong bộ nhớ local và render lại
+    const localIdx = examListData.findIndex(e => e.examId === examId);
+    if (localIdx >= 0) {
+        examListData[localIdx] = Object.assign({}, examListData[localIdx], payload);
+    } else {
+        examListData.push(payload);
+    }
+    renderExamList();
+    populateExamSelect();
+
+    // Server xác nhận thành công -> reload và đối chiếu dữ liệu
+    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thông tin đề thi thành công!', 'ok');
+    hideExamFormModal();
+    invalidateCache('vlxt_admin_soande');
+    await loadExamList(true);
+}
+
+const submitExamForm = submitExamFormModal;
+
 
 let currentDetailQuestions = [];
 
@@ -5336,73 +5428,7 @@ function populateExamSelect() {
         examListData.map(ex => `<option value="${ex.examId}">${ex.examId} · ${ex.tenDe||'(chưa đặt tên)'}</option>`).join('');
 }
 
-function showExamForm(examId, defaultLoaiDe) {
-    const panel = document.getElementById('exam-form-panel');
-    panel.style.display = 'block';
-    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    if (examId) {
-        const ex = examListData.find(e => e.examId === examId);
-        if (!ex) return;
-        document.getElementById('exam-form-title').textContent = 'Sửa đề: ' + examId;
-        document.getElementById('ef-examid').value = examId;
-        document.getElementById('ef-examid').disabled = true;
-        document.getElementById('ef-tende').value   = ex.tenDe || '';
-        document.getElementById('ef-mota').value    = ex.moTa  || '';
-        document.getElementById('ef-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
-        document.getElementById('ef-thoigian').value = ex.thoiGian || 50;
-        document.getElementById('ef-loaide').value   = ex.loaiDe || 'thithu';
-        document.getElementById('ef-lop').value      = ex.lop  || '12';
-        document.getElementById('ef-trangthai').value = ex.trangThai || 'khoa';
-    } else {
-        document.getElementById('exam-form-title').textContent = 'Tạo đề mới';
-        document.getElementById('ef-examid').value = '';
-        document.getElementById('ef-examid').disabled = false;
-        document.getElementById('ef-tende').value = '';
-        document.getElementById('ef-mota').value  = '';
-        document.getElementById('ef-videourl').value = '';
-        document.getElementById('ef-thoigian').value = 50;
-        document.getElementById('ef-loaide').value = defaultLoaiDe || 'thithu';
-        document.getElementById('ef-lop').value   = '12';
-        document.getElementById('ef-trangthai').value = 'khoa';
-    }
-}
 
-function hideExamForm() { document.getElementById('exam-form-panel').style.display='none'; }
-
-async function submitExamForm() {
-    const btn = document.getElementById('ef-save-btn');
-    const examId  = (document.getElementById('ef-examid').value||'').trim().replace(/\s+/g,'').toLowerCase();
-    const tenDe   = document.getElementById('ef-tende').value.trim();
-    if (!examId) { alert('Vui lòng nhập mã đề (examId).'); return; }
-    if (!tenDe)  { alert('Vui lòng nhập tên đề.'); return; }
-    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-    const videoUrl = document.getElementById('ef-videourl').value.trim();
-    const payload = {
-        action:'saveExam', examId, tenDe,
-        moTa:      document.getElementById('ef-mota').value.trim(),
-        videoUrl:  videoUrl,
-        loaiDe:    document.getElementById('ef-loaide').value,
-        thoiGian:  parseInt(document.getElementById('ef-thoigian').value)||50,
-        lop:       document.getElementById('ef-lop').value,
-        trangThai: document.getElementById('ef-trangthai').value
-    };
-    const okWrite = await postAdminWriteWithRetry(payload);
-    btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu đề';
-    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    toast('<i class="fa-solid fa-circle-check"></i> Đã lưu đề!','ok');
-    hideExamForm();
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList, 1500);
-}
-
-async function toggleExamStatus(examId, curStatus) {
-    const newStatus = curStatus==='mo'?'khoa':'mo';
-    const okWrite = await postAdminWriteWithRetry({action:'saveExam',examId,trangThai:newStatus});
-    if (!okWrite) { toast('<i class="fa-solid fa-triangle-exclamation"></i> ĐỔI TRẠNG THÁI THẤT BẠI — server không xác nhận ghi. Thử lại!','err'); return; }
-    toast(newStatus==='mo'?'✅ Đề đã được mở!':'🔒 Đề đã khóa!','ok');
-    invalidateCache('vlxt_admin_soande');
-    setTimeout(loadExamList,1500);
-}
 
 let _pendingDeleteExamId = null;
 function confirmDeleteExam(examId, tenDe) {
