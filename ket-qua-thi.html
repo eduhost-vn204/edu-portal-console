@@ -990,7 +990,7 @@
         <div class="nav-breadcrumb" id="nav-breadcrumb">
             <span class="nb-root">Admin</span>
             <i class="fa-solid fa-chevron-right nb-sep"></i>
-            <span class="nb-current" id="nb-current-title">Quản lý bài học</span>
+            <span class="nb-current" id="nb-current-title">Kết quả thi</span>
         </div>
     </div>
     <div class="nav-right">
@@ -1042,7 +1042,7 @@
 <!-- ════════════════════════════════════
      TAB 1: QUẢN LÝ BÀI HỌC
 ════════════════════════════════════ -->
-<div class="tab-content active" id="tab-baihoc">
+<div class="tab-content" id="tab-baihoc">
 <div class="wrap">
     <div class="lm-toolbar">
         <h2><i class="fa-solid fa-book-open" style="color:var(--blue);font-size:20px"></i> Danh sách bài giảng</h2>
@@ -1622,7 +1622,7 @@
 <!-- ════════════════════════════════════
      TAB 3: KẾT QUẢ THI
 ════════════════════════════════════ -->
-<div class="tab-content" id="tab-ketqua">
+<div class="tab-content active" id="tab-ketqua">
 <div class="wrap">
     <div class="lm-toolbar" style="margin-bottom:24px">
         <h2><i class="fa-solid fa-trophy" style="color:var(--gold);font-size:20px"></i> Kết quả thi học sinh</h2>
@@ -9654,11 +9654,11 @@ async function htResetDevice(deviceId) {
 </div>
 
 <script>
-window.CURRENT_PAGE_MODULE = 'baihoc';
+window.CURRENT_PAGE_MODULE = 'ketqua';
 document.addEventListener('DOMContentLoaded', function() {
-    handleUrlRouting('baihoc');
+    handleUrlRouting('ketqua');
     if (localStorage.getItem('adminLoggedIn') === '1') {
-        switchTab('baihoc');
+        switchTab('ketqua');
     }
 });
 </script>

@@ -990,7 +990,7 @@
         <div class="nav-breadcrumb" id="nav-breadcrumb">
             <span class="nb-root">Admin</span>
             <i class="fa-solid fa-chevron-right nb-sep"></i>
-            <span class="nb-current" id="nb-current-title">Quản lý bài học</span>
+            <span class="nb-current" id="nb-current-title">Phạm vi giảng dạy</span>
         </div>
     </div>
     <div class="nav-right">
@@ -1042,7 +1042,7 @@
 <!-- ════════════════════════════════════
      TAB 1: QUẢN LÝ BÀI HỌC
 ════════════════════════════════════ -->
-<div class="tab-content active" id="tab-baihoc">
+<div class="tab-content" id="tab-baihoc">
 <div class="wrap">
     <div class="lm-toolbar">
         <h2><i class="fa-solid fa-book-open" style="color:var(--blue);font-size:20px"></i> Danh sách bài giảng</h2>
@@ -7964,7 +7964,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 <!-- ════════════════════════════════════
      TAB: PHẠM VI GIẢNG DẠY (TEACHING SCOPE)
 ════════════════════════════════════ -->
-<div class="tab-content" id="tab-teachingscope">
+<div class="tab-content active" id="tab-teachingscope">
 <div class="wrap ts-wrap">
     <div class="ts-header">
         <div>
@@ -9654,11 +9654,11 @@ async function htResetDevice(deviceId) {
 </div>
 
 <script>
-window.CURRENT_PAGE_MODULE = 'baihoc';
+window.CURRENT_PAGE_MODULE = 'teachingscope';
 document.addEventListener('DOMContentLoaded', function() {
-    handleUrlRouting('baihoc');
+    handleUrlRouting('teachingscope');
     if (localStorage.getItem('adminLoggedIn') === '1') {
-        switchTab('baihoc');
+        switchTab('teachingscope');
     }
 });
 </script>

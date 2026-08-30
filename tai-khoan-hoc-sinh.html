@@ -990,7 +990,7 @@
         <div class="nav-breadcrumb" id="nav-breadcrumb">
             <span class="nb-root">Admin</span>
             <i class="fa-solid fa-chevron-right nb-sep"></i>
-            <span class="nb-current" id="nb-current-title">Quản lý bài học</span>
+            <span class="nb-current" id="nb-current-title">Tài khoản HS</span>
         </div>
     </div>
     <div class="nav-right">
@@ -1042,7 +1042,7 @@
 <!-- ════════════════════════════════════
      TAB 1: QUẢN LÝ BÀI HỌC
 ════════════════════════════════════ -->
-<div class="tab-content active" id="tab-baihoc">
+<div class="tab-content" id="tab-baihoc">
 <div class="wrap">
     <div class="lm-toolbar">
         <h2><i class="fa-solid fa-book-open" style="color:var(--blue);font-size:20px"></i> Danh sách bài giảng</h2>
@@ -7731,7 +7731,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 <!-- ════════════════════════════════════
      TAB 7: TÀI KHOẢN HỌC SINH
 ════════════════════════════════════ -->
-<div class="tab-content" id="tab-taikhoan">
+<div class="tab-content active" id="tab-taikhoan">
 <div class="wrap" style="max-width:1000px">
 <div class="lm-toolbar" style="margin-bottom:20px">
   <h2><i class="fa-solid fa-users" style="color:var(--blue);font-size:20px"></i> Quản lý Tài khoản Học sinh</h2>
@@ -9654,11 +9654,11 @@ async function htResetDevice(deviceId) {
 </div>
 
 <script>
-window.CURRENT_PAGE_MODULE = 'baihoc';
+window.CURRENT_PAGE_MODULE = 'taikhoan';
 document.addEventListener('DOMContentLoaded', function() {
-    handleUrlRouting('baihoc');
+    handleUrlRouting('taikhoan');
     if (localStorage.getItem('adminLoggedIn') === '1') {
-        switchTab('baihoc');
+        switchTab('taikhoan');
     }
 });
 </script>

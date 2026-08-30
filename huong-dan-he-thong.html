@@ -990,7 +990,7 @@
         <div class="nav-breadcrumb" id="nav-breadcrumb">
             <span class="nb-root">Admin</span>
             <i class="fa-solid fa-chevron-right nb-sep"></i>
-            <span class="nb-current" id="nb-current-title">Quản lý bài học</span>
+            <span class="nb-current" id="nb-current-title">Hướng Dẫn</span>
         </div>
     </div>
     <div class="nav-right">
@@ -1042,7 +1042,7 @@
 <!-- ════════════════════════════════════
      TAB 1: QUẢN LÝ BÀI HỌC
 ════════════════════════════════════ -->
-<div class="tab-content active" id="tab-baihoc">
+<div class="tab-content" id="tab-baihoc">
 <div class="wrap">
     <div class="lm-toolbar">
         <h2><i class="fa-solid fa-book-open" style="color:var(--blue);font-size:20px"></i> Danh sách bài giảng</h2>
@@ -7949,7 +7949,7 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
 <!-- ════════════════════════════════════
      TAB: HƯỚNG DẪN HỌC TẬP (popup video, 17/8/2026)
 ════════════════════════════════════ -->
-<div class="tab-content" id="tab-huongdan">
+<div class="tab-content active" id="tab-huongdan">
 <div class="wrap" style="max-width:900px">
 <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px">
   <i class="fa-solid fa-circle-play" style="color:var(--blue)"></i> Hướng Dẫn Học Tập
@@ -9654,11 +9654,11 @@ async function htResetDevice(deviceId) {
 </div>
 
 <script>
-window.CURRENT_PAGE_MODULE = 'baihoc';
+window.CURRENT_PAGE_MODULE = 'huongdan';
 document.addEventListener('DOMContentLoaded', function() {
-    handleUrlRouting('baihoc');
+    handleUrlRouting('huongdan');
     if (localStorage.getItem('adminLoggedIn') === '1') {
-        switchTab('baihoc');
+        switchTab('huongdan');
     }
 });
 </script>
