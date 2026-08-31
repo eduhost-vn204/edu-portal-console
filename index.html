@@ -2638,9 +2638,48 @@ async function loadSettings(){
     }catch(e){ console.warn('Không tải được settings:', e); }
 }
 
-async function markTeachingLesson(key){
+function normKey(k){
+    return (k === null || k === undefined) ? '' : String(k).trim().normalize('NFC');
+}
+
+function isLessonTeaching(l){
+    if(!currentTeachingLesson) return false;
+    const target = normKey(currentTeachingLesson);
+    if(!target) return false;
+    if(l.mabai && normKey(l.mabai) === target) return true;
+    if(normKey(l.legacyKey || `${l.khoa}|||${l.chuong}|||${l.ten}`) === target) return true;
+    return false;
+}
+
+function findTeachingLessonInfo(){
+    if(!currentTeachingLesson) return null;
+    const target = normKey(currentTeachingLesson);
+    if(!target) return null;
+    for(const r of allLessons){
+        const mb = normKey(r.MaBai || r.mabai || '');
+        const leg = normKey(`${r.KhoaHoc || r.khoahoc || r.course || r.mon || ''}|||${r.Chuong || r.chuong || r.chapter || ''}|||${r.TenBai || r.tenbai || r.title || r.ten || ''}`);
+        if((mb && mb === target) || leg === target){
+            return {
+                mabai: r.MaBai || r.mabai || '',
+                khoa: r.KhoaHoc || r.khoahoc || r.course || r.mon || '',
+                chuong: r.Chuong || r.chuong || r.chapter || '',
+                ten: r.TenBai || r.tenbai || r.title || r.ten || '',
+                legacyKey: leg
+            };
+        }
+    }
+    return null;
+}
+
+async function markTeachingLesson(preferredKey, legacyFallback){
+    const isCurrentlyActive = currentTeachingLesson && (
+        (preferredKey && normKey(currentTeachingLesson) === normKey(preferredKey)) ||
+        (legacyFallback && normKey(currentTeachingLesson) === normKey(legacyFallback))
+    );
     const prev = currentTeachingLesson;
-    currentTeachingLesson = (currentTeachingLesson === key) ? '' : key; // toggle
+    // Ưu tiên lưu MaBai (stable key) nếu có, fallback legacy key
+    const newTargetKey = (preferredKey || legacyFallback || '').trim();
+    currentTeachingLesson = isCurrentlyActive ? '' : newTargetKey;
     renderLessonList();
     const ok = await postAdminWriteWithRetry({
         action: 'savesetting',
@@ -2649,12 +2688,30 @@ async function markTeachingLesson(key){
     });
     if(ok){
         toast(currentTeachingLesson
-            ? '⭐ Đã đánh dấu bài đang dạy'
-            : '☆ Đã bỏ đánh dấu', 'ok');
+            ? '⭐ Đã đánh dấu bài đang dạy' + (preferredKey ? ' (Mã bài: ' + preferredKey + ')' : '')
+            : '☆ Đã bỏ đánh dấu bài đang dạy', 'ok');
     }else{
         currentTeachingLesson = prev;
         renderLessonList();
         toast('Lỗi lưu bài đang dạy lên máy chủ.', 'err');
+    }
+}
+
+async function clearOrphanTeachingLesson(){
+    const prev = currentTeachingLesson;
+    currentTeachingLesson = '';
+    renderLessonList();
+    const ok = await postAdminWriteWithRetry({
+        action: 'savesetting',
+        key: 'currentTeachingLesson',
+        value: ''
+    });
+    if(ok){
+        toast('Đã xoá cấu hình bài đang dạy không hợp lệ', 'ok');
+    }else{
+        currentTeachingLesson = prev;
+        renderLessonList();
+        toast('Lỗi khi xoá cấu hình bài đang dạy.', 'err');
     }
 }
 
@@ -3063,13 +3120,15 @@ function groupLessons(rows){
         const ngaydang = r.NgayDang || r.ngaydang || r.date || '';
         const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
         const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
+        const mabai = (r.MaBai !== undefined && r.MaBai !== null && r.MaBai !== '') ? String(r.MaBai).trim() : ((r.mabai !== undefined && r.mabai !== null && r.mabai !== '') ? String(r.mabai).trim() : '');
+        const legacyKey = `${khoa}|||${chuong}|||${ten}`;
         const sc = extractSC(khoa);
         const subj = sc.subject || khoa;
         const cname = sc.courseName || khoa; // tên khóa hiển thị
         if(!subjects[subj]) subjects[subj]={name:subj, courses:{}};
         if(!subjects[subj].courses[khoa]) subjects[subj].courses[khoa]={name:cname, fullName:khoa, chapters:{}};
         if(!subjects[subj].courses[khoa].chapters[chuong]) subjects[subj].courses[khoa].chapters[chuong]=[];
-        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb});
+        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb,mabai,legacyKey});
     });
     // Sắp xếp bài trong từng chương theo ThuTuBai (thầy tự kéo lên/xuống bằng nút mũi tên).
     // Bài chưa từng được sắp xếp (ttb=null) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
@@ -3318,12 +3377,14 @@ function renderCourseBlock(course){
             const hasVid=!!ytId(l.video)||!!(l.video&&l.video.includes('drive.google.com'));
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
-            const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
-            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
-            const isTeaching = (currentTeachingLesson === key);
-            const safeKey = esc(key).replace(/'/g,"&#39;");
-            const liSelected = bulkMode && bulkSelected.has(key);
-            html+=`<div class="lesson-item${isTeaching?' teaching':''}${liSelected?' bulk-selected':''}" draggable="${bulkMode?'false':'true'}" data-key="${esc(key)}"
+            const legacyKey = l.legacyKey || `${l.khoa}|||${l.chuong}|||${l.ten}`;
+            const mabai = l.mabai || '';
+            const qbCount = (_qbCounts && _qbCounts[legacyKey]!==undefined) ? _qbCounts[legacyKey] : (_qbCounts && mabai && _qbCounts[mabai]!==undefined ? _qbCounts[mabai] : baitapArr.length);
+            const isTeaching = isLessonTeaching(l);
+            const safeKey = esc(legacyKey).replace(/'/g,"&#39;");
+            const safeMabai = esc(mabai).replace(/'/g,"&#39;");
+            const liSelected = bulkMode && bulkSelected.has(legacyKey);
+            html+=`<div class="lesson-item${isTeaching?' teaching':''}${liSelected?' bulk-selected':''}" draggable="${bulkMode?'false':'true'}" data-key="${esc(legacyKey)}"
                 ondragstart="lessonDragStart(event)" ondragover="lessonDragOver(event)" ondrop="lessonDrop(event)" ondragend="lessonDragEnd(event)">
                 ${bulkMode?`<input type="checkbox" class="bulk-checkbox li-check" ${liSelected?'checked':''} onclick="toggleBulkSelect('${safeKey}',this.checked)">`:`<div class="li-drag-handle" title="Kéo để đổi thứ tự"><i class="fa-solid fa-grip-vertical"></i></div>`}
                 <div class="li-name">${esc(l.ten)}</div>
@@ -3334,7 +3395,7 @@ function renderCourseBlock(course){
                     ${qbCount?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${qbCount} câu</span>`:''}
                 </div>
                 <div class="li-actions">
-                    <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeKey}')">⭐</button>
+                    <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeMabai}','${safeKey}')">⭐</button>
                     <button class="li-btn edit" title="Sửa bài" onclick="openEditForm('${safeKey}')"><i class="fa-solid fa-pen"></i></button>
                     <button class="li-btn del" title="Xóa bài" onclick="confirmDelete('${safeKey}')"><i class="fa-solid fa-trash"></i></button>
                 </div>
@@ -3360,6 +3421,12 @@ function renderLessonList(){
         return;
     }
     let html='';
+    if(currentTeachingLesson && !findTeachingLessonInfo() && allLessons.length > 0){
+        html += `<div class="teaching-orphan-alert" style="margin-bottom:16px;padding:12px 18px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;color:#fca5a5;font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;color:#ef4444"></i> <strong>Cảnh báo bài đang dạy:</strong> Giá trị hiện tại (<code>${esc(currentTeachingLesson)}</code>) không khớp với bài học nào. Thầy vui lòng bấm ⭐ trên bài học bên dưới để chọn lại.</div>
+            <button style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" onclick="clearOrphanTeachingLesson()"><i class="fa-solid fa-trash-can"></i> Xóa cấu hình này</button>
+        </div>`;
+    }
     Object.values(subjects).forEach(subj=>{
         const allCourses = Object.values(subj.courses).sort((a,b)=>{
             const ta = ADMIN_KHOACONFIG[a.fullName]?.thuTu ?? 999;
