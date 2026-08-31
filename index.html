@@ -484,11 +484,14 @@
         .em-title { font-size:15px; font-weight:800; letter-spacing:-.02em; margin-bottom:6px; }
         .em-meta { font-size:13px; color:var(--gray2); display:flex; gap:14px; flex-wrap:wrap; }
         .em-actions { display:flex; gap:0; border-top:1px solid var(--border); }
-        .em-btn { flex:1; padding:9px; background:transparent; border:none; font-size:12.5px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:5px; transition:background .12s; color:var(--gray); }
-        .em-btn:first-child { border-right:1px solid var(--border); }
+        .em-btn { flex:1; padding:9px 4px; background:transparent; border:none; font-size:12px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:4px; transition:background .12s; color:var(--gray); }
+        .em-btn:not(:last-child) { border-right:1px solid var(--border); }
         .em-btn.edit:hover { background:rgba(11,132,243,.06); color:var(--blue); }
+        .em-btn.view:hover { background:rgba(11,132,243,.08); color:var(--blue); font-weight:700; }
         .em-btn.del:hover { background:rgba(220,38,38,.06); color:var(--red); }
         .em-btn.toggle:hover { background:rgba(22,163,74,.06); color:var(--green); }
+        .kt-bulk-btn { font-size:12px; padding:6px 11px; border-radius:8px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s ease; font-family:'Inter',sans-serif; }
+        .kt-bulk-btn:hover { transform:translateY(-1px); }
 
         /* Exam form */
         .em-form { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-top:10px; }
@@ -1322,6 +1325,35 @@
           </button>
         </div>
       </div>
+
+      <!-- THANH TÁC VỤ DUYỆT HÀNG LOẠT (BULK APPROVAL TOOLBAR) -->
+      <div id="kt-bulk-toolbar" style="background:var(--bg2);padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:700;user-select:none;color:var(--black)">
+            <input type="checkbox" id="kt-select-all-cb" onchange="toggleSelectAllKiemTra(this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
+            <span>Chọn tất cả</span>
+          </label>
+          <span id="kt-selected-count-badge" style="font-size:12px;color:var(--gray);background:var(--bg);padding:2px 8px;border-radius:12px;border:1px solid var(--border);font-weight:600">Đã chọn: 0 đề</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <button class="kt-bulk-btn btn-ghost2" style="color:#10b981;border-color:rgba(16,185,129,0.3)" onclick="bulkSetKiemTraVisibility('hien')" title="Duyệt Hiện các đề đã chọn lên web học sinh">
+            <i class="fa-solid fa-eye"></i> Hiện
+          </button>
+          <button class="kt-bulk-btn btn-ghost2" style="color:#6b7280;border-color:rgba(107,114,128,0.3)" onclick="bulkSetKiemTraVisibility('an')" title="Ẩn các đề đã chọn khỏi web học sinh">
+            <i class="fa-solid fa-eye-slash"></i> Ẩn
+          </button>
+          <button class="kt-bulk-btn btn-ghost2" style="color:var(--blue);border-color:rgba(11,132,243,0.3)" onclick="bulkSetKiemTraStatus('mo')" title="Mở quyền làm bài thi cho các đề đã chọn">
+            <i class="fa-solid fa-lock-open"></i> Mở
+          </button>
+          <button class="kt-bulk-btn btn-ghost2" style="color:#ef4444;border-color:rgba(239,68,68,0.3)" onclick="bulkSetKiemTraStatus('khoa')" title="Khóa quyền làm bài thi cho các đề đã chọn">
+            <i class="fa-solid fa-lock"></i> Khóa
+          </button>
+          <button class="kt-bulk-btn btn-ghost2" style="color:#dc2626;border-color:rgba(220,38,38,0.3);margin-left:auto" onclick="bulkDeleteKiemTraExams()" title="Xóa các đề đã chọn">
+            <i class="fa-solid fa-trash"></i> Xóa
+          </button>
+        </div>
+      </div>
+
       <div id="exam-list-panel"><div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div></div>
     </div>
 
@@ -1377,7 +1409,10 @@
             </div>
           </div>
 
-          <div class="action-row">
+          <div class="action-row" style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn-ghost2" id="preview-sim-btn" onclick="previewDraftExamInModal()" style="padding:12px 18px;font-size:13.5px;font-weight:700;color:var(--blue);border-color:var(--blue);background:rgba(11,132,243,0.06)">
+                  <i class="fa-solid fa-eye"></i> Xem trước dạng phòng thi
+              </button>
               <button class="btn-publish" id="publish-btn" onclick="publishExam()"><i class="fa-solid fa-rocket"></i> Xuất Bản Lên Web</button>
               <button class="btn-ghost2" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Làm lại</button>
           </div>
@@ -5217,6 +5252,168 @@ function handlePttSearch() {
     renderExamList();
 }
 
+let selectedKiemTraExams = new Set();
+
+function toggleSelectAllKiemTra(isChecked) {
+    const kiemTraList = examListData.filter(ex => !isThiThuExam(ex));
+    if (isChecked) {
+        kiemTraList.forEach(ex => selectedKiemTraExams.add(ex.examId));
+    } else {
+        selectedKiemTraExams.clear();
+    }
+    document.querySelectorAll('.kt-exam-cb').forEach(cb => {
+        cb.checked = isChecked;
+    });
+    updateKiemTraSelectedBadge();
+}
+
+function onKiemTraCbChange(examId, isChecked) {
+    if (isChecked) {
+        selectedKiemTraExams.add(examId);
+    } else {
+        selectedKiemTraExams.delete(examId);
+    }
+    updateKiemTraSelectedBadge();
+}
+
+function updateKiemTraSelectedBadge() {
+    const badge = document.getElementById('kt-selected-count-badge');
+    if (badge) badge.textContent = `Đã chọn: ${selectedKiemTraExams.size} đề`;
+    const allCb = document.getElementById('kt-select-all-cb');
+    const kiemTraList = examListData.filter(ex => !isThiThuExam(ex));
+    if (allCb) {
+        allCb.checked = (kiemTraList.length > 0 && selectedKiemTraExams.size === kiemTraList.length);
+    }
+}
+
+async function bulkSetKiemTraVisibility(value) {
+    if (!selectedKiemTraExams.size) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng tích chọn ít nhất 1 đề kiểm tra để thực hiện!', 'err');
+        return;
+    }
+    const label = value === 'hien' ? 'HIỆN' : 'ẨN';
+    const examIds = Array.from(selectedKiemTraExams);
+    if (!confirm(`Xác nhận ${label} ${examIds.length} đề kiểm tra đã chọn trên web học sinh?`)) return;
+
+    toast(`<i class="fa-solid fa-spinner fa-spin"></i> Đang duyệt ${label.toLowerCase()} ${examIds.length} đề...`, 'info');
+    const okWrite = await postAdminWriteWithRetry({
+        action: 'bulkupdateexams',
+        examIds,
+        hienThi: value
+    });
+    if (!okWrite) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> DUYỆT HÀNG LOẠT THẤT BẠI — server không xác nhận ghi. Thử lại!', 'err');
+        return;
+    }
+    await loadExamList(true);
+    selectedKiemTraExams.clear();
+    updateKiemTraSelectedBadge();
+    toast(`<i class="fa-solid fa-circle-check"></i> Đã ${label} thành công ${examIds.length} đề kiểm tra!`, 'ok');
+}
+
+async function bulkSetKiemTraStatus(value) {
+    if (!selectedKiemTraExams.size) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng tích chọn ít nhất 1 đề kiểm tra để thực hiện!', 'err');
+        return;
+    }
+    const label = value === 'mo' ? 'MỞ THI' : 'KHÓA';
+    const examIds = Array.from(selectedKiemTraExams);
+    if (!confirm(`Xác nhận ${label} ${examIds.length} đề kiểm tra đã chọn?`)) return;
+
+    toast(`<i class="fa-solid fa-spinner fa-spin"></i> Đang duyệt ${label.toLowerCase()} ${examIds.length} đề...`, 'info');
+    const okWrite = await postAdminWriteWithRetry({
+        action: 'bulkupdateexams',
+        examIds,
+        trangThai: value
+    });
+    if (!okWrite) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> DUYỆT HÀNG LOẠT THẤT BẠI — server không xác nhận ghi. Thử lại!', 'err');
+        return;
+    }
+    await loadExamList(true);
+    selectedKiemTraExams.clear();
+    updateKiemTraSelectedBadge();
+    toast(`<i class="fa-solid fa-circle-check"></i> Đã ${label} thành công ${examIds.length} đề kiểm tra!`, 'ok');
+}
+
+async function bulkDeleteKiemTraExams() {
+    if (!selectedKiemTraExams.size) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Vui lòng tích chọn ít nhất 1 đề kiểm tra để xóa!', 'err');
+        return;
+    }
+    const examIds = Array.from(selectedKiemTraExams);
+    if (!confirm(`⚠️ CẢNH BÁO: Thao tác này sẽ XÓA VĨNH VIỄN ${examIds.length} đề kiểm tra đã chọn cùng toàn bộ câu hỏi. Thầy có chắc chắn muốn xóa?`)) return;
+
+    toast(`<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa ${examIds.length} đề kiểm tra...`, 'info');
+    let successCount = 0;
+    for (const examId of examIds) {
+        const ok = await postAdminWriteWithRetry({ action: 'deleteexam', examId });
+        if (ok) successCount++;
+    }
+    await loadExamList(true);
+    selectedKiemTraExams.clear();
+    updateKiemTraSelectedBadge();
+    if (successCount === examIds.length) {
+        toast(`<i class="fa-solid fa-circle-check"></i> Đã xóa thành công ${successCount}/${examIds.length} đề kiểm tra!`, 'ok');
+    } else {
+        toast(`<i class="fa-solid fa-triangle-exclamation"></i> Đã xóa ${successCount}/${examIds.length} đề. Kiểm tra lại kết nối!`, 'err');
+    }
+}
+
+function previewDraftExamInModal() {
+    if (!parsedQuestions || !parsedQuestions.length) {
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa có câu hỏi nào để xem trước. Hãy tải file Word trước!', 'err');
+        return;
+    }
+    
+    const targetExam = document.getElementById('target-exam-select') ? document.getElementById('target-exam-select').value : '';
+    const ex = examListData.find(e => e.examId === targetExam);
+    const tenDe = ex ? ex.tenDe : (targetExam ? `Đề ${targetExam}` : 'Bản xem trước đề thi vừa bóc tách');
+    
+    currentExamDetailId = targetExam || 'DRAFT_PREVIEW';
+    currentExamSecFilter = 'all';
+    
+    currentExamQuestions = parsedQuestions.map((q, idx) => ({
+        id: idx + 1,
+        type: q.type,
+        question: q.question,
+        options: {
+            A: q.options ? (q.options.A || '') : '',
+            B: q.options ? (q.options.B || '') : '',
+            C: q.options ? (q.options.C || '') : '',
+            D: q.options ? (q.options.D || '') : ''
+        },
+        correct: q.correct || '',
+        giaiThich: q.giaiThich || ''
+    }));
+    
+    const overlay = document.getElementById('exam-detail-overlay');
+    if (!overlay) return;
+    
+    document.getElementById('ed-modal-id').textContent = targetExam ? `${targetExam} (Bản xem trước)` : 'BẢN XEM TRƯỚC TỪ WORD';
+    document.getElementById('ed-modal-title').textContent = tenDe + ' [XEM TRƯỚC PHÒNG THI]';
+    const stEl = document.getElementById('ed-modal-status');
+    stEl.className = 'em-status mo';
+    stEl.textContent = '📝 Xem trước (Chưa lưu)';
+    
+    document.getElementById('ed-modal-videobadge').innerHTML = '<span style="font-size:11px;color:#10b981;background:rgba(16,185,129,0.12);padding:2px 8px;border-radius:6px;font-weight:700"><i class="fa-solid fa-sparkles"></i> Vừa trích xuất từ file Word</span>';
+    
+    const p1Count = currentExamQuestions.filter(q => q.type === 'mc').length;
+    const p2Count = currentExamQuestions.filter(q => q.type === 'tf').length;
+    const p3Count = currentExamQuestions.filter(q => q.type === 'short').length;
+    const giaiCount = currentExamQuestions.filter(q => q.giaiThich && String(q.giaiThich).trim() !== '').length;
+    
+    document.getElementById('ed-meta-time').innerHTML = `<i class="fa-regular fa-clock"></i> ${ex ? (ex.thoiGian || 50) : 50} phút`;
+    document.getElementById('ed-meta-count').innerHTML = `<i class="fa-regular fa-file-lines"></i> ${currentExamQuestions.length} câu (P1: ${p1Count}, P2: ${p2Count}, P3: ${p3Count})`;
+    document.getElementById('ed-meta-attempts').innerHTML = `<i class="fa-solid fa-circle-check"></i> ${giaiCount} câu có lời giải`;
+    document.getElementById('ed-meta-desc').textContent = 'Đây là giao diện mô phỏng phòng thi giúp thầy kiểm tra đề trước khi xuất bản lên web.';
+    
+    document.querySelectorAll('.ed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.sec === 'all'));
+    
+    overlay.classList.add('show');
+    renderExamDetailQuestions();
+}
+
 function renderExamList() {
     // 1. Render Tab Phong Kiem Tra (#exam-list-panel)
     const elKiemTra = document.getElementById('exam-list-panel');
@@ -5235,31 +5432,39 @@ function renderExamList() {
                 const vUrl = extractAdminExamVideo(ex);
                 const loai = ex.loaiDe === 'luyentap' ? '📚 Luyện tập' : '📝 Kiểm tra';
                 const vBadge = vUrl ? '<span style="font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;font-weight:700"><i class="fa-solid fa-play"></i> Video chữa</span>' : '';
+                const isChecked = selectedKiemTraExams.has(ex.examId);
                 return `<div class="em-card" id="emc-${ex.examId}">
-                  <div class="em-card-body">
-                    <div class="em-card-top">
-                      <span class="em-id">${ex.examId}</span>
-                      <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
-                      <span class="em-status ${isHien?'mo':'khoa'}">${hienLabel}</span>
-                      <span class="em-status ${st}">${stLabel}</span>
-                      ${vBadge}
+                  <div style="padding:14px 16px 0 16px;display:flex;gap:12px;align-items:flex-start">
+                    <div style="padding-top:2px">
+                      <input type="checkbox" class="kt-exam-cb" data-id="${ex.examId}" ${isChecked?'checked':''} onchange="onKiemTraCbChange('${ex.examId}', this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
                     </div>
-                    <div class="em-title">${ex.tenDe || '(chưa đặt tên)'}</div>
-                    <div class="em-meta">
-                      <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||45} phút</span>
-                      <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||0} câu</span>
-                      <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
-                      <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
+                    <div style="flex:1;min-width:0">
+                      <div class="em-card-top">
+                        <span class="em-id">${ex.examId}</span>
+                        <span style="font-size:11px;background:var(--bg2);color:var(--gray);padding:2px 7px;border-radius:4px;font-weight:600">${loai}</span>
+                        <span class="em-status ${isHien?'mo':'khoa'}">${hienLabel}</span>
+                        <span class="em-status ${st}">${stLabel}</span>
+                        ${vBadge}
+                      </div>
+                      <div class="em-title">${ex.tenDe || '(chưa đặt tên)'}</div>
+                      <div class="em-meta">
+                        <span><i class="fa-regular fa-clock"></i> ${ex.thoiGian||45} phút</span>
+                        <span><i class="fa-regular fa-file-lines"></i> ${ex.soCau||0} câu</span>
+                        <span><i class="fa-regular fa-user"></i> ${ex.soLuotLam||0} lượt</span>
+                        <span><i class="fa-solid fa-graduation-cap"></i> Lớp ${ex.lop||12}</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="em-actions">
+                  <div class="em-actions" style="margin-top:10px">
                     <button class="em-btn edit" onclick="showExamForm('${ex.examId}','kiemtra')"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                    <button class="em-btn view" onclick="openExamDetailModal('${ex.examId}')"><i class="fa-solid fa-eye"></i> Xem đề</button>
                     <button class="em-btn toggle" onclick="toggleExamVisibility('${ex.examId}','${isHien?'hien':'an'}')">${isHien?'<i class="fa-solid fa-eye-slash"></i> Ẩn':'<i class="fa-solid fa-eye"></i> Hiện'}</button>
-                    <button class="em-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở đề'}</button>
+                    <button class="em-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở'}</button>
                     <button class="em-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
                   </div>
                 </div>`;
             }).join('');
+            updateKiemTraSelectedBadge();
         }
     }
 
@@ -5637,6 +5842,21 @@ function filterExamDetailSec(sec) {
 function renderExamDetailQuestions() {
     const qContainer = document.getElementById('ed-modal-questions');
     if (!qContainer) return;
+
+    // Update filter button labels dynamically with actual counts
+    const p1Count = currentExamQuestions.filter((q, idx) => (q.type === 'mc' || (!q.type && (q.id||(idx+1)) <= 18))).length;
+    const p2Count = currentExamQuestions.filter((q, idx) => (q.type === 'tf' || (!q.type && (q.id||(idx+1)) >= 19 && (q.id||(idx+1)) <= 22))).length;
+    const p3Count = currentExamQuestions.filter((q, idx) => (q.type === 'short' || (!q.type && (q.id||(idx+1)) >= 23))).length;
+    const giaiCount = currentExamQuestions.filter(q => q.giaiThich && String(q.giaiThich).trim() !== '').length;
+
+    document.querySelectorAll('.ed-tab-btn').forEach(btn => {
+        const sec = btn.dataset.sec;
+        if (sec === 'all') btn.textContent = `Tất cả (${currentExamQuestions.length})`;
+        else if (sec === 'p1') btn.textContent = `Phần I: TN (${p1Count})`;
+        else if (sec === 'p2') btn.textContent = `Phần II: Đúng/Sai (${p2Count})`;
+        else if (sec === 'p3') btn.textContent = `Phần III: Ngắn (${p3Count})`;
+        else if (sec === 'giai') btn.textContent = `Có lời giải (${giaiCount})`;
+    });
 
     if (!currentExamQuestions.length) {
         qContainer.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--gray)"><i class="fa-solid fa-folder-open" style="font-size:24px;margin-bottom:10px;display:block"></i>Chưa có câu hỏi nào được gán cho đề thi này.</div>';
