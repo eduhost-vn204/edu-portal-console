@@ -48,6 +48,7 @@ function doGet(e) {
     if (type === 'lichlive')          return getLiveSessions();
     if (type === 'huongdan')       return getHuongDan();
     if (type === 'questionstats' || type === 'getquestionstats') return getQuestionStats(e);
+    if (type === 'repairp107_251') return repairBatchP107_251_AutoFix(e);
     return getExamQuestions('de01'); // backward compat — không có type param
   } catch(err) {
     return jsonOut({ error: err.message });
@@ -72,6 +73,8 @@ function doPost(e) {
     if (action === 'savehuongdan')     return saveHuongDan(data);
     if (action === 'deletenganhang')     return deleteNganHang(data);
     if (action === 'updatenganhang')     return updateNganHang(data);
+    if (action === 'repairlessonbatch' || action === 'repair_lesson_batch' || action === 'repairquestionslessonbatch') return repairLessonBatch(data);
+    if (action === 'repairbatchp107_251_autofix') return repairBatchP107_251_AutoFix(data);
     if (action === 'importnganhang' || action === 'import_tinh_batch' || action === 'importtinhbatch' || action === 'importquestionsbatch' || action === 'import_questions_batch') return importNganHang(data);
     if (action === 'bulksetbainganhang') return typeof bulkSetBaiHocNganHang === 'function' ? bulkSetBaiHocNganHang(data) : bulkSetBaiNganHang(data);
     if (action === 'bulksetchatluongnganhang') return bulkSetChatLuongNganHang(data);
@@ -947,11 +950,12 @@ function getNganHang() {
   const rows = data.slice(1).map(r => {
     const id = String(r[0] || '').trim();
     const isPt = id.startsWith('VLXT-PT-');
-    const cl = isPt ? 'tinh' : 'tho';
+    const rawCl = clCol !== -1 ? String(r[clCol] || '').trim().toLowerCase() : String(r[17] || '').trim().toLowerCase();
+    const cl = rawCl || (isPt ? 'tinh' : 'tho');
     const kt = ktCol !== -1 ? (String(r[ktCol] || '').trim() || 'Dat') : (String(r[18] || '').trim() || 'Dat');
-    let baiHoc = baiCol !== -1 ? (r[baiCol] || '') : (r[16] || '');
-    if (isPt && (!baiHoc || !String(baiHoc).startsWith('Bài '))) {
-      baiHoc = PT_LESSON_DICT[id] || 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+    let baiHoc = baiCol !== -1 ? String(r[baiCol] || '').trim() : String(r[16] || '').trim();
+    if (!baiHoc && isPt) {
+      baiHoc = (typeof REPAIR_P107_251_LESSON_MAP !== 'undefined' && REPAIR_P107_251_LESSON_MAP[id]) || PT_LESSON_DICT[id] || 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
     }
     return {
       id: id,
@@ -1462,15 +1466,35 @@ function importNganHang(data) {
     if (/chương 1|vật l[yí] nhiệt/i.test(chuong)) chuong = 'Vật lí nhiệt';
     if (!chuong) chuong = 'Vật lí nhiệt';
 
-    let baiHoc = String(q.baiHoc || q.taxonomy?.lesson || '').trim();
-    if (/b1|mô hình động học|cấu trúc/i.test(baiHoc)) baiHoc = 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
-    else if (/b2|lực liên kết|chuyển thể/i.test(baiHoc)) baiHoc = 'Bài 2. Lực liên kết và sự chuyển thể';
-    else if (/b3|thang nhiệt độ|nhiệt kế/i.test(baiHoc)) baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
-    else if (/b4|nhiệt dung riêng/i.test(baiHoc)) baiHoc = 'Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi';
-    else if (/b5|định luật i|nội năng/i.test(baiHoc)) baiHoc = 'Bài 5. Định luật I của nhiệt động lực học';
-    else if (/b6|động cơ nhiệt/i.test(baiHoc)) baiHoc = 'Bài 6. Động cơ nhiệt - Đồ thị nhiệt';
-    if (!baiHoc && id) {
-      baiHoc = PT_LESSON_DICT[id] || 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+    // Trích xuất chính xác Bài học từ mọi nguồn (taxonomy.lessonCode, taxonomy.lessonTitle, _classification.baiHoc, baiHoc)
+    const tax = q.taxonomy || {};
+    const taxCode = String(tax.lessonCode || '').trim();
+    const taxTitle = String(tax.lessonTitle || '').trim();
+    const classBaiHoc = String(q._classification?.baiHoc || q.classification?.baiHoc || '').trim();
+    const rawBaiHoc = String(q.baiHoc || tax.lesson || '').trim();
+
+    let baiHoc = '';
+    if (taxCode === 'G12_C1_B01' || /b1|mô hình động học|cấu trúc/i.test(taxCode) || /b1|mô hình động học|cấu trúc/i.test(taxTitle) || /b1|mô hình động học|cấu trúc/i.test(classBaiHoc) || /b1|mô hình động học|cấu trúc/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+    } else if (taxCode === 'G12_C1_B02' || /b2|lực liên kết|chuyển thể/i.test(taxCode) || /b2|lực liên kết|chuyển thể/i.test(taxTitle) || /b2|lực liên kết|chuyển thể/i.test(classBaiHoc) || /b2|lực liên kết|chuyển thể/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 2. Lực liên kết và sự chuyển thể';
+    } else if (taxCode === 'G12_C1_B03' || /b3|thang nhiệt độ|nhiệt kế/i.test(taxCode) || /b3|thang nhiệt độ|nhiệt kế/i.test(taxTitle) || /b3|thang nhiệt độ|nhiệt kế/i.test(classBaiHoc) || /b3|thang nhiệt độ|nhiệt kế/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế';
+    } else if (taxCode === 'G12_C1_B04' || /b4|nhiệt dung riêng/i.test(taxCode) || /b4|nhiệt dung riêng/i.test(taxTitle) || /b4|nhiệt dung riêng/i.test(classBaiHoc) || /b4|nhiệt dung riêng/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi';
+    } else if (taxCode === 'G12_C1_B05' || /b5|định luật i|nội năng/i.test(taxCode) || /b5|định luật i|nội năng/i.test(taxTitle) || /b5|định luật i|nội năng/i.test(classBaiHoc) || /b5|định luật i|nội năng/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 5. Định luật I của nhiệt động lực học';
+    } else if (taxCode === 'G12_C1_B06' || /b6|động cơ nhiệt|đồ thị nhiệt/i.test(taxCode) || /b6|động cơ nhiệt|đồ thị nhiệt/i.test(taxTitle) || /b6|động cơ nhiệt|đồ thị nhiệt/i.test(classBaiHoc) || /b6|động cơ nhiệt|đồ thị nhiệt/i.test(rawBaiHoc)) {
+      baiHoc = 'Bài 6. Động cơ nhiệt - Đồ thị nhiệt';
+    } else if (taxCode === 'G12_C1_REVIEW' || /ôn tập|review/i.test(taxCode) || /ôn tập|review/i.test(taxTitle)) {
+      baiHoc = 'Ôn tập Chương 1 - Vật lí nhiệt';
+    }
+
+    if (!baiHoc && id && PT_LESSON_DICT[id]) {
+      baiHoc = PT_LESSON_DICT[id];
+    }
+    if (!baiHoc) {
+      technicalErrors.push('Không xác định được bài học (thiếu taxonomy.lessonCode / baiHoc)');
     }
 
     // 5. Kiểm tra KaTeX
@@ -1565,6 +1589,17 @@ function importNganHang(data) {
   const passedCount = passedItems.length;
   const quarantinedCount = quarantinedItems.length;
 
+  // Bắt buộc xác thực cân bằng kế toán: sent = inserted + updated + existing + blocked
+  const totalAccounted = insertable + updatable + alreadyExistsCount + quarantinedCount;
+  if (totalAccounted !== sentCount) {
+    return jsonOut({
+      ok: false,
+      success: false,
+      error: 'AccountingMismatch',
+      msg: 'Lỗi cân bằng kế toán: Gửi ' + sentCount + ' câu nhưng tính toán được ' + totalAccounted + ' (' + insertable + ' mới, ' + updatable + ' cập nhật, ' + alreadyExistsCount + ' đã có, ' + quarantinedCount + ' bị chặn).'
+    });
+  }
+
   if (dryRun) {
     return jsonOut({
       ok: true,
@@ -1634,6 +1669,96 @@ function importNganHang(data) {
     tinhUsableBefore: tinhUsableBefore,
     tinhUsableAfter: tinhUsableAfter,
     msg: 'Đã nạp thành công: ' + insertable + ' câu mới, ' + updatable + ' câu cập nhật, ' + alreadyExistsCount + ' câu đã tồn tại (' + passedCount + ' Đạt, ' + quarantinedCount + ' Bị chặn).'
+  });
+}
+
+function repairLessonBatch(data) {
+  if (!requireAdmin(data.adminKey)) {
+    return jsonOut({ ok: false, success: false, error: 'Unauthorized', msg: 'Khóa quản trị không hợp lệ' });
+  }
+
+  const dryRun = data.dryRun === true;
+  const updates = data.updates || []; // Mảng các bản ghi { id, rowIndex, intendedLesson }
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return jsonOut({ ok: false, success: false, error: 'No updates provided' });
+  }
+
+  const sheet = getOrCreate('NganHang', NH_HEADERS);
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return jsonOut({ ok: false, error: 'Bảng NganHang trống' });
+
+  const allIds = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  const idToRowMap = new Map();
+  for (let i = 0; i < allIds.length; i++) {
+    const rid = String(allIds[i][0] || '').trim();
+    if (rid) idToRowMap.set(rid, i + 2);
+  }
+
+  const plannedUpdates = [];
+  const errors = [];
+  const beforeCounts = {};
+  const afterCounts = {};
+
+  for (let idx = 0; idx < updates.length; idx++) {
+    const u = updates[idx] || {};
+    const id = String(u.id || '').trim();
+    const intendedLesson = String(u.intendedLesson || '').trim();
+    if (!id || !intendedLesson) continue;
+
+    const rowIdx = (u.rowIndex && u.rowIndex >= 2 && u.rowIndex <= lastRow) ? Number(u.rowIndex) : idToRowMap.get(id);
+    if (!rowIdx) {
+      errors.push({ id: id, error: 'Không tìm thấy dòng trên sheet' });
+      continue;
+    }
+
+    const curVal = sheet.getRange(rowIdx, 1, 1, 17).getValues()[0];
+    const actualId = String(curVal[0] || '').trim();
+    if (actualId && actualId !== id) {
+      errors.push({ id: id, error: 'Mã ID tại dòng ' + rowIdx + ' (' + actualId + ') không khớp với ' + id });
+      continue;
+    }
+
+    const curLesson = String(curVal[16] || '').trim(); // Cột 17: baiHoc
+    beforeCounts[curLesson] = (beforeCounts[curLesson] || 0) + 1;
+    afterCounts[intendedLesson] = (afterCounts[intendedLesson] || 0) + 1;
+
+    plannedUpdates.push({
+      rowIndex: rowIdx,
+      id: id,
+      beforeLesson: curLesson,
+      afterLesson: intendedLesson
+    });
+  }
+
+  if (dryRun) {
+    return jsonOut({
+      ok: true,
+      success: true,
+      dryRun: true,
+      totalRequested: updates.length,
+      totalMatched: plannedUpdates.length,
+      errors: errors,
+      beforeCounts: beforeCounts,
+      afterCounts: afterCounts,
+      msg: 'Dry-run sửa bài học hoàn tất: ' + plannedUpdates.length + ' / ' + updates.length + ' bản ghi sẵn sàng cập nhật.'
+    });
+  }
+
+  // Thực thi cập nhật trực tiếp cột baiHoc (Cột 17)
+  plannedUpdates.forEach(p => {
+    sheet.getRange(p.rowIndex, 17).setValue(p.afterLesson);
+  });
+
+  return jsonOut({
+    ok: true,
+    success: true,
+    dryRun: false,
+    totalUpdated: plannedUpdates.length,
+    errors: errors,
+    beforeCounts: beforeCounts,
+    afterCounts: afterCounts,
+    msg: 'Đã cập nhật chuẩn xác bài học cho ' + plannedUpdates.length + ' bản ghi thành công.'
   });
 }
 
@@ -2727,4 +2852,450 @@ function searchPublicProfiles(e) {
 function normalizeSearchText(value) {
   return String(value || '').toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/\s+/g, ' ').trim();
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// REPAIR P107-251 BATCH LESSON MAP
+// ════════════════════════════════════════════════════════════════
+
+const REPAIR_P107_251_LESSON_MAP = {
+  "VLXT-PT-DE_06-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_16-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_19-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_16-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_11-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_01-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_01-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_09-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_08-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_05-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_01-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_01-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_01-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_01-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_01-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_01-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_01-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_01-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_01-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_02-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_02-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_02-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_02-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_02-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_02-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_02-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_02-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_02-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_02-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_02-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_02-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_02-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_03-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_03-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_03-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_03-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_03-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_03-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_03-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_03-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_03-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_03-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_03-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_03-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_03-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_04-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_04-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_04-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_04-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_04-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_04-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_04-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_04-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_04-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_04-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_04-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_04-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_04-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_04-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_04-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_04-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_04-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_05-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_05-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_05-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_05-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_05-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_05-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_05-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_05-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_05-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_05-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_05-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_05-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_05-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_05-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_05-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_06-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_06-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_06-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_06-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_06-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_06-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_06-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_06-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_06-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_06-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_06-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_06-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_07-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_07-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_07-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_07-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_07-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_07-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_07-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_07-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_07-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_07-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_07-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_07-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_07-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_08-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_08-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_08-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_08-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_08-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_08-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_08-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_08-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_08-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_08-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_08-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_08-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_09-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_09-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_09-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_09-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_09-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_09-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_09-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_09-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_09-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_09-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_09-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_09-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_10-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_10-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_10-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_10-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_10-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_10-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_10-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_10-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_10-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_10-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_10-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_10-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_10-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_11-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_11-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_11-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_11-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_11-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_11-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_11-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_11-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_11-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_11-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_11-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_11-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_12-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_12-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_12-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_12-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_12-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_12-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_12-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_12-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_12-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_12-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_12-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_12-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_12-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_13-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_13-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_13-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_13-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_13-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_13-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_13-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_13-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_13-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_13-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_13-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_13-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_13-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_14-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_14-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_14-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_14-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_14-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_14-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_14-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_14-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_14-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_14-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_14-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_14-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_14-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_15-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_15-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_15-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_15-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_15-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_15-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_15-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_15-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_15-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_15-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_15-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_15-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_15-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_15-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_16-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_16-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_16-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_16-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_16-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_16-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_16-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_16-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_16-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_16-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_17-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_17-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_17-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_17-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_17-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_17-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_17-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_17-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_17-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_17-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_17-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_17-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_17-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_18-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_18-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_18-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_18-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_18-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_18-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_18-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_18-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_18-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_18-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_18-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_18-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_19-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_19-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_19-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_19-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_19-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_19-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_19-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_19-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_19-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_19-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_19-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_19-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_20-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_20-P1-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_20-P1-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_20-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+  "VLXT-PT-DE_20-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_20-P1-Q07": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_20-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_20-P1-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_20-P1-Q10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-DE_20-P1-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_20-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-DE_20-P1-Q13": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-DE_20-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_20-P1-Q15": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-DE_20-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-DE_20-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-DE_20-P1-Q18": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt",
+  "VLXT-PT-P107-B6-Q01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P107-B6-Q02": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-P107-B6-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P108-B6-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P108-B6-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P108-B6-Q06": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P108-B6-Q07": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P109-B6-Q08": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+  "VLXT-PT-P109-B6-Q09": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P109-B6-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P110-B6-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P110-B6-Q12": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P110-B6-Q13": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P111-B6-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P111-B6-Q15": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P113-B6-Q18": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P114-B6-VD01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P114-B6-VD02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P115-B6-VD03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P115-B6-VD04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P116-B6-VD05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P117-B6-VD07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P118-B6-VD08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P120-B6-BT01": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-P120-B6-BT02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P121-B6-BT03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P121-B6-BT04": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-P122-B6-BT05": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P122-B6-BT06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P123-B6-BT07": "Ôn tập Chương 1 - Vật lí nhiệt",
+  "VLXT-PT-P124-B6-BT08": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P125-B6-BT09": "Bài 5. Định luật I của nhiệt động lực học",
+  "VLXT-PT-P125-B6-BT10": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P126-B6-BT11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+  "VLXT-PT-P126-B6-BT12": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P127-B6-BT13": "Bài 2. Lực liên kết và sự chuyển thể",
+  "VLXT-PT-P128-B6-BT14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
+};
+
+
+function repairBatchP107_251_AutoFix(e) {
+  const isPost = Boolean(e && e.action);
+  const dryRun = isPost ? (e.dryRun === true) : (e && e.parameter && e.parameter.execute !== 'true');
+
+  const sheet = getOrCreate('NganHang', NH_HEADERS);
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return jsonOut({ ok: false, error: 'Bảng NganHang trống' });
+
+  const idValues = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  const colValues = sheet.getRange(2, 17, lastRow - 1, 1).getValues();
+  let updatedCount = 0;
+  const changedRows = [];
+  const beforeCounts = {};
+  const afterCounts = {};
+
+  for (let i = 0; i < idValues.length; i++) {
+    const qid = String(idValues[i][0] || '').trim();
+    if (qid && REPAIR_P107_251_LESSON_MAP.hasOwnProperty(qid)) {
+      const intendedLesson = REPAIR_P107_251_LESSON_MAP[qid];
+      const curLesson = String(colValues[i][0] || '').trim();
+      beforeCounts[curLesson] = (beforeCounts[curLesson] || 0) + 1;
+      afterCounts[intendedLesson] = (afterCounts[intendedLesson] || 0) + 1;
+
+      if (curLesson !== intendedLesson) {
+        changedRows.push({ rowIndex: i + 2, id: qid, before: curLesson, after: intendedLesson });
+        colValues[i][0] = intendedLesson;
+        updatedCount++;
+      }
+    }
+  }
+
+  if (!dryRun && updatedCount > 0) {
+    sheet.getRange(2, 17, lastRow - 1, 1).setValues(colValues);
+  }
+
+  return jsonOut({
+    ok: true,
+    success: true,
+    dryRun: dryRun,
+    totalScanned: values.length,
+    totalTargeted: Object.keys(REPAIR_P107_251_LESSON_MAP).length,
+    totalChanged: updatedCount,
+    beforeCounts: beforeCounts,
+    afterCounts: afterCounts,
+    sampleChanges: changedRows.slice(0, 30),
+    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa ' : 'Đã sửa thành công: ') + updatedCount + ' bản ghi.'
+  });
 }
