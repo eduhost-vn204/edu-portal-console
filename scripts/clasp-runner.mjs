@@ -1,12 +1,12 @@
 import { spawn } from 'child_process';
 
+const CLASP_JS = 'C:/Users/xuant/AppData/Roaming/npm/node_modules/@google/clasp/build/src/index.js';
+
 export function runClasp(args, cwd = process.cwd()) {
   return new Promise((resolve, reject) => {
-    const cmdLine = 'clasp.cmd ' + args.map(a => /\s/.test(a) ? `"${a.replace(/"/g, '""')}"` : a).join(' ');
-    console.log(`[CLASP] Running: ${cmdLine}`);
-    const child = spawn(cmdLine, [], {
+    console.log(`[CLASP] Running node ${CLASP_JS} ${args.join(' ')}`);
+    const child = spawn(process.execPath, [CLASP_JS, ...args], {
       cwd,
-      shell: true,
       stdio: ['ignore', 'pipe', 'pipe']
     });
 
