@@ -1402,11 +1402,14 @@
             <button class="btn-new" style="background:#7c3aed" onclick="bankRunScan()">
                 <i class="fa-solid fa-magnifying-glass"></i> Quét lỗi ảnh &amp; trùng lặp
             </button>
-            <button class="btn-new" style="background:var(--blue)" onclick="loadBank(true)">
+            <button class="btn-new" id="nh-refresh-btn" style="background:var(--blue)" onclick="loadBank(true)">
                 <i class="fa-solid fa-rotate-right"></i> Làm mới
             </button>
         </div>
     </div>
+
+    <!-- KHU VỰC THÔNG BÁO TRẠNG THÁI NGUỒN DỮ LIỆU & THỜI ĐIỂM CẬP NHẬT -->
+    <div id="nh-source-status" style="margin-bottom:18px;display:none"></div>
 
     <div class="stat-row" style="margin-bottom:24px">
         <div class="stat-card"><div class="stat-label">Tổng số câu</div><div class="stat-val blue" id="nh-s-total">—</div></div>
@@ -2058,17 +2061,53 @@ function adminDbOpen(){
     });
 }
 async function adminDbGet(key){
-    try{ const db=await adminDbOpen(); return await new Promise((resolve,reject)=>{ const r=db.transaction('snapshots','readonly').objectStore('snapshots').get(key); r.onsuccess=()=>resolve(r.result||null); r.onerror=()=>reject(r.error); }); }
-    catch(e){ return null; }
+    try{
+        const db=await adminDbOpen();
+        return await new Promise((resolve,reject)=>{
+            const r=db.transaction('snapshots','readonly').objectStore('snapshots').get(key);
+            r.onsuccess=()=>{
+                const res = r.result;
+                if (!res) return resolve(null);
+                if (res && res.data) return resolve(res);
+                if (Array.isArray(res)) return resolve({ t: Date.now(), data: res });
+                return resolve(res);
+            };
+            r.onerror=()=>reject(r.error);
+        });
+    } catch(e){ return null; }
 }
 async function adminDbSet(key,value){
-    try{ const db=await adminDbOpen(); await new Promise((resolve,reject)=>{ const r=db.transaction('snapshots','readwrite').objectStore('snapshots').put({t:Date.now(),data:value},key); r.onsuccess=()=>resolve(); r.onerror=()=>reject(r.error); }); }
-    catch(e){ console.warn('Không lưu được cache Admin:',e); }
+    try{
+        const db=await adminDbOpen();
+        await new Promise((resolve,reject)=>{
+            const dataToStore = (value && typeof value === 'object' && value.hasOwnProperty('data') && value.hasOwnProperty('t')) ? value : { t: Date.now(), data: value };
+            const r=db.transaction('snapshots','readwrite').objectStore('snapshots').put(dataToStore,key);
+            r.onsuccess=()=>resolve();
+            r.onerror=()=>reject(r.error);
+        });
+    } catch(e){ console.warn('Không lưu được cache Admin:',e); }
+}
+async function adminDbDelete(key){
+    try{
+        const db=await adminDbOpen();
+        await new Promise((resolve,reject)=>{
+            const r=db.transaction('snapshots','readwrite').objectStore('snapshots').delete(key);
+            r.onsuccess=()=>resolve();
+            r.onerror=()=>reject(r.error);
+        });
+    } catch(e){ console.warn('Không xóa được cache Admin:',e); }
 }
 function invalidateCache(key){
     try{
-        if(key){ localStorage.removeItem(key); }
-        else { localStorage.removeItem('vlxt_admin_baihoc'); }
+        if(key){
+            localStorage.removeItem(key);
+            if (key === 'nganhang' || key === 'vlxt_admin_nganhang') {
+                adminDbDelete('nganhang').catch(()=>{});
+                localStorage.removeItem('vlxt_admin_nganhang');
+            }
+        } else {
+            localStorage.removeItem('vlxt_admin_baihoc');
+        }
     }catch(e){}
 }
 
@@ -6064,33 +6103,208 @@ function nhKatex(el){ setTimeout(()=>{ if(typeof renderMathInElement==='function
 /* ── Tải ngân hàng từ Google Sheets ── */
 const PT_LESSON_DICT = {"VLXT-PT-P016-Q34": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P016-Q35": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P021-Q01": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q02": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q03": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q04": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q05": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q06": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q07": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q08": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q09": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q10": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q11": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q14": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q15": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q16": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q17": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q18": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q19": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q20": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q21": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q22": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q23": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q24": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q25": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q26": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q27": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q28": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q29": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q30": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q31": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q33": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q34": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P031-Q01": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P031-Q02": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P031-Q03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q07": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q08": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q11": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q12": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q13": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q14": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q15": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q16": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q17": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q18": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P033-Q19": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P034-Q20": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q21": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q22": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q23": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q24": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P035-Q25": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P035-Q26": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P036-Q28": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P036-VD01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P036-VD02": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P038-VD06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P038-VD07": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P039-VD08": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P039-VD09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P040-VD10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q02": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q07": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q08": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q11": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q12": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P042-Q15": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P044-VD02": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD03": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD04": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD05": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-VD06": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-VD07": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-Q01": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q02": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q03": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q04": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q05": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q06": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q07": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q08": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P052-Q01": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P052-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P052-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P053-Q07": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P053-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P053-Q11": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P054-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P055-Q15": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P055-Q16": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P057-VD04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P058-VD05": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P062-VD15": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P065-Q01": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P065-Q03": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P066-Q12": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P066-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P067-Q15": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P069-Q01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P071-Q13": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P071-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P072-Q17": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P074-VD01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P074-VD02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P076-VD06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P076-VD07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q13": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q15": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P086-VD02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P087-VD06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P089-VD10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P090-Q01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P090-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P091-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P091-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P093-VD04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P098-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P098-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P099-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P102-Q25": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"};
 
-async function loadBank(force){
-    const list=document.getElementById('nh-list');
-    if(force){
-        if(window.clearVlxtCache) window.clearVlxtCache();
-        await refreshBank(true);
+let bankSourceMetadata = {
+    isLive: false,
+    updatedAt: null,
+    totalRows: 0,
+    isStale: false,
+    errorMessage: null,
+    isLoading: false
+};
+
+function renderBankSourceStatus() {
+    const statusBox = document.getElementById('nh-source-status');
+    const refreshBtn = document.getElementById('nh-refresh-btn');
+    if (!statusBox) return;
+
+    if (bankSourceMetadata.isLoading) {
+        statusBox.style.display = 'block';
+        if (refreshBtn) {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải...';
+        }
+        statusBox.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;background:rgba(11,132,243,0.08);border:1px solid #93c5fd;padding:12px 16px;border-radius:8px;color:#1e40af;font-size:13px">
+                <i class="fa-solid fa-spinner fa-spin" style="color:#2563eb;font-size:18px"></i>
+                <div>
+                    <div style="font-weight:700">ĐANG TẢI NGUỒN THẬT TỪ MÁY CHỦ...</div>
+                    <div style="font-size:12px;color:#3b82f6;margin-top:2px">Bỏ qua bộ nhớ đệm (cache: 'no-store'), kết nối trực tiếp Apps Script để đồng bộ snapshot mới nhất.</div>
+                </div>
+            </div>`;
         return;
     }
-    if(!bankData.length){
-        const snapshot=await adminDbGet('nganhang');
-        if(snapshot&&Array.isArray(snapshot.data)&&snapshot.data.length){
+
+    if (refreshBtn) {
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Làm mới';
+    }
+
+    if (bankSourceMetadata.isStale) {
+        statusBox.style.display = 'block';
+        const timeStr = bankSourceMetadata.updatedAt ? new Date(bankSourceMetadata.updatedAt).toLocaleString('vi-VN') : 'Không rõ thời điểm';
+        const errMsg = bankSourceMetadata.errorMessage || 'Mất kết nối máy chủ';
+        statusBox.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#fee2e2;border:1.5px solid #ef4444;padding:12px 18px;border-radius:8px;color:#991b1b;font-size:13px;flex-wrap:gap:10px">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;font-size:22px"></i>
+                    <div>
+                        <div style="font-weight:800;color:#b91c1c;font-size:13.5px">⚠️ ĐANG HIỂN THỊ CACHE CŨ — CHƯA ĐỒNG BỘ VỚI MÁY CHỦ!</div>
+                        <div style="font-size:12px;color:#7f1d1d;margin-top:2px">
+                            Lỗi tải nguồn thật: <b>${nhEsc(errMsg)}</b> • Snapshot cục bộ: <b>${bankSourceMetadata.totalRows.toLocaleString()} dòng/câu</b> (lưu lúc: <b>${timeStr}</b>).
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-new" onclick="loadBank(true)" style="background:#dc2626;color:#fff;padding:7px 16px;font-size:12.5px;border:none;border-radius:6px;cursor:pointer;font-weight:700;box-shadow:0 2px 4px rgba(220,38,38,0.3)">
+                    <i class="fa-solid fa-rotate-right"></i> Thử tải lại nguồn thật
+                </button>
+            </div>`;
+        return;
+    }
+
+    if (bankSourceMetadata.isLive && bankData.length) {
+        statusBox.style.display = 'block';
+        const timeStr = bankSourceMetadata.updatedAt ? new Date(bankSourceMetadata.updatedAt).toLocaleString('vi-VN') : new Date().toLocaleString('vi-VN');
+        statusBox.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(22,163,74,0.08);border:1px solid #86efac;padding:10px 16px;border-radius:8px;color:#15803d;font-size:13px;flex-wrap:wrap;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <i class="fa-solid fa-circle-check" style="color:#16a34a;font-size:16px"></i>
+                    <span><b>Nguồn dữ liệu thật (Live Server):</b> <span style="font-weight:700">${bankSourceMetadata.totalRows.toLocaleString()} dòng / câu</span></span>
+                    <span style="color:#166534">• Thời điểm cập nhật: <b>${timeStr}</b></span>
+                </div>
+                <button class="btn-ghost2" onclick="loadBank(true)" style="padding:4px 10px;font-size:12px;color:#15803d;border-color:#86efac;background:#fff;border-radius:6px;cursor:pointer">
+                    <i class="fa-solid fa-rotate-right"></i> Tải lại
+                </button>
+            </div>`;
+        return;
+    }
+
+    statusBox.style.display = 'none';
+}
+
+async function loadBank(force){
+    const list = document.getElementById('nh-list');
+
+    if(force){
+        // 1. BẮT BUỘC BỎ QUA VÀ XÓA TOÀN BỘ CACHE CŨ
+        try {
+            await adminDbDelete('nganhang');
+            localStorage.removeItem('vlxt_admin_nganhang');
+            if(window.clearVlxtCache) window.clearVlxtCache();
+        } catch(e) {}
+
+        bankSourceMetadata.isLoading = true;
+        renderBankSourceStatus();
+
+        if (list) {
+            list.innerHTML = '<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px;font-weight:600">Đang tải nguồn thật từ máy chủ (bỏ qua cache)...</p></div>';
+        }
+
+        // 2. GỌI TRỰC TIẾP APPS SCRIPT VỚI cache: 'no-store' VÀ TIMESTAMP
+        try {
+            const fetchUrl = DB_URL + '?type=nganhang&_t=' + Date.now();
+            const res = await fetch(fetchUrl, {
+                cache: 'no-store',
+                headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
+            const json = await res.json();
+            const rows = Array.isArray(json) ? json : (json.data || []);
+            if (!rows.length) throw new Error('Nguồn dữ liệu máy chủ trả về rỗng');
+
+            // 3. CHỈ CẬP NHẬT GIAO DIỆN SAU KHI CÓ RESPONSE MỚI
+            bankSourceMetadata = {
+                isLive: true,
+                updatedAt: Date.now(),
+                totalRows: rows.length,
+                isStale: false,
+                errorMessage: null,
+                isLoading: false
+            };
+
+            applyBankRows(rows);
+            await adminDbSet('nganhang', { t: Date.now(), data: rows });
+            renderBankSourceStatus();
+            toast('<i class="fa-solid fa-circle-check"></i> Đã tải nguồn thật: ' + rows.length.toLocaleString() + ' câu', 'ok');
+        } catch (e) {
+            console.error('Lỗi tải nguồn thật ngân hàng:', e);
+            bankSourceMetadata.isLoading = false;
+
+            // KIỂM TRA XEM CÓ CACHE DỰ PHÒNG KHÔNG
+            let fallbackSnapshot = null;
+            try {
+                fallbackSnapshot = await adminDbGet('nganhang');
+            } catch(err) {}
+
+            const fallbackRows = (fallbackSnapshot && Array.isArray(fallbackSnapshot.data) && fallbackSnapshot.data.length)
+                ? fallbackSnapshot.data
+                : (bankData && bankData.length ? bankData : null);
+
+            if (fallbackRows && fallbackRows.length) {
+                bankSourceMetadata.isStale = true;
+                bankSourceMetadata.isLive = false;
+                bankSourceMetadata.totalRows = fallbackRows.length;
+                bankSourceMetadata.updatedAt = (fallbackSnapshot && fallbackSnapshot.t) ? fallbackSnapshot.t : (bankSourceMetadata.updatedAt || Date.now());
+                bankSourceMetadata.errorMessage = e.message;
+
+                applyBankRows(fallbackRows);
+                renderBankSourceStatus();
+                toast('⚠️ Lỗi tải nguồn thật: ' + e.message + ' — Đang hiển thị cache cũ!', 'err');
+            } else {
+                bankSourceMetadata.isStale = false;
+                bankSourceMetadata.isLive = false;
+                bankSourceMetadata.errorMessage = e.message;
+                renderBankSourceStatus();
+                if (list) {
+                    list.innerHTML = `
+                        <div class="loading-row" style="padding:40px;color:var(--red);text-align:center">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size:32px;margin-bottom:12px"></i>
+                            <div style="font-weight:700;font-size:16px">LỖI TẢI NGÂN HÀNG TỪ MÁY CHỦ</div>
+                            <p style="margin-top:6px;font-size:13px;color:var(--gray)">${nhEsc(e.message)}</p>
+                            <button class="btn-new" style="background:var(--blue);margin-top:16px" onclick="loadBank(true)">
+                                <i class="fa-solid fa-rotate-right"></i> Thử lại
+                            </button>
+                        </div>`;
+                }
+                toast('Lỗi tải nguồn thật: ' + e.message, 'err');
+            }
+        }
+        return;
+    }
+
+    // NẾU KHÔNG PHẢI FORCE: Chế độ nạp lần đầu / chuyển tab
+    if (!bankData.length) {
+        const snapshot = await adminDbGet('nganhang');
+        if (snapshot && Array.isArray(snapshot.data) && snapshot.data.length) {
+            bankSourceMetadata = {
+                isLive: false,
+                isStale: true,
+                updatedAt: snapshot.t || Date.now(),
+                totalRows: snapshot.data.length,
+                errorMessage: 'Đang hiển thị cache cục bộ (chờ đồng bộ nguồn thật)',
+                isLoading: false
+            };
             applyBankRows(snapshot.data);
-            refreshBank(false); // cap nhat ngam, khong khoa giao dien
+            renderBankSourceStatus();
+            // Nạp ngầm nguồn thật để đồng bộ
+            loadBank(true);
             return;
         }
     }
-    if(!bankData.length) list.innerHTML='<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:22px"></i><p style="margin-top:10px;font-size:14px">Đang tải ngân hàng lần đầu...</p></div>';
-    await refreshBank(true);
+
+    if (!bankData.length) {
+        await loadBank(true);
+    }
 }
+
 function applyBankRows(rows){
     bankData=rows.map(q=>{
         const isPt = String(q.id || '').startsWith('VLXT-PT-');
         const rawCl = String(q.chatLuong || '').trim().toLowerCase();
-        const cl = isPt ? 'tinh' : (rawCl === 'tinh' ? 'tho' : (rawCl || 'tho'));
+        const cl = isPt ? 'tinh' : (rawCl === 'tinh' ? 'tinh' : (rawCl || 'tho'));
         let baiHoc = String(q.baiHoc || '').trim();
         if(isPt){
-            if(!baiHoc || !baiHoc.startsWith('Bài ')){
-                baiHoc = PT_LESSON_DICT[q.id] || 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+            if(!baiHoc){
+                baiHoc = PT_LESSON_DICT[q.id] || 'B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ';
             }
         }
         q={
@@ -6103,32 +6317,26 @@ function applyBankRows(rows){
         if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);
         return q;
     });
-    bankLoaded=true; bankSel.clear(); renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+    bankLoaded=true;
+    bankSel.clear();
+    renderBankStats();
+    fillBankFilters();
+    renderBankList();
+    updateSelBar();
+    renderBankSourceStatus();
 }
-async function refreshBank(showError){
-    const list=document.getElementById('nh-list');
-    try{
-        const r=await fetch(DB_URL+'?type=nganhang&t='+Date.now());
-        const j=await r.json();
-        const rows=Array.isArray(j)?j:(j.data||[]);
-        if(!rows.length) throw new Error('Nguồn dữ liệu trả về rỗng');
-        applyBankRows(rows); await adminDbSet('nganhang',rows);
-        if(showError) toast('<i class="fa-solid fa-circle-check"></i> Ngân hàng đã cập nhật','ok');
-    }catch(e){
-        if(showError&&!bankData.length) list.innerHTML='<div class="loading-row" style="padding:30px;color:var(--red)">Lỗi tải ngân hàng: '+nhEsc(e.message)+'</div>';
-        else console.warn('Không làm mới được ngân hàng:',e);
-    }
-}
+
 function renderBankStats(){
     const c={TN:0,DS:0,TLN:0};
     bankData.forEach(q=>{ if(c[q.loai]!==undefined)c[q.loai]++; });
     const tinhCount = bankData.filter(q => String(q.chatLuong || '').trim().toLowerCase() === 'tinh' || String(q.rawTier || '').trim().toUpperCase() === 'TINH').length;
-    document.getElementById('nh-s-total').textContent=bankData.length;
-    document.getElementById('nh-s-tn').textContent=c.TN;
-    document.getElementById('nh-s-ds').textContent=c.DS;
-    document.getElementById('nh-s-tln').textContent=c.TLN;
-    document.getElementById('nh-s-tinh').textContent=tinhCount;
+    document.getElementById('nh-s-total').textContent=bankData.length.toLocaleString();
+    document.getElementById('nh-s-tn').textContent=c.TN.toLocaleString();
+    document.getElementById('nh-s-ds').textContent=c.DS.toLocaleString();
+    document.getElementById('nh-s-tln').textContent=c.TLN.toLocaleString();
+    document.getElementById('nh-s-tinh').textContent=tinhCount.toLocaleString();
 }
+
 function fillBankFilters(){
     const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
     const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
@@ -6143,6 +6351,7 @@ function fillBankFilters(){
         +bais.map(m=>`<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
     sm.value=vm; sc.value=vc; sb.value=vb;
 }
+
 function bankFiltered(){
     const fm=document.getElementById('nh-f-mon').value,
           fc=document.getElementById('nh-f-chuong').value,
