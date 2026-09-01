@@ -1,0 +1,162 @@
+[
+  {
+    "id": "VLXT-PT-DE_01-P1-Q06",
+    "stem": "Công thức biểu diễn định luật I của nhiệt động lực học là",
+    "options": {
+      "A": "$\\Delta U = Q + A$.",
+      "B": "$\\Delta U = Q - A$.",
+      "C": "$Q = \\Delta U - A$.",
+      "D": "$A = \\Delta U + Q$."
+    },
+    "explanation": "Biểu thức tổng quát: $\\Delta U = Q + A$.",
+    "localLessonCode": "G12_C1_B05",
+    "localLesson": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+    "chosenLessonCode": "B5",
+    "chosenLesson": "Bài 5. Định luật I của nhiệt động lực học",
+    "isDisagreementWithLocal": true,
+    "reason": "Trọng tâm khoa học là Nội năng (U), độ biến thiên nội năng (ΔU) hoặc Định luật I nhiệt động lực học (ΔU = A + Q)",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_04-P1-Q16",
+    "stem": "Nhiệt lượng cần thiết để nâng nhiệt độ của $m = 2\\text{ kg}$ nước từ $20^\\circ\\text{C}$ lên $80^\\circ\\text{C}$ là (cho $c = 4200\\text{ $\\text{J/kg.K}$ }$)",
+    "options": {
+      "A": "$504\\text{ kJ}$.",
+      "B": "$252\\text{ kJ}$.",
+      "C": "$672\\text{ kJ}$.",
+      "D": "$168\\text{ kJ}$."
+    },
+    "explanation": "$Q = mc\\Delta t = 2 \\cdot 4200 \\cdot (80 - 20) = 504000\\text{ J} = 504\\text{ kJ}$.",
+    "localLessonCode": "G12_C1_B04",
+    "localLesson": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+    "chosenLessonCode": "B4",
+    "chosenLesson": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+    "isDisagreementWithLocal": false,
+    "reason": "Trọng tâm khoa học là tính toán nhiệt lượng (Q = mcΔt, Q = λm, Q = Lm), nhiệt dung riêng hoặc phương trình cân bằng nhiệt",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_15-P1-Q05",
+    "stem": "Chuyển động của hạt phấn hoa trong nước quan sát dưới kính hiển vi được gọi là",
+    "options": {
+      "A": "chuyển động Brown.",
+      "B": "chuyển động thẳng đều.",
+      "C": "chuyển động rơi tự do.",
+      "D": "chuyển động tròn."
+    },
+    "explanation": "Chuyển động hỗn loạn của hạt nhỏ trong chất lỏng/chất khí là chuyển động Brown.",
+    "localLessonCode": "G12_C1_B01",
+    "localLesson": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "chosenLessonCode": "B1",
+    "chosenLesson": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "isDisagreementWithLocal": false,
+    "reason": "Trọng tâm khoa học là cấu trúc chất, mô hình động học phân tử, chuyển động Brown hoặc khoảng cách/tương tác phân tử ở 3 thể",
+    "confidence": 0.98,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_15-P1-Q08",
+    "stem": "Khi chất khí nhận công $A = 50\\text{ J}$ và toả nhiệt $Q = 20\\text{ J}$ thì độ biến thiên nội năng là",
+    "options": {
+      "A": "$+30\\text{ J}$.",
+      "B": "$+70\\text{ J}$.",
+      "C": "$-30\\text{ J}$.",
+      "D": "$-70\\text{ J}$."
+    },
+    "explanation": "$\\Delta U = Q + A = -20 + 50 = +30\\text{ J}$.",
+    "localLessonCode": "G12_C1_B05",
+    "localLesson": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+    "chosenLessonCode": "B5",
+    "chosenLesson": "Bài 5. Định luật I của nhiệt động lực học",
+    "isDisagreementWithLocal": true,
+    "reason": "Trọng tâm khoa học là Nội năng (U), độ biến thiên nội năng (ΔU) hoặc Định luật I nhiệt động lực học (ΔU = A + Q)",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_15-P1-Q12",
+    "stem": "Một lượng khí chứa trong xi lanh bị nén đoạn nhiệt thì",
+    "options": {
+      "A": "$Q = 0, A > 0 \\Rightarrow \\Delta U > 0$ (khí nóng lên).",
+      "B": "$Q > 0, A = 0 \\Rightarrow \\Delta U > 0$.",
+      "C": "$Q < 0, A > 0 \\Rightarrow \\Delta U = 0$.",
+      "D": "$Q = 0, A < 0 \\Rightarrow \\Delta U < 0$."
+    },
+    "explanation": "Đoạn nhiệt $Q = 0$, nén khí $A > 0 \\Rightarrow \\Delta U = A > 0$ (khí nóng lên).",
+    "localLessonCode": "G12_C1_B05",
+    "localLesson": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+    "chosenLessonCode": "B5",
+    "chosenLesson": "Bài 5. Định luật I của nhiệt động lực học",
+    "isDisagreementWithLocal": true,
+    "reason": "Trọng tâm khoa học là Nội năng (U), độ biến thiên nội năng (ΔU) hoặc Định luật I nhiệt động lực học (ΔU = A + Q)",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_15-P1-Q14",
+    "stem": "Trong thí nghiệm xác định nhiệt dung riêng của nước, người ta sử dụng",
+    "options": {
+      "A": "bình nhiệt lượng kế cách nhiệt, nhiệt kế và que khuấy.",
+      "B": "áp kế và lực kế lò xo.",
+      "C": "tốc kế và đồng hồ bấm giây.",
+      "D": "thước kẹp và ống đong thuỷ tinh."
+    },
+    "explanation": "Dụng cụ chính gồm nhiệt lượng kế, nhiệt kế điện tử/thuỷ ngân và que khuấy cách nhiệt.",
+    "localLessonCode": "G12_C1_B04",
+    "localLesson": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+    "chosenLessonCode": "B4",
+    "chosenLesson": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+    "isDisagreementWithLocal": false,
+    "reason": "Trọng tâm khoa học là tính toán nhiệt lượng (Q = mcΔt, Q = λm, Q = Lm), nhiệt dung riêng hoặc phương trình cân bằng nhiệt",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-DE_18-P1-Q07",
+    "stem": "Trong quá trình truyền nhiệt không có sự",
+    "options": {
+      "A": "chuyển hoá năng lượng giữa các dạng khác nhau sang nội năng.",
+      "B": "truyền nội năng từ vật này sang vật khác.",
+      "C": "thay đổi nhiệt độ của các vật.",
+      "D": "thay đổi nội năng của hệ."
+    },
+    "explanation": "Quá trình truyền nhiệt chỉ là sự truyền trực tiếp nội năng, không có chuyển hoá dạng năng lượng.",
+    "localLessonCode": "G12_C1_B05",
+    "localLesson": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+    "chosenLessonCode": "B3",
+    "chosenLesson": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+    "isDisagreementWithLocal": false,
+    "reason": "Phù hợp với nhãn phân loại chuẩn mực trong taxonomy gốc (B3)",
+    "confidence": 0.95,
+    "qaStatus": "QA_LOCAL_MATCH",
+    "importStatus": "UNIMPORTED"
+  },
+  {
+    "id": "VLXT-PT-P117-B6-VD06",
+    "stem": "Khối lượng nước đá bị tan trong Ví dụ 5 bằng",
+    "options": {
+      "A": "37,7 g.",
+      "B": "50,0 g.",
+      "C": "25,0 g.",
+      "D": "12,6 g."
+    },
+    "explanation": "$m_{\\text{tan}} = \\frac{Q_{\\text{toả}}}{\\lambda} = \\frac{12600}{334000} \\approx 0,0377\\text{ kg} = 37,7\\text{ g}$.",
+    "localLessonCode": "G12_C1_REVIEW",
+    "localLesson": "Chưa phân loại",
+    "chosenLessonCode": "B4",
+    "chosenLesson": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+    "isDisagreementWithLocal": false,
+    "reason": "Trọng tâm khoa học là tính toán nhiệt lượng (Q = mcΔt, Q = λm, Q = Lm), nhiệt dung riêng hoặc phương trình cân bằng nhiệt",
+    "confidence": 0.99,
+    "qaStatus": "QA_VERIFIED",
+    "importStatus": "UNIMPORTED"
+  }
+]
