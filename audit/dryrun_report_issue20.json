@@ -1,0 +1,217 @@
+{
+  "timestamp": "2026-09-01T01:23:39.356Z",
+  "sourceCommit": "e940ac5",
+  "productionFrozen": true,
+  "totalRowsBefore": 6027,
+  "totalRowsAfter": 6027,
+  "accounting": {
+    "sent": 390,
+    "inserted": 3,
+    "updated": 387,
+    "existing": 0,
+    "blocked": 0
+  },
+  "beforeDistribution": {
+    "Bài 5. Định luật I của nhiệt động lực học": 38,
+    "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi": 142,
+    "Bài 1. Cấu trúc của chất & Mô hình động học phân tử": 62,
+    "Bài 2. Lực liên kết và sự chuyển thể": 92,
+    "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế": 48,
+    "Bài 6. Động cơ nhiệt - Đồ thị nhiệt": 5
+  },
+  "afterDistribution": {
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": 66,
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": 81,
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": 67,
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 41,
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": 126,
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": 9
+  },
+  "renamedCollisionIds": {
+    "VLXT-PT-DE_05-P1-Q01": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+    "VLXT-PT-DE_05-P1-Q17": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "VLXT-PT-DE_20-P1-Q02": "VLXT-PT-DE_20-P1-Q02-H04d938be"
+  },
+  "sampleDetails": [
+    {
+      "id": "VLXT-PT-DE_01-P1-Q01",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q02",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q03",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q04",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q05",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q07",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q08",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q09",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q10",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q11",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q12",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q13",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q14",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q15",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q16",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q17",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_01-P1-Q18",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q01",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "after": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q02",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "after": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q03",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+      "after": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q04",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q05",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 2. Lực liên kết và sự chuyển thể",
+      "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q06",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "after": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q07",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
+      "after": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q08",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q09",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q10",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 5. Định luật I của nhiệt động lực học",
+      "after": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q11",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+      "after": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q12",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+      "after": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"
+    },
+    {
+      "id": "VLXT-PT-DE_02-P1-Q13",
+      "status": "UPDATED_IN_PLACE",
+      "before": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
+      "after": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"
+    }
+  ]
+}
