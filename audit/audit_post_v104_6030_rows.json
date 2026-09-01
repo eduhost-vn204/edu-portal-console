@@ -1,0 +1,163 @@
+{
+  "status": "AUDIT_COMPLETED_READ_ONLY",
+  "timestamp": "2026-09-01T08:32:00.000Z",
+  "productionFrozen": true,
+  "productionWrites": 0,
+  "sourcePayloadCommit": "e940ac5",
+  "totalSnapshotRows": 6030,
+  "snapshotSha256": "6b362340644e32b7682209c025f16de851eb25cebd27fe137d1aa964f3b6a9cc",
+  "totalSourceQuestions": 390,
+  "newCollisionIdsVerified": [
+    {
+      "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+      "count": 1,
+      "existsExactlyOnce": true,
+      "rowIndex": 6029,
+      "stem": "Trong chuyển động nhiệt, các phân tử của chất lỏng...",
+      "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+    },
+    {
+      "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+      "count": 1,
+      "existsExactlyOnce": true,
+      "rowIndex": 6030,
+      "stem": "Khi nhiệt độ của vật tăng lên thì...",
+      "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+    },
+    {
+      "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+      "count": 1,
+      "existsExactlyOnce": true,
+      "rowIndex": 6031,
+      "stem": "Nguyên tử, phân tử không có tính chất nào sau đây?...",
+      "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+    }
+  ],
+  "oldCollidingRowsPreserved": [
+    {
+      "id": "VLXT-PT-DE_05-P1-Q01",
+      "count": 0,
+      "existsExactlyOnce": false,
+      "rowIndex": null,
+      "stem": null,
+      "baiHoc": null
+    },
+    {
+      "id": "VLXT-PT-DE_05-P1-Q17",
+      "count": 0,
+      "existsExactlyOnce": false,
+      "rowIndex": null,
+      "stem": null,
+      "baiHoc": null
+    },
+    {
+      "id": "VLXT-PT-DE_20-P1-Q02",
+      "count": 0,
+      "existsExactlyOnce": false,
+      "rowIndex": null,
+      "stem": null,
+      "baiHoc": null
+    }
+  ],
+  "mismatchSummary": {
+    "idMismatchCount": 0,
+    "stemMismatchCount": 3,
+    "optionsMismatchCount": 1,
+    "correctMismatchCount": 0,
+    "explanationMismatchCount": 2,
+    "taxonomyMismatchCount": 5,
+    "identityHashMismatchCount": 0
+  },
+  "fieldMismatches": {
+    "id": [],
+    "stem": [
+      {
+        "id": "VLXT-PT-DE_05-P1-Q07",
+        "payload": "'Độ không tuyệt đối' là nhiệt độ ứng với",
+        "production": "Độ không tuyệt đối' là nhiệt độ ứng với"
+      },
+      {
+        "id": "VLXT-PT-DE_13-P1-Q12",
+        "payload": "Cần đo những đại lượng nào sau đây để xác định thực nghiệm nhiệt hóa hơi riêng của nước?",
+        "production": "Cần đo những đại lượng nào sau đây đ�� xác định thực nghiệm nhiệt hóa hơi riêng của nước?"
+      },
+      {
+        "id": "VLXT-PT-P114-B6-VD01",
+        "payload": "Cần cung cấp một nhiệt lượng bao nhiêu để làm nóng chảy hoàn toàn 2 kg đồng ở nhiệt độ nóng chảy $1084^{\\circ}\\text{C}$? Biết nhiệt nóng chảy riêng của đồng là $\\lambda = 1,8 \\cdot 10^5\\text{ J/kg}$.",
+        "production": "Cần cung cấp một nhi���t l��ợng bao nhiêu để làm nóng chảy hoàn toàn 2 kg đồng ở nhiệt độ nóng chảy $1084^{\\circ}\\text{C}$? Biết nhiệt nóng chảy riêng của đồng là $\\lambda = 1,8 \\cdot 10^5\\text{ J/kg}$."
+      }
+    ],
+    "options": [
+      {
+        "id": "VLXT-PT-DE_04-P1-Q11",
+        "option": "optA",
+        "payload": "Vật (1) có nội năng lớn hơn vật (2).",
+        "production": "V��t (1) có nội năng lớn hơn vật (2)."
+      }
+    ],
+    "correct": [],
+    "explanation": [
+      {
+        "id": "VLXT-PT-DE_14-P1-Q08",
+        "payload": "Hình a: các phân tử ở xa nhau, chuyển động tự do theo mọi hướng $\\rightarrow$ thể khí. Hình c: các phân tử ở gần nhau, dao động và dịch chuyển trượt lên nhau $\\rightarrow$ thể lỏng. Hình b: các phân tử sắp xếp trật tự, chỉ dao động tại chỗ quanh vị trí cân bằng cố định $\\rightarrow$ thể rắn. Do đó thứ tự là a), c), b).",
+        "production": "Hình a: các phân tử ở xa nhau, chuyển động tự do theo mọi hướng $\\rightarrow$ thể khí. Hình c: các phân tử ở gần nhau, dao động và dịch chuyển trượt lên nhau $\\rightarrow$ thể lỏng. Hình b: các phân tử sắp xếp trật tự, chỉ dao động tại chỗ quanh v��� trí cân bằng cố định $\\rightarrow$ thể rắn. Do đó thứ tự là a), c), b)."
+      },
+      {
+        "id": "VLXT-PT-DE_15-P1-Q04",
+        "payload": "Từ công thức $Q = mc\\Delta t \\Rightarrow \\Delta t = \\frac{Q}{mc}$. Chất có nhiệt dung riêng $c$ nhỏ thì với cùng nhiệt lượng trao đổi, độ biến thiên nhiệt độ $\\Delta t$ sẽ lớn, nghĩa là vật dễ nóng lên khi thu nhiệt và nhanh nguội đi khi tỏa nhiệt.",
+        "production": "Từ công thức $Q = mc\\Delta t \\Rightarrow \\Delta t = \\frac{Q}{mc}$. Chất có nhiệt dung riêng $c$ nhỏ thì với cùng nhiệt lư��ng trao đổi, độ biến thiên nhiệt độ $\\Delta t$ sẽ lớn, nghĩa là vật dễ nóng lên khi thu nhiệt và nhanh nguội đi khi tỏa nhiệt."
+      }
+    ],
+    "taxonomy": [
+      {
+        "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+        "payload": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ",
+        "production": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+      },
+      {
+        "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+        "payload": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ",
+        "production": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+      },
+      {
+        "id": "VLXT-PT-DE_10-P1-Q09",
+        "payload": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ",
+        "production": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+      },
+      {
+        "id": "VLXT-PT-DE_16-P1-Q01",
+        "payload": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ",
+        "production": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+      },
+      {
+        "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+        "payload": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ",
+        "production": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử"
+      }
+    ],
+    "identityHash": []
+  },
+  "distributionAfter390": {
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": 66,
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": 81,
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": 67,
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 41,
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": 126,
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": 9
+  },
+  "totalTinhProduction": 577,
+  "distributionAllTinhProduction": {
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": 67,
+    "Bài 1. Cấu trúc của chất & Mô hình động học phân tử": 35,
+    "Bài 2. Lực liên kết và sự chuyển thể": 34,
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": 76,
+    "Bài 5. Định luật I của nhiệt động lực học": 38,
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": 66,
+    "Bài 6. Động cơ nhiệt - Đồ thị nhiệt": 19,
+    "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế": 11,
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 41,
+    "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi": 55,
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": 126,
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": 9
+  }
+}
