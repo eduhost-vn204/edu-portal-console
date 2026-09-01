@@ -3320,75 +3320,66 @@ const NEW_SAFE_QUESTIONS_3 = [
 const TARGETED_PATCH_19_FIELDS = [
   {
     "index": 1,
-    "id": "VLXT-PT-DE_01-P1-Q13",
-    "field": "giaiThich",
-    "colIndex": 15,
-    "before": "Ở thể rắn, lực tương tác phân tử rất mạnh giữ các phân tử ở các vị trí cân bằng và m��i phân tử chỉ có thể dao động nhiệt xung quanh vị trí cân bằng xác định này.",
-    "after": "Ở thể rắn, lực tương tác phân tử rất mạnh giữ các phân tử ở các vị trí cân bằng và mỗi phân tử chỉ có thể dao động nhiệt xung quanh vị trí cân bằng xác định này."
-  },
-  {
-    "index": 2,
     "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
     "field": "baiHoc",
     "colIndex": 17,
-    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 2,
+    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "field": "baiHoc",
+    "colIndex": 17,
     "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
   },
   {
     "index": 3,
-    "id": "VLXT-PT-DE_05-P1-Q07",
-    "field": "question",
-    "colIndex": 8,
-    "before": "Độ không tuyệt đối' là nhiệt độ ứng với",
-    "after": "'Độ không tuyệt đối' là nhiệt độ ứng với"
+    "id": "VLXT-PT-DE_10-P1-Q09",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
   },
   {
     "index": 4,
-    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "id": "VLXT-PT-DE_16-P1-Q01",
     "field": "baiHoc",
     "colIndex": 17,
-    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
     "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
   },
   {
     "index": 5,
-    "id": "VLXT-PT-DE_10-P1-Q09",
+    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
     "field": "baiHoc",
     "colIndex": 17,
-    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
     "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
   },
   {
     "index": 6,
-    "id": "VLXT-PT-DE_16-P1-Q01",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    "id": "VLXT-PT-DE_05-P1-Q07",
+    "field": "question",
+    "colIndex": 8,
+    "after": "''Độ không tuyệt đối' là nhiệt độ ứng với"
   },
   {
     "index": 7,
-    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+    "id": "VLXT-PT-DE_17-P1-Q04",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "after": "Với cùng nguồn cấp nhiệt $Q$, độ tăng nhiệt độ $\\Delta t = \\frac{Q}{m c}$. Vì nhiệt dung riêng của rượu ($c_{rượu} \\approx 2500\\text{ J/kg.K}$) nhỏ hơn nhiều so với nước ($c_{nước} \\approx 4200\\text{ J/kg.K}$) nên rượu tăng nhiệt độ nhanh hơn."
   },
   {
     "index": 8,
-    "id": "VLXT-PT-P107-B6-Q01",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "before": "B4. NHI���T DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG",
-    "after": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"
+    "id": "VLXT-PT-DE_19-P1-Q06",
+    "field": "optB",
+    "colIndex": 10,
+    "after": "nước trong ấm không bay hơi nữa."
   },
   {
     "index": 9,
-    "id": "VLXT-PT-P126-B6-BT12",
-    "field": "optD",
-    "colIndex": 12,
-    "before": "Nhiệt nóng chảy riêng không phụ thuộc b���n chất chất rắn.",
-    "after": "Nhiệt nóng chảy riêng không phụ thuộc bản chất chất rắn."
+    "id": "VLXT-PT-P107-B6-Q01",
+    "field": "question",
+    "colIndex": 8,
+    "after": "Nhiệt dung riêng của một chất là nhiệt lượng cần thiết để"
   }
 ];
 

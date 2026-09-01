@@ -1,0 +1,106 @@
+[
+  {
+    "index": 1,
+    "id": "VLXT-PT-DE_01-P1-Q05",
+    "field": "optB",
+    "colIndex": 10,
+    "before": "Các phân tử sắp xếp càng có trật tự thì lực tương tác giữa chúng càng m��nh.",
+    "after": "Các phân tử sắp xếp càng có trật tự thì lực tương tác giữa chúng càng mạnh."
+  },
+  {
+    "index": 2,
+    "id": "VLXT-PT-DE_04-P1-Q06",
+    "field": "optC",
+    "colIndex": 11,
+    "before": "(1) thể lỏng; (2) t���a nhiệt.",
+    "after": "(1) thể lỏng; (2) tỏa nhiệt."
+  },
+  {
+    "index": 3,
+    "id": "VLXT-PT-DE_07-P1-Q13",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Phát biểu n��o sau đây là sai? Cùng một khối lượng của một chất nhưng khi ở các thể khác nhau thì sẽ khác nhau về",
+    "after": "Phát biểu nào sau đây là sai? Cùng một khối lượng của một chất nhưng khi ở các thể khác nhau thì sẽ khác nhau về"
+  },
+  {
+    "index": 4,
+    "id": "VLXT-PT-DE_09-P1-Q12",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Người ta đổ một lượng nước lạnh ở nhiệt độ $20^{\\circ}\\text{C}$ và một lượng nước nóng ở nhiệt độ $70^{\\circ}\\text{C}$ vào một bình cách nhiệt. Đến khi cân bằng nhiệt thì thu được nước ở nhiệt độ $30^{\\circ}\\text{C}$. Bỏ qua sự trao đổi nhiệt với bình và môi trường. Tỉ s�� gi��a thể tích của nước lạnh và thể tích của nước nóng lúc ban đầu ($\\frac{V_1}{V_2}$) là",
+    "after": "Người ta đổ một lượng nước lạnh ở nhiệt độ $20^{\\circ}\\text{C}$ và một lượng nước nóng ở nhiệt độ $70^{\\circ}\\text{C}$ vào một bình cách nhiệt. Đến khi cân bằng nhiệt thì thu được nước ở nhiệt độ $30^{\\circ}\\text{C}$. Bỏ qua sự trao đổi nhiệt với bình và môi trường. Tỉ số giữa thể tích của nước lạnh và thể tích của nước nóng lúc ban đầu ($\\frac{V_1}{V_2}$) là"
+  },
+  {
+    "index": 5,
+    "id": "VLXT-PT-DE_11-P1-Q09",
+    "field": "optC",
+    "colIndex": 11,
+    "before": "Lực tương tác gi��a các phân tử trong chất khí là rất mạnh.",
+    "after": "Lực tương tác giữa các phân tử trong chất khí là rất mạnh."
+  },
+  {
+    "index": 6,
+    "id": "VLXT-PT-DE_13-P1-Q07",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "B3. NHI���T ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ",
+    "after": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ"
+  },
+  {
+    "index": 7,
+    "id": "VLXT-PT-DE_20-P1-Q15",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Hai miếng nhôm và chì rơi từ cùng m��t độ cao xuống sàn nhà. Hãy xác định tỉ số độ tăng nhiệt độ của hai miếng kim loại trên khi chúng va chạm với sàn nhà nếu coi toàn bộ cơ năng của vật khi rơi đều dùng để làm nóng vật. Nhiệt dung riêng của nhôm là $880\\text{ J/kg.K}$, của chì là $130\\text{ J/kg.K}$.",
+    "after": "Hai miếng nhôm và chì rơi từ cùng một độ cao xuống sàn nhà. Hãy xác định tỉ số độ tăng nhiệt độ của hai miếng kim loại trên khi chúng va chạm với sàn nhà nếu coi toàn bộ cơ năng của vật khi rơi đều dùng để làm nóng vật. Nhiệt dung riêng của nhôm là $880\\text{ J/kg.K}$, của chì là $130\\text{ J/kg.K}$."
+  },
+  {
+    "index": 8,
+    "id": "VLXT-PT-DE_05-P1-Q07",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Độ không tuyệt đối' là nhiệt độ ứng với",
+    "after": "'Độ không tuyệt đối' là nhiệt độ ứng với"
+  },
+  {
+    "index": 9,
+    "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 10,
+    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 11,
+    "id": "VLXT-PT-DE_10-P1-Q09",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 12,
+    "id": "VLXT-PT-DE_16-P1-Q01",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 13,
+    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  }
+]
