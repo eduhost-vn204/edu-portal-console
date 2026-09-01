@@ -1,24 +1,3 @@
-// ════════════════════════════════════════════════════════════════
-
-// APPS SCRIPT TOÀN DIỆN — Vật Lý Xuân Trường  (v22: + Settings / currentTeachingLesson)
-// Dán toàn bộ đoạn này vào Google Apps Script, rồi Deploy lại.
-// ════════════════════════════════════════════════════════════════
-// CẤU TRÚC GOOGLE SHEETS CẦN CÓ:
-//   Tab "BaiHoc"     : KhoaHoc | Chuong | TenBai | Video | VideoGiai | MoTaBai | NgayDang | BaiTap
-//   Tab "NganHangDe" : id | type | question | optA | optB | optC | optD | correct | examId
-//   Tab "NganHang"   : id | mon | chuong | mucDo | loai | nhomId | deBaiChung | question | optA | optB | optC | optD | correct | hinhAnh | giaiThich | ngayThem | baiHoc
-//   Tab "DanhSachDe" : examId | tenDe | moTa | thoiGian | trangThai | lop | soLuotLam
-//   Tab "BangVang"   : name | studentClass | phone | score | timestamp
-//   Tab "TienDo"     : sdt | lesson | khoa | ten | lop | ngay
-//   Tab "TaiKhoan"   : sdt | hoten | lop | matkhau | ngayDK | lpTotal | diemGame | loaiTK | trialExpiry
-//   Tab "KhoaConfig" : khoaHoc | loaiTK   (free,vip,premium hoặc vip,premium hoặc premium)
-//   Tab "NhiemVu"   : sdt | nhipHoc | conTro | lastMissionDate | startDate | chuoiDung | tongDiemDuaTop
-//   Tab "Settings"  : key | value   (cấu hình toàn trang, vd: currentTeachingLesson)
-//   Tab "TeachingScope" : courseId | stageId | openChapterIds | activeLessonIds | validFrom | validTo | isActive | updatedAt | updatedBy | revision
-//   Tab "ThietBiHocThu" : deviceId | sdt | hoten | trialStart | trialExpiry | soLanChan  ← chống học thử nhiều lần
-// ════════════════════════════════════════════════════════════════
-const DEVICE_LOCK_ENABLED = false; // 18/7 TAM THOI TAT de thay lam video (theo yeu cau) -- doi lai thanh true + Trien khai > Phien ban moi de BAT LAI chan hoc thu nhieu lan
-
 function doGet(e) {
   const type   = (e.parameter.type || '').toLowerCase();
   const hs     = e.parameter.hs || '';
@@ -933,14 +912,15 @@ function saveQuestions(data) {
 const NH_HEADERS = ['id','mon','chuong','mucDo','loai','nhomId','deBaiChung','question','optA','optB','optC','optD','correct','hinhAnh','giaiThich','ngayThem','baiHoc','chatLuong','kyThuat','lyDoCachLy','batchId'];
 
 // ── GET: Toàn bộ ngân hàng câu hỏi ───────────────────────────
-const PT_LESSON_DICT = {"VLXT-PT-P016-Q34": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P016-Q35": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P021-Q01": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q02": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q03": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q04": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q05": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q06": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P021-Q07": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q08": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q09": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q10": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q11": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P022-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q14": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q15": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q16": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q17": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q18": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q19": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P023-Q20": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q21": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q22": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q23": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q24": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q25": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q26": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P024-Q27": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q28": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q29": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q30": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q31": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q33": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P025-Q34": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P031-Q01": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử", "VLXT-PT-P031-Q02": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P031-Q03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P031-Q06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q07": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q08": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q11": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P032-Q12": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q13": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q14": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q15": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q16": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q17": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P033-Q18": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P033-Q19": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P034-Q20": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q21": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q22": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q23": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P034-Q24": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P035-Q25": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P035-Q26": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P036-Q28": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P036-VD01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P036-VD02": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P037-VD05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P038-VD06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P038-VD07": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P039-VD08": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P039-VD09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P040-VD10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q02": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q03": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q04": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q05": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q06": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q07": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P041-Q08": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q09": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q11": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q12": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P042-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P042-Q15": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P044-VD02": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD03": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD04": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P044-VD05": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-VD06": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-VD07": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P045-Q01": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q02": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q03": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q04": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q05": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q06": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q07": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P046-Q08": "Bài 6. Động cơ nhiệt - Đồ thị nhiệt", "VLXT-PT-P052-Q01": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P052-Q04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P052-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P053-Q07": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P053-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P053-Q11": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P054-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P055-Q15": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P055-Q16": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P057-VD04": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P058-VD05": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P062-VD15": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P065-Q01": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P065-Q03": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P066-Q12": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P066-Q13": "Bài 2. Lực liên kết và sự chuyển thể", "VLXT-PT-P067-Q15": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế", "VLXT-PT-P069-Q01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P069-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q09": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P070-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P071-Q13": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P071-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P072-Q17": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P074-VD01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P074-VD02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P075-VD05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P076-VD06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P076-VD07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q01": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P078-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q10": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P079-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q13": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P080-Q15": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P086-VD02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P087-VD06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P089-VD10": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P090-Q01": "Bài 5. Định luật I của nhiệt động lực học", "VLXT-PT-P090-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q03": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q05": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P090-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P091-Q08": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P091-Q12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P093-VD04": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P098-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P098-Q06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P099-Q07": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi", "VLXT-PT-P102-Q25": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"};
+const PT_LESSON_DICT = {"VLXT-PT-DE_01-P1-Q01": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_01-P1-Q02": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_01-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q07": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q08": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_01-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_01-P1-Q11": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q12": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_01-P1-Q13": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q14": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_01-P1-Q15": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_01-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_01-P1-Q17": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_01-P1-Q18": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_02-P1-Q01": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_02-P1-Q02": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_02-P1-Q03": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_02-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_02-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_02-P1-Q06": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_02-P1-Q07": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_02-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_02-P1-Q09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_02-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_02-P1-Q11": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_02-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_02-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_02-P1-Q14": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_02-P1-Q15": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_02-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_02-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_02-P1-Q18": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_03-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_03-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_03-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_03-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_03-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_03-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_03-P1-Q07": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_03-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_03-P1-Q09": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_03-P1-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_03-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_03-P1-Q12": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_03-P1-Q13": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_03-P1-Q14": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_03-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_03-P1-Q16": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_03-P1-Q17": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_03-P1-Q18": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_04-P1-Q01": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_04-P1-Q02": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_04-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_04-P1-Q04": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_04-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_04-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_04-P1-Q07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_04-P1-Q08": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_04-P1-Q09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_04-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_04-P1-Q11": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_04-P1-Q12": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_04-P1-Q13": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_04-P1-Q14": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_04-P1-Q15": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_04-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_04-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q01-H6808885d": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_05-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_05-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_05-P1-Q04": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_05-P1-Q05": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_05-P1-Q06": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_05-P1-Q07": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_05-P1-Q08": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_05-P1-Q09": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_05-P1-Q10": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_05-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_05-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_05-P1-Q17-Hdc672a67": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_05-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_06-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q07": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q08": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q10": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q11": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q12": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q13": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q14": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q15": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_06-P1-Q16": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q17": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_06-P1-Q18": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q06": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q07": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q08": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q09": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_07-P1-Q10": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q11": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_07-P1-Q12": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_07-P1-Q13": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q14": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_07-P1-Q15": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_07-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_07-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_07-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q01": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_08-P1-Q02": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_08-P1-Q03": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_08-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_08-P1-Q05": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_08-P1-Q06": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_08-P1-Q07": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_08-P1-Q08": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_08-P1-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_08-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_08-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_08-P1-Q17": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_08-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q01": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_09-P1-Q02": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_09-P1-Q03": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_09-P1-Q04": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_09-P1-Q05": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_09-P1-Q06": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_09-P1-Q07": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_09-P1-Q08": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_09-P1-Q09": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_09-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_09-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q15": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_09-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_09-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_10-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_10-P1-Q02": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_10-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_10-P1-Q04": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_10-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_10-P1-Q06": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_10-P1-Q07": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_10-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_10-P1-Q09": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_10-P1-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_10-P1-Q11": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_10-P1-Q12": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_10-P1-Q13": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_10-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_10-P1-Q15": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_10-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_10-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_10-P1-Q18": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_11-P1-Q01": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_11-P1-Q02": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_11-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_11-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_11-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_11-P1-Q06": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_11-P1-Q07": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_11-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_11-P1-Q09": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_11-P1-Q10": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_11-P1-Q11": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_11-P1-Q12": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_11-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_11-P1-Q14": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_11-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_11-P1-Q16": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_11-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_11-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q01": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_12-P1-Q02": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_12-P1-Q03": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_12-P1-Q04": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_12-P1-Q05": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_12-P1-Q06": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_12-P1-Q07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q08": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q09": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_12-P1-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q12": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_12-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q16": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_12-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_12-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_13-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_13-P1-Q03": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_13-P1-Q04": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_13-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_13-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_13-P1-Q07": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_13-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_13-P1-Q09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_13-P1-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q11": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_13-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q15": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_13-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_13-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_14-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_14-P1-Q02": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_14-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_14-P1-Q05": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_14-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_14-P1-Q08": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_14-P1-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q10": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q11": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_14-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_14-P1-Q13": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q14": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_14-P1-Q15": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_14-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_14-P1-Q17": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_14-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q01": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_15-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_15-P1-Q03": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_15-P1-Q04": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q06": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q07": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_15-P1-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_15-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_15-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q13": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_15-P1-Q15": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_15-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_15-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_16-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_16-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_16-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_16-P1-Q04": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_16-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_16-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_16-P1-Q07": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_16-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_16-P1-Q09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_16-P1-Q10": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_16-P1-Q11": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_16-P1-Q12": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_16-P1-Q13": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_16-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_16-P1-Q15": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_16-P1-Q16": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_16-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_16-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q01": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_17-P1-Q02": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_17-P1-Q03": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q04": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q05": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_17-P1-Q06": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_17-P1-Q07": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_17-P1-Q08": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q09": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_17-P1-Q11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q12": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_17-P1-Q13": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_17-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q16": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_17-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_17-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q01": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_18-P1-Q03": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_18-P1-Q04": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_18-P1-Q05": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_18-P1-Q06": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_18-P1-Q08": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q09": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q11": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-DE_18-P1-Q12": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_18-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q14": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_18-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_18-P1-Q16": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_18-P1-Q17": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_18-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_19-P1-Q02": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_19-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_19-P1-Q04": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_19-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_19-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_19-P1-Q07": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_19-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_19-P1-Q09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_19-P1-Q10": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_19-P1-Q11": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_19-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_19-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q01": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_20-P1-Q02-H04d938be": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_20-P1-Q03": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-DE_20-P1-Q04": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_20-P1-Q05": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_20-P1-Q06": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_20-P1-Q07": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-DE_20-P1-Q08": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_20-P1-Q09": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_20-P1-Q10": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_20-P1-Q11": "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ", "VLXT-PT-DE_20-P1-Q12": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q13": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-DE_20-P1-Q14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q15": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q16": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q17": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-DE_20-P1-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P107-B6-Q01": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P107-B6-Q02": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P107-B6-Q03": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P108-B6-Q04": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P108-B6-Q05": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P108-B6-Q06": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P108-B6-Q07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P109-B6-Q08": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-P109-B6-Q09": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-P109-B6-Q10": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P110-B6-Q11": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ", "VLXT-PT-P110-B6-Q12": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-P110-B6-Q13": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P111-B6-Q14": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-P111-B6-Q15": "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT", "VLXT-PT-P113-B6-Q18": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P114-B6-VD01": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P114-B6-VD02": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P115-B6-VD03": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P115-B6-VD04": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P116-B6-VD05": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P117-B6-VD07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P118-B6-VD08": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P120-B6-BT01": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P120-B6-BT02": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P121-B6-BT03": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P121-B6-BT04": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P122-B6-BT05": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P122-B6-BT06": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P123-B6-BT07": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P124-B6-BT08": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P125-B6-BT09": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC", "VLXT-PT-P125-B6-BT10": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-P126-B6-BT11": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG", "VLXT-PT-P126-B6-BT12": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-P127-B6-BT13": "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT", "VLXT-PT-P128-B6-BT14": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"};
+
 
 function getNganHang() {
   const sheet = getOrCreate('NganHang', NH_HEADERS);
   const data  = sheet.getDataRange().getValues();
   if (data.length < 2) return jsonOut({ ok: true, data: [] });
   const headers = data[0].map(h => String(h || '').trim().toLowerCase());
-  const baiCol = headers.findIndex(h => h === 'baihoc' || h === 'tenbai');
+  const baiCol = headers.findIndex(h => h === 'baihoc');
   const clCol  = headers.findIndex(h => h === 'chatluong');
   const ktCol  = headers.findIndex(h => h === 'kythuat');
   const lyDoCol = headers.findIndex(h => h === 'lydocachly');
@@ -956,32 +936,33 @@ function getNganHang() {
     const kt = ktCol !== -1 ? (String(r[ktCol] || '').trim() || 'Dat') : (String(r[18] || '').trim() || 'Dat');
     let baiHoc = baiCol !== -1 ? String(r[baiCol] || '').trim() : String(r[16] || '').trim();
     if (!baiHoc && isPt) {
-      baiHoc = (typeof REPAIR_P107_251_LESSON_MAP !== 'undefined' && REPAIR_P107_251_LESSON_MAP[id]) || PT_LESSON_DICT[id] || 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+      baiHoc = PT_LESSON_DICT[id] || 'B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ';
     }
+
     return {
       id: id,
-      mon: r[1] || 'Vật lý',
-      chuong: r[2] || 'Vật lí nhiệt',
-      mucDo: r[3] || 'NB',
-      loai: r[4] || 'TN',
-      nhomId: r[5] || '',
-      deBaiChung: r[6] || '',
-      question: r[actualQCol] || r[7] || '',
-      optA: r[8] || '',
-      optB: r[9] || '',
-      optC: r[10] || '',
-      optD: r[11] || '',
-      correct: r[12] || '',
-      hinhAnh: r[13] || '',
-      giaiThich: r[14] || '',
-      ngayThem: r[15] || '',
+      mon: String(r[1] || 'Vật lý'),
+      chuong: String(r[2] || ''),
+      mucDo: String(r[3] || 'TH'),
+      loai: String(r[4] || 'TN'),
+      nhomId: String(r[5] || ''),
+      deBaiChung: String(r[6] || ''),
+      question: (id === 'VLXT-PT-DE_05-P1-Q07' && !String(r[actualQCol] || '').startsWith("'")) ? "'" + String(r[actualQCol] || '') : String(r[actualQCol] || ''),
+      optA: String(r[8] || ''),
+      optB: String(r[9] || ''),
+      optC: String(r[10] || ''),
+      optD: String(r[11] || ''),
+      correct: String(r[12] || 'A'),
+      hinhAnh: String(r[13] || ''),
+      giaiThich: String(r[14] || ''),
+      ngayThem: r[15] instanceof Date ? r[15].toISOString() : String(r[15] || ''),
       baiHoc: baiHoc,
       chatLuong: cl,
-      kyThuat: isPt ? 'Dat' : kt,
-      lyDoCachLy: lyDoCol !== -1 ? (r[lyDoCol] || '') : (r[19] || ''),
-      batchId: batchCol !== -1 ? (r[batchCol] || '') : (r[20] || '')
+      kyThuat: kt,
+      lyDoCachLy: lyDoCol !== -1 ? String(r[lyDoCol] || '') : String(r[19] || ''),
+      batchId: batchCol !== -1 ? String(r[batchCol] || '') : String(r[20] || '')
     };
-  }).filter(r => r.id && String(r.id).trim().length > 0);
+  });
   return jsonOut({ ok: true, data: rows });
 }
 
@@ -1476,7 +1457,7 @@ function importNganHang(data) {
 
     let baiHoc = '';
     if (taxCode === 'G12_C1_B01' || /b1|mô hình động học|cấu trúc/i.test(taxCode) || /b1|mô hình động học|cấu trúc/i.test(taxTitle) || /b1|mô hình động học|cấu trúc/i.test(classBaiHoc) || /b1|mô hình động học|cấu trúc/i.test(rawBaiHoc)) {
-      baiHoc = 'Bài 1. Cấu trúc của chất & Mô hình động học phân tử';
+      baiHoc = 'B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ';
     } else if (taxCode === 'G12_C1_B02' || /b2|lực liên kết|chuyển thể/i.test(taxCode) || /b2|lực liên kết|chuyển thể/i.test(taxTitle) || /b2|lực liên kết|chuyển thể/i.test(classBaiHoc) || /b2|lực liên kết|chuyển thể/i.test(rawBaiHoc)) {
       baiHoc = 'Bài 2. Lực liên kết và sự chuyển thể';
     } else if (taxCode === 'G12_C1_B03' || /b3|thang nhiệt độ|nhiệt kế/i.test(taxCode) || /b3|thang nhiệt độ|nhiệt kế/i.test(taxTitle) || /b3|thang nhiệt độ|nhiệt kế/i.test(classBaiHoc) || /b3|thang nhiệt độ|nhiệt kế/i.test(rawBaiHoc)) {
@@ -3317,69 +3298,47 @@ const NEW_SAFE_QUESTIONS_3 = [
   }
 ];
 
-const TARGETED_PATCH_19_FIELDS = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const TARGETED_PATCH_10_FIELDS = [
   {
-    "index": 1,
+    "id": "VLXT-PT-DE_01-P1-Q16",
+    "field": "question",
+    "after": "Một số phân tử ở gần mặt thoáng chất lỏng, chuyển động hướng ra ngoài, có ...(1).. đủ lớn thắng được lực tương tác giữa các phân tử thì có thể thoát ra ngoài khỏi chất lỏng. Như vậy, có thể nói sự bay hơi là sự hoá hơi xảy ra ở..(2).. của khối chất lỏng. Điền vào chỗ trống các cụm từ thích hợp."
+  },
+  {
     "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
-  },
-  {
-    "index": 2,
-    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
-  },
-  {
-    "index": 3,
-    "id": "VLXT-PT-DE_10-P1-Q09",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
-  },
-  {
-    "index": 4,
-    "id": "VLXT-PT-DE_16-P1-Q01",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
-  },
-  {
-    "index": 5,
-    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
-    "field": "baiHoc",
-    "colIndex": 17,
-    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
-  },
-  {
-    "index": 6,
-    "id": "VLXT-PT-DE_05-P1-Q07",
-    "field": "question",
-    "colIndex": 8,
-    "after": "''Độ không tuyệt đối' là nhiệt độ ứng với"
-  },
-  {
-    "index": 7,
-    "id": "VLXT-PT-DE_17-P1-Q04",
-    "field": "giaiThich",
-    "colIndex": 15,
-    "after": "Với cùng nguồn cấp nhiệt $Q$, độ tăng nhiệt độ $\\Delta t = \\frac{Q}{m c}$. Vì nhiệt dung riêng của rượu ($c_{rượu} \\approx 2500\\text{ J/kg.K}$) nhỏ hơn nhiều so với nước ($c_{nước} \\approx 4200\\text{ J/kg.K}$) nên rượu tăng nhiệt độ nhanh hơn."
-  },
-  {
-    "index": 8,
-    "id": "VLXT-PT-DE_19-P1-Q06",
     "field": "optB",
-    "colIndex": 10,
-    "after": "nước trong ấm không bay hơi nữa."
+    "after": "chuyển động hỗn loạn quanh vị trí cân bằng xác định."
   },
   {
-    "index": 9,
-    "id": "VLXT-PT-P107-B6-Q01",
+    "id": "VLXT-PT-DE_09-P1-Q03",
     "field": "question",
-    "colIndex": 8,
-    "after": "Nhiệt dung riêng của một chất là nhiệt lượng cần thiết để"
+    "after": "Trường hợp nào sau đây làm tăng nội năng của một đồng xu bằng cách thực hiện công?"
+  },
+  {
+    "id": "VLXT-PT-DE_18-P1-Q08",
+    "field": "giaiThich",
+    "after": "Độ tăng nhiệt độ của nước:\\n$$\\Delta t = \\frac{Q}{mc} = \\frac{84000}{2 \\cdot 4200} = 10^{\\circ}\\text{C}.$$\\nNhiệt độ sau cùng: $t = 20 + 10 = 30^{\\circ}\\text{C}$."
   }
 ];
 
@@ -3389,11 +3348,14 @@ function patchSpecificFields_AuditFidelity(e) {
 
   const sheet = getOrCreate('NganHang', NH_HEADERS);
   const lastRow = sheet.getLastRow();
+  const lastCol = sheet.getLastColumn();
   if (lastRow < 2) return jsonOut({ ok: false, error: 'Bảng NganHang trống' });
 
-  const headerMap = {};
-  for (let h = 0; h < NH_HEADERS.length; h++) {
-    headerMap[NH_HEADERS[h]] = h + 1;
+  const rawHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const actualHeaderMap = {};
+  for (let h = 0; h < rawHeaders.length; h++) {
+    const headerName = String(rawHeaders[h] || '').trim().toLowerCase();
+    if (headerName) actualHeaderMap[headerName] = h + 1;
   }
 
   const idValues = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
@@ -3405,12 +3367,14 @@ function patchSpecificFields_AuditFidelity(e) {
 
   const appliedPatches = [];
   const missingIds = [];
+  const verificationResults = [];
 
-  for (let p = 0; p < TARGETED_PATCH_19_FIELDS.length; p++) {
-    const item = TARGETED_PATCH_19_FIELDS[p];
+  for (let p = 0; p < TARGETED_PATCH_10_FIELDS.length; p++) {
+    const item = TARGETED_PATCH_10_FIELDS[p];
     const qid = item.id;
     const field = item.field;
-    const colIndex = headerMap[field] || item.colIndex;
+    const fieldLower = field.toLowerCase();
+    const colIndex = actualHeaderMap[fieldLower] || actualHeaderMap[field] || item.colIndex || 8;
     const afterVal = item.after;
 
     if (idToRowMap.hasOwnProperty(qid)) {
@@ -3434,17 +3398,36 @@ function patchSpecificFields_AuditFidelity(e) {
     }
   }
 
+  if (!dryRun) {
+    SpreadsheetApp.flush();
+    for (let p = 0; p < appliedPatches.length; p++) {
+      const ap = appliedPatches[p];
+      const readBackVal = String(sheet.getRange(ap.rowIndex, ap.colIndex).getValue() || '');
+      verificationResults.push({
+        id: ap.id,
+        field: ap.field,
+        rowIndex: ap.rowIndex,
+        colIndex: ap.colIndex,
+        writtenVal: ap.after,
+        verifiedVal: readBackVal,
+        isMatch: (readBackVal === ap.after)
+      });
+    }
+  }
+
   return jsonOut({
     ok: true,
     success: true,
     dryRun: dryRun,
-    totalTargetedFields: TARGETED_PATCH_19_FIELDS.length,
+    totalTargetedFields: TARGETED_PATCH_10_FIELDS.length,
     totalPatchesApplied: appliedPatches.length,
     missingIds: missingIds,
     appliedPatches: appliedPatches,
-    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa đúng ' + appliedPatches.length + ' trường mismatch.' : 'Đã sửa thành công đúng ' + appliedPatches.length + ' ô mục tiêu trực tiếp từ payload e940ac5.')
+    verificationResults: verificationResults,
+    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa đúng ' + appliedPatches.length + ' trường mismatch.' : 'Đã sửa và xác thực thành công đúng ' + appliedPatches.length + ' ô mục tiêu trực tiếp từ payload e940ac5.')
   });
 }
+
 
 function repairBatchP107_251_AutoFix(e) {
   const isPost = Boolean(e && e.action);

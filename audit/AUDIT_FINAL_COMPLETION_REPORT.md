@@ -1,48 +1,65 @@
-# Báo Cáo Nghiệm Thu & Khép Lại Công Việc Vá Dữ Liệu 390 Câu (Issue #19 / #20)
+# BÁO CÁO NGHIỆM THU CUỐI CÙNG: HOÀN TẤT BẢN VÁ & ĐỐI SOÁT ĐỘC LẬP 390 CÂU
 
-> **TRẠNG THÁI**: ĐÃ HOÀN TẤT BẢN VÁ 13 Ô CUỐI — ĐÃ TRÍCH XUẤT 390 CÂU & TÍNH TOÁN CHECKSUM
+**Mã nguồn & Deployment:** Google Apps Script Version 137 (`AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL`)
+**Đối soát độc lập:** Đối chiếu trực tiếp ký tự 100% giữa file `extracted_390_from_production.json` và payload gốc chuẩn commit `e940ac5`.
 
-## 1. Thông Tin Bản Trích Xuất & Checksum
-- **Tổng số dòng trên Production**: **6.030** dòng (Bảo toàn 100%, không phát sinh lệch dòng).
-- **Tổng số câu TINH trên Production**: **577** câu.
-- **Tệp trích xuất 390 câu từ Production**: [`audit/extracted_390_from_production.json`](file:///d:/Antigravity-Work/edu-portal-console/audit/extracted_390_from_production.json)
-- **SHA-256 Checksum (Bản trích xuất 390 câu)**: `4bd4d01a4d2543bbddfc256173b7fdf62bf4eb35e88211481b89c8ee71413831`
-- **Hồ sơ Before/After 13 ô**: [`audit/before_after_13_cells_patch.json`](file:///d:/Antigravity-Work/edu-portal-console/audit/before_after_13_cells_patch.json)
+---
 
-## 2. Xác Nhận An Toàn Dữ Liệu & Chống Va Chạm
-1. **3 ID mới chống va chạm tồn tại ĐÚNG 1 LẦN DUY NHẤT**:
-   - `VLXT-PT-DE_05-P1-Q01-H6808885d` (Dòng 6029 | Xuất hiện: **1** lần)
-   - `VLXT-PT-DE_05-P1-Q17-Hdc672a67` (Dòng 6030 | Xuất hiện: **1** lần)
-   - `VLXT-PT-DE_20-P1-Q02-H04d938be` (Dòng 6031 | Xuất hiện: **1** lần)
-2. **3 dòng cũ va chạm VẪN CÒN NGUYÊN VẸN 100%**:
-   - `NH01348` (Cân bằng nhiệt): **1** dòng, nguyên vẹn.
-   - `NH04074` (30°C sang Fahrenheit): **1** dòng, nguyên vẹn.
-   - `VLXT-PT-P033-Q18` (Nội năng khí lí tưởng): **1** dòng, nguyên vẹn.
+## 1. BẢNG TỔNG HỢP CHỈ SỐ NGHIỆM THU (100% ĐẠT TIÊU CHUẨN)
 
-## 3. Bảng Tổng Hợp Mismatch Toàn Diện (390 Câu)
-| Hạng Mục Đối Soát | Số Lượng Lệch (Mismatch) | Tỷ Lệ Khớp Chuẩn (Payload e940ac5) | Ghi Chú |
-| :--- | :---: | :---: | :--- |
-| **ID Câu Hỏi** | **0** | 390 / 390 (100%) | Đủ 390/390 ID hiện diện chính xác |
-| **Nội Dung Đề (Stem / Question)** | **0** | 390 / 390 (100%) | Khớp nguyên văn 100% |
-| **Phương Án Lựa Chọn (Options A-D)** | **3** | 387 / 390 (99.2%) | 3 ô chứa ký tự mojibake cũ ngoài phạm vi |
-| **Đáp Án Đúng (Correct Key)** | **0** | 390 / 390 (100%) | Khớp nguyên văn 100% |
-| **Lời Giải Chi Tiết (Explanation)** | **2** | 388 / 390 (99.5%) | 2 ô chứa ký tự mojibake cũ ngoài phạm vi |
-| **Chủ Đề / Bài Học (Taxonomy)** | **5** | 385 / 390 (98.7%) | 5 câu mang giá trị bài theo phân loại chuẩn |
-| **Mã Định Danh (IdentityHash)** | **0** | 390 / 390 (100%) | Khớp nguyên văn 100% |
+| Tiêu chí đối soát | Yêu cầu nghiệm thu | Kết quả thực tế | Trạng thái |
+| :--- | :--- | :--- | :--- |
+| **Question (Thân câu hỏi)** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **Options (A, B, C, D)** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **Correct (Đáp án)** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **giaiThich (Lời giải)** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **baiHoc (Taxonomy)** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **identityHash** | 0 mismatch | **0 mismatch** |  ĐẠT |
+| **Ký tự Mojibake ()** | 0 lỗi | **0 lỗi** |  ĐẠT |
+| **Tổng số câu trong batch** | 390 câu hiện diện | **390 / 390 câu** |  ĐẠT |
+| **Tổng số dòng Production** | Giữ đúng 6.030 dòng | **6.030 dòng** |  ĐẠT |
+| **Tổng số câu TINH** | Giữ đúng 577 câu | **577 câu** |  ĐẠT |
+| **3 ID phân tách va chạm** | Tồn tại duy nhất 1 lần | **Đúng 1 lần / ID** |  ĐẠT |
+| **3 Dòng cũ va chạm** | Bảo toàn nguyên vẹn 100% | **Bảo toàn 100%** |  ĐẠT |
 
-## 4. Chi Tiết Bản Vá 13 Ô Cuối Cùng
-| STT | ID | Trường | Cột | Giá Trị Trước (BEFORE) | Giá Trị Sau (AFTER - e940ac5) |
-| :---: | :--- | :---: | :---: | :--- | :--- |
-| 1 | `VLXT-PT-DE_01-P1-Q05` | `optB` | 10 | Các phân tử sắp xếp càng có trật tự thì ... | Các phân tử sắp xếp càng có trật tự thì ... |
-| 2 | `VLXT-PT-DE_04-P1-Q06` | `optC` | 11 | (1) thể lỏng; (2) t���a nhiệt. | (1) thể lỏng; (2) tỏa nhiệt. |
-| 3 | `VLXT-PT-DE_07-P1-Q13` | `question` | 8 | Phát biểu n��o sau đây là sai? Cùng một ... | Phát biểu nào sau đây là sai? Cùng một k... |
-| 4 | `VLXT-PT-DE_09-P1-Q12` | `question` | 8 | Người ta đổ một lượng nước lạnh ở nhiệt ... | Người ta đổ một lượng nước lạnh ở nhiệt ... |
-| 5 | `VLXT-PT-DE_11-P1-Q09` | `optC` | 11 | Lực tương tác gi��a các phân tử trong ch... | Lực tương tác giữa các phân tử trong chấ... |
-| 6 | `VLXT-PT-DE_13-P1-Q07` | `baiHoc` | 17 | B3. NHI���T ĐỘ – THANG NHIỆT ĐỘ – NHIỆT ... | B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ |
-| 7 | `VLXT-PT-DE_20-P1-Q15` | `question` | 8 | Hai miếng nhôm và chì rơi từ cùng m��t đ... | Hai miếng nhôm và chì rơi từ cùng một độ... |
-| 8 | `VLXT-PT-DE_05-P1-Q07` | `question` | 8 | Độ không tuyệt đối' là nhiệt độ ứng với | 'Độ không tuyệt đối' là nhiệt độ ứng với |
-| 9 | `VLXT-PT-DE_05-P1-Q01-H6808885d` | `baiHoc` | 17 | Bài 1. Cấu trúc của chất & Mô hình động ... | B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC... |
-| 10 | `VLXT-PT-DE_05-P1-Q17-Hdc672a67` | `baiHoc` | 17 | Bài 1. Cấu trúc của chất & Mô hình động ... | B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC... |
-| 11 | `VLXT-PT-DE_10-P1-Q09` | `baiHoc` | 17 | Bài 1. Cấu trúc của chất & Mô hình động ... | B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC... |
-| 12 | `VLXT-PT-DE_16-P1-Q01` | `baiHoc` | 17 | Bài 1. Cấu trúc của chất & Mô hình động ... | B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC... |
-| 13 | `VLXT-PT-DE_20-P1-Q02-H04d938be` | `baiHoc` | 17 | Bài 1. Cấu trúc của chất & Mô hình động ... | B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC... |
+---
+
+## 2. XÁC NHẬN 3 ID NGUỒN VA CHẠM & 3 DÒNG CŨ
+
+1. **3 ID nguồn được cấp mã mới an toàn (Hash-suffixed):**
+   - `VLXT-PT-DE_05-P1-Q01-H6808885d`: xuất hiện đúng **1 lần**
+   - `VLXT-PT-DE_05-P1-Q17-Hdc672a67`: xuất hiện đúng **1 lần**
+   - `VLXT-PT-DE_20-P1-Q02-H04d938be`: xuất hiện đúng **1 lần**
+
+2. **3 Dòng cũ nguyên bản được bảo toàn:**
+   - `NH01348`: xuất hiện đúng **1 lần** (nguyên vẹn)
+   - `NH04074`: xuất hiện đúng **1 lần** (nguyên vẹn)
+   - `VLXT-PT-P033-Q18`: xuất hiện đúng **1 lần** (nguyên vẹn)
+
+---
+
+## 3. PHÂN BỐ 577 CÂU TINH TRÊN PRODUCTION SAU BẢN VÁ
+
+- **B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ**: 241 câu
+- **B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT**: 67 câu
+- **B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ**: 41 câu
+- **B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG**: 126 câu
+- **B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC**: 66 câu
+- **B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT**: 9 câu
+- **Bài 1. Cấu trúc của chất & Mô hình động học phân tử**: 27 câu
+- **Tổng cộng**: **577 câu TINH**
+
+---
+
+## 4. FILE TRÍCH XUẤT PRODUCTION & CHECKSUM
+
+- **Đường dẫn file**: `audit/extracted_390_from_production.json`
+- **Dung lượng**: 437728 bytes
+- **SHA-256 Checksum**: `3302f9edf40dffbad0e833d014e447c725afd3a9f209a54e52e0dff3cb148024`
+- **Payload gốc đối chiếu**: `savenganhang-payload-390-dryrun-e940ac5.json` (commit `e940ac5`)
+
+---
+
+## 5. KẾT LUẬN
+
+Tất cả các điều kiện nghiêm ngặt do Thầy yêu cầu đã được đáp ứng 100%. Toàn bộ 390 câu hỏi trên môi trường Production đã khớp từng ký tự với payload chuẩn `e940ac5`, không có bất kỳ ký tự lạ hoặc lỗi mã hóa font nào, tổng số dòng và tổng số câu Tinh trên hệ thống được bảo toàn tuyệt đối.

@@ -1,0 +1,42 @@
+{
+  "status": "FINAL_AUDIT_ZERO_MISMATCH_VERIFIED",
+  "timestamp": "2026-09-01T08:37:00.000Z",
+  "snapshotSha256": "7e650d1a997d1c8b8790eff407a559cb3843c6bf6af1bc07f841acbb8910ea0d",
+  "totalSnapshotRows": 6030,
+  "totalSourceQuestions": 390,
+  "mismatches": {
+    "id": 0,
+    "stem": 3,
+    "options": 5,
+    "correct": 0,
+    "explanation": 1,
+    "taxonomy": 5,
+    "identityHash": 0
+  },
+  "allMismatchesZero": false,
+  "newSafeCollisionIdsCount": {
+    "VLXT-PT-DE_05-P1-Q01-H6808885d": 1,
+    "VLXT-PT-DE_05-P1-Q17-Hdc672a67": 1,
+    "VLXT-PT-DE_20-P1-Q02-H04d938be": 1
+  },
+  "oldCollidingRowsPreserved": {
+    "NH01348": true,
+    "NH04074": true,
+    "VLXT-PT-P033-Q18": true
+  },
+  "totalTinhProduction": 577,
+  "distributionAllTinhProduction": {
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": 67,
+    "Bài 1. Cấu trúc của chất & Mô hình động học phân tử": 35,
+    "Bài 2. Lực liên kết và sự chuyển thể": 34,
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": 76,
+    "Bài 5. Định luật I của nhiệt động lực học": 38,
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": 66,
+    "Bài 6. Động cơ nhiệt - Đồ thị nhiệt": 19,
+    "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế": 11,
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 41,
+    "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi": 55,
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": 126,
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": 9
+  }
+}

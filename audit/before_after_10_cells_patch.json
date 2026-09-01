@@ -1,0 +1,82 @@
+[
+  {
+    "index": 1,
+    "id": "VLXT-PT-DE_01-P1-Q15",
+    "field": "optB",
+    "colIndex": 10,
+    "before": "\"không tăng\" v�� \"giảm xuống\".",
+    "after": "\"không tăng\" và \"giảm xuống\"."
+  },
+  {
+    "index": 2,
+    "id": "VLXT-PT-DE_09-P1-Q02",
+    "field": "optA",
+    "colIndex": 9,
+    "before": "nội năng của khí lí tư���ng không đổi.",
+    "after": "nội năng của khí lí tưởng không đổi."
+  },
+  {
+    "index": 3,
+    "id": "VLXT-PT-DE_15-P1-Q09",
+    "field": "optC",
+    "colIndex": 11,
+    "before": "Từ ph��t th��� hai đến phút thứ mười, nhiệt độ của nước không đổi.",
+    "after": "Từ phút thứ hai đến phút thứ mười, nhiệt độ của nước không đổi."
+  },
+  {
+    "index": 4,
+    "id": "VLXT-PT-DE_17-P1-Q07",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Khối lư��ng riêng $\\rho = \\frac{m}{V}$. Tại $4^{\\circ}\\text{C}$, thể tích của một lượng nước đạt giá trị cực tiểu (đáy của đường cong), do đó khối lượng riêng của nước đạt giá trị lớn nhất ($1000\\text{ kg/m}^3$).",
+    "after": "Khối lượng riêng $\\rho = \\frac{m}{V}$. Tại $4^{\\circ}\\text{C}$, thể tích của một lượng nước đạt giá trị cực tiểu (đáy của đường cong), do đó khối lượng riêng của nước đạt giá trị lớn nhất ($1000\\text{ kg/m}^3$)."
+  },
+  {
+    "index": 5,
+    "id": "VLXT-PT-DE_20-P1-Q06",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Càng lên cao, áp suất khí quyển càng giảm (nhỏ hơn áp suất tiêu chuẩn $1\\text{ atm}$), dẫn đến nhiệt độ sôi của nước giảm xuống dưới $100^{\\circ}\\text{C}$. Ở nhiệt độ s��i này, nhiệt lượng không đủ để làm chín trứng như bình thường.",
+    "after": "Càng lên cao, áp suất khí quyển càng giảm (nhỏ hơn áp suất tiêu chuẩn $1\\text{ atm}$), dẫn đến nhiệt độ sôi của nước giảm xuống dưới $100^{\\circ}\\text{C}$. Ở nhiệt độ sôi này, nhiệt lượng không đủ để làm chín trứng như bình thường."
+  },
+  {
+    "index": 6,
+    "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 7,
+    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 8,
+    "id": "VLXT-PT-DE_10-P1-Q09",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 9,
+    "id": "VLXT-PT-DE_16-P1-Q01",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 10,
+    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  }
+]
