@@ -1,0 +1,15 @@
+{
+  "batch": "BATCH-P107-251-MASTER",
+  "totalQuestions": 390,
+  "payloadSha256": "6be0e4b999af057174ff26e2242081158167034156b1800eef84208548670891",
+  "accounting": {
+    "insertedRows": 375,
+    "updatedRows": 12,
+    "proposedSafeNewIds": 3
+  },
+  "proposedSafeNewIds": [
+    "VLXT-PT-DE_05-P1-Q01-NEW",
+    "VLXT-PT-DE_05-P1-Q17-NEW",
+    "VLXT-PT-DE_20-P1-Q02-NEW"
+  ]
+}

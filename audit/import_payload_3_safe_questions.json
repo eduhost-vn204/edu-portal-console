@@ -1,0 +1,41 @@
+[
+  {
+    "id": "VLXT-PT-DE_05-P1-Q01-NEW",
+    "question": "Trong chuyển động nhiệt, các phân tử chất lỏng",
+    "optA": "chỉ dao động quanh các vị trí cân bằng cố định.",
+    "optB": "chuyển động hoàn toàn tự do và hỗn loạn về mọi phía.",
+    "optC": "dao động quanh các vị trí cân bằng tạm thời và các vị trí này luôn thay đổi.",
+    "optD": "đứng yên không chuyển động khi nhiệt độ không đổi.",
+    "correct": "C",
+    "giaiThich": "Trong chất lỏng, các phân tử dao động quanh các vị trí cân bằng tạm thời, sau một thời gian lại chuyển sang vị trí cân bằng khác.",
+    "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "chatLuong": "tinh",
+    "sourceBatch": "BATCH-P107-251-MASTER"
+  },
+  {
+    "id": "VLXT-PT-DE_05-P1-Q17-NEW",
+    "question": "Khi nhiệt độ của một vật tăng lên thì đại lượng nào sau đây của các phân tử cấu tạo nên vật tăng?",
+    "optA": "Kích thước của các phân tử.",
+    "optB": "Khối lượng của các phân tử.",
+    "optC": "Khoảng cách trung bình và tốc độ chuyển động nhiệt của các phân tử.",
+    "optD": "Số lượng các phân tử.",
+    "correct": "C",
+    "giaiThich": "Khi nhiệt độ tăng, các phân tử chuyển động nhanh hơn (động năng tăng) và khoảng cách trung bình giữa chúng tăng lên (vật nở vì nhiệt).",
+    "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "chatLuong": "tinh",
+    "sourceBatch": "BATCH-P107-251-MASTER"
+  },
+  {
+    "id": "VLXT-PT-DE_20-P1-Q02-NEW",
+    "question": "Tính chất nào sau đây không phải của nguyên tử, phân tử?",
+    "optA": "Chuyển động hỗn loạn không ngừng.",
+    "optB": "Nhiệt độ càng cao thì chuyển động càng nhanh.",
+    "optC": "Giữa các nguyên tử, phân tử có khoảng cách.",
+    "optD": "Chỉ có lực hút mà không có lực đẩy giữa các phân tử.",
+    "correct": "D",
+    "giaiThich": "Giữa các nguyên tử, phân tử đồng thời có cả lực hút và lực đẩy phân tử.",
+    "baiHoc": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "chatLuong": "tinh",
+    "sourceBatch": "BATCH-P107-251-MASTER"
+  }
+]

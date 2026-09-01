@@ -2856,8 +2856,9 @@ function normalizeSearchText(value) {
 
 
 // ════════════════════════════════════════════════════════════════
-// REPAIR P107-251 BATCH LESSON MAP (PHYSICS RECLASSIFIED)
+// REPAIR P107-251 BATCH LESSON MAP (STRICT 390 PHYSICS)
 // ════════════════════════════════════════════════════════════════
+
 
 const REPAIR_P107_251_LESSON_MAP = {
   "VLXT-PT-DE_06-P1-Q13": "Bài 2. Lực liên kết và sự chuyển thể",
@@ -3246,20 +3247,74 @@ const REPAIR_P107_251_LESSON_MAP = {
   "VLXT-PT-P126-B6-BT11": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
   "VLXT-PT-P126-B6-BT12": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
   "VLXT-PT-P127-B6-BT13": "Bài 2. Lực liên kết và sự chuyển thể",
-  "VLXT-PT-P128-B6-BT14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
-  "VLXT-PT-DE_01-P1-Q06": "Bài 5. Định luật I của nhiệt động lực học",
-  "VLXT-PT-DE_04-P1-Q16": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
-  "VLXT-PT-DE_05-P1-Q01": "Bài 5. Định luật I của nhiệt động lực học",
-  "VLXT-PT-DE_05-P1-Q17": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
-  "VLXT-PT-DE_15-P1-Q05": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
-  "VLXT-PT-DE_15-P1-Q08": "Bài 5. Định luật I của nhiệt động lực học",
-  "VLXT-PT-DE_15-P1-Q12": "Bài 5. Định luật I của nhiệt động lực học",
-  "VLXT-PT-DE_15-P1-Q14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
-  "VLXT-PT-DE_18-P1-Q07": "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế",
-  "VLXT-PT-DE_20-P1-Q02": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi",
-  "VLXT-PT-P117-B6-VD06": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
+  "VLXT-PT-P128-B6-BT14": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
 };
 
+const NEW_SAFE_QUESTIONS_3 = [
+  {
+    id: "VLXT-PT-DE_05-P1-Q01-NEW",
+    mon: "Vật Lý 12",
+    chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT",
+    mucDo: "NB",
+    loai: "TN",
+    nhomId: "",
+    deBaiChung: "",
+    question: "Trong chuyển động nhiệt, các phân tử chất lỏng",
+    optA: "chỉ dao động quanh các vị trí cân bằng cố định.",
+    optB: "chuyển động hoàn toàn tự do và hỗn loạn về mọi phía.",
+    optC: "dao động quanh các vị trí cân bằng tạm thời và các vị trí này luôn thay đổi.",
+    optD: "đứng yên không chuyển động khi nhiệt độ không đổi.",
+    correct: "C",
+    hinhAnh: "",
+    giaiThich: "Trong chất lỏng, các phân tử dao động quanh các vị trí cân bằng tạm thời, sau một thời gian lại chuyển sang vị trí cân bằng khác.",
+    ngayThem: "2026-09-01T00:00:00.000Z",
+    baiHoc: "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    chatLuong: "tinh",
+    sourceBatch: "BATCH-P107-251-MASTER"
+  },
+  {
+    id: "VLXT-PT-DE_05-P1-Q17-NEW",
+    mon: "Vật Lý 12",
+    chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT",
+    mucDo: "NB",
+    loai: "TN",
+    nhomId: "",
+    deBaiChung: "",
+    question: "Khi nhiệt độ của một vật tăng lên thì đại lượng nào sau đây của các phân tử cấu tạo nên vật tăng?",
+    optA: "Kích thước của các phân tử.",
+    optB: "Khối lượng của các phân tử.",
+    optC: "Khoảng cách trung bình và tốc độ chuyển động nhiệt của các phân tử.",
+    optD: "Số lượng các phân tử.",
+    correct: "C",
+    hinhAnh: "",
+    giaiThich: "Khi nhiệt độ tăng, các phân tử chuyển động nhanh hơn (động năng tăng) và khoảng cách trung bình giữa chúng tăng lên (vật nở vì nhiệt).",
+    ngayThem: "2026-09-01T00:00:00.000Z",
+    baiHoc: "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    chatLuong: "tinh",
+    sourceBatch: "BATCH-P107-251-MASTER"
+  },
+  {
+    id: "VLXT-PT-DE_20-P1-Q02-NEW",
+    mon: "Vật Lý 12",
+    chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT",
+    mucDo: "NB",
+    loai: "TN",
+    nhomId: "",
+    deBaiChung: "",
+    question: "Tính chất nào sau đây không phải của nguyên tử, phân tử?",
+    optA: "Chuyển động hỗn loạn không ngừng.",
+    optB: "Nhiệt độ càng cao thì chuyển động càng nhanh.",
+    optC: "Giữa các nguyên tử, phân tử có khoảng cách.",
+    optD: "Chỉ có lực hút mà không có lực đẩy giữa các phân tử.",
+    correct: "D",
+    hinhAnh: "",
+    giaiThich: "Giữa các nguyên tử, phân tử đồng thời có cả lực hút và lực đẩy phân tử.",
+    ngayThem: "2026-09-01T00:00:00.000Z",
+    baiHoc: "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    chatLuong: "tinh",
+    sourceBatch: "BATCH-P107-251-MASTER"
+  }
+];
 
 function repairBatchP107_251_AutoFix(e) {
   const isPost = Boolean(e && e.action);
@@ -3271,6 +3326,7 @@ function repairBatchP107_251_AutoFix(e) {
 
   const idValues = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
   const colValues = sheet.getRange(2, 17, lastRow - 1, 1).getValues();
+  const existingIds = new Set();
   let updatedCount = 0;
   const changedRows = [];
   const beforeCounts = {};
@@ -3278,6 +3334,8 @@ function repairBatchP107_251_AutoFix(e) {
 
   for (let i = 0; i < idValues.length; i++) {
     const qid = String(idValues[i][0] || '').trim();
+    if (qid) existingIds.add(qid);
+
     if (qid && REPAIR_P107_251_LESSON_MAP.hasOwnProperty(qid)) {
       const intendedLesson = REPAIR_P107_251_LESSON_MAP[qid];
       const curLesson = String(colValues[i][0] || '').trim();
@@ -3292,8 +3350,28 @@ function repairBatchP107_251_AutoFix(e) {
     }
   }
 
-  if (!dryRun && updatedCount > 0) {
-    sheet.getRange(2, 17, lastRow - 1, 1).setValues(colValues);
+  // Check 3 new safe questions
+  const toAppend = [];
+  for (let k = 0; k < NEW_SAFE_QUESTIONS_3.length; k++) {
+    const nq = NEW_SAFE_QUESTIONS_3[k];
+    if (!existingIds.has(nq.id)) {
+      toAppend.push(nq);
+      afterCounts[nq.baiHoc] = (afterCounts[nq.baiHoc] || 0) + 1;
+    }
+  }
+
+  if (!dryRun) {
+    if (updatedCount > 0) {
+      sheet.getRange(2, 17, lastRow - 1, 1).setValues(colValues);
+    }
+    if (toAppend.length > 0) {
+      const appendRows = toAppend.map(function(item) {
+        return NH_HEADERS.map(function(h) {
+          return item.hasOwnProperty(h) ? item[h] : '';
+        });
+      });
+      sheet.getRange(lastRow + 1, 1, appendRows.length, NH_HEADERS.length).setValues(appendRows);
+    }
   }
 
   return jsonOut({
@@ -3301,11 +3379,14 @@ function repairBatchP107_251_AutoFix(e) {
     success: true,
     dryRun: dryRun,
     totalScanned: idValues.length,
-    totalTargeted: Object.keys(REPAIR_P107_251_LESSON_MAP).length,
-    totalChanged: updatedCount,
+    totalTargetedInBank: Object.keys(REPAIR_P107_251_LESSON_MAP).length,
+    totalChangedInBank: updatedCount,
+    totalNewSafeToAppend: toAppend.length,
+    totalBatchAccounted: Object.keys(REPAIR_P107_251_LESSON_MAP).length + toAppend.length,
     beforeCounts: beforeCounts,
     afterCounts: afterCounts,
-    sampleChanges: changedRows.slice(0, 30),
-    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa ' : 'Đã sửa thành công: ') + updatedCount + ' bản ghi.'
+    sampleChanges: changedRows.slice(0, 20),
+    newSafeQuestions: toAppend.map(function(x) { return { id: x.id, stem: x.question, baiHoc: x.baiHoc }; }),
+    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa ' + updatedCount + ' dòng cũ & bổ sung ' + toAppend.length + ' câu mới an toàn (Tổng gói đúng 390 câu).' : 'Đã cập nhật thành công ' + updatedCount + ' dòng cũ & bổ sung ' + toAppend.length + ' câu mới an toàn.')
   });
 }
