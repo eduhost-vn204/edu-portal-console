@@ -49,6 +49,7 @@ function doGet(e) {
     if (type === 'huongdan')       return getHuongDan();
     if (type === 'questionstats' || type === 'getquestionstats') return getQuestionStats(e);
     if (type === 'repairp107_251') return repairBatchP107_251_AutoFix(e);
+    if (type === 'patchspecificfields') return patchSpecificFields_AuditFidelity(e);
     return getExamQuestions('de01'); // backward compat — không có type param
   } catch(err) {
     return jsonOut({ error: err.message });
@@ -2855,10 +2856,10 @@ function normalizeSearchText(value) {
 }
 
 
-// ════════════════════════════════════════════════════════════════
-// REPAIR P107-251 BATCH LESSON MAP (E940AC5 MASTER 390)
-// ════════════════════════════════════════════════════════════════
 
+
+// REPAIR P107-251 BATCH LESSON MAP & TARGETED 19-CELL PATCH (E940AC5 MASTER 390)
+// ════════════════════════════════════════════════════════════════
 
 const REPAIR_P107_251_LESSON_MAP = {
   "VLXT-PT-DE_01-P1-Q01": "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC",
@@ -3315,6 +3316,144 @@ const NEW_SAFE_QUESTIONS_3 = [
     "sourceBatch": "BATCH-P107-251-MASTER"
   }
 ];
+
+const TARGETED_PATCH_19_FIELDS = [
+  {
+    "index": 1,
+    "id": "VLXT-PT-DE_01-P1-Q13",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Ở thể rắn, lực tương tác phân tử rất mạnh giữ các phân tử ở các vị trí cân bằng và m��i phân tử chỉ có thể dao động nhiệt xung quanh vị trí cân bằng xác định này.",
+    "after": "Ở thể rắn, lực tương tác phân tử rất mạnh giữ các phân tử ở các vị trí cân bằng và mỗi phân tử chỉ có thể dao động nhiệt xung quanh vị trí cân bằng xác định này."
+  },
+  {
+    "index": 2,
+    "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 3,
+    "id": "VLXT-PT-DE_05-P1-Q07",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Độ không tuyệt đối' là nhiệt độ ứng với",
+    "after": "'Độ không tuyệt đối' là nhiệt độ ứng với"
+  },
+  {
+    "index": 4,
+    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 5,
+    "id": "VLXT-PT-DE_10-P1-Q09",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 6,
+    "id": "VLXT-PT-DE_16-P1-Q01",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 7,
+    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 8,
+    "id": "VLXT-PT-P107-B6-Q01",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "B4. NHI���T DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG",
+    "after": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG"
+  },
+  {
+    "index": 9,
+    "id": "VLXT-PT-P126-B6-BT12",
+    "field": "optD",
+    "colIndex": 12,
+    "before": "Nhiệt nóng chảy riêng không phụ thuộc b���n chất chất rắn.",
+    "after": "Nhiệt nóng chảy riêng không phụ thuộc bản chất chất rắn."
+  }
+];
+
+function patchSpecificFields_AuditFidelity(e) {
+  const isPost = Boolean(e && e.action);
+  const dryRun = isPost ? (e.dryRun === true) : (e && e.parameter && e.parameter.execute !== 'true');
+
+  const sheet = getOrCreate('NganHang', NH_HEADERS);
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return jsonOut({ ok: false, error: 'Bảng NganHang trống' });
+
+  const headerMap = {};
+  for (let h = 0; h < NH_HEADERS.length; h++) {
+    headerMap[NH_HEADERS[h]] = h + 1;
+  }
+
+  const idValues = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  const idToRowMap = {};
+  for (let i = 0; i < idValues.length; i++) {
+    const qid = String(idValues[i][0] || '').trim();
+    if (qid) idToRowMap[qid] = i + 2;
+  }
+
+  const appliedPatches = [];
+  const missingIds = [];
+
+  for (let p = 0; p < TARGETED_PATCH_19_FIELDS.length; p++) {
+    const item = TARGETED_PATCH_19_FIELDS[p];
+    const qid = item.id;
+    const field = item.field;
+    const colIndex = headerMap[field] || item.colIndex;
+    const afterVal = item.after;
+
+    if (idToRowMap.hasOwnProperty(qid)) {
+      const rowNum = idToRowMap[qid];
+      const curCellVal = String(sheet.getRange(rowNum, colIndex).getValue() || '');
+
+      appliedPatches.push({
+        id: qid,
+        field: field,
+        rowIndex: rowNum,
+        colIndex: colIndex,
+        before: curCellVal,
+        after: afterVal
+      });
+
+      if (!dryRun) {
+        sheet.getRange(rowNum, colIndex).setValue(afterVal);
+      }
+    } else {
+      missingIds.push(qid);
+    }
+  }
+
+  return jsonOut({
+    ok: true,
+    success: true,
+    dryRun: dryRun,
+    totalTargetedFields: TARGETED_PATCH_19_FIELDS.length,
+    totalPatchesApplied: appliedPatches.length,
+    missingIds: missingIds,
+    appliedPatches: appliedPatches,
+    msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa đúng ' + appliedPatches.length + ' trường mismatch.' : 'Đã sửa thành công đúng ' + appliedPatches.length + ' ô mục tiêu trực tiếp từ payload e940ac5.')
+  });
+}
 
 function repairBatchP107_251_AutoFix(e) {
   const isPost = Boolean(e && e.action);

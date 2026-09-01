@@ -1,0 +1,154 @@
+[
+  {
+    "index": 1,
+    "id": "VLXT-PT-DE_05-P1-Q07",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Độ không tuyệt đối' là nhiệt độ ứng với",
+    "after": "'Độ không tuyệt đối' là nhiệt độ ứng với"
+  },
+  {
+    "index": 2,
+    "id": "VLXT-PT-DE_13-P1-Q12",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Cần đo những đại lượng nào sau đây để xác định thực nghiệm nhiệt hóa hơi riêng của nước?",
+    "after": "Cần đo những đại lượng nào sau đây để xác định thực nghiệm nhiệt hóa hơi riêng của nước?"
+  },
+  {
+    "index": 3,
+    "id": "VLXT-PT-P114-B6-VD01",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Cần cung cấp một nhiệt lượng bao nhiêu để làm nóng chảy hoàn toàn 2 kg đồng ở nhiệt độ nóng chảy $1084^{\\circ}\\text{C}$? Biết nhiệt nóng chảy riêng của đồng là $\\lambda = 1,8 \\cdot 10^5\\text{ J/kg}$.",
+    "after": "Cần cung cấp một nhiệt lượng bao nhiêu để làm nóng chảy hoàn toàn 2 kg đồng ở nhiệt độ nóng chảy $1084^{\\circ}\\text{C}$? Biết nhiệt nóng chảy riêng của đồng là $\\lambda = 1,8 \\cdot 10^5\\text{ J/kg}$."
+  },
+  {
+    "index": 4,
+    "id": "VLXT-PT-DE_04-P1-Q11",
+    "field": "optA",
+    "colIndex": 9,
+    "before": "Vật (1) có nội năng lớn hơn vật (2).",
+    "after": "Vật (1) có nội năng lớn hơn vật (2)."
+  },
+  {
+    "index": 5,
+    "id": "VLXT-PT-DE_14-P1-Q08",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Hình a: các phân tử ở xa nhau, chuyển động tự do theo mọi hướng $\\rightarrow$ thể khí. Hình c: các phân tử ở gần nhau, dao động và dịch chuyển trượt lên nhau $\\rightarrow$ thể lỏng. Hình b: các phân tử sắp xếp trật tự, chỉ dao động tại chỗ quanh vị trí cân bằng cố định $\\rightarrow$ thể rắn. Do đó thứ tự là a), c), b).",
+    "after": "Hình a: các phân tử ở xa nhau, chuyển động tự do theo mọi hướng $\\rightarrow$ thể khí. Hình c: các phân tử ở gần nhau, dao động và dịch chuyển trượt lên nhau $\\rightarrow$ thể lỏng. Hình b: các phân tử sắp xếp trật tự, chỉ dao động tại chỗ quanh vị trí cân bằng cố định $\\rightarrow$ thể rắn. Do đó thứ tự là a), c), b)."
+  },
+  {
+    "index": 6,
+    "id": "VLXT-PT-DE_15-P1-Q04",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Từ công thức $Q = mc\\Delta t \\Rightarrow \\Delta t = \\frac{Q}{mc}$. Chất có nhiệt dung riêng $c$ nhỏ thì với cùng nhiệt lượng trao đổi, độ biến thiên nhiệt độ $\\Delta t$ sẽ lớn, nghĩa là vật dễ nóng lên khi thu nhiệt và nhanh nguội đi khi tỏa nhiệt.",
+    "after": "Từ công thức $Q = mc\\Delta t \\Rightarrow \\Delta t = \\frac{Q}{mc}$. Chất có nhiệt dung riêng $c$ nhỏ thì với cùng nhiệt lượng trao đổi, độ biến thiên nhiệt độ $\\Delta t$ sẽ lớn, nghĩa là vật dễ nóng lên khi thu nhiệt và nhanh nguội đi khi tỏa nhiệt."
+  },
+  {
+    "index": 7,
+    "id": "VLXT-PT-DE_05-P1-Q01-H6808885d",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 8,
+    "id": "VLXT-PT-DE_05-P1-Q17-Hdc672a67",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 9,
+    "id": "VLXT-PT-DE_10-P1-Q09",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 10,
+    "id": "VLXT-PT-DE_16-P1-Q01",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 11,
+    "id": "VLXT-PT-DE_20-P1-Q02-H04d938be",
+    "field": "baiHoc",
+    "colIndex": 17,
+    "before": "Bài 1. Cấu trúc của chất & Mô hình động học phân tử",
+    "after": "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ"
+  },
+  {
+    "index": 12,
+    "id": "VLXT-PT-DE_06-P1-Q13",
+    "field": "optD",
+    "colIndex": 12,
+    "before": "Nước mưa trên đư���ng nhựa biến mất khi Mặt Trời lại xuất hiện sau cơn mưa.",
+    "after": "Nước mưa trên đường nhựa biến mất khi Mặt Trời lại xuất hiện sau cơn mưa."
+  },
+  {
+    "index": 13,
+    "id": "VLXT-PT-DE_08-P1-Q07",
+    "field": "optA",
+    "colIndex": 9,
+    "before": "rượu sôi ở nhi��t đ��� cao hơn $100^{\\circ}\\text{C}$.",
+    "after": "rượu sôi ở nhiệt độ cao hơn $100^{\\circ}\\text{C}$."
+  },
+  {
+    "index": 14,
+    "id": "VLXT-PT-DE_10-P1-Q04",
+    "field": "optC",
+    "colIndex": 11,
+    "before": "Diện tích mặt thoáng c���a chất lỏng.",
+    "after": "Diện tích mặt thoáng của chất lỏng."
+  },
+  {
+    "index": 15,
+    "id": "VLXT-PT-DE_11-P1-Q03",
+    "field": "optD",
+    "colIndex": 12,
+    "before": "Không có h��nh dạng riêng xác định.",
+    "after": "Không có hình dạng riêng xác định."
+  },
+  {
+    "index": 16,
+    "id": "VLXT-PT-DE_12-P1-Q04",
+    "field": "optB",
+    "colIndex": 10,
+    "before": "tổng thế năng tương tác của các phân tử cấu t���o n��n vật.",
+    "after": "tổng thế năng tương tác của các phân tử cấu tạo nên vật."
+  },
+  {
+    "index": 17,
+    "id": "VLXT-PT-DE_17-P1-Q10",
+    "field": "giaiThich",
+    "colIndex": 15,
+    "before": "Theo đ���nh luật I: Khí nhận nhiệt lượng $Q = 300\\text{ J}$, sinh công $A' = 120\\text{ J} \\Rightarrow A = -120\\text{ J}$.\nĐộ biến thiên nội năng: $\\Delta U = A + Q = -120 + 300 = 180\\text{ J}$.",
+    "after": "Theo định luật I: Khí nhận nhiệt lượng $Q = 300\\text{ J}$, sinh công $A' = 120\\text{ J} \\Rightarrow A = -120\\text{ J}$.\nĐộ biến thiên nội năng: $\\Delta U = A + Q = -120 + 300 = 180\\text{ J}$."
+  },
+  {
+    "index": 18,
+    "id": "VLXT-PT-DE_20-P1-Q10",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Một vi��n bi có khối lượng $m = 100\\text{ g}$ được thả từ độ cao $h_1 = 10\\text{ m}$ xuống mặt sân thì nảy lên đến được độ cao $h_2 = 4\\text{ m}$, lấy $g = 10\\text{ m/s}^2$. Coi rằng viên bi không trao đổi nhiệt với môi trường xung quanh. Tính độ biến thiên nội năng của viên bi, mặt sân và không khí.",
+    "after": "Một viên bi có khối lượng $m = 100\\text{ g}$ được thả từ độ cao $h_1 = 10\\text{ m}$ xuống mặt sân thì nảy lên đến được độ cao $h_2 = 4\\text{ m}$, lấy $g = 10\\text{ m/s}^2$. Coi rằng viên bi không trao đổi nhiệt với môi trường xung quanh. Tính độ biến thiên nội năng của viên bi, mặt sân và không khí."
+  },
+  {
+    "index": 19,
+    "id": "VLXT-PT-P109-B6-Q08",
+    "field": "question",
+    "colIndex": 8,
+    "before": "Đồ thị biểu diễn sự thay đổi nhiệt độ theo thời gian của một chất khi được đun nóng liên tục gồm các đoạn nghiêng và đoạn nằm ngang. ��oạn nằm ngang ứng với quá trình nào?",
+    "after": "Đồ thị biểu diễn sự thay đổi nhiệt độ theo thời gian của một chất khi được đun nóng liên tục gồm các đoạn nghiêng và đoạn nằm ngang. Đoạn nằm ngang ứng với quá trình nào?"
+  }
+]

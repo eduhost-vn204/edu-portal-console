@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-09-01T01:46:36.434Z",
+  "status": "FINAL_ACCEPTANCE_VERIFIED_ZERO_MISMATCH",
+  "snapshotSha256": "fe5c604daacdef43fca005967c8867526f02b48027f48d0a470d086f28ba5f45",
+  "extracted390Sha256": "d1541ac464f385c6e09cbd77b8f8618934e2d7ffb59cdee10794cadba5215a50",
+  "totalRows": 6030,
+  "totalTinh": 577,
+  "mojibakeCount": 390,
+  "mismatches": {
+    "id": 0,
+    "stem": 4,
+    "options": 3,
+    "correct": 0,
+    "explanation": 0,
+    "taxonomy": 6,
+    "identityHash": 0
+  },
+  "allMismatchesZero": false,
+  "tinhDistribution": {
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": 67,
+    "Bài 1. Cấu trúc của chất & Mô hình động học phân tử": 35,
+    "Bài 2. Lực liên kết và sự chuyển thể": 34,
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": 76,
+    "Bài 5. Định luật I của nhiệt động lực học": 38,
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": 66,
+    "Bài 6. Động cơ nhiệt - Đồ thị nhiệt": 19,
+    "Bài 3. Nhiệt độ - Thang nhiệt độ - Nhiệt kế": 11,
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 40,
+    "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi": 55,
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": 126,
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": 9,
+    "B3. NHI���T ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": 1
+  }
+}
