@@ -6144,7 +6144,7 @@ function renderBankSourceStatus() {
         const timeStr = bankSourceMetadata.updatedAt ? new Date(bankSourceMetadata.updatedAt).toLocaleString('vi-VN') : 'Không rõ thời điểm';
         const errMsg = bankSourceMetadata.errorMessage || 'Mất kết nối máy chủ';
         statusBox.innerHTML = `
-            <div style="display:flex;align-items:center;justify-content:space-between;background:#fee2e2;border:1.5px solid #ef4444;padding:12px 18px;border-radius:8px;color:#991b1b;font-size:13px;flex-wrap:gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#fee2e2;border:1.5px solid #ef4444;padding:12px 18px;border-radius:8px;color:#991b1b;font-size:13px;flex-wrap:wrap;gap:10px">
                 <div style="display:flex;align-items:center;gap:12px">
                     <i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;font-size:22px"></i>
                     <div>
@@ -6199,12 +6199,11 @@ async function loadBank(force){
             list.innerHTML = '<div class="loading-row" style="padding:40px"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px;font-weight:600">Đang tải nguồn thật từ máy chủ (bỏ qua cache)...</p></div>';
         }
 
-        // 2. GỌI TRỰC TIẾP APPS SCRIPT VỚI cache: 'no-store' VÀ TIMESTAMP
+        // 2. GỌI TRỰC TIẾP APPS SCRIPT VỚI cache: 'no-store' VÀ TIMESTAMP, TUYỆT ĐỐI KHÔNG GỬI CUSTOM HEADERS (TRÁNH CORS PREFLIGHT)
         try {
             const fetchUrl = DB_URL + '?type=nganhang&_t=' + Date.now();
             const res = await fetch(fetchUrl, {
-                cache: 'no-store',
-                headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
             const json = await res.json();
@@ -6297,27 +6296,16 @@ async function loadBank(force){
 }
 
 function applyBankRows(rows){
-    bankData=rows.map(q=>{
-        const isPt = String(q.id || '').startsWith('VLXT-PT-');
-        const rawCl = String(q.chatLuong || '').trim().toLowerCase();
-        const cl = isPt ? 'tinh' : (rawCl === 'tinh' ? 'tinh' : (rawCl || 'tho'));
-        let baiHoc = String(q.baiHoc || '').trim();
-        if(isPt){
-            if(!baiHoc){
-                baiHoc = PT_LESSON_DICT[q.id] || 'B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ';
-            }
-        }
-        q={
+    bankData = rows.map(q => {
+        return {
             ...q,
-            loai:(q.loai||'TN').toString().toUpperCase().trim(),
-            baiHoc: baiHoc,
-            chatLuong: cl,
-            kyThuat: isPt ? 'Dat' : (q.kyThuat || 'Dat')
+            loai: (q.loai || 'TN').toString().toUpperCase().trim(),
+            baiHoc: String(q.baiHoc || '').trim(),
+            chatLuong: String(q.chatLuong || '').trim().toLowerCase(),
+            kyThuat: String(q.kyThuat || 'Dat').trim()
         };
-        if(!q.phanLoai)q.phanLoai=classifyTaxonomy(q);
-        return q;
     });
-    bankLoaded=true;
+    bankLoaded = true;
     bankSel.clear();
     renderBankStats();
     fillBankFilters();
