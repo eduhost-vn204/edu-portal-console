@@ -7357,6 +7357,45 @@ function renderScanResults(){
 ══════════════════════════════════════════════════════════ */
 const EMU_PER_PX=9525;
 function escXml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
+function mathMLToOMML(mathmlStr) {
+    try {
+        const doc = new DOMParser().parseFromString(mathmlStr, 'text/html');
+        const mathNode = doc.querySelector('math');
+        if (!mathNode) return '';
+        
+        function toOmml(node) {
+            if(node.nodeType === 3) {
+                const text = node.textContent.trim();
+                if(!text) return '';
+                return '<m:r><m:t>'+escXml(text)+'</m:t></m:r>';
+            }
+            const tag = node.tagName.toLowerCase();
+            if (tag === 'annotation') return '';
+            let inner = Array.from(node.childNodes).map(toOmml).join('');
+            switch (tag) {
+                case 'math': case 'semantics': case 'mrow': case 'mstyle': return inner;
+                case 'mi': case 'mo': case 'mn': case 'mtext': return '<m:r><m:t>'+escXml(node.textContent)+'</m:t></m:r>';
+                case 'mfrac': return '<m:f><m:num><m:e>'+(toOmml(node.childNodes[0])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e></m:num><m:den><m:e>'+(toOmml(node.childNodes[1])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e></m:den></m:f>';
+                case 'msup': return '<m:sSup><m:e>'+(toOmml(node.childNodes[0])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e><m:sup>'+(toOmml(node.childNodes[1])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:sup></m:sSup>';
+                case 'msub': return '<m:sSub><m:e>'+(toOmml(node.childNodes[0])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e><m:sub>'+(toOmml(node.childNodes[1])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:sub></m:sSub>';
+                case 'msubsup': return '<m:sSubSup><m:e>'+(toOmml(node.childNodes[0])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e><m:sub>'+(toOmml(node.childNodes[1])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:sub><m:sup>'+(toOmml(node.childNodes[2])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:sup></m:sSubSup>';
+                case 'msqrt': return '<m:rad><m:radPr><m:degHide m:val="1"/></m:radPr><m:deg/><m:e>'+inner+'</m:e></m:rad>';
+                case 'mroot': return '<m:rad><m:deg>'+(toOmml(node.childNodes[1])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:deg><m:e>'+(toOmml(node.childNodes[0])||'<m:r><m:t>&#8203;</m:t></m:r>')+'</m:e></m:rad>';
+                default: return inner;
+            }
+        }
+        return '<m:oMath>'+toOmml(mathNode)+'</m:oMath>';
+    } catch(e) { return ''; }
+}
+
+function latexToOmml(tex) {
+    if(typeof katex === 'undefined') return '';
+    try {
+        const mathml = katex.renderToString(tex, { output: 'mathml', throwOnError: false });
+        return mathMLToOMML(mathml);
+    } catch(e) { return ''; }
+}
+
 function wRun(text, fmt){
     fmt=fmt||{};
     let rpr='';
@@ -7365,8 +7404,26 @@ function wRun(text, fmt){
     if(fmt.sup) rpr+='<w:vertAlign w:val="superscript"/>';
     if(fmt.sub) rpr+='<w:vertAlign w:val="subscript"/>';
     const rprXml=rpr?('<w:rPr>'+rpr+'</w:rPr>'):'';
-    const parts=String(text).split('\n');
-    return parts.map((t,i)=>(i>0?'<w:r><w:br/></w:r>':'')+(t?('<w:r>'+rprXml+'<w:t xml:space="preserve">'+escXml(t)+'</w:t></w:r>'):'')).join('');
+    
+    const parts = String(text).split(/(\$\$.+?\$\$|\$.+?\$)/g);
+    let xml = '';
+    
+    for (let p of parts) {
+        if (!p) continue;
+        if (p.startsWith('$$') && p.endsWith('$$')) {
+            const omml = typeof latexToOmml==='function' ? latexToOmml(p.slice(2, -2)) : '';
+            if (omml) xml += omml;
+            else xml += '<w:r>'+rprXml+'<w:t xml:space="preserve">'+escXml(p)+'</w:t></w:r>';
+        } else if (p.startsWith('$') && p.endsWith('$')) {
+            const omml = typeof latexToOmml==='function' ? latexToOmml(p.slice(1, -1)) : '';
+            if (omml) xml += omml;
+            else xml += '<w:r>'+rprXml+'<w:t xml:space="preserve">'+escXml(p)+'</w:t></w:r>';
+        } else {
+            const lines = p.split('\n');
+            xml += lines.map((t,i)=>(i>0?'<w:r><w:br/></w:r>':'')+(t?('<w:r>'+rprXml+'<w:t xml:space="preserve">'+escXml(t)+'</w:t></w:r>'):'')).join('');
+        }
+    }
+    return xml;
 }
 async function imgRunXml(src, imgCtx){
     if(!src || !/^data:image\/(png|jpe?g)/i.test(src)) return '';
@@ -7494,7 +7551,7 @@ async function buildExamDocxBlob(questions, meta){
 
     const sectPr='<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
     const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        +'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+        +'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
         +'<w:body>'+bodyXml+sectPr+'</w:body></w:document>';
 
     const zip=new JSZip();

@@ -53,6 +53,7 @@ function doPost(e) {
     if (action === 'savehuongdan')     return saveHuongDan(data);
     if (action === 'deletenganhang')     return deleteNganHang(data);
     if (action === 'updatenganhang')     return updateNganHang(data);
+    if (action === 'updateexistingnganhangfromfile') return updateExistingNganHangFromFile(data);
     if (action === 'repairlessonbatch' || action === 'repair_lesson_batch' || action === 'repairquestionslessonbatch') return repairLessonBatch(data);
     if (action === 'repairbatchp107_251_autofix') return repairBatchP107_251_AutoFix(data);
     if (action === 'importnganhang' || action === 'import_tinh_batch' || action === 'importtinhbatch' || action === 'importquestionsbatch' || action === 'import_questions_batch') return importNganHang(data);
@@ -1069,6 +1070,123 @@ function updateNganHang(data) {
     }
   }
   return jsonOut({ ok: false, msg: 'Không tìm thấy id ' + id });
+}
+
+// POST: Cập nhật fail-closed các câu đã có theo file JSON.
+// Không thêm/xóa/đổi ID; dry-run bắt buộc và commit phải dùng đúng planToken.
+function updateExistingNganHangFromFile(data) {
+  if (!requireAdmin(data.adminKey)) {
+    return jsonOut({ ok: false, error: 'Unauthorized', msg: 'Khóa quản trị không hợp lệ' });
+  }
+
+  const dryRun = data.dryRun === true || data.dryRun === 'true';
+  const rawItems = Array.isArray(data.items) ? data.items : [];
+  const allowedFields = ['mon','chuong','mucDo','loai','question','chatLuong'];
+  if (!rawItems.length || rawItems.length > 500) {
+    return jsonOut({ ok: false, msg: 'File phải có từ 1 đến 500 bản ghi' });
+  }
+
+  const fileIds = {};
+  const invalidItems = [];
+  const items = rawItems.map(function(raw, index) {
+    const id = String(raw && raw.id || '').trim();
+    const setObj = raw && raw.set && typeof raw.set === 'object' && !Array.isArray(raw.set) ? raw.set : {};
+    const keys = Object.keys(setObj);
+    const unsupported = keys.filter(function(k) { return allowedFields.indexOf(k) === -1; });
+    if (!id) invalidItems.push({ index: index, id: '', reason: 'Thiếu ID' });
+    if (id && fileIds[id]) invalidItems.push({ index: index, id: id, reason: 'ID trùng trong file' });
+    if (id) fileIds[id] = true;
+    if (!keys.length) invalidItems.push({ index: index, id: id, reason: 'Không có trường cập nhật' });
+    if (unsupported.length) invalidItems.push({ index: index, id: id, reason: 'Cột không được hỗ trợ: ' + unsupported.join(', ') });
+    return { id: id, set: setObj };
+  });
+  if (invalidItems.length) return jsonOut({ ok: false, msg: 'File không hợp lệ', invalidItems: invalidItems });
+
+  const sheet = getOrCreate('NganHang', NH_HEADERS);
+  const rows = sheet.getDataRange().getValues();
+  const headers = rows[0] ? rows[0].map(function(h) { return String(h || '').trim(); }) : [];
+  const headerMap = {};
+  headers.forEach(function(h, i) { if (h) headerMap[h] = i; });
+  const requiredHeaders = ['id'].concat(Array.from(new Set(items.reduce(function(out, item) {
+    return out.concat(Object.keys(item.set));
+  }, []))));
+  const missingHeaders = requiredHeaders.filter(function(h) { return headerMap[h] === undefined; });
+  if (missingHeaders.length) {
+    return jsonOut({ ok: false, msg: 'Google Sheet không có cột bắt buộc: ' + missingHeaders.join(', '), missingHeaders: missingHeaders });
+  }
+
+  const rowMap = {};
+  const duplicateSheetIds = [];
+  for (let r = 1; r < rows.length; r++) {
+    const id = String(rows[r][headerMap.id] || '').trim();
+    if (!id) continue;
+    if (rowMap[id] !== undefined) duplicateSheetIds.push(id);
+    else rowMap[id] = r;
+  }
+  const missingIds = items.filter(function(item) { return rowMap[item.id] === undefined; }).map(function(item) { return item.id; });
+  const targetDuplicateIds = Array.from(new Set(duplicateSheetIds.filter(function(id) { return fileIds[id]; })));
+  if (missingIds.length || targetDuplicateIds.length) {
+    return jsonOut({ ok: false, msg: 'Bị chặn: ID thiếu hoặc trùng trong Google Sheet', missingIds: missingIds, duplicateIds: targetDuplicateIds });
+  }
+
+  const changes = [];
+  const tokenRows = [];
+  items.forEach(function(item) {
+    const rowIndex = rowMap[item.id];
+    const before = {};
+    const after = {};
+    Object.keys(item.set).sort().forEach(function(field) {
+      const oldValue = String(rows[rowIndex][headerMap[field]] === undefined || rows[rowIndex][headerMap[field]] === null ? '' : rows[rowIndex][headerMap[field]]);
+      const newValue = String(item.set[field] === undefined || item.set[field] === null ? '' : item.set[field]);
+      before[field] = oldValue;
+      after[field] = newValue;
+      if (oldValue !== newValue) changes.push({ id: item.id, field: field, before: oldValue, after: newValue });
+    });
+    tokenRows.push({ id: item.id, before: before, after: after });
+  });
+
+  const tokenInput = JSON.stringify({ schema: 'vlxt-update-existing-v1', rows: tokenRows });
+  const tokenBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, tokenInput, Utilities.Charset.UTF_8);
+  const planToken = tokenBytes.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+  const changedIds = Array.from(new Set(changes.map(function(c) { return c.id; })));
+  const fieldCounts = {};
+  changes.forEach(function(c) { fieldCounts[c.field] = (fieldCounts[c.field] || 0) + 1; });
+
+  if (dryRun) {
+    return jsonOut({ ok: true, dryRun: true, requested: items.length, found: items.length, insert: 0, delete: 0, changedRows: changedIds.length, changedCells: changes.length, fieldCounts: fieldCounts, planToken: planToken, changes: changes });
+  }
+  if (!data.planToken || String(data.planToken) !== planToken) {
+    return jsonOut({ ok: false, stale: true, msg: 'Dữ liệu đã thay đổi hoặc chưa dry-run. Hãy dry-run lại; chưa ghi bất kỳ ô nào.' });
+  }
+  if (!changes.length) return jsonOut({ ok: true, dryRun: false, requested: items.length, updatedRows: 0, updatedCells: 0, insert: 0, delete: 0, msg: 'Không có thay đổi cần ghi' });
+
+  const lock = LockService.getDocumentLock();
+  if (!lock.tryLock(30000)) return jsonOut({ ok: false, msg: 'Không lấy được khóa ghi; hãy thử lại' });
+  try {
+    // Kiểm tra lại dưới lock: chỉ ghi nếu snapshot vẫn khớp dry-run.
+    const lockedRows = sheet.getDataRange().getValues();
+    const lockedTokenRows = tokenRows.map(function(t) {
+      const r = rowMap[t.id];
+      const before = {};
+      Object.keys(t.before).sort().forEach(function(field) {
+        before[field] = String(lockedRows[r][headerMap[field]] === undefined || lockedRows[r][headerMap[field]] === null ? '' : lockedRows[r][headerMap[field]]);
+      });
+      return { id: t.id, before: before, after: t.after };
+    });
+    const lockedInput = JSON.stringify({ schema: 'vlxt-update-existing-v1', rows: lockedTokenRows });
+    const lockedBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, lockedInput, Utilities.Charset.UTF_8);
+    const lockedToken = lockedBytes.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+    if (lockedToken !== planToken) return jsonOut({ ok: false, stale: true, msg: 'Dữ liệu thay đổi sau dry-run; chưa ghi bất kỳ ô nào.' });
+
+    changes.forEach(function(change) {
+      lockedRows[rowMap[change.id]][headerMap[change.field]] = change.after;
+    });
+    // Một lệnh ghi duy nhất để tránh batch dở dang.
+    sheet.getDataRange().setValues(lockedRows);
+    return jsonOut({ ok: true, dryRun: false, requested: items.length, updatedRows: changedIds.length, updatedCells: changes.length, insert: 0, delete: 0, fieldCounts: fieldCounts });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 // ── POST: Gán "Bài học" cho nhiều câu cùng lúc (phân loại hàng loạt) ──
