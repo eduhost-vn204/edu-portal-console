@@ -2369,8 +2369,8 @@ function initAdmin(){
     const preview=Promise.resolve().then(()=>loadLessonsPreview());
     Promise.all([loadSettings(),loadKhoaConfig(),preview]).then(()=>{
         renderLessonList();
-        if(!allLessons.length) loadLessons();
         loadTeachingScope();
+        loadLessons();
     });
 }
 
@@ -3001,7 +3001,7 @@ async function loadLessons(){
     if(cached && cached.isAdmin){
         allLessons = Array.isArray(cached.d) ? cached.d : [];
         renderLessonList();
-    } else {
+    } else if(!allLessons.length) {
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải danh sách bài học (admin)...</p></div>`;
     }
     try{
