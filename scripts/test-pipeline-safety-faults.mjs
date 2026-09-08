@@ -29,6 +29,9 @@ import {
   createFullDraftLessonOnBackend,
   verifyBackendReadBack,
   runFullPipeline,
+  comparePilotLessonFields,
+  compareVideoCauHoiList,
+  compareBaiTapTracNghiemList,
   PILOT_B10_LESSON_NAME
 } from './youtube-lesson-pipeline.mjs';
 
@@ -192,7 +195,8 @@ it('Phát hiện sửa đổi nội dung file đầu vào và chặn pipeline fa
       verifyInputsAndFingerprint(tempDir, manifest);
     } catch (err) {
       threw = true;
-      assert.ok(err.message.includes('PHÁT HIỆN THAY ĐỔI ĐẦU VÀO'));
+      assert.strictEqual(err.code, 'INPUT_CHANGED_NEW_SESSION_REQUIRED');
+      assert.ok(err.message.includes('INPUT_CHANGED_NEW_SESSION_REQUIRED'));
       assert.ok(err.message.includes('docxPractice'));
     }
     assert.strictEqual(threw, true, 'Hàm phải throw error khi phát hiện file bị thay đổi hash');
@@ -201,15 +205,28 @@ it('Phát hiện sửa đổi nội dung file đầu vào và chặn pipeline fa
   }
 });
 
-it('Cờ --force cho phép ghi nhận fingerprint mới khi file thay đổi', () => {
-  const tempDir = createTempDir('fingerprint-force-');
+it('Bỏ cờ --force: khi input hash đổi sau checkpoint, luôn fail-closed với INPUT_CHANGED_NEW_SESSION_REQUIRED kể cả khi truyền force: true', () => {
+  const tempDir = createTempDir('fingerprint-force-rejected-');
   try {
     const manifest = setupSampleInbox(tempDir);
     verifyInputsAndFingerprint(tempDir, manifest);
 
-    fs.writeFileSync(path.join(tempDir, manifest.docxPracticeWedFile), 'new valid content');
-    const newHashes = verifyInputsAndFingerprint(tempDir, manifest, { force: true });
-    assert.ok(newHashes.docxPractice);
+    // Cố tình sửa 1 file sau khi đã có checkpoint
+    fs.writeFileSync(path.join(tempDir, manifest.docxPracticeWedFile), 'new valid content but hash changed');
+
+    let threw = false;
+    try {
+      verifyInputsAndFingerprint(tempDir, manifest, { force: true });
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'INPUT_CHANGED_NEW_SESSION_REQUIRED');
+      assert.ok(err.message.includes('INPUT_CHANGED_NEW_SESSION_REQUIRED'));
+      assert.ok(err.message.includes('Bắt buộc phải tạo thư mục/session mới'));
+    }
+    assert.strictEqual(threw, true, 'Dù có force: true vẫn phải ném lỗi INPUT_CHANGED_NEW_SESSION_REQUIRED');
+
+    const cp = loadCheckpoint(tempDir);
+    assert.strictEqual(cp.state, 'INPUT_CHANGED_NEW_SESSION_REQUIRED');
   } finally {
     cleanupTempDir(tempDir);
   }
@@ -413,15 +430,16 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
       const idx = state.lessons.findIndex(l => l.TenBai === body.TenBai);
       const row = {
         MaBai: body.maBai || 'B10PILOT_MOCK_ID',
-        KhoaHoc: body.KhoaHoc,
-        Chuong: body.Chuong,
-        TenBai: body.TenBai,
-        Video: body.Video,
-        VideoGiai: body.VideoGiai,
-        PDFLyThuyet: body.PDFLyThuyet,
-        PDF: body.PDF,
-        PDFLuyenTap: body.PDFLuyenTap,
-        ThuTuBai: body.ThuTuBai
+        KhoaHoc: body.KhoaHoc || '',
+        Chuong: body.Chuong || '',
+        TenBai: body.TenBai || '',
+        ThuTuBai: body.ThuTuBai !== undefined ? body.ThuTuBai : 999,
+        MoTaBai: body.MoTaBai || '',
+        Video: body.Video || '',
+        VideoGiai: body.VideoGiai || '',
+        PDFLyThuyet: body.PDFLyThuyet || '',
+        PDF: body.PDF || '',
+        PDFLuyenTap: body.PDFLuyenTap || ''
       };
       if (idx >= 0) {
         state.lessons[idx] = row;
@@ -433,13 +451,22 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
 
     if (action === 'savevideocauhoi') {
       state.videoCauHoi = state.videoCauHoi.filter(q => q.baiKey !== body.baiKey);
+      let idx = 1;
       for (const item of (body.items || [])) {
+        // Apps Script contract (src/Mã.js lines 2331-2370):
+        // backend nhận item.t và item.ans (KHÔNG đọc item.timestamp hay item.correct)
         state.videoCauHoi.push({
           baiKey: body.baiKey,
-          question: item.q,
-          options: [item.A, item.B, item.C, item.D],
-          answer: item.correct,
-          timestamp: item.timestamp
+          thuTu: item.thuTu !== undefined ? Number(item.thuTu) : idx++,
+          thoiGian: item.t !== undefined ? String(item.t) : '',
+          nhId: item.nhId !== undefined ? String(item.nhId) : '',
+          type: item.type !== undefined ? String(item.type) : 'TN',
+          question: item.q !== undefined ? String(item.q) : '',
+          optA: item.A !== undefined ? String(item.A) : '',
+          optB: item.B !== undefined ? String(item.B) : '',
+          optC: item.C !== undefined ? String(item.C) : '',
+          optD: item.D !== undefined ? String(item.D) : '',
+          correct: item.ans !== undefined ? String(item.ans) : ''
         });
       }
       return { ok: true, status: 200, json: async () => ({ status: 'success', count: body.items?.length || 0 }) };
@@ -447,12 +474,18 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
 
     if (action === 'savebaitaptracnghiem') {
       state.baiTapTracNghiem = state.baiTapTracNghiem.filter(q => q.baiKey !== body.baiKey);
+      let idx = 1;
       for (const item of (body.items || [])) {
         state.baiTapTracNghiem.push({
           baiKey: body.baiKey,
-          question: item.q,
-          options: [item.A, item.B, item.C, item.D],
-          answer: item.correct
+          thuTu: item.thuTu !== undefined ? Number(item.thuTu) : idx++,
+          type: item.type !== undefined ? String(item.type) : 'TN',
+          question: item.q !== undefined ? String(item.q) : '',
+          optA: item.A !== undefined ? String(item.A) : '',
+          optB: item.B !== undefined ? String(item.B) : '',
+          optC: item.C !== undefined ? String(item.C) : '',
+          optD: item.D !== undefined ? String(item.D) : '',
+          correct: item.correct !== undefined ? String(item.correct) : (item.ans !== undefined ? String(item.ans) : '')
         });
       }
       return { ok: true, status: 200, json: async () => ({ status: 'success', count: body.items?.length || 0 }) };
@@ -472,15 +505,26 @@ const mockDriveRes = {
   practicePdfUrl: 'https://drive.google.com/file/d/mock_prac_pdf/view'
 };
 const mockQuestionsApp = Array.from({ length: 20 }, (_, i) => ({
+  thuTu: i + 1,
+  t: (i + 1) * 60,
+  nhId: '',
+  type: 'TN',
   q: `Câu áp dụng ${i + 1}`,
-  A: 'A', B: 'B', C: 'C', D: 'D',
-  correct: 'A',
-  timestamp: (i + 1) * 60
+  A: `Phương án A ${i + 1}`,
+  B: `Phương án B ${i + 1}`,
+  C: `Phương án C ${i + 1}`,
+  D: `Phương án D ${i + 1}`,
+  ans: ['A', 'B', 'C', 'D'][i % 4]
 }));
 const mockQuestionsPrac = Array.from({ length: 20 }, (_, i) => ({
+  thuTu: i + 1,
+  type: 'TN',
   q: `Câu luyện tập ${i + 1}`,
-  A: 'A', B: 'B', C: 'C', D: 'D',
-  correct: 'B'
+  A: `Phương án A ${i + 1}`,
+  B: `Phương án B ${i + 1}`,
+  C: `Phương án C ${i + 1}`,
+  D: `Phương án D ${i + 1}`,
+  correct: ['B', 'C', 'D', 'A'][i % 4]
 }));
 
 await itAsync('Fault-Injection 1: Lỗi ở Request 1 (savebaihoc thất bại) -> fail-closed, không chạy step 2/3', async () => {
@@ -738,6 +782,286 @@ await itAsync('Chạy ở chế độ Mock thành công: Checkpoint phải là R
     const cp = loadCheckpoint(tempDir);
     assert.strictEqual(cp.state, 'READY_MOCK_ONLY');
     assert.notStrictEqual(cp.state, 'READY_FOR_TEACHER');
+  } finally {
+    cleanupTempDir(tempDir);
+  }
+});
+
+// =========================================================================
+// SUITE 5: MUTATION TESTING CHO DEEP COMPARISON & APPS SCRIPT CONTRACT (QA Vòng 2)
+// =========================================================================
+console.log(`\n--- [SUITE 5] Deep Comparison Mutations & Apps Script Contract (QA Vòng 2) ---`);
+
+const sampleExpectedPilotLesson = {
+  KhoaHoc: 'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12',
+  Chuong: 'CHƯƠNG 2 – KHÍ LÍ TƯỞNG',
+  TenBai: 'B10 - QUY TRÌNH ĐĂNG BÀI TỰ ĐỘNG (PILOT THỬ NGHIỆM)',
+  ThuTuBai: 999,
+  MoTaBai: 'Bài học thử nghiệm quy trình đăng tự động',
+  Video: 'https://www.youtube.com/watch?v=pilot_theory_vid',
+  VideoGiai: 'https://www.youtube.com/watch?v=pilot_practice_vid',
+  PDFLyThuyet: 'https://drive.google.com/file/d/pilot_theory_pdf/view',
+  PDF: 'https://drive.google.com/file/d/pilot_applied_pdf/view',
+  PDFLuyenTap: 'https://drive.google.com/file/d/pilot_practice_pdf/view'
+};
+
+it('comparePilotLessonFields: Khớp 10/10 trường chuẩn trả về ok: true', () => {
+  const res = comparePilotLessonFields(sampleExpectedPilotLesson, { ...sampleExpectedPilotLesson });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.diffCount, 0);
+});
+
+it('comparePilotLessonFields Mutation: Sửa PDF (link áp dụng) phải fail', () => {
+  const mutated = { ...sampleExpectedPilotLesson, PDF: 'https://drive.google.com/file/d/tampered_pdf/view' };
+  const res = comparePilotLessonFields(sampleExpectedPilotLesson, mutated);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.field === 'PDF'));
+});
+
+it('comparePilotLessonFields Mutation: Sửa PDFLuyenTap (link luyện tập) phải fail', () => {
+  const mutated = { ...sampleExpectedPilotLesson, PDFLuyenTap: 'https://drive.google.com/file/d/tampered_prac_pdf/view' };
+  const res = comparePilotLessonFields(sampleExpectedPilotLesson, mutated);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.field === 'PDFLuyenTap'));
+});
+
+for (const field of ['KhoaHoc', 'Chuong', 'TenBai', 'ThuTuBai', 'MoTaBai', 'Video', 'VideoGiai', 'PDFLyThuyet']) {
+  it(`comparePilotLessonFields Mutation: Sửa trường [${field}] phải fail`, () => {
+    const mutated = { ...sampleExpectedPilotLesson };
+    if (typeof mutated[field] === 'number') {
+      mutated[field] = mutated[field] + 1;
+    } else {
+      mutated[field] = `${mutated[field]}_MUTATED`;
+    }
+    const res = comparePilotLessonFields(sampleExpectedPilotLesson, mutated);
+    assert.strictEqual(res.ok, false);
+    assert.ok(res.diffs.some(d => d.field === field));
+  });
+}
+
+// Chuẩn bị 20 câu VideoCauHoi
+function createExpectedVideoCauHoiList(count = 20) {
+  return Array.from({ length: count }, (_, i) => ({
+    thuTu: i + 1,
+    t: (i + 1) * 60,
+    nhId: '',
+    type: 'TN',
+    q: `Nội dung câu hỏi video số ${i + 1}?`,
+    A: `Phương án A của câu ${i + 1}`,
+    B: `Phương án B của câu ${i + 1}`,
+    C: `Phương án C của câu ${i + 1}`,
+    D: `Phương án D của câu ${i + 1}`,
+    ans: ['A', 'B', 'C', 'D'][i % 4]
+  }));
+}
+
+function convertExpectedToBackendVideoRows(items) {
+  return items.map(it => ({
+    thuTu: it.thuTu,
+    thoiGian: String(it.t),
+    nhId: it.nhId || '',
+    type: it.type || 'TN',
+    question: it.q,
+    optA: it.A,
+    optB: it.B,
+    optC: it.C,
+    optD: it.D,
+    correct: it.ans
+  }));
+}
+
+it('compareVideoCauHoiList: 20 câu đầy đủ, đúng thứ tự trả về ok: true', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.diffCount, 0);
+});
+
+it('compareVideoCauHoiList Mutation: Sửa nội dung câu giữa (câu 10) phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  actual[9].question = 'Câu 10 đã bị thay đổi nội dung câu hỏi';
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('question')));
+});
+
+it('compareVideoCauHoiList Mutation: Sửa đáp án đúng câu giữa (câu 10) phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  actual[9].correct = actual[9].correct === 'A' ? 'B' : 'A';
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('correct')));
+});
+
+it('compareVideoCauHoiList Mutation: Sửa timestamp câu giữa (câu 10) phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  actual[9].thoiGian = '9999';
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('thoiGian')));
+});
+
+it('compareVideoCauHoiList Mutation: Sửa optB câu giữa (câu 10) phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  actual[9].optB = 'Phương án B đã bị đột biến';
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('optB')));
+});
+
+it('compareVideoCauHoiList Mutation: Đổi thứ tự câu 9 và câu 10 phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected);
+  const tmp = actual[8];
+  actual[8] = actual[9];
+  actual[9] = tmp;
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+});
+
+it('compareVideoCauHoiList Mutation: Thiếu 1 câu (chỉ có 19 câu) phải fail', () => {
+  const expected = createExpectedVideoCauHoiList(20);
+  const actual = convertExpectedToBackendVideoRows(expected).slice(0, 19);
+  const res = compareVideoCauHoiList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.field === 'count'));
+});
+
+// Chuẩn bị 20 câu BaiTapTracNghiem
+function createExpectedBaiTapTracNghiemList(count = 20) {
+  return Array.from({ length: count }, (_, i) => ({
+    thuTu: i + 1,
+    type: 'TN',
+    q: `Nội dung bài tập luyện tập số ${i + 1}?`,
+    A: `Lựa chọn A bài tập ${i + 1}`,
+    B: `Lựa chọn B bài tập ${i + 1}`,
+    C: `Lựa chọn C bài tập ${i + 1}`,
+    D: `Lựa chọn D bài tập ${i + 1}`,
+    correct: ['C', 'D', 'A', 'B'][i % 4]
+  }));
+}
+
+function convertExpectedToBackendPracRows(items) {
+  return items.map(it => ({
+    thuTu: it.thuTu,
+    type: it.type || 'TN',
+    question: it.q,
+    optA: it.A,
+    optB: it.B,
+    optC: it.C,
+    optD: it.D,
+    correct: it.correct
+  }));
+}
+
+it('compareBaiTapTracNghiemList: 20 câu đầy đủ, đúng thứ tự trả về ok: true', () => {
+  const expected = createExpectedBaiTapTracNghiemList(20);
+  const actual = convertExpectedToBackendPracRows(expected);
+  const res = compareBaiTapTracNghiemList(expected, actual);
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.diffCount, 0);
+});
+
+it('compareBaiTapTracNghiemList Mutation: Sửa câu giữa (câu 10) question phải fail', () => {
+  const expected = createExpectedBaiTapTracNghiemList(20);
+  const actual = convertExpectedToBackendPracRows(expected);
+  actual[9].question = 'Bài tập 10 bị đổi nội dung';
+  const res = compareBaiTapTracNghiemList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('question')));
+});
+
+it('compareBaiTapTracNghiemList Mutation: Sửa câu giữa (câu 10) correct phải fail', () => {
+  const expected = createExpectedBaiTapTracNghiemList(20);
+  const actual = convertExpectedToBackendPracRows(expected);
+  actual[9].correct = actual[9].correct === 'C' ? 'A' : 'C';
+  const res = compareBaiTapTracNghiemList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('correct')));
+});
+
+it('compareBaiTapTracNghiemList Mutation: Sửa câu giữa (câu 10) optC phải fail', () => {
+  const expected = createExpectedBaiTapTracNghiemList(20);
+  const actual = convertExpectedToBackendPracRows(expected);
+  actual[9].optC = 'Lựa chọn C bài tập 10 đã bị sửa';
+  const res = compareBaiTapTracNghiemList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.index === 9 && d.field.endsWith('optC')));
+});
+
+it('compareBaiTapTracNghiemList Mutation: Thiếu 1 câu (19 câu) phải fail', () => {
+  const expected = createExpectedBaiTapTracNghiemList(20);
+  const actual = convertExpectedToBackendPracRows(expected).slice(0, 19);
+  const res = compareBaiTapTracNghiemList(expected, actual);
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.diffs.some(d => d.field === 'count'));
+});
+
+// Kiểm thử Contract Apps Script: Mock bắt lỗi khi client gửi sai mapping key
+await itAsync('Apps Script Contract Test: Nếu client gửi sai field (timestamp thay vì t), mock theo Mã.js lưu rỗng và deep compare bắt lỗi ngay', async () => {
+  const tempDir = createTempDir('contract-mismatch-t-');
+  try {
+    const manifest = setupSampleInbox(tempDir);
+    const backendState = createMockBackendState();
+    const mockFetch = createFaultInjectionFetch(backendState, {});
+
+    // Giả lập client gửi sai: dùng 'timestamp' thay vì 't'
+    const badQuestionsApp = mockQuestionsApp.map(q => {
+      const copy = { ...q, timestamp: q.t };
+      delete copy.t;
+      return copy;
+    });
+
+    let threw = false;
+    try {
+      await createFullDraftLessonOnBackend(
+        tempDir, manifest, mockVideoRes, mockDriveRes,
+        badQuestionsApp, mockQuestionsPrac,
+        { fetchImpl: mockFetch, adminKey: 'test_admin_key' }
+      );
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'BACKEND_WRITE_FAILED_STEP2');
+      assert.ok(err.message.includes('thoiGian'));
+    }
+    assert.strictEqual(threw, true, 'Gửi sai field "t" thành "timestamp" phải bị ném lỗi ở Step 2');
+  } finally {
+    cleanupTempDir(tempDir);
+  }
+});
+
+await itAsync('Apps Script Contract Test: Nếu client gửi sai field (answer thay vì ans), mock theo Mã.js lưu rỗng và deep compare bắt lỗi ngay', async () => {
+  const tempDir = createTempDir('contract-mismatch-ans-');
+  try {
+    const manifest = setupSampleInbox(tempDir);
+    const backendState = createMockBackendState();
+    const mockFetch = createFaultInjectionFetch(backendState, {});
+
+    // Giả lập client gửi sai: dùng 'answer' thay vì 'ans'
+    const badQuestionsApp = mockQuestionsApp.map(q => {
+      const copy = { ...q, answer: q.ans };
+      delete copy.ans;
+      return copy;
+    });
+
+    let threw = false;
+    try {
+      await createFullDraftLessonOnBackend(
+        tempDir, manifest, mockVideoRes, mockDriveRes,
+        badQuestionsApp, mockQuestionsPrac,
+        { fetchImpl: mockFetch, adminKey: 'test_admin_key' }
+      );
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'BACKEND_WRITE_FAILED_STEP2');
+      assert.ok(err.message.includes('correct'));
+    }
+    assert.strictEqual(threw, true, 'Gửi sai field "ans" thành "answer" phải bị ném lỗi ở Step 2');
   } finally {
     cleanupTempDir(tempDir);
   }

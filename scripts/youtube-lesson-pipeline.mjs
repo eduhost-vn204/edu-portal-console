@@ -29,8 +29,194 @@ export const CHECKPOINT_STEPS = [
   'READY_FOR_TEACHER',
   'BACKEND_VERIFICATION_FAILED',
   'MANUAL_RECOVERY_REQUIRED',
+  'INPUT_CHANGED_NEW_SESSION_REQUIRED',
   'OAUTH_ACTION_REQUIRED'
 ];
+
+/**
+ * Chuẩn hóa giá trị để so sánh chuỗi/số an toàn (bỏ ký tự escape ', chuẩn hóa Unicode NFC, trim)
+ */
+export function canonicalizeVal(val) {
+  if (val === null || val === undefined) return '';
+  let str = String(val).trim();
+  if (str.startsWith("'")) {
+    str = str.substring(1).trim();
+  }
+  return str.normalize('NFC');
+}
+
+/**
+ * Đối soát sâu toàn diện 10 trường của bài pilot giữa dữ liệu kỳ vọng và bản ghi trên backend
+ */
+export function comparePilotLessonFields(expected, actual) {
+  const fieldsToCheck = [
+    { key: 'KhoaHoc', expected: expected.KhoaHoc || expected.course },
+    { key: 'Chuong', expected: expected.Chuong || expected.chapter },
+    { key: 'TenBai', expected: expected.TenBai || expected.lessonName },
+    { key: 'ThuTuBai', expected: Number(expected.ThuTuBai !== undefined ? expected.ThuTuBai : expected.order), isNumber: true },
+    { key: 'MoTaBai', expected: expected.MoTaBai || expected.description || '' },
+    { key: 'Video', expected: expected.Video || expected.theoryUrl },
+    { key: 'VideoGiai', expected: expected.VideoGiai || expected.practiceUrl },
+    { key: 'PDFLyThuyet', expected: expected.PDFLyThuyet || expected.theoryPdfUrl },
+    { key: 'PDF', expected: expected.PDF || expected.appliedPdfUrl },
+    { key: 'PDFLuyenTap', expected: expected.PDFLuyenTap || expected.practicePdfUrl }
+  ];
+
+  const diffs = [];
+  for (const item of fieldsToCheck) {
+    const actVal = actual ? actual[item.key] : undefined;
+    if (item.isNumber) {
+      const expNum = Number(item.expected);
+      const actNum = Number(canonicalizeVal(actVal));
+      if (isNaN(actNum) || expNum !== actNum) {
+        diffs.push({ field: item.key, expected: expNum, actual: actVal });
+      }
+    } else {
+      const expNorm = canonicalizeVal(item.expected);
+      const actNorm = canonicalizeVal(actVal);
+      if (expNorm !== actNorm) {
+        diffs.push({ field: item.key, expected: expNorm, actual: actNorm });
+      }
+    }
+  }
+
+  return {
+    ok: diffs.length === 0,
+    diffCount: diffs.length,
+    diffs
+  };
+}
+
+/**
+ * Đối soát sâu từng câu hỏi VideoCauHoi (thuTu, thoiGian, type, question, optA, optB, optC, optD, correct)
+ */
+export function compareVideoCauHoiList(expectedItems, actualRows) {
+  const diffs = [];
+  if (!Array.isArray(actualRows) || actualRows.length !== expectedItems.length) {
+    return {
+      ok: false,
+      diffCount: 1,
+      diffs: [{ field: 'count', expected: expectedItems.length, actual: actualRows?.length || 0 }]
+    };
+  }
+
+  for (let i = 0; i < expectedItems.length; i++) {
+    const exp = expectedItems[i];
+    const act = actualRows[i];
+    const itemNum = i + 1;
+
+    // 1. thuTu
+    const actThuTu = Number(canonicalizeVal(act.thuTu));
+    if (actThuTu !== itemNum) {
+      diffs.push({ index: i, field: `item[${itemNum}].thuTu`, expected: itemNum, actual: act.thuTu });
+    }
+
+    // 2. thoiGian vs t (hoặc timestamp)
+    const expT = Number(exp.t !== undefined ? exp.t : exp.timestamp);
+    const actT = Number(canonicalizeVal(act.thoiGian));
+    if (isNaN(actT) || expT !== actT) {
+      diffs.push({ index: i, field: `item[${itemNum}].thoiGian`, expected: expT, actual: act.thoiGian });
+    }
+
+    // 3. type
+    const expType = canonicalizeVal(exp.type || 'mc');
+    const actType = canonicalizeVal(act.type || 'mc');
+    if (expType !== actType) {
+      diffs.push({ index: i, field: `item[${itemNum}].type`, expected: expType, actual: act.type });
+    }
+
+    // 4. question vs q
+    const expQ = canonicalizeVal(exp.q || exp.stem || exp.question);
+    const actQ = canonicalizeVal(act.question);
+    if (expQ !== actQ) {
+      diffs.push({ index: i, field: `item[${itemNum}].question`, expected: expQ, actual: actQ });
+    }
+
+    // 5. optA, optB, optC, optD
+    for (const opt of ['A', 'B', 'C', 'D']) {
+      const expOpt = canonicalizeVal(exp[opt] || exp.options?.[opt]);
+      const actOpt = canonicalizeVal(act[`opt${opt}`]);
+      if (expOpt !== actOpt) {
+        diffs.push({ index: i, field: `item[${itemNum}].opt${opt}`, expected: expOpt, actual: actOpt });
+      }
+    }
+
+    // 6. correct vs ans / correct / answer
+    const expAns = canonicalizeVal(exp.ans !== undefined ? exp.ans : (exp.correct !== undefined ? exp.correct : (exp.answer !== undefined ? exp.answer : ''))).toUpperCase();
+    const actAns = canonicalizeVal(act.correct !== undefined ? act.correct : '').toUpperCase();
+    if (!actAns || expAns !== actAns) {
+      diffs.push({ index: i, field: `item[${itemNum}].correct`, expected: expAns || '(đáp án hợp lệ)', actual: actAns || '(rỗng)' });
+    }
+  }
+
+  return {
+    ok: diffs.length === 0,
+    diffCount: diffs.length,
+    diffs
+  };
+}
+
+/**
+ * Đối soát sâu từng câu hỏi BaiTapTracNghiem (thuTu, type, question, optA, optB, optC, optD, correct)
+ */
+export function compareBaiTapTracNghiemList(expectedItems, actualRows) {
+  const diffs = [];
+  if (!Array.isArray(actualRows) || actualRows.length !== expectedItems.length) {
+    return {
+      ok: false,
+      diffCount: 1,
+      diffs: [{ field: 'count', expected: expectedItems.length, actual: actualRows?.length || 0 }]
+    };
+  }
+
+  for (let i = 0; i < expectedItems.length; i++) {
+    const exp = expectedItems[i];
+    const act = actualRows[i];
+    const itemNum = i + 1;
+
+    // 1. thuTu
+    const actThuTu = Number(canonicalizeVal(act.thuTu));
+    if (actThuTu !== itemNum) {
+      diffs.push({ index: i, field: `item[${itemNum}].thuTu`, expected: itemNum, actual: act.thuTu });
+    }
+
+    // 2. type
+    const expType = canonicalizeVal(exp.type || 'mc');
+    const actType = canonicalizeVal(act.type || 'mc');
+    if (expType !== actType) {
+      diffs.push({ index: i, field: `item[${itemNum}].type`, expected: expType, actual: act.type });
+    }
+
+    // 3. question vs q
+    const expQ = canonicalizeVal(exp.q || exp.stem || exp.question);
+    const actQ = canonicalizeVal(act.question);
+    if (expQ !== actQ) {
+      diffs.push({ index: i, field: `item[${itemNum}].question`, expected: expQ, actual: actQ });
+    }
+
+    // 4. optA, optB, optC, optD
+    for (const opt of ['A', 'B', 'C', 'D']) {
+      const expOpt = canonicalizeVal(exp[opt] || exp.options?.[opt]);
+      const actOpt = canonicalizeVal(act[`opt${opt}`]);
+      if (expOpt !== actOpt) {
+        diffs.push({ index: i, field: `item[${itemNum}].opt${opt}`, expected: expOpt, actual: actOpt });
+      }
+    }
+
+    // 5. correct vs correct / ans / answer
+    const expAns = canonicalizeVal(exp.correct !== undefined ? exp.correct : (exp.ans !== undefined ? exp.ans : (exp.answer !== undefined ? exp.answer : ''))).toUpperCase();
+    const actAns = canonicalizeVal(act.correct !== undefined ? act.correct : '').toUpperCase();
+    if (!actAns || expAns !== actAns) {
+      diffs.push({ index: i, field: `item[${itemNum}].correct`, expected: expAns || '(đáp án hợp lệ)', actual: actAns || '(rỗng)' });
+    }
+  }
+
+  return {
+    ok: diffs.length === 0,
+    diffCount: diffs.length,
+    diffs
+  };
+}
 
 /**
  * Tính hash SHA256 của file để kiểm tra toàn vẹn
@@ -150,11 +336,17 @@ export function verifyInputsAndFingerprint(inboxDir, manifest, options = {}) {
   }
 
   const checkpoint = loadCheckpoint(inboxDir) || {};
-  if (checkpoint.inputFingerprint && !options.force) {
+  if (checkpoint.inputFingerprint) {
     const prevHashes = checkpoint.inputFingerprint.hashes || {};
     for (const [key, curHash] of Object.entries(currentHashes)) {
       if (prevHashes[key] && prevHashes[key] !== curHash) {
-        throw new Error(`PHÁT HIỆN THAY ĐỔI ĐẦU VÀO: File [${key}] đã bị thay đổi nội dung sau khi checkpoint được tạo (Cũ: ${prevHashes[key]}, Mới: ${curHash}). Yêu cầu chạy với --force hoặc khởi tạo phiên mới!`);
+        const errMsg = `INPUT_CHANGED_NEW_SESSION_REQUIRED: File đầu vào [${key}] đã bị thay đổi sau khi checkpoint được tạo! (Cũ: ${prevHashes[key]}, Mới: ${curHash}). Nghiêm cấm ghi đè hoặc dùng lại session/upload/backend cũ với --force. Bắt buộc phải tạo thư mục/session mới!`;
+        const err = new Error(errMsg);
+        err.code = 'INPUT_CHANGED_NEW_SESSION_REQUIRED';
+        checkpoint.state = 'INPUT_CHANGED_NEW_SESSION_REQUIRED';
+        checkpoint.inputMismatch = { key, prevHash: prevHashes[key], newHash: curHash };
+        saveCheckpoint(inboxDir, checkpoint);
+        throw err;
       }
     }
   }
@@ -401,8 +593,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
   // =========================================================================
   // BƯỚC 7.1: GHI BÀI HỌC DRAFT (savebaihoc) VỚI READ-BACK CHECK
   // =========================================================================
-  const lessonPayload = {
-    action: 'savebaihoc',
+  const expectedLessonData = {
     KhoaHoc: manifest.course,
     Chuong: manifest.chapter,
     TenBai: manifest.lessonName,
@@ -412,7 +603,11 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     PDF: driveRes.appliedPdfUrl,
     PDFLuyenTap: driveRes.practicePdfUrl,
     ThuTuBai: manifest.order,
-    MoTaBai: manifest.description,
+    MoTaBai: manifest.description
+  };
+  const lessonPayload = {
+    action: 'savebaihoc',
+    ...expectedLessonData,
     NgayDang: new Date().toISOString()
   };
   const lessonPayloadHash = calculatePayloadHash(lessonPayload);
@@ -442,12 +637,10 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     if (matchingLessons.length === 1) {
       const found = matchingLessons[0];
       existingMaBai = found.MaBai || '';
-      const isVideoMatch = String(found.Video || '').trim() === videoRes.theoryUrl;
-      const isVideoGiaiMatch = String(found.VideoGiai || '').trim() === videoRes.practiceUrl;
-      const isPdfMatch = String(found.PDFLyThuyet || '').trim() === driveRes.theoryPdfUrl;
+      const lessonComp = comparePilotLessonFields(expectedLessonData, found);
 
-      if (isVideoMatch && isVideoGiaiMatch && isPdfMatch) {
-        console.log(`          ✓ Bài học pilot đã tồn tại và khớp toàn bộ link trên backend! (MaBai: ${existingMaBai})`);
+      if (lessonComp.ok) {
+        console.log(`          ✓ Bài học pilot đã tồn tại và khớp toàn bộ 10/10 trường trên backend! (MaBai: ${existingMaBai})`);
         lessonNeedsWrite = false;
         checkpoint.backend.lesson = {
           status: 'SAVED',
@@ -459,7 +652,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
         };
         saveCheckpoint(inboxDir, checkpoint);
       } else {
-        console.log(`          ⚠️ Bài học đã có mã [${existingMaBai}], cập nhật ghi đè in-place an toàn...`);
+        console.log(`          ⚠️ Bài học đã có mã [${existingMaBai}], nhưng có ${lessonComp.diffCount} trường chưa khớp (${lessonComp.diffs.map(d=>d.field).join(', ')}). Cập nhật ghi đè in-place an toàn...`);
         lessonPayload.maBai = existingMaBai;
         lessonPayload.originalKey = `${found.KhoaHoc}|||${found.Chuong}|||${found.TenBai}`;
       }
@@ -485,6 +678,14 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       throw err;
     }
 
+    const postLessonComp = comparePilotLessonFields(expectedLessonData, verifiedLesson);
+    if (!postLessonComp.ok) {
+      const err = new Error(`Ghi bài học DRAFT thất bại: Đối soát sâu phát hiện ${postLessonComp.diffCount} trường sai lệch (${postLessonComp.diffs.map(d=>d.field).join(', ')}).`);
+      err.code = 'BACKEND_WRITE_FAILED_STEP1';
+      err.diffs = postLessonComp.diffs;
+      throw err;
+    }
+
     existingMaBai = verifiedLesson.MaBai || '';
     checkpoint.backend.lesson = {
       status: 'SAVED',
@@ -495,7 +696,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       verifiedAt: new Date().toISOString()
     };
     saveCheckpoint(inboxDir, checkpoint);
-    console.log(`          ✓ Đã xác minh bài học DRAFT được lưu thành công! (MaBai: ${existingMaBai})`);
+    console.log(`          ✓ Đã xác minh bài học DRAFT được lưu thành công và khớp 10/10 trường! (MaBai: ${existingMaBai})`);
   }
 
   // =========================================================================
@@ -513,22 +714,19 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     const jsonVchCheck = await resVchCheck.json();
     const rowsVch = Array.isArray(jsonVchCheck.data) ? jsonVchCheck.data : [];
 
-    if (rowsVch.length === 20) {
-      const firstMatches = String(rowsVch[0].question || '').includes(questionsApplied[0].q.substring(0, 15));
-      const lastMatches = String(rowsVch[19].question || '').includes(questionsApplied[19].q.substring(0, 15));
-      if (firstMatches && lastMatches) {
-        console.log(`          ✓ 20 câu VideoCauHoi đã tồn tại và khớp nội dung trên backend!`);
-        vchNeedsWrite = false;
-        checkpoint.backend.videoCauHoi = {
-          status: 'SAVED',
-          count: 20,
-          payloadHash: vchPayloadHash,
-          verified: true,
-          method: 'READBACK_MATCH',
-          verifiedAt: new Date().toISOString()
-        };
-        saveCheckpoint(inboxDir, checkpoint);
-      }
+    const compVch = compareVideoCauHoiList(questionsApplied, rowsVch);
+    if (compVch.ok) {
+      console.log(`          ✓ 20 câu VideoCauHoi đã tồn tại và khớp toàn bộ 20/20 câu chi tiết trên backend!`);
+      vchNeedsWrite = false;
+      checkpoint.backend.videoCauHoi = {
+        status: 'SAVED',
+        count: 20,
+        payloadHash: vchPayloadHash,
+        verified: true,
+        method: 'READBACK_MATCH',
+        verifiedAt: new Date().toISOString()
+      };
+      saveCheckpoint(inboxDir, checkpoint);
     }
   }
 
@@ -547,9 +745,11 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     const jsonVerifyVch = await resVerifyVch.json();
     const rowsAfter = Array.isArray(jsonVerifyVch.data) ? jsonVerifyVch.data : [];
 
-    if (rowsAfter.length !== 20) {
-      const err = new Error(`Ghi VideoCauHoi thất bại: Số câu xác minh sau khi nạp là ${rowsAfter.length} (yêu cầu 20).`);
+    const postCompVch = compareVideoCauHoiList(questionsApplied, rowsAfter);
+    if (!postCompVch.ok) {
+      const err = new Error(`Ghi VideoCauHoi thất bại: Đối soát sâu phát hiện ${postCompVch.diffCount} điểm sai lệch (${postCompVch.diffs.slice(0, 3).map(d => `${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')}).`);
       err.code = 'BACKEND_WRITE_FAILED_STEP2';
+      err.diffs = postCompVch.diffs;
       throw err;
     }
 
@@ -562,7 +762,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       verifiedAt: new Date().toISOString()
     };
     saveCheckpoint(inboxDir, checkpoint);
-    console.log(`          ✓ Đã xác minh nạp đủ 20 câu VideoCauHoi có mốc thành công!`);
+    console.log(`          ✓ Đã xác minh nạp đủ 20 câu VideoCauHoi có mốc thành công (khớp 100% chi tiết)!`);
   }
 
   // =========================================================================
@@ -580,22 +780,19 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     const jsonBtCheck = await resBtCheck.json();
     const rowsBt = Array.isArray(jsonBtCheck.data) ? jsonBtCheck.data : [];
 
-    if (rowsBt.length === 20) {
-      const firstMatches = String(rowsBt[0].question || '').includes(questionsPractice[0].q.substring(0, 15));
-      const lastMatches = String(rowsBt[19].question || '').includes(questionsPractice[19].q.substring(0, 15));
-      if (firstMatches && lastMatches) {
-        console.log(`          ✓ 20 câu BaiTapTracNghiem đã tồn tại và khớp nội dung trên backend!`);
-        btNeedsWrite = false;
-        checkpoint.backend.baiTapTracNghiem = {
-          status: 'SAVED',
-          count: 20,
-          payloadHash: btPayloadHash,
-          verified: true,
-          method: 'READBACK_MATCH',
-          verifiedAt: new Date().toISOString()
-        };
-        saveCheckpoint(inboxDir, checkpoint);
-      }
+    const compBt = compareBaiTapTracNghiemList(questionsPractice, rowsBt);
+    if (compBt.ok) {
+      console.log(`          ✓ 20 câu BaiTapTracNghiem đã tồn tại và khớp toàn bộ 20/20 câu chi tiết trên backend!`);
+      btNeedsWrite = false;
+      checkpoint.backend.baiTapTracNghiem = {
+        status: 'SAVED',
+        count: 20,
+        payloadHash: btPayloadHash,
+        verified: true,
+        method: 'READBACK_MATCH',
+        verifiedAt: new Date().toISOString()
+      };
+      saveCheckpoint(inboxDir, checkpoint);
     }
   }
 
@@ -614,9 +811,11 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     const jsonVerifyBt = await resVerifyBt.json();
     const rowsBtAfter = Array.isArray(jsonVerifyBt.data) ? jsonVerifyBt.data : [];
 
-    if (rowsBtAfter.length !== 20) {
-      const err = new Error(`Ghi BaiTapTracNghiem thất bại: Số câu xác minh sau khi nạp là ${rowsBtAfter.length} (yêu cầu 20).`);
+    const postCompBt = compareBaiTapTracNghiemList(questionsPractice, rowsBtAfter);
+    if (!postCompBt.ok) {
+      const err = new Error(`Ghi BaiTapTracNghiem thất bại: Đối soát sâu phát hiện ${postCompBt.diffCount} điểm sai lệch (${postCompBt.diffs.slice(0, 3).map(d => `${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')}).`);
       err.code = 'BACKEND_WRITE_FAILED_STEP3';
+      err.diffs = postCompBt.diffs;
       throw err;
     }
 
@@ -629,7 +828,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       verifiedAt: new Date().toISOString()
     };
     saveCheckpoint(inboxDir, checkpoint);
-    console.log(`          ✓ Đã xác minh nạp đủ 20 câu BaiTapTracNghiem thành công!`);
+    console.log(`          ✓ Đã xác minh nạp đủ 20 câu BaiTapTracNghiem thành công (khớp 100% chi tiết)!`);
   }
 
   // Toàn bộ 3 bước backend đã được xác minh chặt chẽ
@@ -656,7 +855,7 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   const jsonBaiHoc = await resBaiHoc.json();
   const baiHocList = Array.isArray(jsonBaiHoc.data) ? jsonBaiHoc.data : (Array.isArray(jsonBaiHoc) ? jsonBaiHoc : []);
 
-  // 1.1 Xác minh bài pilot
+  // 1.1 Xác minh sâu toàn bộ 10 trường của bài pilot
   const pilotLesson = baiHocList.find(b => String(b.TenBai).trim() === manifest.lessonName);
   if (!pilotLesson) {
     throw new Error(`Đối soát thất bại: Không tìm thấy bài pilot [${manifest.lessonName}] trên backend!`);
@@ -664,14 +863,40 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   if (!pilotLesson.TenBai.startsWith('[BẢN NHÁP THỬ NGHIỆM]')) {
     throw new Error(`Đối soát thất bại: Tiêu đề bài pilot thiếu tiền tố an toàn bắt buộc!`);
   }
-  if (pilotLesson.ThuTuBai !== 999 && pilotLesson.ThuTuBai !== '999') {
-    throw new Error(`Đối soát thất bại: Thứ tự bài pilot không phải 999 (Thực tế: ${pilotLesson.ThuTuBai})!`);
-  }
 
-  console.log(`         ✓ Tìm thấy bài pilot: ${pilotLesson.TenBai} (Thứ tự: ${pilotLesson.ThuTuBai})`);
-  console.log(`           - Video:       ${pilotLesson.Video}`);
-  console.log(`           - VideoGiai:   ${pilotLesson.VideoGiai}`);
-  console.log(`           - PDFLyThuyet: ${pilotLesson.PDFLyThuyet}`);
+  const expTheory = options.videoResult?.theoryUrl || options.theoryUrl;
+  const expPractice = options.videoResult?.practiceUrl || options.practiceUrl;
+  const expPdfTheory = options.driveResult?.theoryPdfUrl || options.theoryPdfUrl;
+  const expPdfApp = options.driveResult?.appliedPdfUrl || options.appliedPdfUrl;
+  const expPdfPrac = options.driveResult?.practicePdfUrl || options.practicePdfUrl;
+
+  if (expTheory || expPractice || expPdfTheory || expPdfApp || expPdfPrac) {
+    const expectedFields = {
+      course: manifest.course,
+      chapter: manifest.chapter,
+      lessonName: manifest.lessonName,
+      order: manifest.order,
+      description: manifest.description,
+      theoryUrl: expTheory,
+      practiceUrl: expPractice,
+      theoryPdfUrl: expPdfTheory,
+      appliedPdfUrl: expPdfApp,
+      practicePdfUrl: expPdfPrac
+    };
+    const compPilot = comparePilotLessonFields(expectedFields, pilotLesson);
+    if (!compPilot.ok) {
+      throw new Error(`Đối soát bài pilot thất bại: ${compPilot.diffCount} trường không khớp (${compPilot.diffs.map(d=>`${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')})!`);
+    }
+    console.log(`         ✓ Bài pilot khớp 10/10 trường chi tiết (Course, Chapter, Title, Order, Description, Video, VideoGiai, PDFLyThuyet, PDF, PDFLuyenTap)!`);
+  } else {
+    if (pilotLesson.ThuTuBai !== 999 && pilotLesson.ThuTuBai !== '999') {
+      throw new Error(`Đối soát thất bại: Thứ tự bài pilot không phải 999 (Thực tế: ${pilotLesson.ThuTuBai})!`);
+    }
+    console.log(`         ✓ Tìm thấy bài pilot: ${pilotLesson.TenBai} (Thứ tự: ${pilotLesson.ThuTuBai})`);
+    console.log(`           - Video:       ${pilotLesson.Video}`);
+    console.log(`           - VideoGiai:   ${pilotLesson.VideoGiai}`);
+    console.log(`           - PDFLyThuyet: ${pilotLesson.PDFLyThuyet}`);
+  }
 
   // 1.2 KHÓA AN TOÀN BẮT BUỘC: Kiểm tra toàn diện 14 trường của Bài 10 thật
   if (fs.existsSync(snapshotPath)) {
@@ -692,7 +917,14 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   const jsonVCH = await resVCH.json();
   const vchRows = Array.isArray(jsonVCH.data) ? jsonVCH.data : [];
   console.log(`         ✓ Đọc VideoCauHoi của bài pilot: ${vchRows.length} câu (yêu cầu đúng 20 câu).`);
-  if (vchRows.length !== 20) {
+
+  if (options.questionsApplied) {
+    const compVch = compareVideoCauHoiList(options.questionsApplied, vchRows);
+    if (!compVch.ok) {
+      throw new Error(`Đối soát VideoCauHoi thất bại: ${compVch.diffCount} điểm sai lệch (${compVch.diffs.slice(0, 3).map(d => `${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')})!`);
+    }
+    console.log(`         ✓ 20/20 câu VideoCauHoi khớp chi tiết từng câu, thứ tự, timestamp, options và đáp án!`);
+  } else if (vchRows.length !== 20) {
     throw new Error(`Đối soát VideoCauHoi thất bại: Số câu thực tế là ${vchRows.length}, yêu cầu đúng 20!`);
   }
 
@@ -701,7 +933,14 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   const jsonBT = await resBT.json();
   const btRows = Array.isArray(jsonBT.data) ? jsonBT.data : [];
   console.log(`         ✓ Đọc BaiTapTracNghiem của bài pilot: ${btRows.length} câu (yêu cầu đúng 20 câu).`);
-  if (btRows.length !== 20) {
+
+  if (options.questionsPractice) {
+    const compBt = compareBaiTapTracNghiemList(options.questionsPractice, btRows);
+    if (!compBt.ok) {
+      throw new Error(`Đối soát BaiTapTracNghiem thất bại: ${compBt.diffCount} điểm sai lệch (${compBt.diffs.slice(0, 3).map(d => `${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')})!`);
+    }
+    console.log(`         ✓ 20/20 câu BaiTapTracNghiem khớp chi tiết từng câu, thứ tự, options và đáp án!`);
+  } else if (btRows.length !== 20) {
     throw new Error(`Đối soát BaiTapTracNghiem thất bại: Số câu thực tế là ${btRows.length}, yêu cầu đúng 20!`);
   }
 
@@ -854,7 +1093,13 @@ export async function runFullPipeline(inboxDir, options = {}) {
 
   if (!isMockBackend) {
     try {
-      verifyResult = await verifyBackendReadBack(manifest, options);
+      verifyResult = await verifyBackendReadBack(manifest, {
+        ...options,
+        videoResult,
+        driveResult,
+        questionsApplied: questionsAppliedForBackend,
+        questionsPractice: questionsPracticeForBackend
+      });
       finalCp.state = 'BACKEND_VERIFIED';
       finalCp.verifiedAt = new Date().toISOString();
       saveCheckpoint(inboxDir, finalCp);

@@ -126,7 +126,8 @@ async function runTests() {
             PDFLyThuyet: body.PDFLyThuyet,
             PDF: body.PDF,
             PDFLuyenTap: body.PDFLuyenTap,
-            ThuTuBai: body.ThuTuBai
+            ThuTuBai: body.ThuTuBai,
+            MoTaBai: body.MoTaBai || ''
           });
           return { ok: true, json: async () => ({ ok: true }) };
         }
@@ -134,24 +135,26 @@ async function runTests() {
           inMemoryDb.videocauhoi[body.baiKey] = body.items.map((it, idx) => ({
             thuTu: idx + 1,
             thoiGian: it.t,
+            type: it.type || 'mc',
             question: it.q,
             optA: it.A,
             optB: it.B,
             optC: it.C,
             optD: it.D,
-            correct: it.ans || it.correct
+            correct: (it.ans || it.correct || '').toUpperCase().trim()
           }));
           return { ok: true, json: async () => ({ ok: true, count: body.items.length }) };
         }
         if (body.action === 'savebaitaptracnghiem') {
           inMemoryDb.baitaptracnghiem[body.baiKey] = body.items.map((it, idx) => ({
             thuTu: idx + 1,
+            type: it.type || 'mc',
             question: it.q,
             optA: it.A,
             optB: it.B,
             optC: it.C,
             optD: it.D,
-            correct: it.correct
+            correct: (it.correct || it.ans || '').toUpperCase().trim()
           }));
           return { ok: true, json: async () => ({ ok: true, count: body.items.length }) };
         }
@@ -215,9 +218,7 @@ async function runTests() {
     assert(backendRes2.isResumed === true, 'Backend step đánh dấu isResumed = true');
     assert(fetchCalled === false, 'Không gọi network dư thừa khi đã lưu DRAFT');
 
-    // ── TEST 8: Đối soát Backend (Read-Back) & Xác minh Bài 10 thật nguyên vẹn ──
-    console.log(`\nTest 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật`);
-    // ── TEST 8: Đối soát Backend (Read-Back) & Xác minh Bài 10 thật nguyên vẹn ──
+    // ── TEST 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật ──
     console.log(`\nTest 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật`);
     const mockRealSnapshot = {
       MaBai: 'B10_REAL_MOCK',
@@ -238,6 +239,28 @@ async function runTests() {
     const mockSnapshotPath = path.join(tmpDir, 'real_b10_snapshot_before.json');
     fs.writeFileSync(mockSnapshotPath, JSON.stringify(mockRealSnapshot, null, 2), 'utf8');
 
+    const mockVerifiedVchRows = mockAppliedQs.map((q, idx) => ({
+      thuTu: idx + 1,
+      thoiGian: q.t,
+      type: q.type || 'mc',
+      question: q.q,
+      optA: q.A,
+      optB: q.B,
+      optC: q.C,
+      optD: q.D,
+      correct: q.ans
+    }));
+    const mockVerifiedBtRows = mockPracticeQs.map((q, idx) => ({
+      thuTu: idx + 1,
+      type: q.type || 'mc',
+      question: q.q,
+      optA: q.A,
+      optB: q.B,
+      optC: q.C,
+      optD: q.D,
+      correct: q.correct
+    }));
+
     const mockVerifyFetch = async (url) => {
       if (url.includes('type=baihoc')) {
         return {
@@ -247,28 +270,37 @@ async function runTests() {
             data: [
               { ...mockRealSnapshot },
               {
+                KhoaHoc: parsed.course,
+                Chuong: parsed.chapter,
                 TenBai: PILOT_B10_LESSON_NAME,
+                ThuTuBai: 999,
+                MoTaBai: parsed.description,
                 Video: videoRes1.theoryUrl,
                 VideoGiai: videoRes1.practiceUrl,
                 PDFLyThuyet: driveRes1.theoryPdfUrl,
-                ThuTuBai: 999
+                PDF: driveRes1.appliedPdfUrl,
+                PDFLuyenTap: driveRes1.practicePdfUrl
               }
             ]
           })
         };
       }
       if (url.includes('type=videocauhoi')) {
-        return { ok: true, json: async () => ({ ok: true, data: mockAppliedQs }) };
+        return { ok: true, json: async () => ({ ok: true, data: mockVerifiedVchRows }) };
       }
       if (url.includes('type=baitaptracnghiem')) {
-        return { ok: true, json: async () => ({ ok: true, data: mockPracticeQs }) };
+        return { ok: true, json: async () => ({ ok: true, data: mockVerifiedBtRows }) };
       }
       return { ok: true, json: async () => ({ ok: true, data: [] }) };
     };
 
     const verifyResult = await verifyBackendReadBack(parsed, {
       fetchImpl: mockVerifyFetch,
-      snapshotPath: mockSnapshotPath
+      snapshotPath: mockSnapshotPath,
+      videoResult: videoRes1,
+      driveResult: driveRes1,
+      questionsApplied: mockAppliedQs,
+      questionsPractice: mockPracticeQs
     });
     assert(verifyResult.verified === true, 'Read-back verification thành công 100%');
     assert(verifyResult.realLessonUntouched === true, 'Bài 10 thật được xác minh nguyên vẹn');
