@@ -1,0 +1,3407 @@
+1
+00:00:01,680 --> 00:00:03,200
+Hello, hẹn chào các bạn!
+
+2
+00:00:04,220 --> 00:00:07,980
+Chúc mừng các bạn đến với bài số 10, phương trình chẳng nói khi lý tưởng.
+
+3
+00:00:09,860 --> 00:00:15,790
+Thì trước khi đi vào bài này, anh nói qua một chút là không thường trong xét óc qua,
+
+4
+00:00:16,070 --> 00:00:22,410
+người ta hay đẩy cái bài về phương trình boiler lên, đền đục boiler lên.
+
+5
+00:00:23,000 --> 00:00:25,280
+Tức là cái bài chân ảnh nhiệm ấy, cái xạp đầu tiên.
+
+6
+00:00:26,350 --> 00:00:28,230
+Còn phương trình đã ghi tưởng xạp cuối cùng.
+
+7
+00:00:29,340 --> 00:00:31,120
+Nhưng anh lại muốn đẩy cái bài này lên đầu tiên.
+
+8
+00:00:31,900 --> 00:00:35,980
+Thì tý nữa, các bạn học xong bài này, các bạn sẽ hiểu tại sao anh lại đẩy cái bài này lên học trước,
+
+9
+00:00:36,200 --> 00:00:39,680
+so với 3 cái đền lục theo như cái chân nhìn tâm thường.
+
+10
+00:00:40,420 --> 00:00:42,520
+Ok, thì chúng ta sẽ bắt đầu đi vào chương trình luôn nhé.
+
+11
+00:00:45,480 --> 00:00:51,120
+Rồi, thì mục tiêu của bài học hôm nay, chúng ta sẽ viết về hiểu được phương trình ở kia lý tưởng.
+
+12
+00:00:51,700 --> 00:00:55,900
+Thì mình sẽ biết là cái điều kiện để mình áp dụng được phương trình này là nằm ở trong cái khoả nào.
+
+13
+00:00:56,020 --> 00:00:58,260
+Tức nghĩ là không phải lúc nào mình có thể giúp phương trình này.
+
+14
+00:00:58,880 --> 00:01:01,280
+Và thứ 2 là mình hiểu ý nghĩa bản chất của phương trình này.
+
+15
+00:01:01,280 --> 00:01:09,720
+Nếu như có một số câu hỏi về lý thước, nhưng đã đủ đến chương 2 rồi thì phần lý thước sẽ ít đi đa phần chương 2 này.
+
+16
+00:01:11,580 --> 00:01:13,660
+Nếu có lý thước thì lý thước sẽ rất khó.
+
+17
+00:01:14,100 --> 00:01:17,600
+Tức là lý thước của phần chương 2 này nó có tính kết hợp với chương 1
+
+18
+00:01:18,080 --> 00:01:19,620
+và nó còn phải hiểu thật ở sau.
+
+19
+00:01:20,260 --> 00:01:26,480
+Vậy nên, các bạn phải hiểu được các thông thường hỏi ở trong một cuối khí.
+
+20
+00:01:27,880 --> 00:01:35,070
+Và ở trong chương 2 này chúng ta sẽ học tùy hiểu là học về mối liêng hệ và các thông dụng hỏi của một cuối khí.
+
+21
+00:01:35,290 --> 00:01:39,630
+Và thứ 2 chính là liêng hệ với các định luật khác.
+
+22
+00:01:39,750 --> 00:01:43,630
+Tức là đây chính là lý do mà anh đẩy cái bài này lên để mình học trước.
+
+23
+00:01:44,270 --> 00:01:48,510
+Tức là khi mình học các bài này xong, mình sẽ hiểu 3 bài ở đang sau.
+
+24
+00:01:48,890 --> 00:01:51,150
+Một cách dễ dàng hơn mà mình hiểu tại sao lại thế.
+
+25
+00:01:51,410 --> 00:01:54,260
+Tức là mình biết lý do và biết cách hình thành của nó.
+
+26
+00:01:55,260 --> 00:02:01,240
+Giống như là chứng minh công thực đấy và các bạn hiểu rõ rảnh là cái này nó được suy ra từ như thế này.
+
+27
+00:02:01,540 --> 00:02:04,400
+Và cuối cùng là mình có thể vặn dụng để giải một cái bài sống bài tóa.
+
+28
+00:02:04,700 --> 00:02:07,760
+Vặn dụng để mình ứng dụng cái quân trường nhả thi tưởng này.
+
+29
+00:02:08,260 --> 00:02:12,160
+Thì cái phần này chúng ta có thể áp dụng thì chúng ta sẽ tính tỏng cái phần này nhá.
+
+30
+00:02:13,310 --> 00:02:21,530
+Rồi, tuyệt đầu tiên, trước khi mà đi tìm hiểu về quân trường lái khí lý tưởng và định mỡ về cách dùng
+
+31
+00:02:22,530 --> 00:02:30,220
+thì anh nói qua về cái trường 2 này, cái tỏng quáo trường 2 này cũng như là cái thông số tỏa của khí.
+
+32
+00:02:31,250 --> 00:02:32,950
+Đầu tiên này là về trường 2.
+
+33
+00:02:33,570 --> 00:02:36,410
+Các bạn sẵn định rõ là trường 2 giống thật học về khí lý tưởng.
+
+34
+00:02:36,610 --> 00:02:41,570
+Tức nghĩa là mình sẽ học về trạng thái và chất là trạng thái khí.
+
+35
+00:02:41,830 --> 00:02:45,110
+Đấy chưa? Tức là trạng thái khí ở trong 3 trạng thái mà mình học ở trong trường 1.
+
+36
+00:02:45,630 --> 00:02:47,390
+Trong mà chỉ nghiên cứu về trường về khí thôi.
+
+37
+00:02:47,890 --> 00:02:49,210
+À, phải thì khí.
+
+38
+00:02:49,810 --> 00:02:52,750
+Mình muốn xác lệnh trạng thái của 1 khối khí thì mình cần những yêu tố nào.
+
+39
+00:02:52,970 --> 00:02:55,290
+Đó chính là chúng ta còn đến 3 thông số giảng thái.
+
+40
+00:02:55,870 --> 00:02:56,710
+Mình phải hiểu rõ điều này.
+
+41
+00:02:56,990 --> 00:02:58,230
+Em gì để em biết là à.
+
+42
+00:02:58,790 --> 00:03:00,650
+Bây giờ trong trường 2 này, mình muốn học tốt.
+
+43
+00:03:00,890 --> 00:03:01,830
+Mình phải nắm vận những cái gì.
+
+44
+00:03:02,230 --> 00:03:03,610
+Và mình cần hiểu những cái gì.
+
+45
+00:03:03,890 --> 00:03:08,730
+Để, giống như là nó nhắm như một mạng cụ trương, giống như là một cái sôi đồ ấy.
+
+46
+00:03:08,830 --> 00:03:09,490
+Để em có thể đi.
+
+47
+00:03:10,030 --> 00:03:13,250
+Thật là đúng để mình có thể hiểu được cái mặt cố chúc của kiến thức.
+
+48
+00:03:13,730 --> 00:03:16,830
+Đó, thì đầu tiên mình hiểu áp xúc.
+
+49
+00:03:17,710 --> 00:03:17,870
+Đúng không?
+
+50
+00:03:18,550 --> 00:03:20,290
+Thông số đầu tiên của 1 khối khí sẽ là áp xúc.
+
+51
+00:03:21,480 --> 00:03:24,560
+Thì mình đã được biết rồi, đúng không?
+
+52
+00:03:24,900 --> 00:03:28,640
+Là áp xúc chính là cái sự vai trạm với cả phân tử,
+
+53
+00:03:29,060 --> 00:03:30,300
+với nhau và với thằng bình.
+
+54
+00:03:30,460 --> 00:03:31,680
+Thì từ đó là đến áp xúc.
+
+55
+00:03:32,100 --> 00:03:33,500
+Và nó có đơn vị là bắt can.
+
+56
+00:03:33,880 --> 00:03:34,720
+Hặc là nó phê.
+
+57
+00:03:35,060 --> 00:03:36,240
+Ngoài ra còn nhiều đồng vị khác nữa.
+
+58
+00:03:36,840 --> 00:03:40,800
+Thì khi mình học, mình sẽ được thực chứng với nhiều đồng vị khác.
+
+59
+00:03:42,080 --> 00:03:43,560
+Thông số tiếp theo chính là đại tích.
+
+60
+00:03:45,020 --> 00:03:47,120
+Tức là để xếp để 1 khối khí.
+
+61
+00:03:47,440 --> 00:03:50,200
+Mình còn phải biết là cái khối khí này là chiếm thịt ít cho mọi người nhiều.
+
+62
+00:03:50,620 --> 00:03:50,900
+Đúng không?
+
+63
+00:03:51,180 --> 00:03:52,680
+Chứ bây giờ chúng ta không thể thịt 1 khối khí nhiều.
+
+64
+00:03:52,920 --> 00:03:55,860
+Thì hầu như là nó không có nhiều kiện về khối khí này luôn.
+
+65
+00:03:56,460 --> 00:03:59,460
+Thấy các bạn phải hiểu là cái khối khí là nó luôn,
+
+66
+00:03:59,520 --> 00:04:00,440
+nó cứ nở ra đúng không?
+
+67
+00:04:00,600 --> 00:04:02,320
+Nó cứ nở ra, nó mật cho nó 1 cái thông gian,
+
+68
+00:04:02,420 --> 00:04:03,520
+thì nó cứ nở phun thông gian đó.
+
+69
+00:04:03,860 --> 00:04:06,520
+Thì mình phải biết là xếp cái khối khí đó là chiếm thịt ít cho mọi người nhiều.
+
+70
+00:04:07,080 --> 00:04:10,760
+Thì cái thật tích cũng là cái quan trọng trong thông trần thái của phương trình trí lý tưởng.
+
+71
+00:04:11,450 --> 00:04:13,350
+Tiếp theo là nhiệt độ.
+
+72
+00:04:14,260 --> 00:04:16,960
+Thấy chiếm thịt ít được riêng ở trong chương 2 này.
+
+73
+00:04:17,720 --> 00:04:20,540
+Và các công thức tính toán được dùng ở trong chương 2 này
+
+74
+00:04:20,540 --> 00:04:24,640
+đều là dùng đến cái đơn vị nhiệt độ là canvin.
+
+75
+00:04:25,160 --> 00:04:26,600
+Thì trong chương 1 độ học thôi đúng không?
+
+76
+00:04:27,100 --> 00:04:29,380
+Theo theo nào nhiệt độ thì chúng ta có là canvin này,
+
+77
+00:04:29,680 --> 00:04:31,680
+sensuit này, penalty hit này, đúng chưa?
+
+78
+00:04:31,920 --> 00:04:35,320
+Thì ở đây chúng ta sẽ sử dụng hầu hết và chủ yếu là canvin.
+
+79
+00:04:35,320 --> 00:04:38,380
+Ở xanh ở chương 2 là chỉ chung canvin thôi, chỉ chơi canvin thôi.
+
+80
+00:04:38,920 --> 00:04:42,320
+Cho dù là đề bài cho độ C hay độ F vậy đây cũng phải độ sắc canvin hết.
+
+81
+00:04:43,340 --> 00:04:44,720
+Đó là cái điều các bạn phải chia quý.
+
+82
+00:04:45,780 --> 00:04:50,050
+Thì công thức và cái ý nhựa của phương trần thái khí tưởng
+
+83
+00:04:50,050 --> 00:04:51,690
+là liên quan đến 3 hằng này.
+
+84
+00:04:51,850 --> 00:04:53,650
+Cho nên là anh phải giải thích 3 hằng này kỷ ý.
+
+85
+00:04:54,110 --> 00:04:55,330
+Thì cái phương trần thái khí tưởng
+
+86
+00:04:57,340 --> 00:05:00,440
+nó giống như kiểu làm quản thức hình dung như thế này.
+
+87
+00:05:00,660 --> 00:05:02,920
+1 cái thông trần, 1 cái khối khí đúng không?
+
+88
+00:05:02,920 --> 00:05:07,240
+Cái mục đủ sân 1 cái 3 hằng khối này là B1, V1 và T1, đúng chưa?
+
+89
+00:05:07,680 --> 00:05:09,940
+Thì cái phương trần thái khí tưởng này cho chúng ta thấy
+
+90
+00:05:09,940 --> 00:05:12,530
+rằng là không xuất tải cùng 1 khối khí,
+
+91
+00:05:13,270 --> 00:05:16,130
+không đổi nha, tức là sếp 1 mon khí đó
+
+92
+00:05:16,130 --> 00:05:17,650
+hoặc là 1 kí đô hém khí đó.
+
+93
+00:05:17,870 --> 00:05:22,240
+Thì chúng ta thay đổi diệt độ, thay đổi áp xúc, thay đổi hợp tích.
+
+94
+00:05:22,620 --> 00:05:25,140
+Thì qua 1 cái quán trình nào đó thì nó sẽ chuyển thành
+
+95
+00:05:25,140 --> 00:05:26,300
+là B2, B2, T2.
+
+96
+00:05:26,700 --> 00:05:29,520
+Và lúc này cái tỷ số là B1, Nhan, B1,
+
+97
+00:05:29,520 --> 00:05:32,300
+cho T1 sẽ luôn bằng B2, B2, Chie, T2.
+
+98
+00:05:32,300 --> 00:05:35,520
+hay hay nói cái khác là cái tỷ số dạp b nhanh quê, chiếc tê sẽ là một hành số
+
+99
+00:05:36,940 --> 00:05:42,200
+Cù thể chi tiết hơn, thì đây, khái niệm về phương trần nhận thái của khí lý tưởng
+
+100
+00:05:43,080 --> 00:05:45,600
+Vậy thì điều kiện, đầu tiên anh nói với điều kiện trước
+
+101
+00:05:45,600 --> 00:05:49,360
+Tức là mình không thể nào dùng bừa bãi, không thể nào, các bạn thấy có quài tỏ án
+
+102
+00:05:49,360 --> 00:05:52,020
+Nó có b, có v, có t, các bạn dùng được, không nhé
+
+103
+00:05:52,110 --> 00:05:55,720
+Không phải, nó phải đáp ở một điều kiện
+
+104
+00:05:55,720 --> 00:05:59,320
+Nó chính là cái khú ý khí này là có khú ý được không đối
+
+105
+00:05:59,320 --> 00:06:04,300
+Tức nghĩa là mình đang xếp một khối khí này khi mình dùng cái phương trình đó
+
+106
+00:06:04,820 --> 00:06:09,340
+Phương trình cho khi khối khí đó, chứ không phải là một khối khí A
+
+107
+00:06:09,340 --> 00:06:12,260
+Mình dùng phương trình, xong mình lại dùng phương trình này cho một khối khí B
+
+108
+00:06:12,580 --> 00:06:15,720
+Là không được các bạn nhé, tức là mình chỉ dùng cho một thằng thôi, giống như kiểu là
+
+109
+00:06:15,720 --> 00:06:18,940
+Bây giờ mình đang xếp một cái khối khí, anh hiểu xử với đang xếp cái bút này
+
+110
+00:06:18,940 --> 00:06:21,480
+Thì khi phương trình đáp được những cái bút này thôi, bây giờ cái bút này
+
+111
+00:06:22,080 --> 00:06:24,120
+Để làm đôi khi không áp dùm được nữa
+
+112
+00:06:24,120 --> 00:06:26,580
+Mặc là cái bút này thêm 1 tí nữa vào thì không áp dùm được nữa
+
+113
+00:06:26,580 --> 00:06:30,740
+Tức nghĩa là cái khối khí này, cái lượng khí này mình xếp trong phương trình mình tính tó các thử
+
+114
+00:06:30,740 --> 00:06:35,610
+Thì nó phải là không đối, tức nghĩa là nó sẽ không thêm khí bên ngoài vào
+
+115
+00:06:35,610 --> 00:06:38,790
+Hặc là nó không bỏ bớt kí bên trong ra, cái đù này cực kì quan trọng nhé
+
+116
+00:06:38,790 --> 00:06:42,070
+Cái này là lý do là sao mà các bạn tính, các bạn một số bài các bạn tính sai
+
+117
+00:06:42,070 --> 00:06:44,990
+Là các bạn không tương tự theo cái điều kiện của phương trình
+
+118
+00:06:45,710 --> 00:06:47,630
+Và sau này mình sẽ học thêm một phương trình
+
+119
+00:06:48,190 --> 00:06:51,310
+Dùng được khi mà chúng ta thêm bớt khí, là phương trình
+
+120
+00:06:52,270 --> 00:06:56,370
+Là phương trình khác, phí sau khi học phương trình này và ba nạnh quá trình
+
+121
+00:06:56,370 --> 00:06:57,810
+Sẽ dạy về phương trình là phương trình là phương trình là phương trình sau
+
+122
+00:06:57,810 --> 00:07:01,910
+Lúc đó mình sẽ kết hợp dựa thang này với là phương trình là phương trình luôn
+
+123
+00:07:01,910 --> 00:07:04,470
+Và mình sẽ được một cái công cụ tính đón siêu mạnh
+
+124
+00:07:04,470 --> 00:07:08,370
+Hầu như là mình có thể giải được tất cả các bài trong chương 2
+
+125
+00:07:08,870 --> 00:07:11,570
+Ở cấp độ thiên thật, công học phục gia thì mình sẽ giải được phương bài
+
+126
+00:07:12,250 --> 00:07:15,290
+Tính tó nó sẽ không khó, nó khó ở chỗ la
+
+127
+00:07:16,400 --> 00:07:18,860
+Lý thương các bạn thật ủ vững để các bạn vận dụng kiếm thức hay không
+
+128
+00:07:19,680 --> 00:07:21,580
+Chứ nó không khó, các bạn hình dùng nhé
+
+129
+00:07:21,580 --> 00:07:23,300
+Chứ nó không tin tó khúc tạp
+
+130
+00:07:23,300 --> 00:07:27,880
+Nó chỉ dừng ở việc là các bạn có biết cách vận dụng kiếm thức để vận tính hay không thôi
+
+131
+00:07:28,880 --> 00:07:31,140
+Thì như là nói hình nhan tấn tác lại về điều kiện
+
+132
+00:07:31,810 --> 00:07:37,210
+Là khối khi xất ẩn, tức nghĩa là chỉ xé khối khi đó không thêm không bớt vào thì mình dùng được
+
+133
+00:07:37,950 --> 00:07:40,410
+Thứ là cái khối khi này chuyển lường 2 là H1
+
+134
+00:07:40,410 --> 00:07:43,630
+Có cái thông xuân hỏi là B1, V1, T1
+
+135
+00:07:43,790 --> 00:07:46,590
+Tức là mình xé tại lúc đó, áp xúc nó là B1
+
+136
+00:07:46,590 --> 00:07:48,650
+Thời tính là B1 và nhảy đổ nó là T1
+
+137
+00:07:48,650 --> 00:07:51,990
+Xang lúc sau, chúng ta có thể đốt nóng thì khí lên
+
+138
+00:07:51,990 --> 00:07:53,370
+Chúng ta có thể nén nó lại
+
+139
+00:07:53,370 --> 00:07:55,190
+Chúng ta có thể tăng áp xúc lên
+
+140
+00:07:55,190 --> 00:07:59,550
+Thì lúc sau đó nó sẽ thẳng là B2, B2, T2
+
+141
+00:07:59,550 --> 00:08:07,290
+Và nó sẽ luôn nảm ảm ảm theo cái công thức là B1, Nhan, V1, GT1, B2, V2, GT2
+
+142
+00:08:08,280 --> 00:08:11,260
+Các bạn nhớ nhé, nhớ cái tỷ lệ này nhé
+
+143
+00:08:12,190 --> 00:08:12,630
+Thuy
+
+144
+00:08:14,420 --> 00:08:17,720
+Thuy là cái tỷ số, dạ thử như Amdi, ạ sẽ các bạn quên đi
+
+145
+00:08:17,720 --> 00:08:26,660
+Các bạn nhớ nhằm là Thần B1, Nhan, V1, GT1, B2, GT2, GT2
+
+146
+00:08:28,270 --> 00:08:31,790
+Thì theo các bạn là cái tỷ số đấy nó còn đúng không?
+
+147
+00:08:32,210 --> 00:08:33,210
+Cái tỷ số đấy nó dưỡng như không?
+
+148
+00:08:33,730 --> 00:08:36,670
+Bạn sẽ không xé đến cái việc là đúng hay không nhé, nhưng chỉ cần đi như vậy thôi
+
+149
+00:08:37,070 --> 00:08:38,610
+Thì nó cũng không phải là những lý tưởng
+
+150
+00:08:38,610 --> 00:08:42,350
+Các bạn nhớ nhé, mặc dù dạ sướng trương hợp là tỷ số đó đúng
+
+151
+00:08:43,170 --> 00:08:46,090
+Trong công một số trương hợp tỷ số đúng, nhưng chỉ có thay đổi nguyên thứ tự
+
+152
+00:08:46,090 --> 00:08:50,090
+Thì nó cũng sẽ sai, bây giờ mình thay đổi là Thần V1, Nhan, V1 thì được
+
+153
+00:08:50,090 --> 00:08:53,210
+Phép nhăng thì mình không nói nhưng các bạn gạo ở dưới lên
+
+154
+00:08:53,750 --> 00:08:55,470
+Thì nó không gọi là phương trình lý tượng nữa nhé
+
+155
+00:08:55,470 --> 00:08:58,090
+Trong một số khóa lý thiếu đấy, bạn nên nhớ điều đấy
+
+156
+00:08:58,090 --> 00:09:00,210
+Để bạn tránh sai, tránh nhằm
+
+157
+00:09:00,210 --> 00:09:04,330
+Mình cứ nhớ là gì? B, Nhan, V2, GT, mình làm nhiều một siếc vang
+
+158
+00:09:04,330 --> 00:09:06,460
+Mình sẽ thuộc lao lao như vậy
+
+159
+00:09:06,460 --> 00:09:10,960
+Rồi, bây giờ đến cái ở dưới là mục đình luật bạo toàn
+
+160
+00:09:10,960 --> 00:09:16,190
+Tức là cái anh vừa nói, cái hành số là b, Nhan, V2, GT sẽ là một hành số
+
+161
+00:09:16,190 --> 00:09:17,290
+Nói là một hành số
+
+162
+00:09:17,630 --> 00:09:20,750
+Đây là cơ sở để xây dưỡng phương trình lý tượng
+
+163
+00:09:21,070 --> 00:09:29,570
+Tức nghĩa là cái tích giữa b, Nhan, V2, GT thì nó sẽ tạo hành số và hành số này sẽ không đổi
+
+164
+00:09:30,740 --> 00:09:31,380
+Đó, ok
+
+165
+00:09:33,750 --> 00:09:35,330
+Lưu ý này thì anh đã nói rồi, đúng không?
+
+166
+00:09:35,710 --> 00:09:38,230
+Lưu ý về cái nhiệt độ này, cái chiều tê này các bạn thấy không?
+
+167
+00:09:38,650 --> 00:09:39,290
+Mình viết khoa
+
+168
+00:09:39,890 --> 00:09:41,290
+Viết khoa là tưởng với Kenvin
+
+169
+00:09:41,290 --> 00:09:45,030
+Khi mình viết thử thường với chiều bé đỡng với lợi Senus
+
+170
+00:09:45,030 --> 00:09:47,150
+Còn khi viết khoa thì nó là Kenvin
+
+171
+00:09:48,110 --> 00:09:51,990
+Và khi chúng ta cho Senus thì phải chuyển sang Kenvin
+
+172
+00:09:51,990 --> 00:09:53,690
+Các bạn nhớ nhá
+
+173
+00:09:54,230 --> 00:09:58,250
+Rồi, cái phần lý thước của phương trình lái khí tượng như vậy là xong
+
+174
+00:09:58,250 --> 00:10:01,390
+Lý thước thì lý thước chỉ cần các bạn là dễ hiểu nhất có thể
+
+175
+00:10:01,390 --> 00:10:03,130
+Và các bạn hiểu rằng là ý của nó là gì
+
+176
+00:10:04,110 --> 00:10:05,010
+Và khi nào mà áp được
+
+177
+00:10:05,410 --> 00:10:10,170
+Còn cụ thể và cách tính ý thì mình phải dùng ở trong Hoàng Thinh Toán
+
+178
+00:10:10,170 --> 00:10:11,090
+Tức là mình phải thực nghiệm
+
+179
+00:10:11,090 --> 00:10:13,770
+Mình phải thực hành, mình phải tính, mình phải làm bài
+
+180
+00:10:14,210 --> 00:10:15,110
+Chứ không thể nào
+
+181
+00:10:15,110 --> 00:10:18,910
+Mình học nế tất cả một thứ trong lúc mà mình học lý thước được, đúng không?
+
+182
+00:10:19,230 --> 00:10:20,050
+Mình phải làm bài tập
+
+183
+00:10:20,610 --> 00:10:22,750
+Điều đấy là mình phải làm bài tập
+
+184
+00:10:23,780 --> 00:10:24,580
+Rồi, ok
+
+185
+00:10:26,960 --> 00:10:29,740
+Giờ, anh sẽ nói này lý thước tại sao anh đẩy cái ba này lần đầu tiên
+
+186
+00:10:30,320 --> 00:10:32,360
+Anh sẽ nói lý thước tại sao đẩy cái ba này lần đầu tiên
+
+187
+00:10:32,360 --> 00:10:35,640
+Và anh cho rằng cái nước đây này là nước lý thiên tài
+
+188
+00:10:35,640 --> 00:10:36,480
+Bởi vì tại sao?
+
+189
+00:10:37,890 --> 00:10:39,010
+Bởi vì nha
+
+190
+00:10:39,230 --> 00:10:40,990
+Theo trong chương trình ấy
+
+191
+00:10:41,470 --> 00:10:45,370
+Là sau khi học về cái khí tưởng là bài đầu tiên xong và chiến xong
+
+192
+00:10:45,370 --> 00:10:50,190
+Thì trong xét cho khoan, người ta sẽ cho mình học bài số lục ba lơ
+
+193
+00:10:50,190 --> 00:10:51,570
+Bài số nguồn lục ba lơ
+
+194
+00:10:51,570 --> 00:10:53,130
+Sau đó là đánh áp, một tích
+
+195
+00:10:53,130 --> 00:10:53,850
+Đó
+
+196
+00:10:53,850 --> 00:10:55,190
+Thì về thực chấp ấy
+
+197
+00:10:55,630 --> 00:10:56,610
+Những kết định lục này
+
+198
+00:10:57,110 --> 00:10:59,670
+Là được phát triển từ cái phương trưởng tái khí tưởng
+
+199
+00:10:59,670 --> 00:11:04,790
+Tức là nó được phát triển từ cái B1-V1-GT1-B2-V292
+
+200
+00:11:06,670 --> 00:11:08,430
+Và cái địp đặc biệt ở đây này
+
+201
+00:11:08,430 --> 00:11:10,370
+Và khi các bạn nhận ra được
+
+202
+00:11:10,370 --> 00:11:12,770
+Là tụi nó có một địp trung và tụi nó có một thí huy tách
+
+203
+00:11:12,770 --> 00:11:14,690
+Thì các bạn sẽ dễ hiểu những cái này hơn rất rất nhiều
+
+204
+00:11:15,050 --> 00:11:16,350
+Bây giờ, anh sẽ thích nhá
+
+205
+00:11:16,830 --> 00:11:17,630
+Về đánh nhịp
+
+206
+00:11:17,630 --> 00:11:19,550
+Bây giờ, đầu tiên nói về đánh trước
+
+207
+00:11:20,510 --> 00:11:21,450
+Đánh quá trình
+
+208
+00:11:21,450 --> 00:11:23,770
+Hay gọi là đánh nhịp, đánh áp đánh tích
+
+209
+00:11:24,400 --> 00:11:25,340
+Thì nó có nghĩa là gì?
+
+210
+00:11:25,780 --> 00:11:28,060
+Đánh quá trình có nghĩa là trong cái quá trình đó
+
+211
+00:11:28,520 --> 00:11:30,600
+Khi khối khi nói chuyện từ Tài Thái 1, Tài Thái 2 này
+
+212
+00:11:31,020 --> 00:11:32,240
+Mà một không số không thể đổi
+
+213
+00:11:32,740 --> 00:11:34,040
+Một không số không thể đổi có nghĩa là sao?
+
+214
+00:11:34,400 --> 00:11:36,340
+Có nghĩa là ví dụ như nhiệt độ không đổi
+
+215
+00:11:36,340 --> 00:11:37,660
+Mặc áp suốt không đổi
+
+216
+00:11:37,660 --> 00:11:39,180
+Thật là thể tích không đổi
+
+217
+00:11:39,180 --> 00:11:42,860
+Thì thằng nào không đổi, mình sẽ gọi tên nhau thằng đó
+
+218
+00:11:42,860 --> 00:11:43,540
+Tức nghĩa là
+
+219
+00:11:44,080 --> 00:11:45,400
+Giả sử như nhiệt độ không đổi
+
+220
+00:11:45,400 --> 00:11:46,260
+Mình sẽ gọi là
+
+221
+00:11:46,860 --> 00:11:48,120
+Đình luật đánh nhịp
+
+222
+00:11:48,120 --> 00:11:49,800
+Thật là áp suốt không đổi
+
+223
+00:11:49,800 --> 00:11:51,300
+Mình sẽ gọi là Đình luật đánh áp
+
+224
+00:11:51,300 --> 00:11:53,240
+Vậy thì các bạn hình dung nhá
+
+225
+00:11:54,060 --> 00:11:55,760
+Khi từ Tài Thái 1, Tài Thái 2
+
+226
+00:11:56,240 --> 00:11:58,600
+Mà một thành không đổi, tức nghĩa là nó bằng nhau
+
+227
+00:11:58,980 --> 00:12:00,840
+Tức nghĩa là T1 và T2 sẽ bằng nhau
+
+228
+00:12:00,840 --> 00:12:03,240
+Thì thịt bằng nhau, mà ở một tỷ số như thế này
+
+229
+00:12:03,240 --> 00:12:05,380
+Thì mình chiếc tiêu thôi, chứ mình để làm gì
+
+230
+00:12:05,380 --> 00:12:08,220
+Nó bằng nhau, mà bằng nhau thì mình chiếc tiêu cho nó đợi vướng, đúng không?
+
+231
+00:12:08,500 --> 00:12:09,400
+Thì khi mình chiếc đi như vậy
+
+232
+00:12:09,400 --> 00:12:11,100
+Thì nó hân thành một công thức mới
+
+233
+00:12:11,520 --> 00:12:12,120
+Nếu dụ
+
+234
+00:12:12,910 --> 00:12:15,050
+Bản nhiệt này nó sẽ là gì? B1, nhau B1
+
+235
+00:12:15,050 --> 00:12:16,470
+Và bằng B2, nhau B2
+
+236
+00:12:16,470 --> 00:12:18,290
+Vậy thì khi này mình có một phương trình mới
+
+237
+00:12:18,290 --> 00:12:20,890
+Là B1, nhau B1, bằng B2, nhau B2
+
+238
+00:12:20,890 --> 00:12:23,110
+Thế gọi phương trình đó là phương trình đánh nhiệp
+
+239
+00:12:23,110 --> 00:12:24,010
+Hay gọi là đánh lục BL
+
+240
+00:12:25,610 --> 00:12:26,810
+Vậy chứ, dễ hiểu không?
+
+241
+00:12:27,210 --> 00:12:28,770
+Và tương tự đánh áp và đánh tích
+
+242
+00:12:28,770 --> 00:12:30,530
+Thì cũng cùng một người lý như vậy
+
+243
+00:12:30,530 --> 00:12:33,010
+Đánh áp thì mình sẽ chiếc tiêu đi cái
+
+244
+00:12:33,010 --> 00:12:33,850
+Hấp súc
+
+245
+00:12:34,310 --> 00:12:35,090
+Và nó trở thành
+
+246
+00:12:35,090 --> 00:12:37,630
+Là V1, TrT1, bằng V2, TrT2
+
+247
+00:12:37,630 --> 00:12:39,390
+Và nó chính là đánh lục Trắc lơ
+
+248
+00:12:39,390 --> 00:12:40,030
+Đó
+
+249
+00:12:40,610 --> 00:12:41,270
+Tương tự
+
+250
+00:12:41,730 --> 00:12:42,350
+Đánh lục đánh tích
+
+251
+00:12:42,750 --> 00:12:45,290
+Là B1, TrT1, bằng B2
+
+252
+00:12:45,730 --> 00:12:46,310
+Trên T2
+
+253
+00:12:46,310 --> 00:12:47,870
+Thế gọi là đánh lục Glissab
+
+254
+00:12:48,510 --> 00:12:50,910
+Thì các bạn nên nhớ cái từ tiếng Anh của nó này nhớ
+
+255
+00:12:50,910 --> 00:12:53,670
+Vậy khi người ta hỏi lý tiếc thì hỏi tên mà tiếng Anh
+
+256
+00:12:54,130 --> 00:12:55,530
+Mà cũng xì dễ nhớ thôi
+
+257
+00:12:55,530 --> 00:12:56,690
+Mà là một và hai câu lý tiếc
+
+258
+00:12:56,690 --> 00:12:57,110
+Các bạn nhớ
+
+259
+00:12:57,630 --> 00:12:58,930
+Đánh nhiệp này là Boiler
+
+260
+00:12:58,930 --> 00:13:00,370
+Đánh áp là Trắc lơ
+
+261
+00:13:01,290 --> 00:13:02,710
+Đánh tích là Gay-Lissab
+
+262
+00:13:03,450 --> 00:13:05,930
+Các bạn có thể vui vui
+
+263
+00:13:05,930 --> 00:13:08,630
+Các bạn có thể đặt biệt danh cho đánh lục
+
+264
+00:13:08,630 --> 00:13:10,170
+Thế nhau cái sự sáng tạo của mình
+
+265
+00:13:10,170 --> 00:13:11,950
+Ví dụ như Gay-Lissab đúng không?
+
+266
+00:13:12,410 --> 00:13:14,430
+Gay thì mình cứ nghĩ gay gay là đánh tích
+
+267
+00:13:14,430 --> 00:13:17,870
+Hoặc là mình nghĩ đánh áp là Trắc lơ
+
+268
+00:13:17,870 --> 00:13:19,970
+Thì cái này là riêng bạn thân ca nhát anh
+
+269
+00:13:20,470 --> 00:13:21,130
+Hồi xưa anh học
+
+270
+00:13:21,130 --> 00:13:22,410
+Anh sẽ nhớ Trắc lơ
+
+271
+00:13:22,410 --> 00:13:24,150
+Tại vì anh biết ông Trắc lơ này
+
+272
+00:13:24,150 --> 00:13:25,070
+Là liên quan đánh áp luôn
+
+273
+00:13:25,070 --> 00:13:26,770
+Tức là anh có kiến thức của ông Trắc lơ này trước luôn
+
+274
+00:13:26,770 --> 00:13:28,170
+Nên là đánh áp anh không có nhớ nữa
+
+275
+00:13:28,170 --> 00:13:29,330
+Là anh âu tu nhớ
+
+276
+00:13:29,330 --> 00:13:30,610
+Còn Boiler là học đầu tiên
+
+277
+00:13:30,610 --> 00:13:33,270
+Vậy thì anh chỉ cần nhớ Boiler với Trắc lơ
+
+278
+00:13:33,270 --> 00:13:34,590
+Xong rồi thành con lại
+
+279
+00:13:35,070 --> 00:13:36,950
+Là anh sẽ mặc định đấy là Gay-Lissab
+
+280
+00:13:37,330 --> 00:13:40,350
+Tức là anh biết của anh là Trắc lơ
+
+281
+00:13:40,350 --> 00:13:42,430
+Với lại Boiler là đánh nhiệp đánh áp rồi
+
+282
+00:13:42,430 --> 00:13:44,470
+Thì cái con lại anh sẽ tự gắng với Gay-Lissab
+
+283
+00:13:44,470 --> 00:13:45,930
+Đó, kiểu kiểu vậy
+
+284
+00:13:45,930 --> 00:13:49,490
+Thì các bạn cũng sẽ tự nhớ cho mình
+
+285
+00:13:49,490 --> 00:13:52,190
+Tự sáng đạn mình để nó nhớ một cách đơn giản hơn
+
+286
+00:13:52,190 --> 00:13:54,630
+Nhưng mà anh nghĩ nếu các bạn không phía nãy hết
+
+287
+00:13:54,630 --> 00:13:56,370
+Các bạn làm một, hai bài, các bạn cũng sẽ nhớ thôi
+
+288
+00:13:57,670 --> 00:13:58,530
+Vui vui như vậy
+
+289
+00:13:58,530 --> 00:13:59,830
+Trời ơi ok
+
+290
+00:13:59,830 --> 00:14:00,850
+Các bạn thấy không?
+
+291
+00:14:01,410 --> 00:14:03,070
+Chúng ta có thể học 3 bài trong một bài
+
+292
+00:14:03,070 --> 00:14:04,330
+Khi mà mình hiểu được nguyên lý
+
+293
+00:14:05,910 --> 00:14:08,570
+Tức là đầu tiên các bạn học các bạn sẽ không thấy đâu nhá
+
+294
+00:14:08,570 --> 00:14:10,050
+Là một tiếng các bạn học các bạn sẽ không thấy
+
+295
+00:14:10,050 --> 00:14:12,030
+Cái này chỉ xuất hiện
+
+296
+00:14:12,030 --> 00:14:15,050
+Khi mà ở những người làm quá nhiều đề
+
+297
+00:14:15,050 --> 00:14:16,870
+Hay là những người mà dậy nhiều rồi
+
+298
+00:14:16,870 --> 00:14:18,470
+Thì mới nhận ra quy luật
+
+299
+00:14:18,470 --> 00:14:19,290
+Với mà mới thấy thôi
+
+300
+00:14:19,290 --> 00:14:21,150
+Đó, thì ở đây ăn du các bạn
+
+301
+00:14:21,150 --> 00:14:21,910
+Tích những thời gian
+
+302
+00:14:21,910 --> 00:14:23,290
+Chứ các bạn dậy hiểu hơn
+
+303
+00:14:23,290 --> 00:14:25,410
+Hãy suốt các bạn đi đường ngãng hơn
+
+304
+00:14:25,790 --> 00:14:26,710
+Để có được kiến thức
+
+305
+00:14:27,350 --> 00:14:28,250
+Mà nó chất lượng
+
+306
+00:14:28,250 --> 00:14:29,490
+Thì theo bạn chất nó hiểu
+
+307
+00:14:29,490 --> 00:14:31,330
+Chứ không phải là cái học thuộc mất công sức
+
+308
+00:14:32,430 --> 00:14:33,910
+Vậy nên là ăn mong muốn ra
+
+309
+00:14:33,910 --> 00:14:34,590
+Khi các bạn học
+
+310
+00:14:34,590 --> 00:14:36,510
+Các bạn hãy cố gắng xem phòng lý thước
+
+311
+00:14:37,210 --> 00:14:39,130
+Nếu như ở trong phòng lý thước này
+
+312
+00:14:40,190 --> 00:14:43,990
+Nó chứa đựng cái quan trọng
+
+313
+00:14:44,960 --> 00:14:46,700
+Chứa đựng cái cốt lõi của cái việc
+
+314
+00:14:46,700 --> 00:14:48,320
+Nhưng mà chúng ta khai chịu những cái này
+
+315
+00:14:49,040 --> 00:14:50,740
+Sang thẳng tính, đi ăn việu đúng không?
+
+316
+00:14:51,060 --> 00:14:52,460
+Mình hiểu về một cái bản đề như thế này rồi
+
+317
+00:14:52,460 --> 00:14:53,440
+Thì khi mình tính
+
+318
+00:14:53,880 --> 00:14:55,300
+Mình cũng sẽ tự động mình hiểu theo
+
+319
+00:14:55,640 --> 00:14:56,080
+Đúng không?
+
+320
+00:14:56,500 --> 00:14:57,520
+Tức là khi mình tính toán
+
+321
+00:14:57,520 --> 00:14:58,880
+Mình sẽ tự nhận thấy
+
+322
+00:14:58,880 --> 00:15:00,160
+Rằng là các cái điều kiện
+
+323
+00:15:00,160 --> 00:15:02,720
+Các cái biến số ở trong đề bài đại cho
+
+324
+00:15:02,720 --> 00:15:04,240
+Mình cũng có si lộng như vậy
+
+325
+00:15:04,240 --> 00:15:04,940
+Mình cũng tư duy như vậy
+
+326
+00:15:04,940 --> 00:15:05,780
+Mình cũng xin dịt tiêu được
+
+327
+00:15:06,550 --> 00:15:07,830
+Đó, kiểu kiểu như thế
+
+328
+00:15:08,330 --> 00:15:09,570
+Cho nên là học lý thước
+
+329
+00:15:10,070 --> 00:15:11,730
+Là nó quan trọng
+
+330
+00:15:11,730 --> 00:15:13,330
+Hơn cái việc làm bài tập nhiều
+
+331
+00:15:14,390 --> 00:15:15,690
+Anh nói như thế, bởi vì
+
+332
+00:15:16,340 --> 00:15:17,160
+Về mạc mạc chấp
+
+333
+00:15:17,800 --> 00:15:18,720
+Mình phải học lý thước
+
+334
+00:15:18,720 --> 00:15:19,880
+Thì mình mới khóng thức
+
+335
+00:15:19,880 --> 00:15:21,800
+Mà khóng thức thì mới làm bài tập được, đúng không?
+
+336
+00:15:22,160 --> 00:15:24,240
+Đó, vậy nên các bạn xem
+
+337
+00:15:24,240 --> 00:15:26,140
+Nếu mà cảm thấy con hiểu
+
+338
+00:15:26,140 --> 00:15:28,060
+Hoặc là có câu hỏi thì
+
+339
+00:15:28,060 --> 00:15:29,320
+Hãy cứ liên hệ cho anh nhé
+
+340
+00:15:29,750 --> 00:15:31,260
+Ok, chúng ta thì tiếp tục
+
+341
+00:15:32,500 --> 00:15:34,420
+Về một cái nữa, rất là điều kiện tiếp trốn
+
+342
+00:15:35,270 --> 00:15:37,590
+Thì cái này nó cũng xuất hiện khá nhiều
+
+343
+00:15:37,590 --> 00:15:38,890
+Nên anh đưa vào bài luôn
+
+344
+00:15:39,840 --> 00:15:40,740
+Điều kiện tiếp trốn này
+
+345
+00:15:40,740 --> 00:15:42,320
+Thì nó xuất hiện khá là phổ biến
+
+346
+00:15:42,800 --> 00:15:44,500
+Và khá là nhiều trong những cái bài
+
+347
+00:15:44,500 --> 00:15:45,840
+Về cuối khí
+
+348
+00:15:46,460 --> 00:15:47,880
+Thì điều kiện tiếp trốn
+
+349
+00:15:48,550 --> 00:15:50,070
+Chính là một cái điều kiện
+
+350
+00:15:50,070 --> 00:15:51,710
+Mà tại đó, áp xúc
+
+351
+00:15:51,710 --> 00:15:53,590
+Nó sẽ bành là một áo đất phê
+
+352
+00:15:55,150 --> 00:15:56,750
+Làm áp xúc với mực nước biển
+
+353
+00:15:56,750 --> 00:15:58,610
+Ở ngay mực nước biển là một áo đất phê
+
+354
+00:15:58,610 --> 00:16:00,470
+Và đổi sang bắt can
+
+355
+00:16:00,470 --> 00:16:02,630
+Sẽ làm 1,03-15 bắt can
+
+356
+00:16:03,110 --> 00:16:04,190
+Và ở nhiệt độ
+
+357
+00:16:05,740 --> 00:16:06,820
+Là không độ C
+
+358
+00:16:06,820 --> 00:16:08,500
+Tưởng với lại 203 độ K
+
+359
+00:16:09,160 --> 00:16:11,160
+Và vai trò của điều kiện tiếp trốn sẽ là mốc
+
+360
+00:16:12,020 --> 00:16:12,640
+Quy đổi
+
+361
+00:16:13,040 --> 00:16:15,020
+Thề tích khí giữa các trận thuyền thái
+
+362
+00:16:15,500 --> 00:16:18,260
+Thì cái này nó cũng đơn giản như thế này
+
+363
+00:16:18,260 --> 00:16:19,680
+Thay vì đề bài, ta bảo là
+
+364
+00:16:20,080 --> 00:16:21,540
+Cho các bạn áp xúc
+
+365
+00:16:21,540 --> 00:16:23,040
+Là bành mỏa nước phê
+
+366
+00:16:23,040 --> 00:16:25,660
+Và nhiệt độ là 213
+
+367
+00:16:25,660 --> 00:16:26,660
+Nhưng người ta chỉ cần nói 1 câu thôi
+
+368
+00:16:26,660 --> 00:16:27,840
+Ở điều kiện tiếp trốn
+
+369
+00:16:27,840 --> 00:16:30,040
+Là mình phải hiểu rằng là cái khối khí này
+
+370
+00:16:30,760 --> 00:16:32,120
+Đang ở áp xúc này
+
+371
+00:16:32,120 --> 00:16:33,460
+Và nhiệt độ này, phải chưa
+
+372
+00:16:33,460 --> 00:16:34,560
+Rồi, ok
+
+373
+00:16:37,160 --> 00:16:38,220
+Đấy, đi về kia trốn
+
+374
+00:16:38,220 --> 00:16:40,600
+Các bạn nhớ nha, còn 1 cái nữa
+
+375
+00:16:40,600 --> 00:16:41,720
+Là điều kiện tiếp trốn
+
+376
+00:16:42,260 --> 00:16:43,280
+Và điều kiện trốn
+
+377
+00:16:43,640 --> 00:16:44,620
+Là 2 cái khác nhau
+
+378
+00:16:46,100 --> 00:16:48,120
+Điều kiện trốn với điều kiện tiếp trốn là 2 cái khác nhau nha
+
+379
+00:16:48,120 --> 00:16:50,180
+Thì trong đây mình đang học về điều kiện tiếp trốn thôi
+
+380
+00:16:50,180 --> 00:16:52,040
+Còn điều kiện trốn là 1 cái khác nữa
+
+381
+00:16:53,260 --> 00:16:53,980
+Rồi, ok
+
+382
+00:16:55,450 --> 00:16:58,070
+Ở đây nha, với tính nào mình học
+
+383
+00:16:58,770 --> 00:17:01,130
+Thì bài nào, anh sẽ nói kiến thức trọng tâm này bài đây
+
+384
+00:17:01,710 --> 00:17:03,910
+Và cũng như là nói những cái phổ biến nhất
+
+385
+00:17:03,910 --> 00:17:04,750
+Những cái hay gặp nhất
+
+386
+00:17:05,190 --> 00:17:06,310
+Chứ không phải nói toàn bộ
+
+387
+00:17:06,730 --> 00:17:08,370
+Tại vì kiến thức thì nó rất là nhiều
+
+388
+00:17:08,370 --> 00:17:09,990
+Đúng không? Mình phải làm bài tập
+
+389
+00:17:09,990 --> 00:17:11,910
+Và mình ứng với cái chương hợp đó
+
+390
+00:17:11,910 --> 00:17:13,850
+Thì mình nói cho cái chương hợp đó thì nó sẽ rất là hiệu quả
+
+391
+00:17:14,230 --> 00:17:15,330
+Các bạn sẽ rất là hiệu, đúng không?
+
+392
+00:17:15,430 --> 00:17:18,170
+Còn bây giờ chúng ta không làm bề phòng đấy, chúng ta chưa gặp cái phòng đấy mà nói
+
+393
+00:17:18,510 --> 00:17:19,830
+Thì tuyệt các bạn sẽ khó hình dung
+
+394
+00:17:20,330 --> 00:17:22,390
+Tứ 2, là nó quá bên mang
+
+395
+00:17:22,390 --> 00:17:23,130
+Còn là quá nhiều
+
+396
+00:17:23,450 --> 00:17:25,890
+Đó, vậy nên lý thước, anh đã phân định rõ
+
+397
+00:17:25,890 --> 00:17:27,290
+Là 2 phần lý thước này
+
+398
+00:17:27,290 --> 00:17:28,490
+Bài tập áp dụng này
+
+399
+00:17:28,490 --> 00:17:30,150
+Bài tập lý thước
+
+400
+00:17:30,150 --> 00:17:33,790
+Bài tập liên tập là để cho mình luyện 1 chút thôi
+
+401
+00:17:33,790 --> 00:17:35,870
+Nên chứ phải chưa thở thành tộng bộ
+
+402
+00:17:36,290 --> 00:17:38,310
+Tại vì là cái gia đồng 1
+
+403
+00:17:38,310 --> 00:17:42,590
+Cái khóa mà, cái gia đồng 1, cái truyền đề lý thước này
+
+404
+00:17:42,590 --> 00:17:43,770
+Thì mình chủ yếm xe học lý thước thôi
+
+405
+00:17:43,770 --> 00:17:46,430
+Sang truyền đề 2 thì anh đã mới phân dạng bài tập ra
+
+406
+00:17:46,430 --> 00:17:48,830
+Sau này chỉ các bạn làm 1 tương bài, tương bài 1
+
+407
+00:17:48,830 --> 00:17:49,790
+Đáng xế khác
+
+408
+00:17:49,790 --> 00:17:51,910
+Đúng chứ à? Tức là lý thước mình học
+
+409
+00:17:51,910 --> 00:17:53,530
+Để mình nhớ, để mình hiểu
+
+410
+00:17:53,530 --> 00:17:55,090
+Để mình có cái nền tảng
+
+411
+00:17:55,090 --> 00:17:57,070
+Chứ không phải là mình học thì mình biết tất cả
+
+412
+00:17:57,450 --> 00:17:58,270
+Học, biết tất cả
+
+413
+00:17:58,270 --> 00:18:00,370
+Thì các bạn phải làm bài tập
+
+414
+00:18:00,370 --> 00:18:02,390
+Các bạn không phải cày
+
+415
+00:18:02,390 --> 00:18:03,470
+Nói chung là như thế
+
+416
+00:18:04,450 --> 00:18:05,550
+Còn cái phan lý thước này
+
+417
+00:18:05,550 --> 00:18:07,730
+Anh muốn làm với mục đích này nó dễ hiểu nhất có thể
+
+418
+00:18:07,730 --> 00:18:09,190
+Đúng không? Tại vì những người
+
+419
+00:18:10,350 --> 00:18:12,290
+Mất gốc, những người bị yếu, những người mà
+
+420
+00:18:12,290 --> 00:18:14,150
+Chưa học thì hết mới bắt đầu
+
+421
+00:18:14,150 --> 00:18:16,250
+Thì họ cần 1 cái rất là dễ hiểu
+
+422
+00:18:16,250 --> 00:18:17,850
+Để họ thể bắt đầu để họ tiếp cận
+
+423
+00:18:17,850 --> 00:18:19,830
+Đúng không? Còn bây giờ nếu mà dạy quá nhiều, quá khó
+
+424
+00:18:20,270 --> 00:18:22,770
+Thì thần gia nó lại, khó tiếp cận đối với các bạn mới
+
+425
+00:18:23,370 --> 00:18:23,690
+Ok
+
+426
+00:18:23,690 --> 00:18:24,950
+Vậy nên bây giờ ta sẽ
+
+427
+00:18:25,550 --> 00:18:27,760
+Tiếp tục 1 chút
+
+428
+00:18:28,710 --> 00:18:29,670
+Thì sau khi
+
+429
+00:18:29,670 --> 00:18:31,030
+Mà anh nói này thứ nhất này
+
+430
+00:18:31,030 --> 00:18:33,730
+Về không số trạng thái
+
+431
+00:18:34,210 --> 00:18:36,270
+Là áp xúc, thay tích và nhiệt độ
+
+432
+00:18:36,270 --> 00:18:37,970
+Là 3 thống sản thái của khu khí
+
+433
+00:18:37,970 --> 00:18:39,710
+Tức là khi xét và khi tính toán
+
+434
+00:18:39,710 --> 00:18:41,710
+Nhưng ta chỉ quan tâm đến 3 thống sản thái đó
+
+435
+00:18:41,710 --> 00:18:43,710
+Thứ 2 là đề nghỉ về khí lý tưởng
+
+436
+00:18:43,710 --> 00:18:46,030
+Cũng như là phạm viếp dụng
+
+437
+00:18:47,500 --> 00:18:48,180
+Thứ 3
+
+438
+00:18:48,600 --> 00:18:49,580
+Là về công thức
+
+439
+00:18:49,580 --> 00:18:52,580
+Và cái liên hệ với những cái đền luật khác
+
+440
+00:18:52,580 --> 00:18:54,760
+Khi mà trong tương lai mình sẽ học về boiler
+
+441
+00:18:55,180 --> 00:18:57,000
+Về sát, lơ về ghe lý sát
+
+442
+00:18:57,000 --> 00:18:58,260
+Về sát lơ về ghe lý sát
+
+443
+00:18:58,260 --> 00:19:01,400
+Bây giờ mình đã có 1 cái nhìn thoáng qua rồi
+
+444
+00:19:01,400 --> 00:19:02,540
+Đúng không? Mình hiểu bán chắc của nó rồi
+
+445
+00:19:02,540 --> 00:19:04,640
+Thì sau này, những bài xao ăn dậy về nó
+
+446
+00:19:05,000 --> 00:19:06,440
+Thì bà sẽ cực kỳ dễ hiểu
+
+447
+00:19:07,020 --> 00:19:09,440
+Bà sẽ không có thấy nó làm 1 cái gì đấy mới nữa
+
+448
+00:19:09,440 --> 00:19:10,920
+Đúng không? Bởi vì nó được phát triển
+
+449
+00:19:10,920 --> 00:19:13,160
+Từ cái phương trình giả thái khí lý tưởng
+
+450
+00:19:13,520 --> 00:19:14,580
+Thì khi ở trứng dựa này
+
+451
+00:19:14,980 --> 00:19:16,300
+Cái này là phương trình giả thái khí lý tưởng
+
+452
+00:19:16,680 --> 00:19:17,940
+Cái này là đền luật
+
+453
+00:19:17,940 --> 00:19:19,400
+Cái này là collaborative
+
+454
+00:19:20,040 --> 00:19:21,160
+Thì sau này mình sẽ học
+
+455
+00:19:21,700 --> 00:19:22,440
+Cái này cũng thế
+
+456
+00:19:22,440 --> 00:19:23,980
+Cái này là giống với ghe trên thôi
+
+457
+00:19:23,980 --> 00:19:24,740
+Ok
+
+458
+00:19:27,690 --> 00:19:29,790
+Thì bài hôm nay, mình ta đến đây là kết thúc
+
+459
+00:19:30,610 --> 00:19:31,330
+Mặc dù
+
+460
+00:19:31,330 --> 00:19:34,150
+Là lý thước, nhưng ở đây anh đã cố gắng
+
+461
+00:19:34,150 --> 00:19:35,890
+Làm sao cho các bạn dễ hiểu nhất
+
+462
+00:19:35,890 --> 00:19:37,110
+Cũng như là
+
+463
+00:19:37,110 --> 00:19:39,090
+Các bạn xem và các bạn thấy
+
+464
+00:19:39,090 --> 00:19:41,350
+Kích bị ngộp nhất
+
+465
+00:19:41,350 --> 00:19:43,530
+Ok, mình ta sẽ tiếp tục qua phần
+
+466
+00:19:43,530 --> 00:19:44,810
+Bà tờ giường tập nhé
+
+467
+00:19:48,170 --> 00:19:50,490
+Ok, mình sẽ bắt đầu với
+
+468
+00:19:51,150 --> 00:19:52,050
+Câu số 1
+
+469
+00:19:53,690 --> 00:19:55,090
+Phương trình giả thái khí lý tưởng
+
+470
+00:19:55,090 --> 00:19:58,690
+Là liên hệ giữa 2 trạng thái 1 và 2
+
+471
+00:19:58,690 --> 00:19:59,890
+Của 1 với sất định là
+
+472
+00:20:00,370 --> 00:20:03,250
+Thì đem thay chọn là B1, nha, B1, CT1
+
+473
+00:20:03,250 --> 00:20:04,690
+Bằng B2, Nhưng B2, CT2
+
+474
+00:20:04,690 --> 00:20:05,850
+Câu số 2
+
+475
+00:20:07,970 --> 00:20:09,410
+Phương trình giả thái khí lý tưởng
+
+476
+00:20:09,410 --> 00:20:10,210
+Áp dụng cho
+
+477
+00:20:11,430 --> 00:20:12,370
+Điều kiện của nó này
+
+478
+00:20:12,370 --> 00:20:13,890
+Chỉ áp dụng cho 1 cối khí
+
+479
+00:20:14,350 --> 00:20:15,430
+1 lượng khí
+
+480
+00:20:15,430 --> 00:20:18,770
+Bất kì có thể thay đổi là không phải, đúng không
+
+481
+00:20:19,570 --> 00:20:20,850
+1 lượng khí sắc định
+
+482
+00:20:20,850 --> 00:20:22,710
+Cối lượng không đổi trường tốt trạng thái này
+
+483
+00:20:27,900 --> 00:20:28,580
+Câu 3
+
+484
+00:20:28,580 --> 00:20:29,160
+Câu 3
+
+485
+00:20:29,160 --> 00:20:30,940
+Trong phương trình giả thái khí lý tưởng
+
+486
+00:20:30,940 --> 00:20:33,920
+Nhật độ T phải được tính theo thang đọa nào
+
+487
+00:20:33,920 --> 00:20:36,020
+Thì thang đọa kênh viên các bạn nhớ nhé
+
+488
+00:20:36,660 --> 00:20:37,500
+Câu số 4
+
+489
+00:20:37,500 --> 00:20:39,360
+Nếu trong quãi trình biến đổi
+
+490
+00:20:39,360 --> 00:20:40,580
+Nhật độ T không đổi
+
+491
+00:20:40,580 --> 00:20:42,980
+Phương trình giả thái của khối khí trở thành
+
+492
+00:20:42,980 --> 00:20:44,220
+Thì lo là sau đây
+
+493
+00:20:45,240 --> 00:20:46,540
+Thì như bà đã nói rồi đúng không
+
+494
+00:20:47,860 --> 00:20:48,280
+Nếu
+
+495
+00:20:50,280 --> 00:20:52,640
+Mà thành nào không đổi thì mình gọi tên thế thằng đó
+
+496
+00:20:52,640 --> 00:20:54,220
+Tức nghĩa là nhật độ không đổi
+
+497
+00:20:54,220 --> 00:20:55,220
+Mà mình gọi là đánh nhật
+
+498
+00:20:55,220 --> 00:20:57,220
+Mà đánh nhật thì là boiler
+
+499
+00:20:58,060 --> 00:20:59,100
+Đánh nhật là boiler
+
+500
+00:21:01,780 --> 00:21:02,440
+Câu số 5
+
+501
+00:21:02,440 --> 00:21:04,220
+Nếu áp xúc B không đổi
+
+502
+00:21:04,620 --> 00:21:06,840
+Phương trình trạng thái khí lý tưởng
+
+503
+00:21:07,550 --> 00:21:08,890
+Trở thành định luật nào sau đây
+
+504
+00:21:09,470 --> 00:21:10,690
+Thì như đã nói rồi đúng không
+
+505
+00:21:10,690 --> 00:21:13,490
+Anh nhớ là áp xúc thì liên quan đến trạc lơ
+
+506
+00:21:13,490 --> 00:21:15,010
+Thì anh nhớ như vậy
+
+507
+00:21:15,010 --> 00:21:16,610
+Chúng ta sẽ chọn là cô B đúng không
+
+508
+00:21:16,610 --> 00:21:17,350
+Đình luật trạc lơ
+
+509
+00:21:17,950 --> 00:21:19,010
+Câu số 6
+
+510
+00:21:19,010 --> 00:21:20,650
+Nếu hề tích B không đổi
+
+511
+00:21:20,650 --> 00:21:22,170
+Phương trình trạng thái khí lý tưởng trở thành
+
+512
+00:21:22,170 --> 00:21:23,070
+Đình luật nào sau đây
+
+513
+00:21:24,300 --> 00:21:25,680
+Thề tích là gây lý sắc
+
+514
+00:21:25,680 --> 00:21:28,360
+Câu số 7
+
+515
+00:21:29,160 --> 00:21:30,440
+Khối khi ở trạng thái 1
+
+516
+00:21:30,440 --> 00:21:32,600
+Có B1 bằng 2 ANOFE
+
+517
+00:21:33,440 --> 00:21:34,560
+V1 bằng 3 LIT
+
+518
+00:21:34,560 --> 00:21:35,820
+T1 bằng 300K
+
+519
+00:21:35,820 --> 00:21:37,560
+Biến độ sang trạng thái 2
+
+520
+00:21:37,560 --> 00:21:39,500
+Có B2 bằng 2 ANOFE
+
+521
+00:21:39,500 --> 00:21:40,900
+V2 bằng 3 LIT
+
+522
+00:21:40,900 --> 00:21:41,740
+Và nhìn độ hình bao nhiêu
+
+523
+00:21:41,740 --> 00:21:43,980
+Thì ở đây mình sẽ áp dụng ngay trực tiếp công tức luôn
+
+524
+00:21:43,980 --> 00:21:50,700
+Đúng không?
+
+525
+00:22:04,650 --> 00:22:05,770
+Câu số 8
+
+526
+00:22:06,350 --> 00:22:07,730
+Khối khi ở trạng thái 1
+
+527
+00:22:08,870 --> 00:22:09,710
+Có B1
+
+528
+00:22:10,400 --> 00:22:11,240
+Bằng 1 ANOFE
+
+529
+00:22:11,240 --> 00:22:12,400
+V1 bằng 6 LIT
+
+530
+00:22:12,400 --> 00:22:14,380
+Và T1 bằng 300K
+
+531
+00:22:14,380 --> 00:22:15,880
+Biến độ sang trạng thái 2
+
+532
+00:22:15,880 --> 00:22:17,760
+Có T2 bằng 600K
+
+533
+00:22:18,300 --> 00:22:19,260
+V2 bằng 3 LIT
+
+534
+00:22:19,260 --> 00:22:20,160
+Và nhìn độ hình bao nhiêu
+
+535
+00:22:20,160 --> 00:22:21,720
+Thì cũng tương tự như câu vừa nãy
+
+536
+00:22:21,720 --> 00:22:22,520
+Nghĩa làm
+
+537
+00:22:22,520 --> 00:22:23,080
+Khi hề trạng thái 1
+
+538
+00:22:24,820 --> 00:22:26,260
+Nhân V là bằng 6
+
+539
+00:22:26,260 --> 00:22:27,940
+Chiếc cho 300
+
+540
+00:22:27,940 --> 00:22:29,040
+Bằng
+
+541
+00:22:31,970 --> 00:22:32,650
+B2
+
+542
+00:22:34,860 --> 00:22:35,880
+Nhân V
+
+543
+00:22:35,880 --> 00:22:36,600
+3
+
+544
+00:22:36,600 --> 00:22:38,560
+Nhân T là 6
+
+545
+00:22:39,930 --> 00:22:41,370
+Thì thế này nếu bạn kỷ
+
+546
+00:22:41,710 --> 00:22:42,590
+Bấm máy luôn được
+
+547
+00:22:43,200 --> 00:22:44,820
+Bấm máy nhá
+
+548
+00:22:44,940 --> 00:22:46,500
+Máy cho nó
+
+549
+00:22:46,500 --> 00:22:48,240
+An toàn
+
+550
+00:22:48,300 --> 00:22:49,980
+Bằng 300
+
+551
+00:22:49,980 --> 00:22:53,240
+Bằng 400
+
+552
+00:22:53,850 --> 00:22:54,330
+Đúng không?
+
+553
+00:22:54,590 --> 00:22:54,850
+C
+
+554
+00:22:58,660 --> 00:22:59,620
+Đội
+
+555
+00:22:59,620 --> 00:23:01,080
+Câu số 9
+
+556
+00:23:03,610 --> 00:23:04,810
+Khối khi ở trạng thái 1
+
+557
+00:23:04,810 --> 00:23:06,590
+Có B1 rằng 3
+
+558
+00:23:06,590 --> 00:23:07,930
+V1 rằng 4
+
+559
+00:23:07,930 --> 00:23:21,820
+Chiếc cho 400
+
+560
+00:23:22,990 --> 00:23:24,470
+Bằng 2
+
+561
+00:23:24,910 --> 00:23:26,070
+Nhân V2
+
+562
+00:23:26,070 --> 00:23:27,350
+Chiếc cho 300
+
+563
+00:23:28,360 --> 00:23:29,420
+Bấm máy
+
+564
+00:23:29,420 --> 00:23:30,560
+3, Nhân 4
+
+565
+00:23:30,820 --> 00:23:32,100
+Chiếc 4
+
+566
+00:23:33,460 --> 00:23:35,160
+Bằng 2, Nhân X
+
+567
+00:23:35,160 --> 00:23:36,740
+Chiếc 4
+
+568
+00:23:40,330 --> 00:23:42,650
+Bằng 4,5
+
+569
+00:23:42,650 --> 00:23:45,350
+Câu số 10
+
+570
+00:23:45,350 --> 00:23:46,790
+Trong quá trình miếng nổi rằng thái
+
+571
+00:23:46,790 --> 00:23:48,470
+Cũng 1 lượng thí sắc lệnh
+
+572
+00:23:48,470 --> 00:23:51,410
+Đại lượng nào sau đây luôn không đổi theo phương trình thái
+
+573
+00:23:51,410 --> 00:23:52,030
+Thứ tưởng
+
+574
+00:23:52,970 --> 00:23:54,690
+Thì đại lượng không đổi
+
+575
+00:23:54,690 --> 00:23:58,250
+V, Nhân B
+
+576
+00:23:58,250 --> 00:23:59,670
+Chiếc tê sẽ là 1 hành số
+
+577
+00:23:59,670 --> 00:24:01,030
+Thế chọn cố A
+
+578
+00:24:01,530 --> 00:24:03,850
+Phương trình thái kí lý tưởng chỉ đúng khi
+
+579
+00:24:04,930 --> 00:24:06,210
+Khối lượng thí thay đổi
+
+580
+00:24:06,990 --> 00:24:09,070
+Khối lượng thí thay đổi này mình cho sai rồi
+
+581
+00:24:09,910 --> 00:24:10,790
+Khối lượng
+
+582
+00:24:10,850 --> 00:24:12,010
+Đây là số 1
+
+583
+00:24:12,590 --> 00:24:14,050
+Thí không đổi trong xúc với trạng miếng nổi
+
+584
+00:24:14,050 --> 00:24:14,990
+Có B
+
+585
+00:24:17,820 --> 00:24:19,760
+1 lượng thí xác định miếng nổi
+
+586
+00:24:19,760 --> 00:24:21,920
+Qua 1 trạng thái tung gian
+
+587
+00:24:21,920 --> 00:24:23,940
+Rồi đến trạng thái cuối
+
+588
+00:24:25,100 --> 00:24:26,580
+Để áp dụng trực tiếp
+
+589
+00:24:26,580 --> 00:24:28,380
+Phương trình thái kí lý tưởng so sẵn
+
+590
+00:24:30,260 --> 00:24:31,880
+Trạng thái bán đầu và trạng thái cuối
+
+591
+00:24:31,880 --> 00:24:33,360
+Điều kiện tầng
+
+592
+00:24:33,980 --> 00:24:35,520
+Cố hiệu nổi trong xúc, cạu bá trình
+
+593
+00:24:36,320 --> 00:24:36,920
+Đúng không?
+
+594
+00:24:37,920 --> 00:24:38,960
+Điều bài bảo là
+
+595
+00:24:38,960 --> 00:24:40,740
+Trung Giang có nghĩa là đang ở trạng thái 1
+
+596
+00:24:40,740 --> 00:24:42,680
+Xong qua 2, xong qua 3
+
+597
+00:24:42,680 --> 00:24:44,220
+Còn người ta muốn so sánh
+
+598
+00:24:44,660 --> 00:24:48,040
+So sánh giữa 1 và thằng 3
+
+599
+00:24:48,040 --> 00:24:49,380
+Thêm thử
+
+600
+00:24:49,380 --> 00:24:51,780
+Thì điều kiện là trong xúc, cạu bá trình
+
+601
+00:24:52,420 --> 00:24:55,780
+Kể cả 4, 5, 6, 7, không quan trọng
+
+602
+00:24:55,840 --> 00:24:57,120
+Thì 4 so sánh giữa thằng đầu
+
+603
+00:24:57,120 --> 00:24:58,760
+Hình cuối hạc là thành đầu với bất kỳ thành nào
+
+604
+00:24:58,760 --> 00:25:01,360
+Khi mình cũng dùng được phương trình trạng thái kí lý tưởng
+
+605
+00:25:01,360 --> 00:25:01,740
+Các bạn nhớ
+
+606
+00:25:02,220 --> 00:25:03,700
+Không riêng gì là từ 1 sang 2
+
+607
+00:25:04,200 --> 00:25:06,300
+Mà bất kỳ vị trí nào mình cũng dùng được
+
+608
+00:25:06,300 --> 00:25:07,080
+Tức là
+
+609
+00:25:15,700 --> 00:25:16,420
+Bằng hết
+
+610
+00:25:19,490 --> 00:25:20,370
+Đấy các bạn nào
+
+611
+00:25:20,370 --> 00:25:22,410
+Và nghĩ rằng là chỉ dùng được 2
+
+612
+00:25:22,410 --> 00:25:22,930
+Thì không phải
+
+613
+00:25:23,510 --> 00:25:25,150
+Dùng được bất kỳ quá trình nào
+
+614
+00:25:25,150 --> 00:25:26,050
+Chỉ cần là
+
+615
+00:25:26,050 --> 00:25:28,330
+Khối lượng của khối trong đổi không đổi
+
+616
+00:25:28,330 --> 00:25:28,970
+Nhanh xúc qua quá trình
+
+617
+00:25:31,120 --> 00:25:32,280
+Khối khí ở trạng thái 1
+
+618
+00:25:32,280 --> 00:25:34,040
+Có B1 bằng Nam VN
+
+619
+00:25:34,980 --> 00:25:36,860
+B1 là bằng 2 lít
+
+620
+00:25:36,860 --> 00:25:38,320
+Và T1 là bằng 200k
+
+621
+00:25:38,780 --> 00:25:40,120
+Biến đổi sang nhà này 2
+
+622
+00:25:40,120 --> 00:25:41,720
+Có B2, B2
+
+623
+00:25:42,980 --> 00:25:44,400
+Công này cũng tương đợi câu
+
+624
+00:25:44,400 --> 00:25:45,320
+Hôm vừa rồi đúng không?
+
+625
+00:25:47,740 --> 00:25:48,620
+Thực ra
+
+626
+00:25:49,360 --> 00:25:51,740
+Cái này ăn chỉ muốn các bạn nhớ không thức thôi
+
+627
+00:25:51,740 --> 00:25:53,340
+Tại vì cho khó thì không được
+
+628
+00:25:53,340 --> 00:25:55,880
+Tại vì các bạn đã chưa được phân dạng
+
+629
+00:25:55,880 --> 00:25:57,060
+Chứ được phân dạng ở trong phần lý thước này
+
+630
+00:25:57,060 --> 00:25:57,940
+Không cho khó được
+
+631
+00:25:59,420 --> 00:26:01,180
+Thật chỉ học về phần lý thước
+
+632
+00:26:01,180 --> 00:26:02,780
+Và cũng như làm những câu dễ như thế này thôi
+
+633
+00:26:06,050 --> 00:26:08,430
+Ăn chỉ muốn cho 500
+
+634
+00:26:08,430 --> 00:26:09,050
+Đúng không?
+
+635
+00:26:10,170 --> 00:26:10,850
+Câu 14
+
+636
+00:26:11,370 --> 00:26:12,370
+Khối khí ở thái 1
+
+637
+00:26:12,370 --> 00:26:14,190
+Có B1 bằng Thái Nam VN
+
+638
+00:26:16,070 --> 00:26:17,270
+Bến đổi trạng thái
+
+639
+00:26:17,910 --> 00:26:19,670
+2 có T2 bằng 200k
+
+640
+00:26:20,190 --> 00:26:21,430
+V2 bằng 4 lít
+
+641
+00:26:21,430 --> 00:26:22,670
+Áp suốt B2 sẽ là
+
+642
+00:26:23,380 --> 00:26:24,990
+Ok, tương tự nha
+
+643
+00:26:24,990 --> 00:26:26,750
+Mảy nhanh của mình nhá
+
+644
+00:26:27,510 --> 00:26:29,200
+2 nhanh 5 này, giờ 400
+
+645
+00:26:30,410 --> 00:26:31,570
+Bằng
+
+646
+00:26:35,910 --> 00:26:37,940
+Nhanh 4, giờ 200
+
+647
+00:26:37,940 --> 00:26:39,660
+Chíp 4, bằng
+
+648
+00:26:39,970 --> 00:26:40,760
+1,25
+
+649
+00:26:40,880 --> 00:26:46,080
+Rồi ok
+
+650
+00:26:46,650 --> 00:26:48,680
+Trước câu ở dưới này cũng thế
+
+651
+00:26:50,570 --> 00:26:52,590
+3 nhanh
+
+652
+00:26:52,590 --> 00:26:55,260
+8, giờ 6
+
+653
+00:26:56,380 --> 00:26:57,820
+Chíp 4
+
+654
+00:26:58,410 --> 00:26:58,780
+Bằng
+
+655
+00:27:00,840 --> 00:27:02,880
+6 nhanh x, giờ 300
+
+656
+00:27:02,880 --> 00:27:04,140
+Chíp 4
+
+657
+00:27:04,140 --> 00:27:05,580
+Bằng 2, đúng không?
+
+658
+00:27:06,340 --> 00:27:07,800
+Rồi có 16
+
+659
+00:27:07,800 --> 00:27:10,060
+Việc đội đơn vị nhiệt độ sang canvin
+
+660
+00:27:10,060 --> 00:27:11,500
+trước khi áp dụng quân trình
+
+661
+00:27:12,160 --> 00:27:13,540
+Trạng thái bách vụt la vi
+
+662
+00:27:14,140 --> 00:27:15,760
+Ok, la vi trong công thức đấy
+
+663
+00:27:16,080 --> 00:27:18,740
+Chỉ đúng khi các tỷ số được tính theo
+
+664
+00:27:18,740 --> 00:27:19,460
+thang nhiệt đội thiệt đối
+
+665
+00:27:19,460 --> 00:27:21,860
+Các bạn nhớ nhá
+
+666
+00:27:22,320 --> 00:27:24,870
+Mọi người ta bảo là thang nhiệt đội thiệt đối
+
+667
+00:27:24,870 --> 00:27:26,530
+Có nghĩa là canvin đấy
+
+668
+00:27:28,400 --> 00:27:29,180
+Nhiều khi
+
+669
+00:27:29,180 --> 00:27:30,920
+các bạn học mà các bạn không hiểu
+
+670
+00:27:30,920 --> 00:27:32,980
+Tức là thang nó nhiệt đội thiệt đối là gì
+
+671
+00:27:33,540 --> 00:27:35,460
+hay là nhiệt đội thiệt đối là gì
+
+672
+00:27:35,460 --> 00:27:36,540
+nhiệt đội thiệt đối chính là
+
+673
+00:27:36,540 --> 00:27:37,680
+nhiệt độ tính theo canvin
+
+674
+00:27:38,620 --> 00:27:40,380
+Ok, con 17
+
+675
+00:27:42,340 --> 00:27:43,460
+Nếu trong suốt quá trình
+
+676
+00:27:43,460 --> 00:27:45,100
+những đội 1 cuối
+
+677
+00:27:45,100 --> 00:27:46,780
+tý vừa thay đổi áp suốt
+
+678
+00:27:46,780 --> 00:27:48,100
+vừa thay đổi về hệ tích
+
+679
+00:27:48,540 --> 00:27:49,560
+vừa thay đổi miệt độ
+
+680
+00:27:51,010 --> 00:27:52,370
+thì để giải vệ tóm này
+
+681
+00:27:52,370 --> 00:27:53,450
+ta nên dùng
+
+682
+00:27:54,430 --> 00:27:56,250
+các bạn nhìn nhá
+
+683
+00:27:56,850 --> 00:27:57,770
+Thay đổi áp suốt
+
+684
+00:27:57,770 --> 00:27:59,670
+Thì mình không dùng chắc lơ được rồi
+
+685
+00:28:00,840 --> 00:28:01,660
+Thay đổi thay tích
+
+686
+00:28:01,660 --> 00:28:02,940
+Thì mình lại không dùng gây lý sát
+
+687
+00:28:02,940 --> 00:28:04,640
+Thay đổi miệt đội thì mình không dùng boiler được
+
+688
+00:28:04,640 --> 00:28:06,360
+Thì chỉ có dùng
+
+689
+00:28:07,240 --> 00:28:07,560
+dùng
+
+690
+00:28:10,270 --> 00:28:11,710
+Đây là một điểm lý thước
+
+691
+00:28:11,710 --> 00:28:13,170
+cực kỳ quan trọng các bạn nhá
+
+692
+00:28:13,490 --> 00:28:15,030
+Tức là khi này
+
+693
+00:28:15,030 --> 00:28:15,930
+sau này các bạn làm bài
+
+694
+00:28:15,930 --> 00:28:16,990
+Các bạn sẽ thấy một bài tóm
+
+695
+00:28:16,990 --> 00:28:17,910
+Các bạn không biết dùng phương trường nào
+
+696
+00:28:17,910 --> 00:28:20,130
+Các bạn không biết dùng công tức nào
+
+697
+00:28:20,130 --> 00:28:20,470
+Thì đây
+
+698
+00:28:21,250 --> 00:28:23,050
+Thì tuy là một câu lý thước
+
+699
+00:28:23,050 --> 00:28:24,630
+Tưởng chừng là mình đang vừa hậu lý thước xong
+
+700
+00:28:24,630 --> 00:28:25,650
+Mình làm cảm thấy đắc dễ
+
+701
+00:28:25,650 --> 00:28:27,150
+Sau này mình gặp bài tóm
+
+702
+00:28:27,470 --> 00:28:28,510
+Mình sẽ không biết dãi
+
+703
+00:28:28,510 --> 00:28:29,710
+Mình sẽ không biết dùng một thước nào
+
+704
+00:28:29,710 --> 00:28:30,410
+Thì đây
+
+705
+00:28:31,740 --> 00:28:32,920
+Khi các bạn nhìn thứ nhất
+
+706
+00:28:32,920 --> 00:28:34,260
+Các bạn có một phản sạ
+
+707
+00:28:34,260 --> 00:28:36,260
+Khi mình làm bài trạng như thế này
+
+708
+00:28:36,260 --> 00:28:37,120
+Mình phải nhìn xem
+
+709
+00:28:37,120 --> 00:28:38,580
+à cái mai này này
+
+710
+00:28:38,980 --> 00:28:40,020
+Tầu tiên mình phải nhìn xem
+
+711
+00:28:40,020 --> 00:28:41,420
+là nó có số 1 không
+
+712
+00:28:41,920 --> 00:28:43,020
+Nó có số 1 không
+
+713
+00:28:43,020 --> 00:28:43,720
+Bởi vì tại sao
+
+714
+00:28:44,300 --> 00:28:45,560
+Bởi vì cái số 1
+
+715
+00:28:45,560 --> 00:28:48,560
+là khi mà người ta cho bài số 1
+
+716
+00:28:48,560 --> 00:28:50,140
+thì chắc chắn có ứng dụng
+
+717
+00:28:50,140 --> 00:28:51,300
+hay là có dùng đến phương trình
+
+718
+00:28:51,300 --> 00:28:53,160
+là mvm nrt
+
+719
+00:28:53,160 --> 00:28:54,420
+Chẳng giới thiệu trước luôn
+
+720
+00:28:54,860 --> 00:28:55,920
+Ở đây thì người ta sẽ ý
+
+721
+00:28:55,920 --> 00:28:57,100
+có liên quan đến phương trình này
+
+722
+00:28:57,720 --> 00:28:58,900
+Nếu có số 1 thì
+
+723
+00:28:58,900 --> 00:29:00,560
+khả năng cao là phải dùng đến công thức này
+
+724
+00:29:00,560 --> 00:29:01,520
+chắc chắn phải công thức này
+
+725
+00:29:02,160 --> 00:29:03,720
+và mình phải xem thử
+
+726
+00:29:03,720 --> 00:29:05,740
+là cái khối khi này có thay đổi nhiều hay không
+
+727
+00:29:05,740 --> 00:29:06,740
+tức là nó có
+
+728
+00:29:06,740 --> 00:29:08,280
+bị thoát ra ngoài không
+
+729
+00:29:08,280 --> 00:29:10,480
+hay là có thêm thí bào hay không
+
+730
+00:29:10,480 --> 00:29:14,140
+hay là đề bài nó có cho là bvt đủ hay không
+
+731
+00:29:14,140 --> 00:29:15,580
+nếu mà cho bvt đủ
+
+732
+00:29:15,580 --> 00:29:17,160
+thì mình cứ bản dạng áo dụng phương trình kí thưởng
+
+733
+00:29:17,160 --> 00:29:19,280
+và xong là giải quyết nhanh gọn bài này
+
+734
+00:29:19,280 --> 00:29:20,920
+còn nếu như bài này dấu
+
+735
+00:29:21,340 --> 00:29:23,520
+tức nghĩa là nó chỉ có b thôi
+
+736
+00:29:23,520 --> 00:29:24,360
+hay là có tê thôi
+
+737
+00:29:24,360 --> 00:29:26,420
+thì lúc này phải dùng kết hợp nhiều phương trình lại
+
+738
+00:29:26,420 --> 00:29:26,940
+với giải được
+
+739
+00:29:27,000 --> 00:29:27,920
+đó
+
+740
+00:29:28,480 --> 00:29:31,480
+kì đấy là cái phản xạ và kí năng khi mình làm
+
+741
+00:29:31,480 --> 00:29:32,260
+mình sẽ nhìn được
+
+742
+00:29:33,190 --> 00:29:35,390
+công 18 khối khi chẳng thái 1
+
+743
+00:29:35,390 --> 00:29:37,650
+có b1 bằng 1,5 monofee
+
+744
+00:29:37,650 --> 00:29:38,830
+b1 bằng 4 lít
+
+745
+00:29:38,830 --> 00:29:40,210
+và t1 bằng 300k
+
+746
+00:29:40,210 --> 00:29:42,130
+biến đổi sang chạng thái 2
+
+747
+00:29:42,130 --> 00:29:45,360
+có v2 bằng 6 lít
+
+748
+00:29:46,190 --> 00:29:46,930
+t2 bằng
+
+749
+00:29:47,590 --> 00:29:48,410
+400k áp xúc sĩ
+
+750
+00:29:48,910 --> 00:29:50,330
+ok mình lại bấm tiếp nhá
+
+751
+00:29:50,710 --> 00:29:54,730
+1,5 nhanh
+
+752
+00:29:55,430 --> 00:29:56,690
+4 chi cho 300
+
+753
+00:29:59,270 --> 00:29:59,990
+bằng ít
+
+754
+00:30:00,390 --> 00:30:00,970
+nhanh 6
+
+755
+00:30:01,630 --> 00:30:01,990
+450
+
+756
+00:30:04,080 --> 00:30:04,800
+1,5
+
+757
+00:30:04,800 --> 00:30:08,160
+có 19 kí sử dụng phương trình chẳng thấy
+
+758
+00:30:08,160 --> 00:30:10,200
+kí lý tưởng đơn vị của BVP
+
+759
+00:30:10,200 --> 00:30:11,140
+hình ảnh thái này sẽ là
+
+760
+00:30:11,960 --> 00:30:12,880
+đơn vị của B
+
+761
+00:30:13,340 --> 00:30:14,460
+các anh nhớ nha
+
+762
+00:30:15,420 --> 00:30:18,360
+cái đơn vị B này thì nó sẽ có rất nhiều đơn vị áp xúc
+
+763
+00:30:18,360 --> 00:30:20,640
+nhưng cái này anh chưa nói
+
+764
+00:30:21,300 --> 00:30:22,980
+cái đơn vị của BVP
+
+765
+00:30:22,980 --> 00:30:23,620
+dùng vào trong công thức
+
+766
+00:30:23,620 --> 00:30:24,840
+nó sẽ luôn luôn là bắt can
+
+767
+00:30:25,920 --> 00:30:26,820
+luôn luôn là bắt can
+
+768
+00:30:26,820 --> 00:30:29,560
+còn thể tích thì sẽ luôn luôn là bắt khối
+
+769
+00:30:33,230 --> 00:30:34,370
+luôn luôn là bắt khối
+
+770
+00:30:34,830 --> 00:30:35,470
+nhớ nha
+
+771
+00:30:35,470 --> 00:30:37,210
+luôn luôn là bắt can và luôn luôn là bắt khối
+
+772
+00:30:37,210 --> 00:30:38,570
+còn trong một số chương hợp đấy
+
+773
+00:30:38,570 --> 00:30:41,310
+tại sao mình để giữ nguyên là lít
+
+774
+00:30:41,310 --> 00:30:43,110
+hoặc là để nó phê thì nó vẫn đúng
+
+775
+00:30:43,110 --> 00:30:44,090
+tại sao lại như vậy
+
+776
+00:30:44,090 --> 00:30:45,570
+tại vì các bạn hình dung nha
+
+777
+00:30:45,570 --> 00:30:46,910
+chúng ta có 2 bên đúng không
+
+778
+00:30:46,910 --> 00:30:49,070
+chúng ta có b1 này, b1 này, trê t1
+
+779
+00:30:49,570 --> 00:30:51,610
+đúng không và b2, b2 trê t2
+
+780
+00:30:52,290 --> 00:30:54,410
+thì trong điều kiện của phương trình
+
+781
+00:30:54,410 --> 00:30:55,930
+bắt buộc cái này luôn là bắt can
+
+782
+00:30:56,590 --> 00:30:57,630
+thằng b này luôn bắt can
+
+783
+00:30:57,630 --> 00:30:59,970
+còn thằng v này luôn luôn là mắt khối
+
+784
+00:30:59,970 --> 00:31:01,550
+nhưng tại sao trong một số chương hợp đấy
+
+785
+00:31:01,550 --> 00:31:03,150
+các bạn làm các bạn để giữ nguyên là lít
+
+786
+00:31:03,710 --> 00:31:05,110
+và nó phê thì làm màn đúng
+
+787
+00:31:05,490 --> 00:31:06,190
+lít là sao
+
+788
+00:31:06,670 --> 00:31:09,720
+bởi vì đúng chỉ khi nào
+
+789
+00:31:09,720 --> 00:31:11,200
+chỉ khi mà
+
+790
+00:31:12,440 --> 00:31:13,660
+đứa này đang là lít đúng không
+
+791
+00:31:13,660 --> 00:31:14,960
+thì bên này cũng là lít
+
+792
+00:31:14,960 --> 00:31:16,620
+khi đó 2 bên đó mới siêu thịt cho nhau
+
+793
+00:31:16,620 --> 00:31:17,860
+thì lúc này mình không cần đổi
+
+794
+00:31:19,100 --> 00:31:20,300
+nhưng công thức trộn của nó
+
+795
+00:31:20,300 --> 00:31:22,480
+như gọi là đơn vị trổn, đơn vị đúng của nó
+
+796
+00:31:22,480 --> 00:31:24,000
+thì nó là mắt khối cơ
+
+797
+00:31:24,000 --> 00:31:25,660
+thì khi mình đổi thằng này sao mắt khối
+
+798
+00:31:25,660 --> 00:31:26,820
+thì bên này cũng phải đổi đúng không
+
+799
+00:31:27,240 --> 00:31:28,540
+thì khi mình phải đổi 2 lần
+
+800
+00:31:28,980 --> 00:31:31,340
+thì tha mình để nguyên luôn, mình để nguyên 2 bên
+
+801
+00:31:31,340 --> 00:31:33,160
+nhưng các bạn phải hiểu là phải cùng đơn vị
+
+802
+00:31:33,160 --> 00:31:34,540
+ở 2 bên thì năm mới đúng nhá
+
+803
+00:31:34,540 --> 00:31:36,160
+còn 1 bên đít mà quên mắt khối là sai
+
+804
+00:31:36,160 --> 00:31:36,720
+được chứ
+
+805
+00:31:36,720 --> 00:31:38,560
+phải thì cái này cũng thế
+
+806
+00:31:38,900 --> 00:31:39,900
+nếu thằng này đang anóphê
+
+807
+00:31:40,360 --> 00:31:42,240
+thì thằng này anóphê luôn thì cháy chánh sẽ đúng
+
+808
+00:31:42,600 --> 00:31:43,900
+vì 2 thằng chỉ khi cho nhau
+
+809
+00:31:44,000 --> 00:31:45,520
+tới các bạn hình dung giờ
+
+810
+00:31:45,520 --> 00:31:48,120
+đó, đó là về phòng đơn vị nhá
+
+811
+00:31:48,310 --> 00:31:48,950
+rồi
+
+812
+00:31:51,650 --> 00:31:52,850
+cho đây mình sẽ chọn là gì
+
+813
+00:31:52,850 --> 00:31:55,770
+mình sẽ chọn là đơn vị
+
+814
+00:31:55,770 --> 00:31:56,830
+mình sẽ chọn là câu b
+
+815
+00:31:57,410 --> 00:31:58,950
+giống nhau ở cả 2 nhận hái
+
+816
+00:31:58,950 --> 00:32:00,450
+có thể là dùng anóphê lít
+
+817
+00:32:00,450 --> 00:32:01,370
+miễn là nhắc quán
+
+818
+00:32:01,970 --> 00:32:04,170
+còn đơn vị trổn thịt A thì nó vẫn là
+
+819
+00:32:04,170 --> 00:32:06,330
+mắt khối, phải nhớ nhá
+
+820
+00:32:06,330 --> 00:32:07,450
+rồi, câu 20
+
+821
+00:32:09,400 --> 00:32:11,360
+1 bên 9 có thể tích
+
+822
+00:32:11,360 --> 00:32:12,820
+không đổi ở trận hái 1
+
+823
+00:32:12,820 --> 00:32:14,100
+là b1
+
+824
+00:32:15,010 --> 00:32:16,990
+anóphê và t1
+
+825
+00:32:16,990 --> 00:32:17,710
+là 300K
+
+826
+00:32:17,710 --> 00:32:19,730
+đu nóng đạn tích để nhận hái 2
+
+827
+00:32:19,730 --> 00:32:21,610
+có t2 là 450K
+
+828
+00:32:21,610 --> 00:32:24,190
+rồi, bóng 1 cuộc cuối nhá
+
+829
+00:32:24,640 --> 00:32:27,040
+2 nhận A
+
+830
+00:32:27,040 --> 00:32:28,980
+cái câu này là có liên quan đến gì
+
+831
+00:32:28,980 --> 00:32:30,380
+đạn tích, đúng không?
+
+832
+00:32:30,660 --> 00:32:32,500
+đạn tích khi mình viết lại phương trình này
+
+833
+00:32:32,500 --> 00:32:34,620
+b1, b1, chơi ra t1
+
+834
+00:32:35,490 --> 00:32:37,070
+bạn b2, b2, chơi t2
+
+835
+00:32:37,070 --> 00:32:39,830
+anh trơn dùng về cái gây di sắc nhá
+
+836
+00:32:39,830 --> 00:32:41,490
+anh vẫn dùng phương nhìn hái
+
+837
+00:32:41,490 --> 00:32:43,350
+nhưng mà ở đây mình thấy là đạn tích
+
+838
+00:32:43,350 --> 00:32:44,770
+cho mình ăn cặn được cái V đi
+
+839
+00:32:44,770 --> 00:32:46,110
+thì phương trình lúc này mà chuyện như thế này tôi
+
+840
+00:32:46,430 --> 00:32:47,710
+nhưng có thể bằng tụi bâm máy
+
+841
+00:32:48,530 --> 00:32:49,810
+2 này chia cho 300
+
+842
+00:32:54,520 --> 00:32:55,480
+bằng ít, đúng không?
+
+843
+00:32:55,760 --> 00:32:57,240
+chia cho 450, xí phô
+
+844
+00:32:58,060 --> 00:32:59,740
+bằng 3, nó sẽ chọn C
+
+845
+00:33:00,300 --> 00:33:01,680
+rồi, ok, thì
+
+846
+00:33:02,080 --> 00:33:03,400
+bài của chúng ta hôm nay hôm nay kết thúc
+
+847
+00:33:03,880 --> 00:33:05,220
+cảm ơn tụi các bạn đã xem video nhá
+
+848
+00:33:05,840 --> 00:33:07,800
+các bạn làm thêm phần bài tài đoàn tập
+
+849
+00:33:07,800 --> 00:33:10,220
+để thêm hoàn thành được bài này
+
+850
+00:33:10,800 --> 00:33:11,880
+cảm ơn tụi các bạn đã xem video
+
+851
+00:33:11,880 --> 00:33:13,780
+chúc các bạn học thở tốt nhá
+
+852
+00:33:13,780 --> 00:33:14,800
+hẹn gặp bạn ở ba sau
