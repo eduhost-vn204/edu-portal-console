@@ -69,7 +69,8 @@ export function comparePilotLessonFields(expected, actual) {
     { key: 'VideoGiai', expected: expected.VideoGiai || expected.practiceUrl },
     { key: 'PDFLyThuyet', expected: expected.PDFLyThuyet || expected.theoryPdfUrl },
     { key: 'PDF', expected: expected.PDF || expected.appliedPdfUrl },
-    { key: 'PDFLuyenTap', expected: expected.PDFLuyenTap || expected.practicePdfUrl }
+    { key: 'PDFLuyenTap', expected: expected.PDFLuyenTap || expected.practicePdfUrl },
+    { key: 'TrangThai', expected: expected.TrangThai || expected.trangthai || expected.status || 'draft' }
   ];
 
   const diffs = [];
@@ -818,6 +819,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
         PDFLuyenTap: driveRes.practicePdfUrl,
         ThuTuBai: manifest.order,
         MoTaBai: manifest.description,
+        TrangThai: 'draft',
         NgayDang: new Date().toISOString()
       },
       videoCauHoiCount: questionsApplied.length,
@@ -852,7 +854,8 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     PDF: driveRes.appliedPdfUrl,
     PDFLuyenTap: driveRes.practicePdfUrl,
     ThuTuBai: manifest.order,
-    MoTaBai: manifest.description
+    MoTaBai: manifest.description,
+    TrangThai: 'draft'
   };
   const lessonPayload = {
     action: 'savebaihoc',
@@ -869,8 +872,8 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     existingMaBai = checkpoint.backend.lesson.maBai || '';
     lessonNeedsWrite = false;
   } else {
-    console.log(`[Backend] [1/3] Đang đối soát danh sách bài học hiện có trên backend...`);
-    const checkRes = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
+    console.log(`[Backend] [1/3] Đang đối soát danh sách bài học hiện có trên backend (admin scope)...`);
+    const checkRes = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
     const checkJson = await checkRes.json();
     const existingList = Array.isArray(checkJson.data) ? checkJson.data : (Array.isArray(checkJson) ? checkJson : []);
     const matchingLessons = existingList.filter(b => String(b.TenBai).trim() === manifest.lessonName);
@@ -889,7 +892,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       const lessonComp = comparePilotLessonFields(expectedLessonData, found);
 
       if (lessonComp.ok) {
-        console.log(`          ✓ Bài học pilot đã tồn tại và khớp toàn bộ 10/10 trường trên backend! (MaBai: ${existingMaBai})`);
+        console.log(`          ✓ Bài học pilot đã tồn tại và khớp toàn bộ 11/11 trường (bao gồm TrangThai=draft) trên backend! (MaBai: ${existingMaBai})`);
         lessonNeedsWrite = false;
         checkpoint.backend.lesson = {
           status: 'SAVED',
@@ -916,7 +919,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       console.warn(`          ⚠️ Request savebaihoc không nhận phản hồi HTTP 200, kiểm tra read-back ngay lập tức...`);
     }
 
-    const verifyRes = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
+    const verifyRes = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
     const verifyJson = await verifyRes.json();
     const listAfter = Array.isArray(verifyJson.data) ? verifyJson.data : (Array.isArray(verifyJson) ? verifyJson : []);
     const verifiedLesson = listAfter.find(b => String(b.TenBai).trim() === manifest.lessonName);
@@ -935,6 +938,17 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       throw err;
     }
 
+    // Kiểm tra rò rỉ công khai cho học sinh (Draft Contract check)
+    const leakRes = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
+    const leakJson = await leakRes.json();
+    const leakList = Array.isArray(leakJson.data) ? leakJson.data : (Array.isArray(leakJson) ? leakJson : []);
+    const leaked = leakList.find(b => String(b.TenBai).trim() === manifest.lessonName);
+    if (leaked) {
+      const err = new Error(`PUBLIC_LEAK_DETECTED: Bài học pilot draft [${manifest.lessonName}] bị lộ trên public endpoint học sinh!`);
+      err.code = 'PUBLIC_LEAK_DETECTED';
+      throw err;
+    }
+
     existingMaBai = verifiedLesson.MaBai || '';
     checkpoint.backend.lesson = {
       status: 'SAVED',
@@ -945,7 +959,8 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       verifiedAt: new Date().toISOString()
     };
     saveCheckpoint(inboxDir, checkpoint);
-    console.log(`          ✓ Đã xác minh bài học DRAFT được lưu thành công và khớp 10/10 trường! (MaBai: ${existingMaBai})`);
+    console.log(`          ✓ Đã xác minh bài học DRAFT được lưu thành công và khớp 11/11 trường (kể cả TrangThai=draft)! (MaBai: ${existingMaBai})`);
+    console.log(`          ✓ Đã xác minh bài học DRAFT KHÔNG rò rỉ trên endpoint công khai của học sinh!`);
   }
 
   // =========================================================================
@@ -959,7 +974,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     vchNeedsWrite = false;
   } else {
     console.log(`[Backend] [2/3] Đang đối soát 20 câu VideoCauHoi trên backend...`);
-    const resVchCheck = await fetchImpl(`${dbUrl}?type=videocauhoi&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+    const resVchCheck = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
     const jsonVchCheck = await resVchCheck.json();
     const rowsVch = Array.isArray(jsonVchCheck.data) ? jsonVchCheck.data : [];
 
@@ -990,7 +1005,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
 
     await postAdminWriteCore(fetchImpl, dbUrl, vchPayload);
 
-    const resVerifyVch = await fetchImpl(`${dbUrl}?type=videocauhoi&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+    const resVerifyVch = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
     const jsonVerifyVch = await resVerifyVch.json();
     const rowsAfter = Array.isArray(jsonVerifyVch.data) ? jsonVerifyVch.data : [];
 
@@ -1025,7 +1040,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     btNeedsWrite = false;
   } else {
     console.log(`[Backend] [3/3] Đang đối soát 20 câu BaiTapTracNghiem trên backend...`);
-    const resBtCheck = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+    const resBtCheck = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
     const jsonBtCheck = await resBtCheck.json();
     const rowsBt = Array.isArray(jsonBtCheck.data) ? jsonBtCheck.data : [];
 
@@ -1056,7 +1071,7 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
 
     await postAdminWriteCore(fetchImpl, dbUrl, btPayload);
 
-    const resVerifyBt = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+    const resVerifyBt = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
     const jsonVerifyBt = await resVerifyBt.json();
     const rowsBtAfter = Array.isArray(jsonVerifyBt.data) ? jsonVerifyBt.data : [];
 
@@ -1099,12 +1114,12 @@ export async function verifyBackendReadBack(manifest, options = {}) {
 
   console.log(`[Verify] Bắt đầu đối soát sâu dữ liệu Backend...`);
 
-  // 1. Đọc danh sách bài học
-  const resBaiHoc = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
+  // 1. Đọc danh sách bài học (admin scope)
+  const resBaiHoc = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
   const jsonBaiHoc = await resBaiHoc.json();
   const baiHocList = Array.isArray(jsonBaiHoc.data) ? jsonBaiHoc.data : (Array.isArray(jsonBaiHoc) ? jsonBaiHoc : []);
 
-  // 1.1 Xác minh sâu toàn bộ 10 trường của bài pilot
+  // 1.1 Xác minh sâu toàn bộ 11 trường của bài pilot
   const pilotLesson = baiHocList.find(b => String(b.TenBai).trim() === manifest.lessonName);
   if (!pilotLesson) {
     throw new Error(`Đối soát thất bại: Không tìm thấy bài pilot [${manifest.lessonName}] trên backend!`);
@@ -1130,13 +1145,14 @@ export async function verifyBackendReadBack(manifest, options = {}) {
       practiceUrl: expPractice,
       theoryPdfUrl: expPdfTheory,
       appliedPdfUrl: expPdfApp,
-      practicePdfUrl: expPdfPrac
+      practicePdfUrl: expPdfPrac,
+      TrangThai: 'draft'
     };
     const compPilot = comparePilotLessonFields(expectedFields, pilotLesson);
     if (!compPilot.ok) {
       throw new Error(`Đối soát bài pilot thất bại: ${compPilot.diffCount} trường không khớp (${compPilot.diffs.map(d=>`${d.field}: exp=${d.expected}, act=${d.actual}`).join('; ')})!`);
     }
-    console.log(`         ✓ Bài pilot khớp 10/10 trường chi tiết (Course, Chapter, Title, Order, Description, Video, VideoGiai, PDFLyThuyet, PDF, PDFLuyenTap)!`);
+    console.log(`         ✓ Bài pilot khớp 11/11 trường chi tiết (Course, Chapter, Title, Order, Description, Video, VideoGiai, PDFLyThuyet, PDF, PDFLuyenTap, TrangThai=draft)!`);
   } else {
     if (pilotLesson.ThuTuBai !== 999 && pilotLesson.ThuTuBai !== '999') {
       throw new Error(`Đối soát thất bại: Thứ tự bài pilot không phải 999 (Thực tế: ${pilotLesson.ThuTuBai})!`);
@@ -1145,6 +1161,7 @@ export async function verifyBackendReadBack(manifest, options = {}) {
     console.log(`           - Video:       ${pilotLesson.Video}`);
     console.log(`           - VideoGiai:   ${pilotLesson.VideoGiai}`);
     console.log(`           - PDFLyThuyet: ${pilotLesson.PDFLyThuyet}`);
+    console.log(`           - TrangThai:   ${pilotLesson.TrangThai}`);
   }
 
   // 1.2 KHÓA AN TOÀN BẮT BUỘC: Kiểm tra toàn diện 14 trường của Bài 10 thật
@@ -1161,8 +1178,41 @@ export async function verifyBackendReadBack(manifest, options = {}) {
     console.log(`         ✓ [BẢO VỆ AN TOÀN] Bài 10 thật: "${realLesson.TenBai}" NGUYÊN VẸN 100% (${realB10Compare.totalFields}/${realB10Compare.totalFields} trường khớp)!`);
   }
 
-  // 2. Đọc và đối soát chi tiết 20 câu VideoCauHoi
-  const resVCH = await fetchImpl(`${dbUrl}?type=videocauhoi&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+  // 1.3 KHÓA AN TOÀN BẮT BUỘC: Kiểm tra Public Endpoint (Draft Contract check)
+  // Bài draft tuyệt đối KHÔNG được xuất hiện trên endpoint công khai của học sinh (không có scope=admin)
+  const resPublic = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
+  const jsonPublic = await resPublic.json();
+  const publicList = Array.isArray(jsonPublic.data) ? jsonPublic.data : (Array.isArray(jsonPublic) ? jsonPublic : []);
+  const leakedLesson = publicList.find(b => String(b.TenBai).trim() === manifest.lessonName);
+  if (leakedLesson) {
+    const leakErr = new Error(`PUBLIC_LEAK_DETECTED: Bài pilot draft [${manifest.lessonName}] bị lộ trên public endpoint dành cho học sinh!`);
+    leakErr.code = 'PUBLIC_LEAK_DETECTED';
+    throw leakErr;
+  }
+
+  // Câu hỏi trong video của bài draft cũng không được trả về trên public endpoint
+  const resPublicVch = await fetchImpl(`${dbUrl}?type=videocauhoi&bai=${encodeURIComponent(pilotLesson.MaBai || manifest.lessonName)}&t=${Date.now()}`);
+  const jsonPublicVch = await resPublicVch.json();
+  const publicVch = Array.isArray(jsonPublicVch.data) ? jsonPublicVch.data : [];
+  if (publicVch.length > 0) {
+    const leakErr = new Error(`PUBLIC_LEAK_DETECTED: Câu hỏi VideoCauHoi của bài draft bị lộ trên public endpoint dành cho học sinh!`);
+    leakErr.code = 'PUBLIC_LEAK_DETECTED';
+    throw leakErr;
+  }
+
+  // Bài tập trắc nghiệm của bài draft cũng không được trả về trên public endpoint
+  const resPublicBt = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&bai=${encodeURIComponent(pilotLesson.MaBai || manifest.lessonName)}&t=${Date.now()}`);
+  const jsonPublicBt = await resPublicBt.json();
+  const publicBt = Array.isArray(jsonPublicBt.data) ? jsonPublicBt.data : [];
+  if (publicBt.length > 0) {
+    const leakErr = new Error(`PUBLIC_LEAK_DETECTED: Bài tập BaiTapTracNghiem của bài draft bị lộ trên public endpoint dành cho học sinh!`);
+    leakErr.code = 'PUBLIC_LEAK_DETECTED';
+    throw leakErr;
+  }
+  console.log(`         ✓ [DRAFT CONTRACT VERIFIED] Đã xác minh bài pilot KHÔNG xuất hiện trên các endpoint công khai của học sinh!`);
+
+  // 2. Đọc và đối soát chi tiết 20 câu VideoCauHoi (admin scope)
+  const resVCH = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
   const jsonVCH = await resVCH.json();
   const vchRows = Array.isArray(jsonVCH.data) ? jsonVCH.data : [];
   console.log(`         ✓ Đọc VideoCauHoi của bài pilot: ${vchRows.length} câu (yêu cầu đúng 20 câu).`);
@@ -1177,8 +1227,8 @@ export async function verifyBackendReadBack(manifest, options = {}) {
     throw new Error(`Đối soát VideoCauHoi thất bại: Số câu thực tế là ${vchRows.length}, yêu cầu đúng 20!`);
   }
 
-  // 3. Đọc và đối soát chi tiết 20 câu BaiTapTracNghiem
-  const resBT = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
+  // 3. Đọc và đối soát chi tiết 20 câu BaiTapTracNghiem (admin scope)
+  const resBT = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
   const jsonBT = await resBT.json();
   const btRows = Array.isArray(jsonBT.data) ? jsonBT.data : [];
   console.log(`         ✓ Đọc BaiTapTracNghiem của bài pilot: ${btRows.length} câu (yêu cầu đúng 20 câu).`);

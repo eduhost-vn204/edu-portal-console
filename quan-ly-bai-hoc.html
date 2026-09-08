@@ -1054,8 +1054,13 @@
         </button>
     </div>
     <div class="filter-bar" id="filter-bar">
-        <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả</span>
+        <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả khóa</span>
         <span class="filter-chip" data-f="Vật Lý 12" onclick="filterCourse('Vật Lý 12',this)">⚛️ Vật Lý 12</span>
+        <span style="display:inline-block;width:1px;height:22px;background:var(--border);margin:0 4px;vertical-align:middle"></span>
+        <span class="filter-chip filter-status-chip active" data-status="all" onclick="filterStatus('all',this)">Tất cả trạng thái</span>
+        <span class="filter-chip filter-status-chip" data-status="published" onclick="filterStatus('published',this)" style="color:#047857">🟢 Published</span>
+        <span class="filter-chip filter-status-chip" data-status="draft" onclick="filterStatus('draft',this)" style="color:#b45309">🟡 Draft</span>
+        <span class="filter-chip filter-status-chip" data-status="archived" onclick="filterStatus('archived',this)" style="color:#6b7280">⚪ Archived</span>
     </div>
     <div class="bulk-action-bar" id="bulk-action-bar"></div>
     <!-- JS sẽ thêm filter chips động từ dữ liệu thực tế -->
@@ -1140,9 +1145,19 @@
                             <label>Link PDF Luyện Tập Thêm <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ — tách riêng khỏi bài tập trong video)</span></label>
                             <input id="f-pdfluyentap" placeholder="https://drive.google.com/file/d/...">
                         </div>
-                        <div class="form-field">
-                            <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
-                            <input id="f-thoigian" type="number" min="1" step="1" placeholder="VD: 15">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
+                                <input id="f-thoigian" type="number" min="1" step="1" placeholder="VD: 15">
+                            </div>
+                            <div class="form-field">
+                                <label>Trạng thái bài học</label>
+                                <select id="f-trangthai">
+                                    <option value="published">🟢 Đã xuất bản (Published)</option>
+                                    <option value="draft">🟡 Bản nháp / Pilot (Draft - Ẩn với HS)</option>
+                                    <option value="archived">⚪ Lưu trữ (Archived - Ẩn với HS)</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-field" id="vq-section">
                             <div class="quiz-section-head">
@@ -2991,7 +3006,7 @@ async function loadLessons(){
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
     }
     try{
-        const r = await fetch(DB_URL + '?type=baihoc');
+        const r = await fetch(DB_URL + '?type=baihoc&scope=admin');
         const data = await r.json();
         allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
         aSetCache(CKEY, data);
@@ -3025,7 +3040,7 @@ async function loadLessonsPreview(){
 // rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
 async function loadQbCounts(){
     try{
-        const r = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
+        const r = await fetch(DB_URL+'?type=baitaptracnghiem&scope=admin&t='+Date.now());
         const j = await r.json();
         const map = {};
         (j&&j.data||[]).forEach(rw=>{
@@ -3048,7 +3063,7 @@ function khoaOf(r){ return r.KhoaHoc||r.khoahoc||r.course||r.mon||'Khác'; }
 // mang tên mới, phần còn lại vẫn tên cũ) — sự cố xảy ra ngày 5/8/2026 với khóa "Chuyên Đề Lí
 // Thuyết GĐ1" (chỉ 17/33 bài được đổi tên vì allLessons lúc đó là cache thiếu bài).
 async function fetchFreshLessons(){
-    const r = await fetch(DB_URL + '?type=baihoc&t=' + Date.now());
+    const r = await fetch(DB_URL + '?type=baihoc&scope=admin&t=' + Date.now());
     const data = await r.json();
     return Array.isArray(data) ? data : (data.baihoc || data.data || []);
 }
@@ -3067,13 +3082,15 @@ function groupLessons(rows){
         const ngaydang = r.NgayDang || r.ngaydang || r.date || '';
         const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
         const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
+        const stRaw = (r.TrangThai || r.trangthai || r.status || 'published').toString().trim().toLowerCase();
+        const trangthai = (stRaw === 'draft' || stRaw === 'archived') ? stRaw : 'published';
         const sc = extractSC(khoa);
         const subj = sc.subject || khoa;
         const cname = sc.courseName || khoa; // tên khóa hiển thị
         if(!subjects[subj]) subjects[subj]={name:subj, courses:{}};
         if(!subjects[subj].courses[khoa]) subjects[subj].courses[khoa]={name:cname, fullName:khoa, chapters:{}};
         if(!subjects[subj].courses[khoa].chapters[chuong]) subjects[subj].courses[khoa].chapters[chuong]=[];
-        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb});
+        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb,trangthai});
     });
     // Sắp xếp bài trong từng chương theo ThuTuBai (thầy tự kéo lên/xuống bằng nút mũi tên).
     // Bài chưa từng được sắp xếp (ttb=null) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
@@ -3333,6 +3350,7 @@ function renderCourseBlock(course){
                 <div class="li-name">${esc(l.ten)}</div>
                 <div class="li-badges">
                     ${isTeaching?'<span class="li-teaching-badge">⭐ Đang dạy</span>':''}
+                    ${l.trangthai==='draft'?'<span class="li-badge li-draft" style="background:#fef3c7;color:#b45309;font-weight:700"><i class="fa-solid fa-file-pen" style="font-size:9px"></i> Draft</span>':(l.trangthai==='archived'?'<span class="li-badge li-archived" style="background:#f3f4f6;color:#6b7280;font-weight:700"><i class="fa-solid fa-box-archive" style="font-size:9px"></i> Archived</span>':'<span class="li-badge li-pub" style="background:#ecfdf5;color:#047857;font-weight:700"><i class="fa-solid fa-circle-check" style="font-size:9px"></i> Published</span>')}
                     ${hasVid?'<span class="li-badge li-vid"><i class="fa-solid fa-play" style="font-size:9px"></i> Video</span>':'<span class="li-badge li-novid">Chưa có video</span>'}
                     ${hasGiai?'<span class="li-badge li-vid"><i class="fa-solid fa-lightbulb" style="font-size:9px"></i> Chữa</span>':''}
                     ${qbCount?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${qbCount} câu</span>`:''}
@@ -3350,16 +3368,33 @@ function renderCourseBlock(course){
     return html;
 }
 
+let currentStatusFilter = 'all';
+
+function filterStatus(st, el){
+    currentStatusFilter = st || 'all';
+    document.querySelectorAll('.filter-status-chip').forEach(c=>c.classList.remove('active'));
+    if(el) el.classList.add('active');
+    renderLessonList();
+}
+
 function renderLessonList(){
     const wrap = document.getElementById('lesson-list-wrap');
-    // Lọc: nếu currentFilter là subject, lấy tất cả bài có subject đó
-    const filtered = currentFilter==='all' ? allLessons : allLessons.filter(r=>{
-        const sc=extractSC(khoaOf(r));
-        return sc.subject===currentFilter || (khoaOf(r))===currentFilter;
+    // Lọc theo khóa/môn học và theo trạng thái (published / draft / archived)
+    const filtered = allLessons.filter(r=>{
+        if(currentFilter !== 'all'){
+            const sc=extractSC(khoaOf(r));
+            if(sc.subject !== currentFilter && (khoaOf(r)) !== currentFilter) return false;
+        }
+        if(currentStatusFilter !== 'all'){
+            const stRaw = (r.TrangThai || r.trangthai || r.status || 'published').toString().trim().toLowerCase();
+            const normalizedSt = (stRaw === 'draft' || stRaw === 'archived') ? stRaw : 'published';
+            if(normalizedSt !== currentStatusFilter) return false;
+        }
+        return true;
     });
     const subjects = groupLessons(filtered);
     if(Object.keys(subjects).length===0){
-        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
+        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào phù hợp với bộ lọc.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
         renderBulkActionBar();
         return;
     }
@@ -3385,7 +3420,7 @@ function renderLessonList(){
 
 function filterCourse(f,el){
     currentFilter=f;
-    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.filter-bar .filter-chip:not(.filter-status-chip)').forEach(c=>c.classList.remove('active'));
     el.classList.add('active');
     renderLessonList();
 }
@@ -3476,7 +3511,8 @@ async function renameCourse(fullName){
             PDF:l.PDF||l.pdf||'', PDFLyThuyet:l.PDFLyThuyet||l.pdflythuyet||l.pdflt||'',
             PDFLuyenTap:l.PDFLuyenTap||l.pdfluyentap||'', ThoiGianLamBai:l.ThoiGianLamBai||l.thoigianlambai||'',
             NgayDang:l.NgayDang||l.ngaydang||'',BaiTap:l.BaiTap||l.baitap||'',
-            ThuTuBai:l.ThuTuBai||l.thutubai||''
+            ThuTuBai:l.ThuTuBai||l.thutubai||'',
+            TrangThai:l.TrangThai||l.trangthai||l.status||'published'
         };
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
@@ -3615,6 +3651,7 @@ function openNewForm(){
     document.getElementById('f-pdflt').value='';
     document.getElementById('f-pdfluyentap').value='';
     document.getElementById('f-thoigian').value='';
+    if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
     document.getElementById('quiz-builder').innerHTML='';
@@ -3670,6 +3707,8 @@ async function openEditForm(key){
     document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
     document.getElementById('f-pdfluyentap').value=row.PDFLuyenTap||row.pdfluyentap||'';
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
+    const rawSt = (row.TrangThai||row.trangthai||row.status||'published').toString().trim().toLowerCase();
+    if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value = (rawSt==='draft'||rawSt==='archived') ? rawSt : 'published';
     const nd=row.NgayDang||row.ngaydang||row.date||'';
     document.getElementById('f-ngaydang').value=nd;
     document.getElementById('quiz-builder').innerHTML='';
@@ -4401,6 +4440,7 @@ async function saveLessonForm(){
         PDFLyThuyet:document.getElementById('f-pdflt').value.trim(),
         PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
+        TrangThai:(document.getElementById('f-trangthai')?.value||'published').trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
         BaiTap:'', // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
         ThuTuBai:document.getElementById('f-original-ttb').value // giu nguyen thu tu cu khi sua bai - thieu field nay khien GAS ghi de ThuTuBai='' moi lan Luu, lam bai tu nhay xuong cuoi chuong
@@ -4431,7 +4471,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,TrangThai:payload.TrangThai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         renderLessonList();
     }catch(err){

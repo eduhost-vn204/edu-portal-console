@@ -3,10 +3,10 @@ function doGet(e) {
   const hs     = e.parameter.hs || '';
   const examId = e.parameter.examId || '';
   try {
-    if (type === 'videocauhoi')     return getVideoCauHoi(e.parameter.bai || '');
-    if (type === 'baitaptracnghiem') return getBaiTapTracNghiem(e.parameter.bai || '');
+    if (type === 'videocauhoi')     return getVideoCauHoi(e.parameter.bai || '', e);
+    if (type === 'baitaptracnghiem') return getBaiTapTracNghiem(e.parameter.bai || '', e);
     if (type === 'transcript')       return getVideoTranscript(e.parameter.v || '', e.parameter.lang || '');
-    if (type === 'baihoc')           return getBaiHoc();
+    if (type === 'baihoc')           return getBaiHoc(e);
     if (type === 'diemthi')          return getDiemThi();
     if (type === 'tiendo')           return getTienDo(hs);
     if (type === 'profile')          return getProfile(hs);
@@ -399,10 +399,57 @@ function getLeaderboard() {
 }
 
 // ── GET: Bài học ──────────────────────────────────────────────
+const BAIHOC_COLS = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
 
-function getBaiHoc() {
-  const sheet = getOrCreate('BaiHoc', ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai']);
-  return jsonOut(sheetToJson(sheet));
+function normalizeLessonStatus(st) {
+  const s = (st === undefined || st === null) ? '' : String(st).trim().toLowerCase();
+  if (s === 'draft' || s === 'archived') return s;
+  return 'published'; // Tương thích ngược: thiếu hoặc khác draft/archived thì mặc định là published
+}
+
+function isLessonPublished(baiKey) {
+  if (!baiKey) return false;
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('BaiHoc');
+    if (!sheet) return true;
+    const rows = sheetToJson(sheet);
+    const target = rows.find(function(r) {
+      return String(r.MaBai || '').trim() === String(baiKey).trim() ||
+             String(r.TenBai || '').trim() === String(baiKey).trim();
+    });
+    if (!target) return false;
+    const st = normalizeLessonStatus(target.TrangThai || target.trangThai);
+    return st === 'published';
+  } catch (err) {
+    return true; // fallback an toàn nếu lỗi đọc
+  }
+}
+
+function getBaiHoc(e) {
+  const sheet = getOrCreate('BaiHoc', BAIHOC_COLS);
+  const rawRows = sheetToJson(sheet);
+
+  // Chuẩn hóa trường TrangThai cho toàn bộ bản ghi
+  const allRows = rawRows.map(function(r) {
+    const st = normalizeLessonStatus(r.TrangThai || r.trangThai);
+    return Object.assign({}, r, { TrangThai: st });
+  });
+
+  // Kiểm tra quyền Admin (qua adminKey hoặc scope=admin)
+  const adminKey = getAdminKey();
+  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
+  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
+
+  if (isAdmin) {
+    return jsonOut(allRows);
+  }
+
+  // Học sinh / Client công khai: TUYỆT ĐỐI KHÔNG nhận bài draft hoặc archived
+  const publicRows = allRows.filter(function(r) {
+    return r.TrangThai === 'published';
+  });
+  return jsonOut(publicRows);
 }
 
 // ── GET: Danh sách đề thi ────────────────────────────────────
@@ -618,13 +665,14 @@ function saveProgress(data) {
 // ── POST: Quản lý bài học (Admin) ─────────────────────────────
 
 function saveBaiHoc(data) {
-  const COLS = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai'];
+  const COLS = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
   const sheet = getOrCreate('BaiHoc', COLS); // tự thêm cột thiếu nếu sheet cũ
   const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.originalKey);
   // MaBai: ma dinh danh ON DINH cho moi bai hoc, KHONG BAO GIO doi khi doi ten khoa/chuong/bai
   // hoac sap xep lai vi tri - tien do hoc sinh (TienDo.lesson) bam theo ma nay de khong bao gio mat.
   let maBai = '';
   let existingThuTuBai = '';
+  let existingTrangThai = '';
   if (rowIdx) {
     const h_ = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
     const c_ = h_.indexOf('MaBai');
@@ -634,11 +682,19 @@ function saveBaiHoc(data) {
       const v_ = sheet.getRange(rowIdx, ct_+1).getValue();
       existingThuTuBai = (v_===null || v_===undefined) ? '' : v_;
     }
+    const cs_ = h_.indexOf('TrangThai');
+    if (cs_ >= 0) {
+      const s_ = sheet.getRange(rowIdx, cs_+1).getValue();
+      existingTrangThai = (s_===null || s_===undefined) ? '' : s_;
+    }
   }
   if (!maBai) maBai = data.maBai || ('B' + Utilities.getUuid().replace(/-/g,'').slice(0,12));
   // Giu nguyen ThuTuBai hien co neu client khong gui gia tri hop le (VD: cache trinh duyet cu
   // luc mo form Sua bai chua co ThuTuBai) - tranh bai tu "nhay xuong cuoi chuong" moi lan Luu (6/8/2026).
   const ttbToSave = (data.ThuTuBai !== undefined && data.ThuTuBai !== null && data.ThuTuBai !== '') ? data.ThuTuBai : existingThuTuBai;
+  const rawStatus = (data.TrangThai !== undefined && data.TrangThai !== null) ? data.TrangThai : ((data.trangThai !== undefined && data.trangThai !== null) ? data.trangThai : existingTrangThai);
+  const trangThaiToSave = normalizeLessonStatus(rawStatus);
+
   const rowData = {
     KhoaHoc:   data.KhoaHoc   || '',
     Chuong:    data.Chuong    || '',
@@ -649,11 +705,12 @@ function saveBaiHoc(data) {
     NgayDang:  data.NgayDang  || new Date().toISOString(),
     BaiTap:    data.BaiTap    || '',
     PDF:       data.PDF       || '',
-        PDFLyThuyet: data.PDFLyThuyet || '',
-        PDFLuyenTap: data.PDFLuyenTap || '',
+    PDFLyThuyet: data.PDFLyThuyet || '',
+    PDFLuyenTap: data.PDFLuyenTap || '',
     ThoiGianLamBai: data.ThoiGianLamBai || '',
     ThuTuBai: ttbToSave,
-    MaBai:     maBai
+    MaBai:     maBai,
+    TrangThai: trangThaiToSave
   };
   if (rowIdx) {
     writeRowNamed(sheet, rowIdx, rowData);
@@ -661,7 +718,7 @@ function saveBaiHoc(data) {
     appendRowNamed(sheet, rowData);
   }
   triggerStaticRefresh();
-  return jsonOut({ ok: true });
+  return jsonOut({ ok: true, maBai: maBai, TrangThai: trangThaiToSave });
 }
 
 function deleteBaiHoc(data) {
@@ -2259,12 +2316,24 @@ function saveSetting(data) {
 // ═══════════ CÂU HỎI TRONG VIDEO (video quiz checkpoint) ═══════════
 
 // GET ?type=videocauhoi&bai=<baiKey>
-function getVideoCauHoi(bai) {
+function getVideoCauHoi(bai, e) {
+  const adminKey = getAdminKey();
+  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
+  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
+
+  if (bai && !isAdmin && !isLessonPublished(bai)) {
+    return jsonOut({ data: [] });
+  }
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('VideoCauHoi');
   if (!sheet) return jsonOut({ data: [] });
   let rows = sheetToJson(sheet);
-  if (bai) rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  if (bai) {
+    rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  } else if (!isAdmin) {
+    rows = rows.filter(function(r){ return isLessonPublished(r.baiKey); });
+  }
   function _sortKeyTG(t){ return (t===null||t===undefined||t==='') ? Infinity : (Number(t)||0); }
   rows.sort(function(a,b){ return _sortKeyTG(a.thoiGian)-_sortKeyTG(b.thoiGian); });
   return jsonOut({ data: rows });
@@ -2370,12 +2439,24 @@ function saveVideoCauHoi(data) {
 }
 
 // GET ?type=baitaptracnghiem&bai=<baiKey>
-function getBaiTapTracNghiem(bai) {
+function getBaiTapTracNghiem(bai, e) {
+  const adminKey = getAdminKey();
+  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
+  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
+
+  if (bai && !isAdmin && !isLessonPublished(bai)) {
+    return jsonOut({ data: [] });
+  }
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName('BaiTapTracNghiem');
   if (!sheet) return jsonOut({ data: [] });
   let rows = sheetToJson(sheet);
-  if (bai) rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  if (bai) {
+    rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  } else if (!isAdmin) {
+    rows = rows.filter(function(r){ return isLessonPublished(r.baiKey); });
+  }
   rows.sort(function(a,b){ return (Number(a.thuTu)||0) - (Number(b.thuTu)||0); });
   return jsonOut({ data: rows });
 }

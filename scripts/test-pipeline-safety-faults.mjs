@@ -367,13 +367,20 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
       const bai = parsedUrl.searchParams.get('bai');
 
       if (type === 'baihoc') {
+        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
+        const data = isAdmin ? state.lessons : state.lessons.filter(l => (l.TrangThai || 'published') === 'published');
         return {
           ok: true,
           status: 200,
-          json: async () => ({ status: 'success', data: state.lessons })
+          json: async () => ({ status: 'success', data })
         };
       }
       if (type === 'videocauhoi') {
+        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
+        const lesson = state.lessons.find(l => l.MaBai === bai || l.TenBai === bai);
+        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+          return { ok: true, status: 200, json: async () => ({ status: 'success', data: [] }) };
+        }
         const filtered = state.videoCauHoi.filter(q => q.baiKey === bai);
         return {
           ok: true,
@@ -382,6 +389,11 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
         };
       }
       if (type === 'baitaptracnghiem') {
+        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
+        const lesson = state.lessons.find(l => l.MaBai === bai || l.TenBai === bai);
+        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+          return { ok: true, status: 200, json: async () => ({ status: 'success', data: [] }) };
+        }
         const filtered = state.baiTapTracNghiem.filter(q => q.baiKey === bai);
         return {
           ok: true,
@@ -411,7 +423,9 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
             PDFLyThuyet: body.PDFLyThuyet,
             PDF: body.PDF,
             PDFLuyenTap: body.PDFLuyenTap,
-            ThuTuBai: body.ThuTuBai
+            ThuTuBai: body.ThuTuBai,
+            MoTaBai: body.MoTaBai || '',
+            TrangThai: body.TrangThai || 'draft'
           });
         }
         throw new Error(`Simulated Network Connection Reset / Drop during [${action}]`);
@@ -439,7 +453,8 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
         VideoGiai: body.VideoGiai || '',
         PDFLyThuyet: body.PDFLyThuyet || '',
         PDF: body.PDF || '',
-        PDFLuyenTap: body.PDFLuyenTap || ''
+        PDFLuyenTap: body.PDFLuyenTap || '',
+        TrangThai: body.TrangThai || 'draft'
       };
       if (idx >= 0) {
         state.lessons[idx] = row;
@@ -802,10 +817,11 @@ const sampleExpectedPilotLesson = {
   VideoGiai: 'https://www.youtube.com/watch?v=pilot_practice_vid',
   PDFLyThuyet: 'https://drive.google.com/file/d/pilot_theory_pdf/view',
   PDF: 'https://drive.google.com/file/d/pilot_applied_pdf/view',
-  PDFLuyenTap: 'https://drive.google.com/file/d/pilot_practice_pdf/view'
+  PDFLuyenTap: 'https://drive.google.com/file/d/pilot_practice_pdf/view',
+  TrangThai: 'draft'
 };
 
-it('comparePilotLessonFields: Khớp 10/10 trường chuẩn trả về ok: true', () => {
+it('comparePilotLessonFields: Khớp 11/11 trường chuẩn trả về ok: true', () => {
   const res = comparePilotLessonFields(sampleExpectedPilotLesson, { ...sampleExpectedPilotLesson });
   assert.strictEqual(res.ok, true);
   assert.strictEqual(res.diffCount, 0);
@@ -825,7 +841,7 @@ it('comparePilotLessonFields Mutation: Sửa PDFLuyenTap (link luyện tập) ph
   assert.ok(res.diffs.some(d => d.field === 'PDFLuyenTap'));
 });
 
-for (const field of ['KhoaHoc', 'Chuong', 'TenBai', 'ThuTuBai', 'MoTaBai', 'Video', 'VideoGiai', 'PDFLyThuyet']) {
+for (const field of ['KhoaHoc', 'Chuong', 'TenBai', 'ThuTuBai', 'MoTaBai', 'Video', 'VideoGiai', 'PDFLyThuyet', 'TrangThai']) {
   it(`comparePilotLessonFields Mutation: Sửa trường [${field}] phải fail`, () => {
     const mutated = { ...sampleExpectedPilotLesson };
     if (typeof mutated[field] === 'number') {
