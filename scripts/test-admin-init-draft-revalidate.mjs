@@ -3,10 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
-console.log('=== TEST ADMIN INIT DRAFT REVALIDATION (quan-ly-bai-hoc.html) ===\n');
+console.log('=== TEST ADMIN INIT DRAFT REVALIDATION (quan-ly-bai-hoc.html & index.html) ===\n');
 
-const htmlPath = path.resolve('quan-ly-bai-hoc.html');
-const html = fs.readFileSync(htmlPath, 'utf8');
+const targetFiles = ['quan-ly-bai-hoc.html', 'index.html'];
 
 // Build sample mock data: 40 public lessons (published), 1 draft lesson (B11)
 const mockPublic40 = [];
@@ -156,9 +155,11 @@ function createTestSandbox(options = {}) {
   return { sandbox, domElements, fetchCalls };
 }
 
-// Extract the inline scripts from quan-ly-bai-hoc.html
-const scriptMatches = [...html.matchAll(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi)];
-const combinedScript = scriptMatches.map(m => m[1]).join('\n;\n');
+function extractCombinedScript(filePath) {
+  const html = fs.readFileSync(filePath, 'utf8');
+  const scriptMatches = [...html.matchAll(/<script[\s\S]*?>([\s\S]*?)<\/script>/gi)];
+  return scriptMatches.map(m => m[1]).join('\n;\n');
+}
 
 async function runTests() {
   let passed = 0;
@@ -203,105 +204,113 @@ async function runTests() {
     assert.strictEqual(adminHasB11, true, 'Admin phải chứa B11 với TrangThai=draft');
   });
 
-  // -------------------------------------------------------------------------
-  // TEST 2: initAdmin() phải revalidate qua getbaihocadmin và render B11 Draft
-  // -------------------------------------------------------------------------
-  await itAsync('2. initAdmin() gọi loadLessonsPreview() rồi luôn revalidate bằng loadLessons() -> Render B11 Draft', async () => {
-    const { sandbox, domElements, fetchCalls } = createTestSandbox();
-    const ctx = vm.createContext(sandbox);
+  for (const fileName of targetFiles) {
+    const filePath = path.resolve(fileName);
+    assert.strictEqual(fs.existsSync(filePath), true, `File ${fileName} phải tồn tại`);
+    const combinedScript = extractCombinedScript(filePath);
 
-    // Chạy toàn bộ script của trang Admin trong context
-    vm.runInContext(combinedScript, ctx);
+    console.log(`\n--- Kiểm thử file: ${fileName} ---`);
 
-    // Kích hoạt initAdmin()
-    assert.strictEqual(typeof ctx.initAdmin, 'function', 'initAdmin phải được định nghĩa');
-    ctx.initAdmin();
+    // -------------------------------------------------------------------------
+    // TEST 2: initAdmin() phải revalidate qua getbaihocadmin và render B11 Draft
+    // -------------------------------------------------------------------------
+    await itAsync(`2. [${fileName}] initAdmin() gọi loadLessonsPreview() rồi luôn revalidate bằng loadLessons() -> Render B11 Draft`, async () => {
+      const { sandbox, domElements, fetchCalls } = createTestSandbox();
+      const ctx = vm.createContext(sandbox);
 
-    // Chờ các promise giải quyết
-    await new Promise(r => setTimeout(r, 200));
+      // Chạy toàn bộ script của trang Admin trong context
+      vm.runInContext(combinedScript, ctx);
 
-    // Kiểm tra các lệnh gọi fetch
-    const getbaihocadminCalls = fetchCalls.filter(c => {
-      try {
-        const body = JSON.parse(c.opts?.body || '{}');
-        return body.action === 'getbaihocadmin';
-      } catch {
-        return false;
-      }
+      // Kích hoạt initAdmin()
+      assert.strictEqual(typeof ctx.initAdmin, 'function', 'initAdmin phải được định nghĩa');
+      ctx.initAdmin();
+
+      // Chờ các promise giải quyết
+      await new Promise(r => setTimeout(r, 200));
+
+      // Kiểm tra các lệnh gọi fetch
+      const getbaihocadminCalls = fetchCalls.filter(c => {
+        try {
+          const body = JSON.parse(c.opts?.body || '{}');
+          return body.action === 'getbaihocadmin';
+        } catch {
+          return false;
+        }
+      });
+
+      assert.strictEqual(
+        getbaihocadminCalls.length >= 1,
+        true,
+        `[${fileName}] initAdmin bắt buộc phải kích hoạt gọi POST getbaihocadmin để revalidate`
+      );
+
+      // Kiểm tra allLessons trong context
+      const currentLessons = vm.runInContext('allLessons', ctx);
+      assert.strictEqual(currentLessons.length, 41, `[${fileName}] allLessons cuối cùng phải có 41 bài học từ admin`);
+      const b11InAll = currentLessons.find(b => b.MaBai === 'B4ca24b64572f');
+      assert.ok(b11InAll, `[${fileName}] B11 phải có mặt trong allLessons`);
+      assert.strictEqual(b11InAll.TrangThai, 'draft', `[${fileName}] B11 trong allLessons phải là draft`);
+
+      // Kiểm tra DOM render trong #lesson-list-wrap
+      const renderedHtml = domElements['lesson-list-wrap'].innerHTML;
+      assert.strictEqual(
+        renderedHtml.includes('B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT'),
+        true,
+        `[${fileName}] HTML render phải chứa tiêu đề bài B11`
+      );
+      assert.strictEqual(
+        renderedHtml.includes('li-draft') || renderedHtml.includes('Draft'),
+        true,
+        `[${fileName}] HTML render phải hiển thị huy hiệu Draft cho bài B11`
+      );
     });
 
-    assert.strictEqual(
-      getbaihocadminCalls.length >= 1,
-      true,
-      'initAdmin bắt buộc phải kích hoạt gọi POST getbaihocadmin để revalidate'
-    );
+    // -------------------------------------------------------------------------
+    // TEST 3: localStorage cache cũ của preview không được chặn revalidation
+    // -------------------------------------------------------------------------
+    await itAsync(`3. [${fileName}] Preview cache cũ trong localStorage không được chặn getbaihocadmin revalidation`, async () => {
+      // Khởi tạo localStorage đã có sẵn cache 40 bài public
+      const initialStore = {
+        vlxt_admin_public_preview_baihoc: JSON.stringify({
+          t: Date.now(),
+          d: mockPublic40
+        })
+      };
 
-    // Kiểm tra allLessons trong context
-    const currentLessons = vm.runInContext('allLessons', ctx);
-    assert.strictEqual(currentLessons.length, 41, 'allLessons cuối cùng phải có 41 bài học từ admin');
-    const b11InAll = currentLessons.find(b => b.MaBai === 'B4ca24b64572f');
-    assert.ok(b11InAll, 'B11 phải có mặt trong allLessons');
-    assert.strictEqual(b11InAll.TrangThai, 'draft', 'B11 trong allLessons phải là draft');
+      const { sandbox, domElements, fetchCalls } = createTestSandbox({ initialLocalStorage: initialStore });
+      const ctx = vm.createContext(sandbox);
 
-    // Kiểm tra DOM render trong #lesson-list-wrap
-    const renderedHtml = domElements['lesson-list-wrap'].innerHTML;
-    assert.strictEqual(
-      renderedHtml.includes('B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT'),
-      true,
-      'HTML render phải chứa tiêu đề bài B11'
-    );
-    assert.strictEqual(
-      renderedHtml.includes('li-draft') || renderedHtml.includes('Draft'),
-      true,
-      'HTML render phải hiển thị huy hiệu Draft cho bài B11'
-    );
-  });
+      vm.runInContext(combinedScript, ctx);
 
-  // -------------------------------------------------------------------------
-  // TEST 3: localStorage cache cũ của preview không được chặn revalidation
-  // -------------------------------------------------------------------------
-  await itAsync('3. Preview cache cũ trong localStorage không được chặn getbaihocadmin revalidation', async () => {
-    // Khởi tạo localStorage đã có sẵn cache 40 bài public
-    const initialStore = {
-      vlxt_admin_public_preview_baihoc: JSON.stringify({
-        t: Date.now(),
-        d: mockPublic40
-      })
-    };
+      ctx.initAdmin();
 
-    const { sandbox, domElements, fetchCalls } = createTestSandbox({ initialLocalStorage: initialStore });
-    const ctx = vm.createContext(sandbox);
+      await new Promise(r => setTimeout(r, 200));
 
-    vm.runInContext(combinedScript, ctx);
+      const getbaihocadminCalls = fetchCalls.filter(c => {
+        try {
+          const body = JSON.parse(c.opts?.body || '{}');
+          return body.action === 'getbaihocadmin';
+        } catch {
+          return false;
+        }
+      });
 
-    ctx.initAdmin();
+      assert.strictEqual(
+        getbaihocadminCalls.length >= 1,
+        true,
+        `[${fileName}] Dù có cache preview trong localStorage, initAdmin vẫn phải gọi getbaihocadmin`
+      );
 
-    await new Promise(r => setTimeout(r, 200));
-
-    const getbaihocadminCalls = fetchCalls.filter(c => {
-      try {
-        const body = JSON.parse(c.opts?.body || '{}');
-        return body.action === 'getbaihocadmin';
-      } catch {
-        return false;
-      }
+      const revalidatedLessons = vm.runInContext('allLessons', ctx);
+      assert.strictEqual(revalidatedLessons.length, 41, `[${fileName}] allLessons phải được cập nhật đủ 41 bài từ admin`);
+      const renderedHtml = domElements['lesson-list-wrap'].innerHTML;
+      assert.strictEqual(
+        renderedHtml.includes('B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT'),
+        true,
+        `[${fileName}] B11 phải được render vào DOM ngay cả khi khởi đầu bằng preview cache cũ`
+      );
     });
-
-    assert.strictEqual(
-      getbaihocadminCalls.length >= 1,
-      true,
-      'Dù có cache preview trong localStorage, initAdmin vẫn phải gọi getbaihocadmin'
-    );
-
-    const revalidatedLessons = vm.runInContext('allLessons', ctx);
-    assert.strictEqual(revalidatedLessons.length, 41, 'allLessons phải được cập nhật đủ 41 bài từ admin');
-    const renderedHtml = domElements['lesson-list-wrap'].innerHTML;
-    assert.strictEqual(
-      renderedHtml.includes('B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT'),
-      true,
-      'B11 phải được render vào DOM ngay cả khi khởi đầu bằng preview cache cũ'
-    );
-  });
+  }
 
   console.log(`\n======================================================`);
   console.log(`KẾT QUẢ KIỂM THỬ: ${passed}/${total} PASS (100%)`);
