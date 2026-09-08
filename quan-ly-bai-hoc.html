@@ -4267,16 +4267,24 @@ async function vqLoadFromGAS(key, ...altKeys){
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         let found=[];
-        let anySuccess=false;
+        let hasError=false;
         let lastErr='';
         for(const k of tryKeys){
-            const res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
+            let res;
+            try {
+                res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
+            } catch(err) {
+                hasError = true;
+                lastErr = err.message || 'Lỗi kết nối';
+                console.warn('vqLoadFromGAS: ngoại lệ khi đọc câu hỏi video bài ' + k, err);
+                continue;
+            }
             if(res && res.ok && Array.isArray(res.data)){
-                anySuccess=true;
                 found=res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
                 if(found.length){ _vqSourceKey=k; break; }
-            } else if(res && !res.ok){
-                lastErr = res.msg || 'Unauthorized hoặc lỗi máy chủ';
+            } else {
+                hasError = true;
+                lastErr = (res && res.msg) || 'Unauthorized hoặc lỗi máy chủ';
                 console.warn('vqLoadFromGAS: lỗi khi đọc câu hỏi video bài ' + k, res);
             }
         }
@@ -4297,13 +4305,15 @@ async function vqLoadFromGAS(key, ...altKeys){
             window._vqLoadStatus='success-with-data';
             renderVQ();
             return { status:'success-with-data', data:vqItems };
-        } else if(anySuccess){
+        } else if(!hasError){
+            // TẤT CẢ alias đều phản hồi admin POST thành công và đều không có dữ liệu
             vqItems=[];
             window._vqTouched=false;
             window._vqLoadStatus='success-empty';
             renderVQ();
             return { status:'success-empty', data:[] };
         } else {
+            // Không tìm được data và có ít nhất 1 alias gặp lỗi -> fail-closed bắt buộc là failed
             window._vqLoadStatus='failed';
             if(box) box.innerHTML='<div style="color:var(--red);font-size:13px;padding:6px 0"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải câu hỏi trong video: '+nhEsc(lastErr||'Không có quyền hoặc lỗi mạng')+'</div>';
             return { status:'failed', data:[], error:lastErr||'Lỗi tải câu hỏi video' };
@@ -4346,17 +4356,25 @@ async function qbLoadFromGAS(key, ...altKeys){
     window._qbLoadStatus='loading';
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
-        let anySuccess=false;
+        let foundData=null;
+        let hasError=false;
         let lastErr='';
         for(const k of tryKeys){
-            const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
+            let res;
+            try {
+                res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
+            } catch(err) {
+                hasError = true;
+                lastErr = err.message || 'Lỗi kết nối';
+                console.warn('qbLoadFromGAS: ngoại lệ khi đọc bài tập trắc nghiệm bài ' + k, err);
+                continue;
+            }
             if(res && res.ok && Array.isArray(res.data)){
-                anySuccess=true;
                 const rows = res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
                 if(rows.length){
                     _qbSourceKey=k;
                     rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
-                    const data = rows.map(rw=>({
+                    foundData = rows.map(rw=>({
                         type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
                         q:(rw.question||'').toString(),
                         A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
@@ -4364,18 +4382,23 @@ async function qbLoadFromGAS(key, ...altKeys){
                         ans:String(rw.correct||'').toUpperCase().trim(),
                         correct:(rw.correct||'').toString()
                     }));
-                    window._qbLoadStatus='success-with-data';
-                    return { status:'success-with-data', data };
+                    break;
                 }
-            } else if(res && !res.ok){
-                lastErr = res.msg || 'Unauthorized hoặc lỗi máy chủ';
+            } else {
+                hasError = true;
+                lastErr = (res && res.msg) || 'Unauthorized hoặc lỗi máy chủ';
                 console.warn('qbLoadFromGAS: lỗi khi đọc bài tập trắc nghiệm bài ' + k, res);
             }
         }
-        if(anySuccess){
+        if(foundData && foundData.length){
+            window._qbLoadStatus='success-with-data';
+            return { status:'success-with-data', data:foundData };
+        } else if(!hasError){
+            // TẤT CẢ alias đều phản hồi admin POST thành công và đều không có dữ liệu
             window._qbLoadStatus='success-empty';
             return { status:'success-empty', data:[] };
         } else {
+            // Không tìm được data và có ít nhất 1 alias gặp lỗi -> fail-closed bắt buộc là failed
             window._qbLoadStatus='failed';
             return { status:'failed', data:[], error:lastErr||'Lỗi tải bài tập trắc nghiệm' };
         }
