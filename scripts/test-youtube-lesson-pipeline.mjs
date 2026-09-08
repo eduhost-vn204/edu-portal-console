@@ -105,14 +105,72 @@ async function runTests() {
     // ── TEST 6: Tạo bài học DRAFT + VideoCauHoi + BaiTapTracNghiem với Mock Server ──
     console.log(`\nTest 6: Gửi bài học DRAFT & 2 nhóm câu hỏi lên backend với Mock Server`);
     const capturedPayloads = [];
+    const inMemoryDb = {
+      baihoc: [],
+      videocauhoi: {},
+      baitaptracnghiem: {}
+    };
+
     const mockFetch = async (url, opts) => {
       if (opts && opts.body) {
-        capturedPayloads.push(JSON.parse(opts.body));
+        const body = JSON.parse(opts.body);
+        capturedPayloads.push(body);
+        if (body.action === 'savebaihoc') {
+          inMemoryDb.baihoc.push({
+            MaBai: body.maBai || 'Bmock123456',
+            KhoaHoc: body.KhoaHoc,
+            Chuong: body.Chuong,
+            TenBai: body.TenBai,
+            Video: body.Video,
+            VideoGiai: body.VideoGiai,
+            PDFLyThuyet: body.PDFLyThuyet,
+            PDF: body.PDF,
+            PDFLuyenTap: body.PDFLuyenTap,
+            ThuTuBai: body.ThuTuBai
+          });
+          return { ok: true, json: async () => ({ ok: true }) };
+        }
+        if (body.action === 'savevideocauhoi') {
+          inMemoryDb.videocauhoi[body.baiKey] = body.items.map((it, idx) => ({
+            thuTu: idx + 1,
+            thoiGian: it.t,
+            question: it.q,
+            optA: it.A,
+            optB: it.B,
+            optC: it.C,
+            optD: it.D,
+            correct: it.ans || it.correct
+          }));
+          return { ok: true, json: async () => ({ ok: true, count: body.items.length }) };
+        }
+        if (body.action === 'savebaitaptracnghiem') {
+          inMemoryDb.baitaptracnghiem[body.baiKey] = body.items.map((it, idx) => ({
+            thuTu: idx + 1,
+            question: it.q,
+            optA: it.A,
+            optB: it.B,
+            optC: it.C,
+            optD: it.D,
+            correct: it.correct
+          }));
+          return { ok: true, json: async () => ({ ok: true, count: body.items.length }) };
+        }
       }
-      return {
-        ok: true,
-        json: async () => ({ ok: true, action: 'created', data: [] })
-      };
+
+      if (url.includes('type=baihoc')) {
+        return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baihoc }) };
+      }
+      if (url.includes('type=videocauhoi')) {
+        const match = url.match(/bai=([^&]+)/);
+        const baiKey = match ? decodeURIComponent(match[1]) : '';
+        return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.videocauhoi[baiKey] || [] }) };
+      }
+      if (url.includes('type=baitaptracnghiem')) {
+        const match = url.match(/bai=([^&]+)/);
+        const baiKey = match ? decodeURIComponent(match[1]) : '';
+        return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baitaptracnghiem[baiKey] || [] }) };
+      }
+      return { ok: true, json: async () => ({ ok: true, data: [] }) };
     };
 
     const mockAppliedQs = Array.from({ length: 20 }, (_, i) => ({
@@ -159,6 +217,27 @@ async function runTests() {
 
     // ── TEST 8: Đối soát Backend (Read-Back) & Xác minh Bài 10 thật nguyên vẹn ──
     console.log(`\nTest 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật`);
+    // ── TEST 8: Đối soát Backend (Read-Back) & Xác minh Bài 10 thật nguyên vẹn ──
+    console.log(`\nTest 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật`);
+    const mockRealSnapshot = {
+      MaBai: 'B10_REAL_MOCK',
+      KhoaHoc: 'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12',
+      Chuong: 'CHƯƠNG 2 – KHÍ LÍ TƯỞNG',
+      TenBai: REAL_B10_LESSON_NAME,
+      Video: 'https://youtu.be/real-b10',
+      VideoGiai: 'https://youtu.be/real-b10-giai',
+      MoTaBai: 'Mô tả bài 10 thật',
+      NgayDang: '2026-09-07T17:00:00.000Z',
+      PDF: 'https://drive.google.com/real-pdf',
+      PDFLyThuyet: 'https://drive.google.com/real-pdf-lt',
+      PDFLuyenTap: 'https://drive.google.com/real-pdf-bt',
+      BaiTap: '',
+      ThoiGianLamBai: '',
+      ThuTuBai: 3
+    };
+    const mockSnapshotPath = path.join(tmpDir, 'real_b10_snapshot_before.json');
+    fs.writeFileSync(mockSnapshotPath, JSON.stringify(mockRealSnapshot, null, 2), 'utf8');
+
     const mockVerifyFetch = async (url) => {
       if (url.includes('type=baihoc')) {
         return {
@@ -166,8 +245,14 @@ async function runTests() {
           json: async () => ({
             ok: true,
             data: [
-              { TenBai: REAL_B10_LESSON_NAME, Video: 'https://real-video', PDF: 'https://real-pdf' },
-              { TenBai: PILOT_B10_LESSON_NAME, Video: videoRes1.theoryUrl, VideoGiai: videoRes1.practiceUrl, PDFLyThuyet: driveRes1.theoryPdfUrl }
+              { ...mockRealSnapshot },
+              {
+                TenBai: PILOT_B10_LESSON_NAME,
+                Video: videoRes1.theoryUrl,
+                VideoGiai: videoRes1.practiceUrl,
+                PDFLyThuyet: driveRes1.theoryPdfUrl,
+                ThuTuBai: 999
+              }
             ]
           })
         };
@@ -181,7 +266,10 @@ async function runTests() {
       return { ok: true, json: async () => ({ ok: true, data: [] }) };
     };
 
-    const verifyResult = await verifyBackendReadBack(parsed, { fetchImpl: mockVerifyFetch });
+    const verifyResult = await verifyBackendReadBack(parsed, {
+      fetchImpl: mockVerifyFetch,
+      snapshotPath: mockSnapshotPath
+    });
     assert(verifyResult.verified === true, 'Read-back verification thành công 100%');
     assert(verifyResult.realLessonUntouched === true, 'Bài 10 thật được xác minh nguyên vẹn');
     assert(verifyResult.videoCauHoiCount === 20, 'Xác nhận đúng 20 câu VideoCauHoi');
