@@ -127,7 +127,8 @@ async function runTests() {
             PDF: body.PDF,
             PDFLuyenTap: body.PDFLuyenTap,
             ThuTuBai: body.ThuTuBai,
-            MoTaBai: body.MoTaBai || ''
+            MoTaBai: body.MoTaBai || '',
+            TrangThai: body.TrangThai || 'draft'
           });
           return { ok: true, json: async () => ({ ok: true }) };
         }
@@ -161,16 +162,30 @@ async function runTests() {
       }
 
       if (url.includes('type=baihoc')) {
-        return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baihoc }) };
+        const isAdmin = url.includes('scope=admin');
+        const list = isAdmin
+          ? inMemoryDb.baihoc
+          : inMemoryDb.baihoc.filter(b => (b.TrangThai || 'published') === 'published');
+        return { ok: true, json: async () => ({ ok: true, data: list }) };
       }
       if (url.includes('type=videocauhoi')) {
+        const isAdmin = url.includes('scope=admin');
         const match = url.match(/bai=([^&]+)/);
         const baiKey = match ? decodeURIComponent(match[1]) : '';
+        const lesson = inMemoryDb.baihoc.find(b => b.MaBai === baiKey || b.TenBai === baiKey);
+        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+          return { ok: true, json: async () => ({ ok: true, data: [] }) };
+        }
         return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.videocauhoi[baiKey] || [] }) };
       }
       if (url.includes('type=baitaptracnghiem')) {
+        const isAdmin = url.includes('scope=admin');
         const match = url.match(/bai=([^&]+)/);
         const baiKey = match ? decodeURIComponent(match[1]) : '';
+        const lesson = inMemoryDb.baihoc.find(b => b.MaBai === baiKey || b.TenBai === baiKey);
+        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+          return { ok: true, json: async () => ({ ok: true, data: [] }) };
+        }
         return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baitaptracnghiem[baiKey] || [] }) };
       }
       return { ok: true, json: async () => ({ ok: true, data: [] }) };
@@ -263,33 +278,32 @@ async function runTests() {
 
     const mockVerifyFetch = async (url) => {
       if (url.includes('type=baihoc')) {
-        return {
-          ok: true,
-          json: async () => ({
-            ok: true,
-            data: [
-              { ...mockRealSnapshot },
-              {
-                KhoaHoc: parsed.course,
-                Chuong: parsed.chapter,
-                TenBai: PILOT_B10_LESSON_NAME,
-                ThuTuBai: 999,
-                MoTaBai: parsed.description,
-                Video: videoRes1.theoryUrl,
-                VideoGiai: videoRes1.practiceUrl,
-                PDFLyThuyet: driveRes1.theoryPdfUrl,
-                PDF: driveRes1.appliedPdfUrl,
-                PDFLuyenTap: driveRes1.practicePdfUrl
-              }
-            ]
-          })
-        };
+        const isAdmin = url.includes('scope=admin');
+        const dataList = isAdmin ? [
+          { ...mockRealSnapshot },
+          {
+            KhoaHoc: parsed.course,
+            Chuong: parsed.chapter,
+            TenBai: PILOT_B10_LESSON_NAME,
+            ThuTuBai: 999,
+            MoTaBai: parsed.description,
+            Video: videoRes1.theoryUrl,
+            VideoGiai: videoRes1.practiceUrl,
+            PDFLyThuyet: driveRes1.theoryPdfUrl,
+            PDF: driveRes1.appliedPdfUrl,
+            PDFLuyenTap: driveRes1.practicePdfUrl,
+            TrangThai: 'draft'
+          }
+        ] : [ { ...mockRealSnapshot } ];
+        return { ok: true, json: async () => ({ ok: true, data: dataList }) };
       }
       if (url.includes('type=videocauhoi')) {
-        return { ok: true, json: async () => ({ ok: true, data: mockVerifiedVchRows }) };
+        const isAdmin = url.includes('scope=admin');
+        return { ok: true, json: async () => ({ ok: true, data: isAdmin ? mockVerifiedVchRows : [] }) };
       }
       if (url.includes('type=baitaptracnghiem')) {
-        return { ok: true, json: async () => ({ ok: true, data: mockVerifiedBtRows }) };
+        const isAdmin = url.includes('scope=admin');
+        return { ok: true, json: async () => ({ ok: true, data: isAdmin ? mockVerifiedBtRows : [] }) };
       }
       return { ok: true, json: async () => ({ ok: true, data: [] }) };
     };
