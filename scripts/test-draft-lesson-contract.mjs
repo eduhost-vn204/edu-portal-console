@@ -686,10 +686,10 @@ await itAsync('verifyBackendReadBack: Thành công khi bài draft chỉ trả qu
 // =========================================================================
 console.log(`\n--- [SUITE 5] Admin Form Safety & Non-Destructive Read Failure Prevention ---`);
 
-await itAsync('test-admin-form-safety.mjs: 5/5 kịch bản an toàn form (lock on error, touch tracking, zero destructive writes)', async () => {
+await itAsync('test-admin-form-safety.mjs: 8/8 kịch bản an toàn form (lock on error, alias ordering fail-closed, touch tracking, zero destructive writes)', async () => {
   const { execSync } = await import('node:child_process');
   const output = execSync('node scripts/test-admin-form-safety.mjs', { encoding: 'utf8' });
-  assert.ok(output.includes('5/5 PASS'), 'Toàn bộ 5 test form safety phải pass');
+  assert.ok(output.includes('8/8 PASS'), 'Toàn bộ 8 test form safety phải pass');
 });
 
 console.log(`\n======================================================`);

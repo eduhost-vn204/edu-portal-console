@@ -388,8 +388,99 @@ await testAsync('5. Thầy sửa câu hỏi video thật sự -> _vqTouched=true
   assert.ok(writeActions.includes('savevideocauhoi'), 'savevideocauhoi PHẢI được gọi khi _vqTouched=true');
 });
 
+await testAsync('6. Alias ordering: Current alias success-empty, legacy alias failed -> Khóa form, không POST save, server data giữ nguyên', async () => {
+  const { sandbox, domElements, writes, toasts } = createMockEnvironment({
+    getvideocauhoiadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: true, data: [] }; // Hiện tại: empty
+      return { ok: false, msg: 'Unauthorized hoặc network error trên alias cũ' }; // Cũ: failed
+    },
+    getbaitaptracnghiemadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: true, data: [] }; // Hiện tại: empty
+      return { ok: false, msg: '500 Server Error trên alias cũ' }; // Cũ: failed
+    }
+  });
+
+  const lessonKey = 'Vật Lý 12 - Khóa VIP|||Chương 1|||Bài 1: Dao động';
+  await sandbox.openEditForm(lessonKey);
+
+  // 1. Phải fail-closed: dù alias hiện tại trả 200 [], nhưng alias cũ lỗi thì kết quả bắt buộc là failed
+  assert.strictEqual(sandbox.getVQLoadStatus(), 'failed', '_vqLoadStatus bắt buộc là failed khi alias cũ lỗi');
+  assert.strictEqual(sandbox.getQBLoadStatus(), 'failed', '_qbLoadStatus bắt buộc là failed khi alias cũ lỗi');
+
+  // 2. Nút Lưu phải bị vô hiệu hóa và có banner cảnh báo
+  assert.strictEqual(domElements['btn-save-lesson'].disabled, true, 'Nút Lưu phải bị disabled');
+  assert.ok(domElements['btn-save-lesson'].innerHTML.includes('Đã khóa lưu'), 'Nút Lưu phải hiển thị Đã khóa lưu');
+  assert.ok(domElements['fp-error-banner'], 'Banner lỗi phải hiển thị');
+
+  // 3. Thử lưu form
+  await sandbox.saveLessonForm();
+
+  // 4. Tuyệt đối không có lệnh ghi nào được gửi lên server
+  assert.strictEqual(writes.length, 0, 'Cấm tuyệt đối POST save khi alias cũ bị lỗi');
+  assert.strictEqual(writes.some(w => w.action === 'savevideocauhoi'), false, 'Không gọi savevideocauhoi');
+  assert.strictEqual(writes.some(w => w.action === 'savebaitaptracnghiem'), false, 'Không gọi savebaitaptracnghiem');
+});
+
+await testAsync('7. Alias ordering: Current alias failed, legacy alias success-empty -> Khóa form, không POST save, server data giữ nguyên', async () => {
+  const { sandbox, domElements, writes } = createMockEnvironment({
+    getvideocauhoiadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: false, msg: 'Unauthorized trên alias hiện tại' }; // Hiện tại: failed
+      return { ok: true, data: [] }; // Cũ: empty
+    },
+    getbaitaptracnghiemadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: false, msg: 'Network error trên alias hiện tại' }; // Hiện tại: failed
+      return { ok: true, data: [] }; // Cũ: empty
+    }
+  });
+
+  const lessonKey = 'Vật Lý 12 - Khóa VIP|||Chương 1|||Bài 1: Dao động';
+  await sandbox.openEditForm(lessonKey);
+
+  // 1. Phải fail-closed: alias hiện tại lỗi thì kết quả bắt buộc là failed, bất kể alias cũ có empty
+  assert.strictEqual(sandbox.getVQLoadStatus(), 'failed', '_vqLoadStatus bắt buộc là failed khi alias hiện tại lỗi');
+  assert.strictEqual(sandbox.getQBLoadStatus(), 'failed', '_qbLoadStatus bắt buộc là failed khi alias hiện tại lỗi');
+
+  // 2. Nút Lưu phải bị vô hiệu hóa
+  assert.strictEqual(domElements['btn-save-lesson'].disabled, true, 'Nút Lưu phải bị disabled');
+  assert.ok(domElements['btn-save-lesson'].innerHTML.includes('Đã khóa lưu'), 'Nút Lưu phải hiển thị Đã khóa lưu');
+
+  // 3. Thử lưu form
+  await sandbox.saveLessonForm();
+
+  // 4. Tuyệt đối không có lệnh ghi nào được gửi lên server
+  assert.strictEqual(writes.length, 0, 'Cấm tuyệt đối POST save khi alias hiện tại bị lỗi');
+  assert.strictEqual(writes.some(w => w.action === 'savevideocauhoi'), false, 'Không gọi savevideocauhoi');
+  assert.strictEqual(writes.some(w => w.action === 'savebaitaptracnghiem'), false, 'Không gọi savebaitaptracnghiem');
+});
+
+await testAsync('8. Alias ordering: Data tìm thấy ở alias cũ thành công -> Trả về success-with-data an toàn', async () => {
+  const { sandbox, domElements, writes } = createMockEnvironment({
+    getvideocauhoiadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: true, data: [] };
+      return {
+        ok: true,
+        data: [{ baiKey: payload.bai, thoiGian: 20, question: 'Legacy VQ', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A' }]
+      };
+    },
+    getbaitaptracnghiemadmin: (payload) => {
+      if (payload.bai === 'B01') return { ok: true, data: [] };
+      return {
+        ok: true,
+        data: [{ baiKey: payload.bai, thuTu: 1, question: 'Legacy QB', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A' }]
+      };
+    }
+  });
+
+  const lessonKey = 'Vật Lý 12 - Khóa VIP|||Chương 1|||Bài 1: Dao động';
+  await sandbox.openEditForm(lessonKey);
+
+  assert.strictEqual(sandbox.getVQLoadStatus(), 'success-with-data');
+  assert.strictEqual(sandbox.getQBLoadStatus(), 'success-with-data');
+  assert.strictEqual(sandbox.getVQItems().length, 1);
+  assert.strictEqual(domElements['btn-save-lesson'].disabled, false, 'Nút Lưu phải được bật khi tải thành công có data');
+});
+
 console.log(`\n======================================================`);
 console.log(`KẾT QUẢ KIỂM THỬ AN TOÀN FORM: ${passed}/${total} PASS`);
 console.log(`======================================================\n`);
-
 if (passed < total) process.exit(1);
