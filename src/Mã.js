@@ -3,10 +3,10 @@ function doGet(e) {
   const hs     = e.parameter.hs || '';
   const examId = e.parameter.examId || '';
   try {
-    if (type === 'videocauhoi')     return getVideoCauHoi(e.parameter.bai || '', e);
-    if (type === 'baitaptracnghiem') return getBaiTapTracNghiem(e.parameter.bai || '', e);
+    if (type === 'videocauhoi')     return getVideoCauHoi(e.parameter.bai || '');
+    if (type === 'baitaptracnghiem') return getBaiTapTracNghiem(e.parameter.bai || '');
     if (type === 'transcript')       return getVideoTranscript(e.parameter.v || '', e.parameter.lang || '');
-    if (type === 'baihoc')           return getBaiHoc(e);
+    if (type === 'baihoc')           return getBaiHoc();
     if (type === 'diemthi')          return getDiemThi();
     if (type === 'tiendo')           return getTienDo(hs);
     if (type === 'profile')          return getProfile(hs);
@@ -39,6 +39,9 @@ function doPost(e) {
   try {
     const data   = JSON.parse(e.postData.contents);
     const action = (data.action || '').toLowerCase();
+    if (action === 'getbaihocadmin' || action === 'get_bai_hoc_admin') return getBaiHocAdmin(data);
+    if (action === 'getvideocauhoiadmin' || action === 'get_video_cau_hoi_admin') return getVideoCauHoiAdmin(data);
+    if (action === 'getbaitaptracnghiemadmin' || action === 'get_bai_tap_trac_nghiem_admin') return getBaiTapTracNghiemAdmin(data);
     if (action === 'getquestionstats' || action === 'get_question_stats') return getQuestionStats(data);
     if (action === 'register')           return registerUser(data);
     if (action === 'login')              return loginUser(data);
@@ -412,7 +415,7 @@ function isLessonPublished(baiKey) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('BaiHoc');
-    if (!sheet) return true;
+    if (!sheet) return false;
     const rows = sheetToJson(sheet);
     const target = rows.find(function(r) {
       return String(r.MaBai || '').trim() === String(baiKey).trim() ||
@@ -422,7 +425,7 @@ function isLessonPublished(baiKey) {
     const st = normalizeLessonStatus(target.TrangThai || target.trangThai);
     return st === 'published';
   } catch (err) {
-    return true; // fallback an toàn nếu lỗi đọc
+    return false; // fail-closed bảo vệ an toàn
   }
 }
 
@@ -430,26 +433,30 @@ function getBaiHoc(e) {
   const sheet = getOrCreate('BaiHoc', BAIHOC_COLS);
   const rawRows = sheetToJson(sheet);
 
-  // Chuẩn hóa trường TrangThai cho toàn bộ bản ghi
+  // Public GET: TUYỆT ĐỐI chỉ trả bài published, bất kỳ query param nào cũng không nâng quyền
+  const publicRows = rawRows
+    .map(function(r) {
+      const st = normalizeLessonStatus(r.TrangThai || r.trangThai);
+      return Object.assign({}, r, { TrangThai: st });
+    })
+    .filter(function(r) {
+      return r.TrangThai === 'published';
+    });
+
+  return jsonOut(publicRows);
+}
+
+function getBaiHocAdmin(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const sheet = getOrCreate('BaiHoc', BAIHOC_COLS);
+  const rawRows = sheetToJson(sheet);
   const allRows = rawRows.map(function(r) {
     const st = normalizeLessonStatus(r.TrangThai || r.trangThai);
     return Object.assign({}, r, { TrangThai: st });
   });
-
-  // Kiểm tra quyền Admin (qua adminKey hoặc scope=admin)
-  const adminKey = getAdminKey();
-  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
-  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
-
-  if (isAdmin) {
-    return jsonOut(allRows);
-  }
-
-  // Học sinh / Client công khai: TUYỆT ĐỐI KHÔNG nhận bài draft hoặc archived
-  const publicRows = allRows.filter(function(r) {
-    return r.TrangThai === 'published';
-  });
-  return jsonOut(publicRows);
+  return jsonOut({ ok: true, data: allRows });
 }
 
 // ── GET: Danh sách đề thi ────────────────────────────────────
@@ -2316,12 +2323,9 @@ function saveSetting(data) {
 // ═══════════ CÂU HỎI TRONG VIDEO (video quiz checkpoint) ═══════════
 
 // GET ?type=videocauhoi&bai=<baiKey>
-function getVideoCauHoi(bai, e) {
-  const adminKey = getAdminKey();
-  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
-  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
-
-  if (bai && !isAdmin && !isLessonPublished(bai)) {
+// Public GET: TUYỆT ĐỐI CHẶN câu hỏi thuộc bài draft hoặc archived, không query nào nâng quyền
+function getVideoCauHoi(bai) {
+  if (bai && !isLessonPublished(bai)) {
     return jsonOut({ data: [] });
   }
 
@@ -2331,12 +2335,29 @@ function getVideoCauHoi(bai, e) {
   let rows = sheetToJson(sheet);
   if (bai) {
     rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
-  } else if (!isAdmin) {
+  } else {
     rows = rows.filter(function(r){ return isLessonPublished(r.baiKey); });
   }
   function _sortKeyTG(t){ return (t===null||t===undefined||t==='') ? Infinity : (Number(t)||0); }
   rows.sort(function(a,b){ return _sortKeyTG(a.thoiGian)-_sortKeyTG(b.thoiGian); });
   return jsonOut({ data: rows });
+}
+
+function getVideoCauHoiAdmin(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('VideoCauHoi');
+  if (!sheet) return jsonOut({ ok: true, data: [] });
+  let rows = sheetToJson(sheet);
+  const bai = data && (data.bai || data.baiKey);
+  if (bai) {
+    rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  }
+  function _sortKeyTG(t){ return (t===null||t===undefined||t==='') ? Infinity : (Number(t)||0); }
+  rows.sort(function(a,b){ return _sortKeyTG(a.thoiGian)-_sortKeyTG(b.thoiGian); });
+  return jsonOut({ ok: true, data: rows });
 }
 
 // GET ?type=transcript&v=<youtubeVideoId>&lang=<vi|en|...>
@@ -2439,12 +2460,9 @@ function saveVideoCauHoi(data) {
 }
 
 // GET ?type=baitaptracnghiem&bai=<baiKey>
-function getBaiTapTracNghiem(bai, e) {
-  const adminKey = getAdminKey();
-  const reqAdminKey = (e && e.parameter && (e.parameter.adminKey || e.parameter.key)) || '';
-  const isAdmin = (adminKey && reqAdminKey === adminKey) || (e && e.parameter && (e.parameter.scope === 'admin' || e.parameter.includeDraft === 'true'));
-
-  if (bai && !isAdmin && !isLessonPublished(bai)) {
+// Public GET: TUYỆT ĐỐI CHẶN bài tập thuộc bài draft hoặc archived, không query nào nâng quyền
+function getBaiTapTracNghiem(bai) {
+  if (bai && !isLessonPublished(bai)) {
     return jsonOut({ data: [] });
   }
 
@@ -2454,11 +2472,27 @@ function getBaiTapTracNghiem(bai, e) {
   let rows = sheetToJson(sheet);
   if (bai) {
     rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
-  } else if (!isAdmin) {
+  } else {
     rows = rows.filter(function(r){ return isLessonPublished(r.baiKey); });
   }
   rows.sort(function(a,b){ return (Number(a.thuTu)||0) - (Number(b.thuTu)||0); });
   return jsonOut({ data: rows });
+}
+
+function getBaiTapTracNghiemAdmin(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('BaiTapTracNghiem');
+  if (!sheet) return jsonOut({ ok: true, data: [] });
+  let rows = sheetToJson(sheet);
+  const bai = data && (data.bai || data.baiKey);
+  if (bai) {
+    rows = rows.filter(function(r){ return String(r.baiKey) === String(bai); });
+  }
+  rows.sort(function(a,b){ return (Number(a.thuTu)||0) - (Number(b.thuTu)||0); });
+  return jsonOut({ ok: true, data: rows });
 }
 
 // POST {action:'savebaitaptracnghiem', baiKey, originalKey, items:[{type,q,A,B,C,D,correct}]}

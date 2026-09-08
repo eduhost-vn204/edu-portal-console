@@ -2129,7 +2129,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope','getbaihocadmin','getvideocauhoiadmin','getbaitaptracnghiemadmin'];
 (function(){
     const _fetch = window.fetch.bind(window);
     window.fetch = function(url, opts){
@@ -3006,10 +3006,16 @@ async function loadLessons(){
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
     }
     try{
-        const r = await fetch(DB_URL + '?type=baihoc&scope=admin');
-        const data = await r.json();
-        allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
-        aSetCache(CKEY, data);
+        const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+        if(res && res.ok && Array.isArray(res.data)){
+            allLessons = res.data;
+            aSetCache(CKEY, res.data);
+        } else {
+            const r = await fetch(DB_URL + '?type=baihoc');
+            const data = await r.json();
+            allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
+            aSetCache(CKEY, data);
+        }
     }catch(e){
         console.warn('Không kết nối được Sheets:', e);
         if(!allLessons.length) toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa kết nối được Google Sheets.', 'err');
@@ -3040,8 +3046,8 @@ async function loadLessonsPreview(){
 // rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
 async function loadQbCounts(){
     try{
-        const r = await fetch(DB_URL+'?type=baitaptracnghiem&scope=admin&t='+Date.now());
-        const j = await r.json();
+        const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin' });
+        const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now())).json();
         const map = {};
         (j&&j.data||[]).forEach(rw=>{
             const k = String(rw&&rw.baiKey||'');
@@ -3063,7 +3069,11 @@ function khoaOf(r){ return r.KhoaHoc||r.khoahoc||r.course||r.mon||'Khác'; }
 // mang tên mới, phần còn lại vẫn tên cũ) — sự cố xảy ra ngày 5/8/2026 với khóa "Chuyên Đề Lí
 // Thuyết GĐ1" (chỉ 17/33 bài được đổi tên vì allLessons lúc đó là cache thiếu bài).
 async function fetchFreshLessons(){
-    const r = await fetch(DB_URL + '?type=baihoc&scope=admin&t=' + Date.now());
+    const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+    if(res && res.ok && Array.isArray(res.data)){
+        return res.data;
+    }
+    const r = await fetch(DB_URL + '?type=baihoc&t=' + Date.now());
     const data = await r.json();
     return Array.isArray(data) ? data : (data.baihoc || data.data || []);
 }
@@ -4172,8 +4182,8 @@ async function vqLoadFromGAS(key, ...altKeys){
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         let found=[];
         for(const k of tryKeys){
-            const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now());
-            const j=await r.json();
+            const res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
+            const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now())).json();
             found=(j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
             if(found.length){ _vqSourceKey=k; break; }
         }
@@ -4209,8 +4219,8 @@ async function qbLoadFromGAS(key, ...altKeys){
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         for(const k of tryKeys){
-            const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now());
-            const j = await r.json();
+            const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
+            const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now())).json();
             const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
             if(rows.length){
                 _qbSourceKey=k;

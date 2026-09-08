@@ -367,8 +367,7 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
       const bai = parsedUrl.searchParams.get('bai');
 
       if (type === 'baihoc') {
-        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
-        const data = isAdmin ? state.lessons : state.lessons.filter(l => (l.TrangThai || 'published') === 'published');
+        const data = state.lessons.filter(l => (l.TrangThai || 'published') === 'published');
         return {
           ok: true,
           status: 200,
@@ -376,9 +375,8 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
         };
       }
       if (type === 'videocauhoi') {
-        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
         const lesson = state.lessons.find(l => l.MaBai === bai || l.TenBai === bai);
-        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+        if (lesson && (lesson.TrangThai || 'published') !== 'published') {
           return { ok: true, status: 200, json: async () => ({ status: 'success', data: [] }) };
         }
         const filtered = state.videoCauHoi.filter(q => q.baiKey === bai);
@@ -389,9 +387,8 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
         };
       }
       if (type === 'baitaptracnghiem') {
-        const isAdmin = parsedUrl.searchParams.get('scope') === 'admin';
         const lesson = state.lessons.find(l => l.MaBai === bai || l.TenBai === bai);
-        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+        if (lesson && (lesson.TrangThai || 'published') !== 'published') {
           return { ok: true, status: 200, json: async () => ({ status: 'success', data: [] }) };
         }
         const filtered = state.baiTapTracNghiem.filter(q => q.baiKey === bai);
@@ -407,6 +404,29 @@ function createFaultInjectionFetch(state, failurePlan = {}) {
     // POST
     const body = JSON.parse(options.body || '{}');
     const action = body.action;
+
+    if (action === 'getbaihocadmin') {
+      if (body.adminKey !== 'test_admin_key') {
+        return { ok: false, status: 401, json: async () => ({ status: 'error', message: 'Unauthorized' }) };
+      }
+      return { ok: true, status: 200, json: async () => ({ status: 'success', data: state.lessons }) };
+    }
+
+    if (action === 'getvideocauhoiadmin') {
+      if (body.adminKey !== 'test_admin_key') {
+        return { ok: false, status: 401, json: async () => ({ status: 'error', message: 'Unauthorized' }) };
+      }
+      const filtered = state.videoCauHoi.filter(q => q.baiKey === body.bai);
+      return { ok: true, status: 200, json: async () => ({ status: 'success', data: filtered }) };
+    }
+
+    if (action === 'getbaitaptracnghiemadmin') {
+      if (body.adminKey !== 'test_admin_key') {
+        return { ok: false, status: 401, json: async () => ({ status: 'error', message: 'Unauthorized' }) };
+      }
+      const filtered = state.baiTapTracNghiem.filter(q => q.baiKey === body.bai);
+      return { ok: true, status: 200, json: async () => ({ status: 'success', data: filtered }) };
+    }
 
     if (failurePlan.failAction === action) {
       if (failurePlan.mode === 'NETWORK_DROP_AFTER_WRITE') {

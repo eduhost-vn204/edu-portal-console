@@ -1,31 +1,32 @@
 /**
  * test-draft-lesson-contract.mjs
- * 
+ *
  * Kiểm thử toàn diện "Draft/Hidden Lesson Contract" cho Vật Lý Xuân Trường:
- * 1. Tương thích ngược: Bài cũ không có TrangThai được coi là 'published' (mặc định an toàn).
- * 2. GAS GET type=baihoc:
- *    - Học sinh (không scope=admin, không adminKey): CHỈ nhận bài 'published'; bài 'draft' và 'archived' bị lọc sạch.
- *    - Quản trị viên (scope=admin hoặc có adminKey): Nhận đủ mọi trạng thái kèm trường TrangThai.
- * 3. GAS GET câu hỏi (type=videocauhoi & type=baitaptracnghiem):
- *    - Học sinh: Nếu bài học là 'draft' hoặc 'archived' -> Trả về rỗng { data: [] }, tuyệt đối không rò rỉ.
- *    - Quản trị viên (scope=admin): Trả về đủ câu hỏi của bài nháp.
- * 4. GAS POST saveBaiHoc:
- *    - Lưu đúng trường TrangThai ('draft' | 'published' | 'archived').
- *    - Bài cũ hoặc không truyền TrangThai -> Mặc định 'published'.
- * 5. Pipeline Pilot Safety & Leak Detection:
- *    - Read-back sâu 11/11 trường (kể cả TrangThai=draft).
- *    - Kiểm tra fail-closed: Nếu bài draft rò rỉ vào endpoint public học sinh -> Ném lỗi PUBLIC_LEAK_DETECTED.
+ * CHẠY TRỰC TIẾP QUA VM SANDBOX CỦA src/Mã.js (THẬT 100%, KHÔNG DÙNG MOCK GIẢ).
+ *
+ * 1. Tương thích ngược: Bài cũ không có TrangThai được coi là 'published'.
+ * 2. Public GET (doGet):
+ *    - GET type=baihoc: Dù truyền scope=admin, includeDraft=true, hay query key giả mạo -> VẪN CHỈ TRẢ PUBLISHED.
+ *    - GET type=videocauhoi & baitaptracnghiem của bài draft/archived: Dù có query gì -> VẪN CHỈ TRẢ { data: [] }.
+ * 3. Admin POST (doPost):
+ *    - getbaihocadmin, getvideocauhoiadmin, getbaitaptracnghiemadmin:
+ *      + Thiếu hoặc sai adminKey -> Bị từ chối { ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' }.
+ *      + Đúng adminKey -> Trả về { ok: true, data: [...] } đầy đủ published, draft, archived.
+ * 4. Pipeline Safety & Fail-Closed Leak Detection:
+ *    - Đối soát sâu 11/11 trường bài pilot.
+ *    - Phát hiện rò rỉ trên public endpoint -> Ném PUBLIC_LEAK_DETECTED.
  */
 
 import assert from 'node:assert';
+import fs from 'node:fs';
+import vm from 'node:vm';
 import {
   comparePilotLessonFields,
-  createFullDraftLessonOnBackend,
   verifyBackendReadBack
 } from './youtube-lesson-pipeline.mjs';
 
 console.log(`\n======================================================`);
-console.log(`🧪 KIỂM THỬ TOÀN DIỆN: DRAFT/HIDDEN LESSON CONTRACT`);
+console.log(`🧪 KIỂM THỬ BẢO MẬT: DRAFT/HIDDEN LESSON CONTRACT (VM REAL GAS)`);
 console.log(`======================================================\n`);
 
 let passedCount = 0;
@@ -53,150 +54,348 @@ async function itAsync(name, fn) {
   }
 }
 
-// ── MÔ PHỎNG LOGIC BACKEND GAS (src/Mã.js) ──
-function normalizeLessonStatus(st) {
-  if (!st) return 'published';
-  const s = String(st).toLowerCase().trim();
-  if (s === 'draft') return 'draft';
-  if (s === 'archived') return 'archived';
-  return 'published';
-}
+// ── SETUP VM MOCK MÔI TRƯỜNG GOOGLE APPS SCRIPT CHO src/Mã.js ──
+const srcCode = fs.readFileSync('src/Mã.js', 'utf8');
 
-function simulateGasGetBaiHoc(lessonsDb, queryParams = {}) {
-  const isAdmin = queryParams.scope === 'admin' || Boolean(queryParams.adminKey);
-  const rows = [];
-  for (const b of lessonsDb) {
-    const status = normalizeLessonStatus(b.TrangThai);
-    if (!isAdmin && status !== 'published') {
-      continue; // Học sinh không bao giờ nhận bài draft hoặc archived
-    }
-    rows.push({
-      ...b,
-      TrangThai: status
-    });
+class MockSheet {
+  constructor(name, headers) {
+    this.name = name;
+    this.headers = headers ? [...headers] : [];
+    this.data = []; // rows array
   }
-  return { status: 'success', data: rows };
-}
-
-function simulateGasGetQuestions(lessonsDb, questionsDb, type, queryParams = {}) {
-  const isAdmin = queryParams.scope === 'admin' || Boolean(queryParams.adminKey);
-  const baiKey = queryParams.bai || '';
-  const lesson = lessonsDb.find(l => (l.MaBai && l.MaBai === baiKey) || (l.TenBai && l.TenBai === baiKey));
-  
-  if (lesson) {
-    const status = normalizeLessonStatus(lesson.TrangThai);
-    if (!isAdmin && status !== 'published') {
-      return { status: 'success', data: [] }; // Chặn học sinh đọc câu hỏi bài draft/archived
-    }
+  getLastRow() {
+    return this.data.length;
   }
+  getLastColumn() {
+    let max = this.headers.length;
+    for (const r of this.data) {
+      if (r && r.length > max) max = r.length;
+    }
+    return max;
+  }
+  appendRow(row) {
+    this.data.push([...row]);
+  }
+  deleteRow(rowIdx) {
+    this.data.splice(rowIdx - 1, 1);
+  }
+  deleteRows(startRow, numRows) {
+    this.data.splice(startRow - 1, numRows);
+  }
+  getDataRange() {
+    const self = this;
+    return {
+      getValues() {
+        return self.data.map(r => [...r]);
+      }
+    };
+  }
+  getRange(row, col, numRows = 1, numCols = 1) {
+    const self = this;
+    return {
+      getValues() {
+        const res = [];
+        for (let r = 0; r < numRows; r++) {
+          const rowArr = [];
+          for (let c = 0; c < numCols; c++) {
+            const rowIndex = row - 1 + r;
+            const colIndex = col - 1 + c;
+            const val = (self.data[rowIndex] && self.data[rowIndex][colIndex] !== undefined)
+              ? self.data[rowIndex][colIndex]
+              : '';
+            rowArr.push(val);
+          }
+          res.push(rowArr);
+        }
+        return res;
+      },
+      setValue(val) {
+        const rowIndex = row - 1;
+        const colIndex = col - 1;
+        while (self.data.length <= rowIndex) self.data.push([]);
+        while (self.data[rowIndex].length <= colIndex) self.data[rowIndex].push('');
+        self.data[rowIndex][colIndex] = val;
+      },
+      setValues(vals) {
+        for (let r = 0; r < vals.length; r++) {
+          const rowIndex = row - 1 + r;
+          while (self.data.length <= rowIndex) self.data.push([]);
+          for (let c = 0; c < vals[r].length; c++) {
+            const colIndex = col - 1 + c;
+            while (self.data[rowIndex].length <= colIndex) self.data[rowIndex].push('');
+            self.data[rowIndex][colIndex] = vals[r][c];
+          }
+        }
+      }
+    };
+  }
+}
 
-  const items = questionsDb[baiKey] || [];
-  return { status: 'success', data: items };
+class MockSpreadsheet {
+  constructor() {
+    this.sheets = new Map();
+  }
+  getSheetByName(name) {
+    return this.sheets.get(name) || null;
+  }
+  insertSheet(name) {
+    const s = new MockSheet(name);
+    this.sheets.set(name, s);
+    return s;
+  }
+}
+
+function createGasVm(adminKey = 'secret_test_admin_key') {
+  const activeSpreadsheet = new MockSpreadsheet();
+  const sandbox = {
+    PropertiesService: {
+      getScriptProperties() {
+        return {
+          getProperty(k) {
+            if (k === 'ADMIN_KEY') return adminKey;
+            return null;
+          }
+        };
+      }
+    },
+    SpreadsheetApp: {
+      getActiveSpreadsheet() {
+        return activeSpreadsheet;
+      }
+    },
+    ContentService: {
+      createTextOutput(text) {
+        return {
+          setMimeType() {
+            return JSON.parse(text);
+          }
+        };
+      },
+      MimeType: { JSON: 'JSON' }
+    },
+    Session: {
+      getScriptTimeZone() { return 'Asia/Ho_Chi_Minh'; }
+    },
+    Logger: { log() {} },
+    console: console,
+    Date: Date,
+    Math: Math,
+    Number: Number,
+    String: String,
+    JSON: JSON,
+    parseInt: parseInt,
+    parseFloat: parseFloat,
+    Infinity: Infinity,
+    Utilities: {
+      getUuid() { return 'mock-uuid-' + Math.random().toString(36).slice(2); }
+    }
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext(srcCode, sandbox);
+  return { sandbox, activeSpreadsheet };
 }
 
 // =========================================================================
-// SUITE 1: TƯƠNG THÍCH NGƯỢC VÀ CHUẨN HÓA TRẠNG THÁI (Mã.js)
+// SUITE 1: TƯƠNG THÍCH NGƯỢC & NORMALIZE STATUS TRONG VM THẬT
 // =========================================================================
-console.log(`--- [SUITE 1] Tương Thích Ngược & Chuẩn Hóa Trạng Thái ---`);
+console.log(`--- [SUITE 1] Tương Thích Ngược & Chuẩn Hóa Trạng Thái Trong VM Thật ---`);
 
-it('Tương thích ngược: Rỗng, null, undefined hoặc bài cũ thiếu TrangThai đều là "published"', () => {
-  assert.strictEqual(normalizeLessonStatus(''), 'published');
-  assert.strictEqual(normalizeLessonStatus(null), 'published');
-  assert.strictEqual(normalizeLessonStatus(undefined), 'published');
-  assert.strictEqual(normalizeLessonStatus('PUBLISHED'), 'published');
-  assert.strictEqual(normalizeLessonStatus('  published  '), 'published');
-  assert.strictEqual(normalizeLessonStatus('unknown_status'), 'published');
+const { sandbox: vm1 } = createGasVm();
+
+it('normalizeLessonStatus: Mặc định không truyền hoặc rỗng -> published (Tương thích ngược)', () => {
+  assert.strictEqual(vm1.normalizeLessonStatus(undefined), 'published');
+  assert.strictEqual(vm1.normalizeLessonStatus(null), 'published');
+  assert.strictEqual(vm1.normalizeLessonStatus(''), 'published');
+  assert.strictEqual(vm1.normalizeLessonStatus('   '), 'published');
 });
 
-it('Nhận diện chính xác giá trị "draft" và "archived"', () => {
-  assert.strictEqual(normalizeLessonStatus('draft'), 'draft');
-  assert.strictEqual(normalizeLessonStatus('DRAFT'), 'draft');
-  assert.strictEqual(normalizeLessonStatus('archived'), 'archived');
-  assert.strictEqual(normalizeLessonStatus('ARCHIVED'), 'archived');
+it('normalizeLessonStatus: Nhận diện chuẩn xác draft và archived (không phân biệt hoa thường)', () => {
+  assert.strictEqual(vm1.normalizeLessonStatus('draft'), 'draft');
+  assert.strictEqual(vm1.normalizeLessonStatus('Draft'), 'draft');
+  assert.strictEqual(vm1.normalizeLessonStatus('DRAFT'), 'draft');
+  assert.strictEqual(vm1.normalizeLessonStatus('  draft  '), 'draft');
+  assert.strictEqual(vm1.normalizeLessonStatus('archived'), 'archived');
+  assert.strictEqual(vm1.normalizeLessonStatus('Archived'), 'archived');
 });
 
-// =========================================================================
-// SUITE 2: BẢO VỆ GET BÀI HỌC THEO QUYỀN (STUDENT VS ADMIN)
-// =========================================================================
-console.log(`\n--- [SUITE 2] Bảo Vệ GET type=baihoc (Student vs Admin) ---`);
-
-const mockLessons = [
-  { MaBai: 'B01', TenBai: 'Bài 1 (Cũ, thiếu TrangThai)' },
-  { MaBai: 'B02', TenBai: 'Bài 2 (Đã xuất bản)', TrangThai: 'published' },
-  { MaBai: 'B03', TenBai: 'Bài 3 (Nháp - Draft)', TrangThai: 'draft' },
-  { MaBai: 'B04', TenBai: 'Bài 4 (Lưu trữ - Archived)', TrangThai: 'archived' },
-  { MaBai: 'B05_PILOT', TenBai: '[BẢN NHÁP THỬ NGHIỆM] Bài Pilot B10', TrangThai: 'draft' }
-];
-
-it('Học sinh (Public GET): Chỉ nhận bài published, lọc sạch hoàn toàn 100% draft và archived', () => {
-  const res = simulateGasGetBaiHoc(mockLessons, {});
-  const titles = res.data.map(b => b.TenBai);
-  assert.strictEqual(res.data.length, 2);
-  assert.ok(titles.includes('Bài 1 (Cũ, thiếu TrangThai)'));
-  assert.ok(titles.includes('Bài 2 (Đã xuất bản)'));
-  assert.ok(!titles.includes('Bài 3 (Nháp - Draft)'));
-  assert.ok(!titles.includes('Bài 4 (Lưu trữ - Archived)'));
-  assert.ok(!titles.includes('[BẢN NHÁP THỬ NGHIỆM] Bài Pilot B10'));
-});
-
-it('Quản trị viên (scope=admin): Nhận đầy đủ 5/5 bài kể cả bài nháp và lưu trữ', () => {
-  const res = simulateGasGetBaiHoc(mockLessons, { scope: 'admin' });
-  assert.strictEqual(res.data.length, 5);
-  const pilot = res.data.find(b => b.MaBai === 'B05_PILOT');
-  assert.ok(pilot);
-  assert.strictEqual(pilot.TrangThai, 'draft');
-});
-
-it('Quản trị viên (adminKey): Cũng nhận đầy đủ 5/5 bài khi có adminKey hợp lệ', () => {
-  const res = simulateGasGetBaiHoc(mockLessons, { adminKey: 'secret_key' });
-  assert.strictEqual(res.data.length, 5);
+it('normalizeLessonStatus: Giá trị lạ/không hợp lệ -> fallback về published', () => {
+  assert.strictEqual(vm1.normalizeLessonStatus('active'), 'published');
+  assert.strictEqual(vm1.normalizeLessonStatus('unknown_status'), 'published');
 });
 
 // =========================================================================
-// SUITE 3: BẢO VỆ GET CÂU HỎI THEO BÀI (VIDEOCAUHOI & BAITAPTRACNGHIEM)
+// SUITE 2: PUBLIC GET BẢO MẬT TUYỆT ĐỐI (KHÔNG CÓ CƠ CHẾ NÂNG QUYỀN QUA QUERY)
 // =========================================================================
-console.log(`\n--- [SUITE 3] Bảo Vệ GET Câu Hỏi Bài Nháp ---`);
-
-const mockQuestionsDb = {
-  'B02': [{ q: 'Câu hỏi của bài published' }],
-  'B05_PILOT': [{ q: 'Câu hỏi bí mật của bài pilot draft 1' }, { q: 'Câu hỏi bí mật của bài pilot draft 2' }]
-};
-
-it('Học sinh gọi videocauhoi của bài published -> Nhận được câu hỏi', () => {
-  const res = simulateGasGetQuestions(mockLessons, mockQuestionsDb, 'videocauhoi', { bai: 'B02' });
-  assert.strictEqual(res.data.length, 1);
-});
-
-it('Học sinh gọi videocauhoi của bài pilot draft -> Bị chặn, trả về data rỗng []', () => {
-  const res = simulateGasGetQuestions(mockLessons, mockQuestionsDb, 'videocauhoi', { bai: 'B05_PILOT' });
-  assert.strictEqual(res.data.length, 0);
-});
-
-it('Học sinh gọi baitaptracnghiem của bài pilot draft -> Bị chặn, trả về data rỗng []', () => {
-  const res = simulateGasGetQuestions(mockLessons, mockQuestionsDb, 'baitaptracnghiem', { bai: 'B05_PILOT' });
-  assert.strictEqual(res.data.length, 0);
-});
-
-it('Admin gọi videocauhoi của bài pilot draft (scope=admin) -> Nhận đầy đủ câu hỏi để đối soát', () => {
-  const res = simulateGasGetQuestions(mockLessons, mockQuestionsDb, 'videocauhoi', { bai: 'B05_PILOT', scope: 'admin' });
-  assert.strictEqual(res.data.length, 2);
-  assert.strictEqual(res.data[0].q, 'Câu hỏi bí mật của bài pilot draft 1');
-});
-
-// =========================================================================
-// SUITE 4: PIPELINE READ-BACK & PUBLIC LEAK DETECTION FAIL-CLOSED
-// =========================================================================
-console.log(`\n--- [SUITE 4] Pipeline Read-back & Public Leak Detection ---`);
+console.log(`\n--- [SUITE 2] Public GET: Chặn Đứng Vượt Quyền Qua Query String ---`);
 
 const sampleManifest = {
-  lessonName: '[BẢN NHÁP THỬ NGHIỆM] B10 - TEST DRAFT CONTRACT',
-  course: 'Vật Lý 12',
-  chapter: 'Chương 1',
+  course: 'Lớp 12',
+  chapter: 'Chương 2: Khí lí tưởng',
+  lessonName: '[BẢN NHÁP THỬ NGHIỆM] Bài Pilot Draft',
   order: 999,
-  description: 'Mô tả bài pilot'
+  description: 'Mô tả bài học pilot'
 };
 
-it('comparePilotLessonFields: Kiểm tra toàn diện 11 trường có TrangThai=draft', () => {
+function seedTestData(activeSpreadsheet) {
+  const baiHocCols = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
+  const sheetBaiHoc = activeSpreadsheet.insertSheet('BaiHoc');
+  sheetBaiHoc.appendRow(baiHocCols);
+  sheetBaiHoc.appendRow(['Lớp 12','Chương 1: Vật lí nhiệt','Bài 1: Published Thật','v1','vg1','desc1','2026-09-01','','p1','plt1','pluyentap1','45','1','B01','published']);
+  sheetBaiHoc.appendRow([sampleManifest.course, sampleManifest.chapter, sampleManifest.lessonName,'v2','vg2',sampleManifest.description,'2026-09-08','','p2','plt2','pluyentap2','45','999','B02_PILOT','draft']);
+  sheetBaiHoc.appendRow(['Lớp 12','Chương 1: Vật lí nhiệt','Bài 3: Đã lưu trữ','v3','vg3','desc3','2026-08-01','','p3','plt3','pluyentap3','45','3','B03_ARCH','archived']);
+  sheetBaiHoc.appendRow(['Lớp 12','Chương 1: Vật lí nhiệt','Bài 4: Bài cũ chưa có cột TrangThai','v4','vg4','desc4','2026-07-01','','p4','plt4','pluyentap4','45','4','B04_LEGACY','']);
+
+  const vchCols = ['baiKey','thuTu','thoiGian','nhId','type','question','optA','optB','optC','optD','correct'];
+  const sheetVCH = activeSpreadsheet.insertSheet('VideoCauHoi');
+  sheetVCH.appendRow(vchCols);
+  sheetVCH.appendRow(['B01','1','60','NH01','mc','Câu hỏi Bài 1 Published','A','B','C','D','A']);
+  sheetVCH.appendRow(['B02_PILOT','1','120','NH02','mc','Câu hỏi mật Bài Pilot Draft','A','B','C','D','B']);
+  for (let i = 1; i <= 20; i++) {
+    sheetVCH.appendRow([sampleManifest.lessonName, String(i), String(60 * i), `NH${i}`, 'mc', `Câu hỏi ${i} Bài Pilot Draft`, 'A', 'B', 'C', 'D', 'B']);
+  }
+
+  const btCols = ['baiKey','thuTu','type','question','optA','optB','optC','optD','correct'];
+  const sheetBT = activeSpreadsheet.insertSheet('BaiTapTracNghiem');
+  sheetBT.appendRow(btCols);
+  sheetBT.appendRow(['B01','1','mc','Bài tập Bài 1 Published','A','B','C','D','C']);
+  sheetBT.appendRow(['B02_PILOT','1','mc','Bài tập mật Bài Pilot Draft','A','B','C','D','D']);
+  for (let i = 1; i <= 20; i++) {
+    sheetBT.appendRow([sampleManifest.lessonName, String(i), 'mc', `Bài tập ${i} Bài Pilot Draft`, 'A', 'B', 'C', 'D', 'D']);
+  }
+}
+
+const { sandbox: vm2, activeSpreadsheet: ss2 } = createGasVm('secret_admin_key_123');
+seedTestData(ss2);
+
+it('doGet type=baihoc: Public bình thường CHỈ nhận bài published (kể cả legacy rỗng)', () => {
+  const res = vm2.doGet({ parameter: { type: 'baihoc' } });
+  assert.ok(Array.isArray(res));
+  assert.strictEqual(res.length, 2, 'Chỉ nhận 2 bài: B01 (published) và B04_LEGACY (chuẩn hóa published)');
+  const keys = res.map(r => r.MaBai);
+  assert.ok(keys.includes('B01'));
+  assert.ok(keys.includes('B04_LEGACY'));
+  assert.ok(!keys.includes('B02_PILOT'), 'Draft tuyệt đối không được xuất hiện');
+  assert.ok(!keys.includes('B03_ARCH'), 'Archived tuyệt đối không được xuất hiện');
+});
+
+it('doGet type=baihoc: Kèm scope=admin giả mạo -> VẪN CHỈ NHẬN PUBLISHED (Không nâng quyền)', () => {
+  const res = vm2.doGet({ parameter: { type: 'baihoc', scope: 'admin' } });
+  assert.ok(Array.isArray(res));
+  assert.strictEqual(res.length, 2);
+  const keys = res.map(r => r.MaBai);
+  assert.ok(!keys.includes('B02_PILOT'), 'Kẻ tấn công không thể đọc draft bằng scope=admin');
+});
+
+it('doGet type=baihoc: Kèm includeDraft=true giả mạo -> VẪN CHỈ NHẬN PUBLISHED', () => {
+  const res = vm2.doGet({ parameter: { type: 'baihoc', includeDraft: 'true' } });
+  assert.ok(Array.isArray(res));
+  assert.strictEqual(res.length, 2);
+  const keys = res.map(r => r.MaBai);
+  assert.ok(!keys.includes('B02_PILOT'));
+});
+
+it('doGet type=baihoc: Truyền adminKey trên query string -> VẪN CHỈ NHẬN PUBLISHED (Cấm auth qua GET query)', () => {
+  const res = vm2.doGet({ parameter: { type: 'baihoc', adminKey: 'secret_admin_key_123' } });
+  assert.ok(Array.isArray(res));
+  assert.strictEqual(res.length, 2);
+  const keys = res.map(r => r.MaBai);
+  assert.ok(!keys.includes('B02_PILOT'), 'Không chấp nhận xác thực adminKey trên URL');
+});
+
+it('doGet type=videocauhoi: Public hỏi bài published -> Trả về câu hỏi', () => {
+  const res = vm2.doGet({ parameter: { type: 'videocauhoi', bai: 'B01' } });
+  assert.ok(res && Array.isArray(res.data));
+  assert.strictEqual(res.data.length, 1);
+  assert.strictEqual(res.data[0].question, 'Câu hỏi Bài 1 Published');
+});
+
+it('doGet type=videocauhoi: Public hỏi bài draft -> Trả về rỗng { data: [] }', () => {
+  const res = vm2.doGet({ parameter: { type: 'videocauhoi', bai: 'B02_PILOT' } });
+  assert.deepStrictEqual(res, { data: [] }, 'Phải trả về rỗng, không lộ câu hỏi bài draft');
+});
+
+it('doGet type=videocauhoi: Hỏi bài draft kèm scope=admin + includeDraft -> VẪN TRẢ VỀ RỖNG { data: [] }', () => {
+  const res = vm2.doGet({ parameter: { type: 'videocauhoi', bai: 'B02_PILOT', scope: 'admin', includeDraft: 'true' } });
+  assert.deepStrictEqual(res, { data: [] }, 'Cấm nâng quyền đọc câu hỏi video qua GET');
+});
+
+it('doGet type=baitaptracnghiem: Public hỏi bài draft -> Trả về rỗng { data: [] }', () => {
+  const res = vm2.doGet({ parameter: { type: 'baitaptracnghiem', bai: 'B02_PILOT' } });
+  assert.deepStrictEqual(res, { data: [] }, 'Phải trả về rỗng, không lộ bài tập bài draft');
+});
+
+it('doGet type=baitaptracnghiem: Hỏi bài draft kèm scope=admin + includeDraft -> VẪN TRẢ VỀ RỖNG { data: [] }', () => {
+  const res = vm2.doGet({ parameter: { type: 'baitaptracnghiem', bai: 'B02_PILOT', scope: 'admin', includeDraft: 'true' } });
+  assert.deepStrictEqual(res, { data: [] }, 'Cấm nâng quyền đọc bài tập qua GET');
+});
+
+// =========================================================================
+// SUITE 3: ADMIN POST BẢO MẬT (XÁC THỰC adminKey TRONG BODY)
+// =========================================================================
+console.log(`\n--- [SUITE 3] Admin POST: Xác Thực Nghiêm Ngặt Qua Request Body ---`);
+
+it('doPost action=getbaihocadmin: Thiếu adminKey -> Bị từ chối { ok: false, msg: Unauthorized }', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getbaihocadmin' }) }
+  });
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.msg.includes('Unauthorized'));
+});
+
+it('doPost action=getbaihocadmin: Sai adminKey -> Bị từ chối { ok: false, msg: Unauthorized }', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getbaihocadmin', adminKey: 'sai_mat_khau' }) }
+  });
+  assert.strictEqual(res.ok, false);
+  assert.ok(res.msg.includes('Unauthorized'));
+});
+
+it('doPost action=getbaihocadmin: Đúng adminKey -> Nhận đủ 4 bài (published, draft, archived, legacy)', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getbaihocadmin', adminKey: 'secret_admin_key_123' }) }
+  });
+  assert.strictEqual(res.ok, true);
+  assert.ok(Array.isArray(res.data));
+  assert.strictEqual(res.data.length, 4, 'Admin phải đọc đủ mọi trạng thái');
+  const keys = res.data.map(r => r.MaBai);
+  assert.ok(keys.includes('B01'));
+  assert.ok(keys.includes('B02_PILOT'));
+  assert.ok(keys.includes('B03_ARCH'));
+  assert.ok(keys.includes('B04_LEGACY'));
+});
+
+it('doPost action=getvideocauhoiadmin: Sai adminKey -> Bị từ chối', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getvideocauhoiadmin', adminKey: 'wrong' }) }
+  });
+  assert.strictEqual(res.ok, false);
+});
+
+it('doPost action=getvideocauhoiadmin: Đúng adminKey -> Admin đọc được câu hỏi bài draft', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getvideocauhoiadmin', adminKey: 'secret_admin_key_123', bai: 'B02_PILOT' }) }
+  });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.data.length, 1);
+  assert.strictEqual(res.data[0].question, 'Câu hỏi mật Bài Pilot Draft');
+});
+
+it('doPost action=getbaitaptracnghiemadmin: Đúng adminKey -> Admin đọc được bài tập bài draft', () => {
+  const res = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'getbaitaptracnghiemadmin', adminKey: 'secret_admin_key_123', bai: 'B02_PILOT' }) }
+  });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.data.length, 1);
+  assert.strictEqual(res.data[0].question, 'Bài tập mật Bài Pilot Draft');
+});
+
+// =========================================================================
+// SUITE 4: PIPELINE READ-BACK & FAIL-CLOSED PUBLIC LEAK TEST
+// =========================================================================
+console.log(`\n--- [SUITE 4] Pipeline Pilot Fail-Closed Public Leak Detection ---`);
+
+it('comparePilotLessonFields: Đối soát sâu 11/11 trường (kể cả TrangThai=draft)', () => {
   const expected = {
     course: sampleManifest.course,
     chapter: sampleManifest.chapter,
@@ -227,18 +426,16 @@ it('comparePilotLessonFields: Kiểm tra toàn diện 11 trường có TrangThai
   assert.strictEqual(res.ok, true);
   assert.strictEqual(res.diffCount, 0);
 
-  // Nếu actual mang TrangThai='published' thay vì 'draft' -> Phải fail
+  // Mutation test: nếu actual mang TrangThai='published' -> Phải fail
   const actualPublished = { ...actualMatch, TrangThai: 'published' };
   const resFail = comparePilotLessonFields(expected, actualPublished);
   assert.strictEqual(resFail.ok, false);
   assert.ok(resFail.diffs.some(d => d.field === 'TrangThai'));
 });
 
-await itAsync('verifyBackendReadBack: Ném lỗi PUBLIC_LEAK_DETECTED nếu bài pilot bị lộ trên public endpoint học sinh', async () => {
-  const leakingFetch = async (url) => {
-    const isAdmin = url.includes('scope=admin');
-    if (url.includes('type=baihoc')) {
-      // Giả lập lỗi: Public endpoint bị lộ bài pilot!
+await itAsync('verifyBackendReadBack: Ném lỗi PUBLIC_LEAK_DETECTED nếu bài pilot rò rỉ trên public endpoint học sinh', async () => {
+  const leakingFetch = async (url, opts) => {
+    if (opts && opts.method === 'POST') {
       return {
         ok: true,
         json: async () => ({
@@ -261,13 +458,29 @@ await itAsync('verifyBackendReadBack: Ném lỗi PUBLIC_LEAK_DETECTED nếu bài
         })
       };
     }
-    return { ok: true, json: async () => ({ ok: true, data: [] }) };
+    // Giả lập lỗi: Public GET vô tình để lọt bài pilot!
+    if (url.includes('type=baihoc')) {
+      return {
+        ok: true,
+        json: async () => [
+          {
+            TenBai: sampleManifest.lessonName,
+            KhoaHoc: sampleManifest.course,
+            Chuong: sampleManifest.chapter,
+            ThuTuBai: 999,
+            TrangThai: 'draft'
+          }
+        ]
+      };
+    }
+    return { ok: true, json: async () => ({ data: [] }) };
   };
 
   let caughtErr = null;
   try {
     await verifyBackendReadBack(sampleManifest, {
       fetchImpl: leakingFetch,
+      adminKey: 'secret_test_admin_key',
       snapshotPath: 'non_existent_snapshot.json',
       theoryUrl: 'https://youtu.be/vid1',
       practiceUrl: 'https://youtu.be/vid2',
@@ -281,58 +494,32 @@ await itAsync('verifyBackendReadBack: Ném lỗi PUBLIC_LEAK_DETECTED nếu bài
 
   assert.ok(caughtErr, 'Phải ném lỗi khi phát hiện leak');
   assert.strictEqual(caughtErr.code, 'PUBLIC_LEAK_DETECTED');
-  assert.ok(caughtErr.message.includes('PUBLIC_LEAK_DETECTED'));
 });
 
-await itAsync('verifyBackendReadBack: Thành công khi bài draft chỉ xuất hiện ở admin scope và public endpoint sạch 100%', async () => {
-  const secureFetch = async (url) => {
-    const isAdmin = url.includes('scope=admin');
-    if (url.includes('type=baihoc')) {
-      if (isAdmin) {
-        return {
-          ok: true,
-          json: async () => ({
-            ok: true,
-            data: [
-              {
-                TenBai: sampleManifest.lessonName,
-                KhoaHoc: sampleManifest.course,
-                Chuong: sampleManifest.chapter,
-                ThuTuBai: 999,
-                MoTaBai: sampleManifest.description,
-                Video: 'https://youtu.be/vid1',
-                VideoGiai: 'https://youtu.be/vid2',
-                PDFLyThuyet: 'https://drive.google.com/pdf1',
-                PDF: 'https://drive.google.com/pdf2',
-                PDFLuyenTap: 'https://drive.google.com/pdf3',
-                TrangThai: 'draft'
-              }
-            ]
-          })
-        };
-      } else {
-        // Public endpoint học sinh: RỖNG, không có bài pilot
-        return { ok: true, json: async () => ({ ok: true, data: [] }) };
-      }
+await itAsync('verifyBackendReadBack: Thành công khi bài draft chỉ trả qua admin POST và public GET ẩn hoàn toàn', async () => {
+  // Tạo mock fetch ủy quyền trực tiếp cho sandbox GAS thật
+  const gasVmFetch = async (url, opts) => {
+    if (opts && opts.method === 'POST') {
+      const data = JSON.parse(opts.body || '{}');
+      const res = vm2.doPost({ postData: { contents: opts.body } });
+      return { ok: true, json: async () => res };
     }
-    if (url.includes('type=videocauhoi') || url.includes('type=baitaptracnghiem')) {
-      if (isAdmin) {
-        return { ok: true, json: async () => ({ ok: true, data: Array.from({ length: 20 }, (_, i) => ({ thuTu: i + 1 })) }) };
-      } else {
-        return { ok: true, json: async () => ({ ok: true, data: [] }) };
-      }
-    }
-    return { ok: true, json: async () => ({ ok: true, data: [] }) };
+    const urlObj = new URL(url);
+    const param = Object.fromEntries(urlObj.searchParams.entries());
+    const res = vm2.doGet({ parameter: param });
+    return { ok: true, json: async () => res };
   };
 
   const result = await verifyBackendReadBack(sampleManifest, {
-    fetchImpl: secureFetch,
+    fetchImpl: gasVmFetch,
+    adminKey: 'secret_admin_key_123',
+    dbUrl: 'https://script.google.com/macros/s/AKfycbytest/exec',
     snapshotPath: 'non_existent_snapshot.json',
-    theoryUrl: 'https://youtu.be/vid1',
-    practiceUrl: 'https://youtu.be/vid2',
-    theoryPdfUrl: 'https://drive.google.com/pdf1',
-    appliedPdfUrl: 'https://drive.google.com/pdf2',
-    practicePdfUrl: 'https://drive.google.com/pdf3'
+    theoryUrl: 'v2',
+    practiceUrl: 'vg2',
+    theoryPdfUrl: 'plt2',
+    appliedPdfUrl: 'p2',
+    practicePdfUrl: 'pluyentap2'
   });
 
   assert.strictEqual(result.verified, true);
