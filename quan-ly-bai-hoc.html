@@ -2998,47 +2998,51 @@ async function saveLessonOrderFromDOM(wrap){
 async function loadLessons(){
     const CKEY = 'vlxt_admin_baihoc';
     const cached = aCache(CKEY);
-    if(cached){
-        allLessons = Array.isArray(cached.d) ? cached.d : (cached.d.baihoc || cached.d.data || []);
+    if(cached && cached.isAdmin){
+        allLessons = Array.isArray(cached.d) ? cached.d : [];
         renderLessonList();
-        if(aFresh(cached)) return;
     } else {
-        document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
+        document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải danh sách bài học (admin)...</p></div>`;
     }
     try{
         const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
         if(res && res.ok && Array.isArray(res.data)){
             allLessons = res.data;
             aSetCache(CKEY, res.data);
+            const c = aCache(CKEY);
+            if(c){ c.isAdmin = true; localStorage.setItem(CKEY, JSON.stringify(c)); }
         } else {
-            const r = await fetch(DB_URL + '?type=baihoc');
-            const data = await r.json();
-            allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
-            aSetCache(CKEY, data);
+            const errMsg = (res && res.msg) || 'Không có quyền truy cập hoặc lỗi máy chủ';
+            console.error('Lỗi tải bài học admin:', res);
+            toast('<i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải bài học: ' + errMsg, 'err');
         }
     }catch(e){
-        console.warn('Không kết nối được Sheets:', e);
-        if(!allLessons.length) toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa kết nối được Google Sheets.', 'err');
+        console.error('Không kết nối được Sheets:', e);
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Không thể kết nối đến máy chủ quản trị.', 'err');
     }
     renderLessonList();
     loadQbCounts();
 }
 
 async function loadLessonsPreview(){
-    const CKEY='vlxt_admin_baihoc';
-    const cached=aCache(CKEY);
-    if(cached){
-        const rows=Array.isArray(cached.d)?cached.d:(cached.d.baihoc||cached.d.data||[]);
-        if(rows.length){ allLessons=rows; renderLessonList(); if(aFresh(cached)) return; }
+    const CKEY_PREVIEW = 'vlxt_admin_public_preview_baihoc';
+    const cached = aCache(CKEY_PREVIEW);
+    if(cached && !allLessons.length){
+        const rows = Array.isArray(cached.d) ? cached.d : [];
+        if(rows.length){ allLessons = rows; renderLessonList(); }
     }
     try{
-        const r=await fetch(PUBLIC_LESSONS_URL,{cache:'no-store'});
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        const data=await r.json();
-        const rows=Array.isArray(data)?data:(data.baihoc||data.data||[]);
+        const r = await fetch(PUBLIC_LESSONS_URL, { cache: 'no-store' });
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        const rows = Array.isArray(data) ? data : (data.baihoc || data.data || []);
         if(!rows.length) throw new Error('JSON bài học rỗng');
-        allLessons=rows; aSetCache(CKEY,rows); renderLessonList();
-    }catch(e){ console.warn('Không tải được bản xem nhanh bài học:',e); }
+        if(!allLessons.length){
+            allLessons = rows;
+            renderLessonList();
+        }
+        aSetCache(CKEY_PREVIEW, rows);
+    }catch(e){ console.warn('Không tải được bản xem nhanh bài học:', e); }
 }
 
 // Tai 1 lan toan bo sheet BaiTapTracNghiem de dem so cau/bai cho huy hieu trong
@@ -3047,16 +3051,22 @@ async function loadLessonsPreview(){
 async function loadQbCounts(){
     try{
         const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin' });
-        const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now())).json();
-        const map = {};
-        (j&&j.data||[]).forEach(rw=>{
-            const k = String(rw&&rw.baiKey||'');
-            if(!k) return;
-            map[k] = (map[k]||0) + 1;
-        });
-        _qbCounts = map;
-        renderLessonList();
-    }catch(e){ if(_qbCounts===null) _qbCounts={}; }
+        if(res && res.ok && Array.isArray(res.data)){
+            const map = {};
+            res.data.forEach(rw=>{
+                const k = String(rw && rw.baiKey || '');
+                if(!k) return;
+                map[k] = (map[k] || 0) + 1;
+            });
+            _qbCounts = map;
+            renderLessonList();
+        } else {
+            console.warn('loadQbCounts: getbaitaptracnghiemadmin thất bại', res);
+        }
+    }catch(e){
+        console.warn('loadQbCounts error:', e);
+        if(_qbCounts === null) _qbCounts = {};
+    }
 }
 
 // Lấy giá trị KhoaHoc thực tế của 1 dòng, fallback 'Khác' giống groupLessons (đồng bộ để xoá/sửa/đổi tên khoá 'Khác' hoạt động đúng)
@@ -3073,9 +3083,10 @@ async function fetchFreshLessons(){
     if(res && res.ok && Array.isArray(res.data)){
         return res.data;
     }
-    const r = await fetch(DB_URL + '?type=baihoc&t=' + Date.now());
-    const data = await r.json();
-    return Array.isArray(data) ? data : (data.baihoc || data.data || []);
+    const msg = (res && res.msg) || 'Không thể lấy danh sách bài học mới nhất từ admin backend';
+    console.error('fetchFreshLessons failed:', res);
+    toast('<i class="fa-solid fa-triangle-exclamation"></i> ' + msg, 'err');
+    throw new Error('FETCH_FRESH_LESSONS_FAILED: ' + msg);
 }
 
 function groupLessons(rows){
@@ -4183,13 +4194,16 @@ async function vqLoadFromGAS(key, ...altKeys){
         let found=[];
         for(const k of tryKeys){
             const res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
-            const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now())).json();
-            found=(j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
-            if(found.length){ _vqSourceKey=k; break; }
+            if(res && res.ok && Array.isArray(res.data)){
+                found=res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+                if(found.length){ _vqSourceKey=k; break; }
+            } else if(res && !res.ok){
+                console.warn('vqLoadFromGAS: lỗi khi đọc câu hỏi video bài ' + k, res);
+            }
         }
         vqItems=found.map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
         if(vqItems.length) window._vqTouched=true;
-    }catch(e){ vqItems=[]; }
+    }catch(e){ console.error('vqLoadFromGAS error:', e); vqItems=[]; }
     renderVQ();
 }
 async function vqSaveToGAS(newKey, origKey){
@@ -4220,22 +4234,25 @@ async function qbLoadFromGAS(key, ...altKeys){
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         for(const k of tryKeys){
             const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
-            const j = (res && res.ok) ? res : await (await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now())).json();
-            const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
-            if(rows.length){
-                _qbSourceKey=k;
-                rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
-                return rows.map(rw=>({
-                    type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
-                    q:(rw.question||'').toString(),
-                    A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
-                    C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
-                    ans:String(rw.correct||'').toUpperCase().trim(),
-                    correct:(rw.correct||'').toString()
-                }));
+            if(res && res.ok && Array.isArray(res.data)){
+                const rows = res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+                if(rows.length){
+                    _qbSourceKey=k;
+                    rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
+                    return rows.map(rw=>({
+                        type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                        q:(rw.question||'').toString(),
+                        A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
+                        C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
+                        ans:String(rw.correct||'').toUpperCase().trim(),
+                        correct:(rw.correct||'').toString()
+                    }));
+                }
+            } else if(res && !res.ok){
+                console.warn('qbLoadFromGAS: lỗi khi đọc bài tập trắc nghiệm bài ' + k, res);
             }
         }
-    }catch(e){ /* rơi xuống fallback đọc cột BaiTap cũ ở nơi gọi */ }
+    }catch(e){ console.error('qbLoadFromGAS error:', e); }
     return null; // null = sheet mới chưa có dữ liệu cho bài này, nơi gọi tự fallback
 }
 async function qbSaveToGAS(newKey, origKey){

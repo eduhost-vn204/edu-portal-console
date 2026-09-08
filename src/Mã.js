@@ -672,6 +672,9 @@ function saveProgress(data) {
 // ── POST: Quản lý bài học (Admin) ─────────────────────────────
 
 function saveBaiHoc(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
   const COLS = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
   const sheet = getOrCreate('BaiHoc', COLS); // tự thêm cột thiếu nếu sheet cũ
   const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.originalKey);
@@ -729,8 +732,11 @@ function saveBaiHoc(data) {
 }
 
 function deleteBaiHoc(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
   const sheet = getOrCreate('BaiHoc', ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','ThoiGianLamBai']);
-  const rowIdx = data.rowIndex || findRowByKey(sheet, data.key || data.originalKey);
+  const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.key || data.originalKey);
   if (rowIdx) sheet.deleteRow(rowIdx);
   triggerStaticRefresh();
   return jsonOut({ ok: true });
@@ -1976,6 +1982,9 @@ function getSourceVideoLinks() {
 // ── POST: Cập nhật link video hàng loạt ───────────────────────
 
 function updateBaiHocVideo(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
   const sheet = getOrCreate('BaiHoc', ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap']);
   const rows  = sheet.getDataRange().getValues();
   let updated = 0;
@@ -2421,6 +2430,9 @@ function getVideoTranscript(videoId, preferLang) {
 // POST {action:'savevideocauhoi', baiKey, originalKey, items:[{t,nhId,q,A,B,C,D,ans}]}
 // Ghi đè toàn bộ mốc câu hỏi của 1 bài (xoá cũ, ghi mới)
 function saveVideoCauHoi(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
   const COLS = ['baiKey','thuTu','thoiGian','nhId','type','question','optA','optB','optC','optD','correct'];
   const sheet = getOrCreate('VideoCauHoi', COLS);
   const keys = [String(data.baiKey || '')];
@@ -2499,6 +2511,9 @@ function getBaiTapTracNghiemAdmin(data) {
 // Ghi de toan bo cau hoi Luyen tap trac nghiem cua 1 bai (xoa cu, ghi moi) - tach sheet rieng
 // de khong bi gioi han 50.000 ky tu/o cua Google Sheets khi 1 bai co hang tram cau.
 function saveBaiTapTracNghiem(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
   const COLS = ['baiKey','thuTu','type','question','optA','optB','optC','optD','correct'];
   const sheet = getOrCreate('BaiTapTracNghiem', COLS);
   const keys = [String(data.baiKey || '')];

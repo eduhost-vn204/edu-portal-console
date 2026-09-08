@@ -188,6 +188,9 @@ function createGasVm(adminKey = 'secret_test_admin_key') {
     Infinity: Infinity,
     Utilities: {
       getUuid() { return 'mock-uuid-' + Math.random().toString(36).slice(2); }
+    },
+    UrlFetchApp: {
+      fetch() { return { getContentText() { return ''; } }; }
     }
   };
 
@@ -388,6 +391,158 @@ it('doPost action=getbaitaptracnghiemadmin: Đúng adminKey -> Admin đọc đư
   assert.strictEqual(res.ok, true);
   assert.strictEqual(res.data.length, 1);
   assert.strictEqual(res.data[0].question, 'Bài tập mật Bài Pilot Draft');
+});
+
+// =========================================================================
+// SUITE 3B: CHẶN ĐỨNG P0 INTEGRITY BYPASS TRÊN TOÀN BỘ CÁC ACTION GHI
+// =========================================================================
+console.log(`\n--- [SUITE 3B] Integrity Bypass Defense: Chặn Đứng Thao Tác Ghi Khi Thiếu/Sai adminKey ---`);
+
+it('doPost action=savebaihoc: Thiếu hoặc sai adminKey -> Từ chối Unauthorized, sheet BaiHoc giữ nguyên 100%', () => {
+  const sheet = ss2.getSheetByName('BaiHoc');
+  const rowCountBefore = sheet.getLastRow();
+  const snapshotBefore = JSON.stringify(sheet.getDataRange().getValues());
+
+  // 1. Thử ghi bài mới khi thiếu adminKey
+  const res1 = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'savebaihoc', TenBai: 'Hacker Injected Lesson' }) }
+  });
+  assert.strictEqual(res1.ok, false);
+  assert.ok(res1.msg && res1.msg.includes('Unauthorized'));
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore);
+  assert.strictEqual(JSON.stringify(sheet.getDataRange().getValues()), snapshotBefore);
+
+  // 2. Thử ghi bài mới khi sai adminKey
+  const res2 = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'savebaihoc', adminKey: 'wrong_key', TenBai: 'Hacker Lesson 2' }) }
+  });
+  assert.strictEqual(res2.ok, false);
+  assert.ok(res2.msg && res2.msg.includes('Unauthorized'));
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore);
+  assert.strictEqual(JSON.stringify(sheet.getDataRange().getValues()), snapshotBefore);
+});
+
+it('doPost action=savebaihoc: Kẻ xấu cố ý biến bài Draft thành Published khi thiếu/sai key -> Thất bại & bài giữ nguyên draft', () => {
+  const sheet = ss2.getSheetByName('BaiHoc');
+  const valuesBefore = sheet.getDataRange().getValues();
+  const pilotRowIdx = valuesBefore.findIndex(r => r.includes('B02_PILOT'));
+  assert.ok(pilotRowIdx >= 0, 'Phải tìm thấy B02_PILOT');
+  assert.strictEqual(valuesBefore[pilotRowIdx][14], 'draft');
+
+  // Hacker cố gắng cập nhật bài draft này thành published mà không có adminKey
+  const resTamper = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'savebaihoc', maBai: 'B02_PILOT', TrangThai: 'published' }) }
+  });
+  assert.strictEqual(resTamper.ok, false);
+  assert.ok(resTamper.msg && resTamper.msg.includes('Unauthorized'));
+
+  // Kiểm tra trực tiếp trong sheet: trạng thái VẪN PHẢI LÀ 'draft'
+  const valuesAfter = sheet.getDataRange().getValues();
+  assert.strictEqual(valuesAfter[pilotRowIdx][14], 'draft', 'Trạng thái bài nháp tuyệt đối không bị đổi thành published');
+});
+
+it('doPost action=savebaihoc: Đúng adminKey -> Ghi bài học thành công', () => {
+  const sheet = ss2.getSheetByName('BaiHoc');
+  const rowCountBefore = sheet.getLastRow();
+
+  const resOk = vm2.doPost({
+    postData: {
+      contents: JSON.stringify({
+        action: 'savebaihoc',
+        adminKey: 'secret_admin_key_123',
+        KhoaHoc: 'Lớp 12',
+        Chuong: 'Chương 2: Khí lí tưởng',
+        TenBai: 'Bài Test Admin Authorized',
+        TrangThai: 'draft'
+      })
+    }
+  });
+  assert.strictEqual(resOk.ok, true);
+  assert.strictEqual(resOk.TrangThai, 'draft');
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore + 1);
+});
+
+it('doPost action=deletebaihoc: Thiếu/sai adminKey -> Từ chối Unauthorized, không xóa bất kỳ dòng nào', () => {
+  const sheet = ss2.getSheetByName('BaiHoc');
+  const rowCountBefore = sheet.getLastRow();
+  const snapshotBefore = JSON.stringify(sheet.getDataRange().getValues());
+
+  const resFail = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'deletebaihoc', key: 'B01' }) }
+  });
+  assert.strictEqual(resFail.ok, false);
+  assert.ok(resFail.msg && resFail.msg.includes('Unauthorized'));
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore);
+  assert.strictEqual(JSON.stringify(sheet.getDataRange().getValues()), snapshotBefore);
+});
+
+it('doPost action=deletebaihoc: Đúng adminKey -> Xóa bài học thành công', () => {
+  const sheet = ss2.getSheetByName('BaiHoc');
+  const rowCountBefore = sheet.getLastRow();
+
+  const resOk = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'deletebaihoc', adminKey: 'secret_admin_key_123', maBai: 'B04_LEGACY' }) }
+  });
+  assert.strictEqual(resOk.ok, true);
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore - 1);
+});
+
+it('doPost action=savevideocauhoi: Thiếu/sai adminKey -> Từ chối Unauthorized, sheet VideoCauHoi giữ nguyên 100%', () => {
+  const sheet = ss2.getSheetByName('VideoCauHoi');
+  const rowCountBefore = sheet.getLastRow();
+  const snapshotBefore = JSON.stringify(sheet.getDataRange().getValues());
+
+  const resFail = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'savevideocauhoi', baiKey: 'B01', items: [{ q: 'Tampered Q' }] }) }
+  });
+  assert.strictEqual(resFail.ok, false);
+  assert.ok(resFail.msg && resFail.msg.includes('Unauthorized'));
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore);
+  assert.strictEqual(JSON.stringify(sheet.getDataRange().getValues()), snapshotBefore);
+});
+
+it('doPost action=savevideocauhoi: Đúng adminKey -> Ghi câu hỏi video thành công', () => {
+  const resOk = vm2.doPost({
+    postData: {
+      contents: JSON.stringify({
+        action: 'savevideocauhoi',
+        adminKey: 'secret_admin_key_123',
+        baiKey: 'B01',
+        items: [{ t: 30, q: 'Authorized Q1', A: '1', B: '2', C: '3', D: '4', ans: 'A' }]
+      })
+    }
+  });
+  assert.strictEqual(resOk.ok, true);
+  assert.strictEqual(resOk.count, 1);
+});
+
+it('doPost action=savebaitaptracnghiem: Thiếu/sai adminKey -> Từ chối Unauthorized, sheet BaiTapTracNghiem giữ nguyên 100%', () => {
+  const sheet = ss2.getSheetByName('BaiTapTracNghiem');
+  const rowCountBefore = sheet.getLastRow();
+  const snapshotBefore = JSON.stringify(sheet.getDataRange().getValues());
+
+  const resFail = vm2.doPost({
+    postData: { contents: JSON.stringify({ action: 'savebaitaptracnghiem', baiKey: 'B01', items: [{ q: 'Tampered Quiz' }] }) }
+  });
+  assert.strictEqual(resFail.ok, false);
+  assert.ok(resFail.msg && resFail.msg.includes('Unauthorized'));
+  assert.strictEqual(sheet.getLastRow(), rowCountBefore);
+  assert.strictEqual(JSON.stringify(sheet.getDataRange().getValues()), snapshotBefore);
+});
+
+it('doPost action=savebaitaptracnghiem: Đúng adminKey -> Ghi bài tập trắc nghiệm thành công', () => {
+  const resOk = vm2.doPost({
+    postData: {
+      contents: JSON.stringify({
+        action: 'savebaitaptracnghiem',
+        adminKey: 'secret_admin_key_123',
+        baiKey: 'B01',
+        items: [{ q: 'Authorized Quiz 1', A: '1', B: '2', C: '3', D: '4', correct: 'B' }]
+      })
+    }
+  });
+  assert.strictEqual(resOk.ok, true);
+  assert.strictEqual(resOk.count, 1);
 });
 
 // =========================================================================
