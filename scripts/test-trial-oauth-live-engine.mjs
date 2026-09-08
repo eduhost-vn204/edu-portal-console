@@ -212,13 +212,77 @@ await itAsync('refreshAccessToken: Ném OAUTH_ACTION_REQUIRED khi Google từ ch
 });
 
 // =========================================================================
-// SUITE 3: IDENTITY VERIFICATION (Google Account, YouTube Channel, Drive Folder)
 // =========================================================================
-console.log(`\n--- [SUITE 3] Identity Verification (Account, Channel, Folder) ---`);
+// SUITE 3: IDENTITY GUARDS BẮT BUỘC (Google Account, YouTube Channel, Drive Folder)
+// =========================================================================
+console.log(`\n--- [SUITE 3] Identity Guards Bắt Buộc (Account, Channel, Folder) ---`);
 
 const sampleCreds = { clientId: 'c_id', clientSecret: 'c_sec', refreshToken: 'c_ref' };
 
-await itAsync('verifyTrialIdentity: Pass khi mọi thông tin tài khoản, kênh và folder khớp', async () => {
+await itAsync('verifyTrialIdentity: Bắt buộc đủ cả 3 biến kỳ vọng; thiếu bất kỳ biến nào ném OAUTH_ACTION_REQUIRED', async () => {
+  const origEnvEmail = process.env.EXPECTED_TRIAL_GOOGLE_EMAIL;
+  const origEnvChannel = process.env.EXPECTED_TRIAL_YOUTUBE_CHANNEL_ID;
+  const origEnvFolder = process.env.EXPECTED_TRIAL_DRIVE_FOLDER_ID;
+  delete process.env.EXPECTED_TRIAL_GOOGLE_EMAIL;
+  delete process.env.EXPECTED_TRIAL_YOUTUBE_CHANNEL_ID;
+  delete process.env.EXPECTED_TRIAL_DRIVE_FOLDER_ID;
+
+  try {
+    // Thiếu cả 3
+    let threw = false;
+    try {
+      await verifyTrialIdentity(sampleCreds, 'mock_token', {});
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'OAUTH_ACTION_REQUIRED');
+      assert.ok(err.message.includes('Thiếu thông tin cấu hình danh tính kỳ vọng'));
+    }
+    assert.strictEqual(threw, true);
+
+    // Thiếu folderId
+    threw = false;
+    try {
+      await verifyTrialIdentity(sampleCreds, 'mock_token', {
+        expectedEmail: 'test@gmail.com',
+        expectedChannelId: 'UC123'
+      });
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'OAUTH_ACTION_REQUIRED');
+    }
+    assert.strictEqual(threw, true);
+  } finally {
+    if (origEnvEmail) process.env.EXPECTED_TRIAL_GOOGLE_EMAIL = origEnvEmail;
+    if (origEnvChannel) process.env.EXPECTED_TRIAL_YOUTUBE_CHANNEL_ID = origEnvChannel;
+    if (origEnvFolder) process.env.EXPECTED_TRIAL_DRIVE_FOLDER_ID = origEnvFolder;
+  }
+});
+
+await itAsync('verifyTrialIdentity: Ném IDENTITY_UNVERIFIABLE khi UserInfo API lỗi hoặc không trả về email', async () => {
+  const mockFetch = async (url) => {
+    if (url === GOOGLE_USERINFO_URL) {
+      return { ok: false, status: 500 };
+    }
+    return { ok: true, json: async () => ({}) };
+  };
+
+  let threw = false;
+  try {
+    await verifyTrialIdentity(sampleCreds, 'mock_token', {
+      fetchImpl: mockFetch,
+      expectedEmail: 'trial_teacher@gmail.com',
+      expectedChannelId: 'UC_TRIAL_999',
+      driveFolderId: 'FOLDER_123'
+    });
+  } catch (err) {
+    threw = true;
+    assert.strictEqual(err.code, 'IDENTITY_UNVERIFIABLE');
+    assert.ok(err.message.includes('IDENTITY_UNVERIFIABLE'));
+  }
+  assert.strictEqual(threw, true);
+});
+
+await itAsync('verifyTrialIdentity: Pass khi mọi thông tin khớp; return object KHÔNG chứa fullGoogleEmail', async () => {
   const mockFetch = async (url) => {
     if (url === GOOGLE_USERINFO_URL) {
       return { ok: true, json: async () => ({ email: 'trial_teacher@gmail.com' }) };
@@ -254,14 +318,41 @@ await itAsync('verifyTrialIdentity: Pass khi mọi thông tin tài khoản, kên
 
   assert.strictEqual(report.youtubeChannelId, 'UC_TRIAL_CHANNEL_999');
   assert.strictEqual(report.driveFolderId, 'FOLDER_PILOT_TRIAL_123');
-  assert.strictEqual(report.fullGoogleEmail, 'trial_teacher@gmail.com');
-  assert.ok(report.googleEmail.includes('***@gmail.com')); // Masked
+  assert.strictEqual(report.fullGoogleEmail, undefined, 'Tuyệt đối không rò rỉ fullGoogleEmail');
+  assert.strictEqual(report.googleEmail, 'tr***@gmail.com', 'Google email bắt buộc phải masked');
+});
+
+await itAsync('verifyTrialIdentity: Ném IDENTITY_MISMATCH khi email Google sai khác; thông báo lỗi không lộ full email', async () => {
+  const mockFetch = async (url) => {
+    if (url === GOOGLE_USERINFO_URL) {
+      return { ok: true, json: async () => ({ email: 'attacker_fake@gmail.com' }) };
+    }
+    return { ok: true, json: async () => ({}) };
+  };
+
+  let threw = false;
+  try {
+    await verifyTrialIdentity(sampleCreds, 'mock_token', {
+      fetchImpl: mockFetch,
+      expectedEmail: 'trial_teacher@gmail.com',
+      expectedChannelId: 'UC_TRIAL_CHANNEL_999',
+      driveFolderId: 'FOLDER_PILOT_123'
+    });
+  } catch (err) {
+    threw = true;
+    assert.strictEqual(err.code, 'IDENTITY_MISMATCH');
+    assert.strictEqual(err.message.includes('attacker_fake@gmail.com'), false, 'Không lộ full actual email');
+    assert.strictEqual(err.message.includes('trial_teacher@gmail.com'), false, 'Không lộ full expected email');
+    assert.ok(err.message.includes('at***@gmail.com'));
+    assert.ok(err.message.includes('tr***@gmail.com'));
+  }
+  assert.strictEqual(threw, true);
 });
 
 await itAsync('verifyTrialIdentity: Ném IDENTITY_MISMATCH khi kênh YouTube thực tế khác expectedChannelId', async () => {
   const mockFetch = async (url) => {
     if (url === GOOGLE_USERINFO_URL) {
-      return { ok: true, json: async () => ({ email: 'teacher@gmail.com' }) };
+      return { ok: true, json: async () => ({ email: 'trial_teacher@gmail.com' }) };
     }
     if (url.startsWith(YOUTUBE_CHANNELS_URL)) {
       return {
@@ -278,6 +369,7 @@ await itAsync('verifyTrialIdentity: Ném IDENTITY_MISMATCH khi kênh YouTube th�
   try {
     await verifyTrialIdentity(sampleCreds, 'mock_token', {
       fetchImpl: mockFetch,
+      expectedEmail: 'trial_teacher@gmail.com',
       expectedChannelId: 'UC_TRIAL_CHANNEL_999',
       driveFolderId: 'FOLDER_PILOT_123'
     });
@@ -289,10 +381,10 @@ await itAsync('verifyTrialIdentity: Ném IDENTITY_MISMATCH khi kênh YouTube th�
   assert.strictEqual(threw, true);
 });
 
-await itAsync('verifyTrialIdentity: Ném OAUTH_ACTION_REQUIRED khi Drive Folder không tồn tại (HTTP 404)', async () => {
+await itAsync('verifyTrialIdentity: Ném IDENTITY_MISMATCH khi Drive Folder không tồn tại (HTTP 404)', async () => {
   const mockFetch = async (url) => {
     if (url === GOOGLE_USERINFO_URL) {
-      return { ok: true, json: async () => ({ email: 'teacher@gmail.com' }) };
+      return { ok: true, json: async () => ({ email: 'trial_teacher@gmail.com' }) };
     }
     if (url.startsWith(YOUTUBE_CHANNELS_URL)) {
       return {
@@ -316,145 +408,327 @@ await itAsync('verifyTrialIdentity: Ném OAUTH_ACTION_REQUIRED khi Drive Folder 
   try {
     await verifyTrialIdentity(sampleCreds, 'mock_token', {
       fetchImpl: mockFetch,
+      expectedEmail: 'trial_teacher@gmail.com',
       expectedChannelId: 'UC_TRIAL_CHANNEL_999',
       driveFolderId: 'FOLDER_NON_EXISTENT'
     });
   } catch (err) {
     threw = true;
-    assert.strictEqual(err.code, 'OAUTH_ACTION_REQUIRED');
+    assert.strictEqual(err.code, 'IDENTITY_MISMATCH');
     assert.ok(err.message.includes('Không tìm thấy hoặc không có quyền'));
   }
   assert.strictEqual(threw, true);
 });
 
 // =========================================================================
-// SUITE 4: YOUTUBE RESUMABLE UPLOAD & PROCESSING STATUS
+// SUITE 4: YOUTUBE RESUMABLE CHUNK UPLOAD, CRASH & RECOVERY
 // =========================================================================
-console.log(`\n--- [SUITE 4] YouTube Resumable Upload & Processing Status ---`);
+console.log(`\n--- [SUITE 4] YouTube Resumable Chunk Upload & Crash Recovery ---`);
 
-await itAsync('uploadYouTubeVideoResumable: Khởi tạo session, upload video và luôn đặt privacyStatus: private', async () => {
+await itAsync('uploadYouTubeVideoResumable: Upload chia chunk hữu hạn, gọi onProgress checkpoint sau mỗi 308', async () => {
   const tmp = createTempDir();
   try {
-    const videoPath = path.join(tmp, 'sample_theory.mp4');
-    fs.writeFileSync(videoPath, Buffer.alloc(1024 * 50, 0x11)); // 50KB video
+    const videoPath = path.join(tmp, 'sample_chunk_test.mp4');
+    // Tạo file 1500 bytes, tải chunk 500 bytes => 3 chunks
+    const totalBytes = 1500;
+    const chunkSize = 500;
+    fs.writeFileSync(videoPath, Buffer.alloc(totalBytes, 0x33));
 
-    let initPayloadCaptured = null;
-    let chunkHeadersCaptured = null;
+    const progressHistory = [];
+    const sessionUrl = 'https://www.googleapis.com/upload/youtube/v3/videos?upload_id=chunk_sess_123';
 
     const mockFetch = async (url, opts) => {
       if (url.includes('uploadType=resumable')) {
-        initPayloadCaptured = JSON.parse(opts.body);
         return {
           ok: true,
           status: 200,
-          headers: new Headers({
-            Location: 'https://www.googleapis.com/upload/youtube/v3/videos?upload_id=mock_session_abc'
-          })
+          headers: new Headers({ Location: sessionUrl })
         };
       }
-      if (url.includes('upload_id=mock_session_abc')) {
-        chunkHeadersCaptured = opts.headers;
-        return {
-          ok: true,
-          status: 200,
-          json: async () => ({
-            id: 'YT_VIDEO_THEORY_123',
-            processingDetails: { processingStatus: 'processing' }
-          })
-        };
+      if (url === sessionUrl) {
+        const range = opts.headers['Content-Range'];
+        if (range === 'bytes 0-499/1500') {
+          return {
+            status: 308,
+            ok: false,
+            headers: new Headers({ Range: 'bytes=0-499' })
+          };
+        }
+        if (range === 'bytes 500-999/1500') {
+          return {
+            status: 308,
+            ok: false,
+            headers: new Headers({ Range: 'bytes=0-999' })
+          };
+        }
+        if (range === 'bytes 1000-1499/1500') {
+          return {
+            status: 200,
+            ok: true,
+            json: async () => ({ id: 'YT_CHUNK_SUCCESS_789' })
+          };
+        }
       }
       if (url.includes('part=status,processingDetails')) {
         return {
           ok: true,
-          json: async () => ({
-            items: [{ id: 'YT_VIDEO_THEORY_123', processingDetails: { processingStatus: 'processing' } }]
-          })
+          json: async () => ({ items: [{ id: 'YT_CHUNK_SUCCESS_789', processingDetails: { processingStatus: 'uploaded' } }] })
         };
       }
-      throw new Error(`Unexpected url: ${url}`);
+      throw new Error(`Unexpected: ${url} Range: ${opts.headers?.['Content-Range']}`);
     };
 
     const res = await uploadYouTubeVideoResumable(
       videoPath,
-      { title: 'Bài 10 Lý thuyết', description: 'Pilot' },
+      { title: 'Chunk Upload Test' },
       'mock_token',
-      { fetchImpl: mockFetch }
+      {
+        fetchImpl: mockFetch,
+        chunkSize,
+        onProgress: async (prog) => {
+          progressHistory.push({ ...prog });
+        }
+      }
     );
 
-    assert.strictEqual(res.videoId, 'YT_VIDEO_THEORY_123');
+    assert.strictEqual(res.videoId, 'YT_CHUNK_SUCCESS_789');
     assert.strictEqual(res.privacyStatus, 'private');
-    assert.strictEqual(initPayloadCaptured.status.privacyStatus, 'private', 'Bắt buộc luôn là private');
-    assert.strictEqual(res.processingStatus, 'processing');
+    // Phải có ít nhất: SESSION_INITIALIZED (0 byte), chunk 1 (500), chunk 2 (1000), chunk 3 (1500)
+    assert.ok(progressHistory.length >= 4, `Cần ít nhất 4 events onProgress, thực tế: ${progressHistory.length}`);
+    assert.strictEqual(progressHistory[0].status, 'SESSION_INITIALIZED');
+    assert.strictEqual(progressHistory[1].bytesConfirmed, 500);
+    assert.strictEqual(progressHistory[2].bytesConfirmed, 1000);
+    assert.strictEqual(progressHistory[3].bytesConfirmed, 1500);
   } finally {
     cleanupTempDir(tmp);
   }
 });
 
-await itAsync('uploadYouTubeVideoResumable: Hỗ trợ Resume khi session đã upload dở 50% byte', async () => {
+await itAsync('uploadYouTubeVideoResumable: Phục hồi sau crash, tiếp tục từ byte server báo, KHÔNG gửi lại byte cũ', async () => {
   const tmp = createTempDir();
   try {
-    const videoPath = path.join(tmp, 'sample_resume.mp4');
-    const totalBytes = 2000;
-    fs.writeFileSync(videoPath, Buffer.alloc(totalBytes, 0x22));
+    const videoPath = path.join(tmp, 'sample_crash_resume.mp4');
+    const totalBytes = 1500;
+    const chunkSize = 500;
+    fs.writeFileSync(videoPath, Buffer.alloc(totalBytes, 0x44));
 
-    const sessionUrl = 'https://www.googleapis.com/upload/youtube/v3/videos?upload_id=mock_resume_sess';
-    let rangeQueryCalled = false;
-    let uploadChunkRangeHeader = null;
+    const sessionUrl = 'https://www.googleapis.com/upload/youtube/v3/videos?upload_id=crash_resume_sess';
+    let uploadedBytesTotal = 0;
+    let rangeQueryHandled = false;
 
     const mockFetch = async (url, opts) => {
       if (url === sessionUrl && opts.headers['Content-Range'] === `bytes */${totalBytes}`) {
-        rangeQueryCalled = true;
-        // Giả lập server YouTube phản hồi: đã nhận 0-999 (1000 bytes đầu)
+        rangeQueryHandled = true;
+        // Server xác nhận đã có byte 0-499 từ lần chạy trước khi crash
         return {
           status: 308,
           ok: false,
-          headers: new Headers({
-            Range: 'bytes=0-999'
-          })
+          headers: new Headers({ Range: 'bytes=0-499' })
         };
       }
-      if (url === sessionUrl && opts.headers['Content-Range'].startsWith('bytes 1000-1999')) {
-        uploadChunkRangeHeader = opts.headers['Content-Range'];
+      if (url === sessionUrl && opts.headers['Content-Range'] === 'bytes 500-999/1500') {
+        uploadedBytesTotal += opts.body.length;
         return {
-          ok: true,
+          status: 308,
+          ok: false,
+          headers: new Headers({ Range: 'bytes=0-999' })
+        };
+      }
+      if (url === sessionUrl && opts.headers['Content-Range'] === 'bytes 1000-1499/1500') {
+        uploadedBytesTotal += opts.body.length;
+        return {
           status: 200,
-          json: async () => ({
-            id: 'YT_RESUMED_VIDEO_888',
-            processingDetails: { processingStatus: 'succeeded' }
-          })
+          ok: true,
+          json: async () => ({ id: 'YT_CRASH_RESUMED_OK' })
         };
       }
       if (url.includes('part=status,processingDetails')) {
         return {
           ok: true,
-          json: async () => ({
-            items: [{ id: 'YT_RESUMED_VIDEO_888', processingDetails: { processingStatus: 'succeeded' } }]
-          })
+          json: async () => ({ items: [{ id: 'YT_CRASH_RESUMED_OK', processingDetails: { processingStatus: 'uploaded' } }] })
         };
       }
-      throw new Error(`Unexpected call: ${url} with range ${opts.headers?.['Content-Range']}`);
+      throw new Error(`Unexpected: ${url} Range: ${opts.headers?.['Content-Range']}`);
     };
 
+    // Khởi động lần chạy mới với checkpoint cũ có sessionUrl
     const res = await uploadYouTubeVideoResumable(
       videoPath,
-      { title: 'Video Resumed' },
+      { title: 'Crash Recovery Test' },
       'mock_token',
-      { fetchImpl: mockFetch, resumableSessionUrl: sessionUrl }
+      {
+        fetchImpl: mockFetch,
+        chunkSize,
+        resumableSessionUrl: sessionUrl
+      }
     );
 
-    assert.strictEqual(rangeQueryCalled, true, 'Phải truy vấn range byte đã nạp');
-    assert.strictEqual(uploadChunkRangeHeader, 'bytes 1000-1999/2000', 'Chunk upload phải bắt đầu từ byte 1000');
-    assert.strictEqual(res.videoId, 'YT_RESUMED_VIDEO_888');
-    assert.strictEqual(res.processingStatus, 'succeeded');
+    assert.strictEqual(rangeQueryHandled, true, 'Bắt buộc phải query range */total');
+    assert.strictEqual(uploadedBytesTotal, 1000, 'Chỉ được tải 1000 byte còn lại, không tải lại 500 byte đầu');
+    assert.strictEqual(res.videoId, 'YT_CRASH_RESUMED_OK');
+  } finally {
+    cleanupTempDir(tmp);
+  }
+});
+
+await itAsync('uploadYouTubeVideoResumable: Dừng fail-closed MANUAL_RECOVERY_REQUIRED khi session expired (404/410)', async () => {
+  const tmp = createTempDir();
+  try {
+    const videoPath = path.join(tmp, 'sample_expired.mp4');
+    fs.writeFileSync(videoPath, Buffer.alloc(1000, 0x55));
+
+    const expiredSessionUrl = 'https://www.googleapis.com/upload/youtube/v3/videos?upload_id=expired_sess';
+
+    const mockFetch = async (url, opts) => {
+      if (url === expiredSessionUrl) {
+        return { status: 404, ok: false, text: async () => 'Not Found - Session Expired' };
+      }
+      if (url.includes(YOUTUBE_VIDEOS_URL)) {
+        return { ok: true, json: async () => ({ items: [] }) };
+      }
+      throw new Error(`Unexpected: ${url}`);
+    };
+
+    let threw = false;
+    try {
+      await uploadYouTubeVideoResumable(
+        videoPath,
+        { title: 'Expired Session Test' },
+        'mock_token',
+        { fetchImpl: mockFetch, resumableSessionUrl: expiredSessionUrl }
+      );
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'MANUAL_RECOVERY_REQUIRED');
+      assert.ok(err.message.includes('MANUAL_RECOVERY_REQUIRED'));
+      assert.ok(err.message.includes('Nghiêm cấm tự động upload lại'));
+    }
+    assert.strictEqual(threw, true);
   } finally {
     cleanupTempDir(tmp);
   }
 });
 
 // =========================================================================
-// SUITE 5: YOUTUBE CAPTIONS UPLOAD
+// SUITE 4B: HAI VIDEO CHECKPOINT ĐỘC LẬP & FAULT INJECTION
 // =========================================================================
-console.log(`\n--- [SUITE 5] YouTube Captions Upload (SRT/VTT) ---`);
+console.log(`\n--- [SUITE 4B] Hai Video Checkpoint Độc Lập & Fault Injection ---`);
+
+await itAsync('uploadTwoVideosToYouTube: Video 1 xong checkpoint ngay; Video 2 lỗi -> chạy lại không gọi lại Video 1', async () => {
+  const tmp = createTempDir();
+  try {
+    const v1Path = path.join(tmp, 'vid_theory.mp4');
+    const v2Path = path.join(tmp, 'vid_practice.mp4');
+    fs.writeFileSync(v1Path, Buffer.alloc(500, 0x11));
+    fs.writeFileSync(v2Path, Buffer.alloc(500, 0x22));
+
+    const manifest = {
+      lessonName: '[PILOT] B10 Checkpoint Test',
+      sourceDir: tmp,
+      videoTheoryFile: 'vid_theory.mp4',
+      videoPracticeFile: 'vid_practice.mp4'
+    };
+
+    let video1UploadCalls = 0;
+    let video2UploadCalls = 0;
+
+    const makeMockFetch = (failVideo2 = false) => async (url, opts) => {
+      if (url === GOOGLE_OAUTH_TOKEN_URL) {
+        return { ok: true, status: 200, json: async () => ({ access_token: 'mock_token_for_4b' }) };
+      }
+      if (url === GOOGLE_USERINFO_URL) {
+        return { ok: true, json: async () => ({ email: 'trial_teacher@gmail.com' }) };
+      }
+      if (url.startsWith(YOUTUBE_CHANNELS_URL)) {
+        return { ok: true, json: async () => ({ items: [{ id: 'UC_TRIAL_CHANNEL_999', snippet: { title: 'Trial' } }] }) };
+      }
+      if (url.startsWith(DRIVE_FILES_URL)) {
+        return { ok: true, json: async () => ({ id: 'FOLDER_TRIAL', mimeType: 'application/vnd.google-apps.folder', trashed: false }) };
+      }
+      if (url.includes('uploadType=resumable')) {
+        const body = JSON.parse(opts.body);
+        if (body.snippet.title.includes('Phần 1: Bài giảng')) {
+          video1UploadCalls++;
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ Location: 'https://youtube.upload/session_theory' })
+          };
+        }
+        if (body.snippet.title.includes('Phần 2: Chữa bài tập')) {
+          video2UploadCalls++;
+          if (failVideo2) {
+            return { ok: false, status: 503, text: async () => 'Service Unavailable on Video 2' };
+          }
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers({ Location: 'https://youtube.upload/session_practice' })
+          };
+        }
+      }
+      if (url === 'https://youtube.upload/session_theory') {
+        return { ok: true, status: 200, json: async () => ({ id: 'YT_THEORY_ID_111' }) };
+      }
+      if (url === 'https://youtube.upload/session_practice') {
+        return { ok: true, status: 200, json: async () => ({ id: 'YT_PRACTICE_ID_222' }) };
+      }
+      if (url.includes('part=status,processingDetails')) {
+        return { ok: true, json: async () => ({ items: [{ status: { uploadStatus: 'uploaded' } }] }) };
+      }
+      throw new Error(`Unexpected: ${url}`);
+    };
+
+    const commonOpts = {
+      expectedEmail: 'trial_teacher@gmail.com',
+      expectedChannelId: 'UC_TRIAL_CHANNEL_999',
+      driveFolderId: 'FOLDER_TRIAL',
+      clientId: 'mock_c',
+      clientSecret: 'mock_s',
+      refreshToken: 'mock_r'
+    };
+
+    // LẦN 1: Video 1 thành công, Video 2 fail mạng
+    let threwL1 = false;
+    try {
+      await uploadTwoVideosToYouTube(tmp, manifest, {
+        ...commonOpts,
+        fetchImpl: makeMockFetch(true) // Fail video 2
+      });
+    } catch (err) {
+      threwL1 = true;
+      assert.ok(err.message.includes('Service Unavailable on Video 2') || err.message.includes('503'));
+    }
+    assert.strictEqual(threwL1, true, 'Lần 1 phải ném lỗi tại Video 2');
+    assert.strictEqual(video1UploadCalls, 1, 'Video 1 đã được gọi upload trong lần 1');
+    assert.strictEqual(video2UploadCalls, 1, 'Video 2 đã được gọi và fail trong lần 1');
+
+    // Kiểm tra checkpoint độc lập sau lần 1: video 1 ĐÃ ĐƯỢC LƯU
+    const cpAfterL1 = loadCheckpoint(tmp);
+    assert.strictEqual(cpAfterL1.youtubeTheory?.status, 'UPLOADED_PRIVATE');
+    assert.strictEqual(cpAfterL1.youtubeTheory?.videoId, 'YT_THEORY_ID_111');
+    assert.strictEqual(cpAfterL1.state, 'YOUTUBE_THEORY_UPLOADED');
+
+    // LẦN 2: Chạy lại khi mạng ổn định
+    const resL2 = await uploadTwoVideosToYouTube(tmp, manifest, {
+      ...commonOpts,
+      fetchImpl: makeMockFetch(false) // Thành công
+    });
+
+    // BẮT BUỘC: Video 1 không được gọi lại lần 2! video1UploadCalls vẫn là 1
+    assert.strictEqual(video1UploadCalls, 1, 'Video 1 TUYỆT ĐỐI KHÔNG được upload lại!');
+    assert.strictEqual(video2UploadCalls, 2, 'Video 2 được upload thành công ở lần 2');
+    assert.strictEqual(resL2.theoryVideoId, 'YT_THEORY_ID_111');
+    assert.strictEqual(resL2.practiceVideoId, 'YT_PRACTICE_ID_222');
+  } finally {
+    cleanupTempDir(tmp);
+  }
+});
+
+// =========================================================================
+// SUITE 5: YOUTUBE CAPTIONS UPLOAD & FAIL-CLOSED
+// =========================================================================
+console.log(`\n--- [SUITE 5] YouTube Captions Upload & Fail-Closed ---`);
 
 await itAsync('uploadYouTubeCaption: Khởi tạo và upload file SRT phụ đề tiếng Việt chuẩn', async () => {
   const tmp = createTempDir();
@@ -495,22 +769,118 @@ await itAsync('uploadYouTubeCaption: Khởi tạo và upload file SRT phụ đ�
   }
 });
 
+await itAsync('uploadYouTubeCaption: Ném CAPTION_UPLOAD_FAILED khi API upload thất bại, không nuốt lỗi', async () => {
+  const tmp = createTempDir();
+  try {
+    const srtPath = path.join(tmp, 'subtitles.srt');
+    fs.writeFileSync(srtPath, '1\n00:00:01,000 --> 00:00:02,000\nTest\n', 'utf8');
+
+    const mockFetch = async () => ({
+      ok: false,
+      status: 500,
+      text: async () => 'Internal Server Error'
+    });
+
+    let threw = false;
+    try {
+      await uploadYouTubeCaption('YT_VIDEO_1', srtPath, 'mock_token', { fetchImpl: mockFetch });
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'CAPTION_UPLOAD_FAILED');
+    }
+    assert.strictEqual(threw, true, 'Bắt buộc ném CAPTION_UPLOAD_FAILED');
+  } finally {
+    cleanupTempDir(tmp);
+  }
+});
+
+await itAsync('uploadTwoVideosToYouTube: Ném CAPTION_UPLOAD_FAILED khi bật captions nhưng upload caption thất bại', async () => {
+  const tmp = createTempDir();
+  try {
+    const v1Path = path.join(tmp, 'vid1.mp4');
+    const v2Path = path.join(tmp, 'vid2.mp4');
+    const srtPath = path.join(tmp, 'subtitles.srt');
+    fs.writeFileSync(v1Path, Buffer.alloc(200, 0x11));
+    fs.writeFileSync(v2Path, Buffer.alloc(200, 0x22));
+    fs.writeFileSync(srtPath, '1\n00:00:00,000 --> 00:00:01,000\nCaption\n', 'utf8');
+
+    const manifest = {
+      lessonName: 'Pilot Caption Test',
+      sourceDir: tmp,
+      videoTheoryFile: 'vid1.mp4',
+      videoPracticeFile: 'vid2.mp4',
+      uploadCaptions: true
+    };
+
+    const mockFetch = async (url) => {
+      if (url === GOOGLE_OAUTH_TOKEN_URL) {
+        return { ok: true, status: 200, json: async () => ({ access_token: 'tok' }) };
+      }
+      if (url === GOOGLE_USERINFO_URL) {
+        return { ok: true, json: async () => ({ email: 'trial_teacher@gmail.com' }) };
+      }
+      if (url.startsWith(YOUTUBE_CHANNELS_URL)) {
+        return { ok: true, json: async () => ({ items: [{ id: 'UC_TRIAL_CHANNEL_999', snippet: { title: 'T' } }] }) };
+      }
+      if (url.startsWith(DRIVE_FILES_URL)) {
+        return { ok: true, json: async () => ({ id: 'FLD', mimeType: 'application/vnd.google-apps.folder', trashed: false }) };
+      }
+      if (url.includes('uploadType=resumable') && url.includes('/videos')) {
+        return { ok: true, status: 200, headers: new Headers({ Location: 'https://yt.upload/vid' }) };
+      }
+      if (url === 'https://yt.upload/vid') {
+        return { ok: true, status: 200, json: async () => ({ id: 'VID_OK_123' }) };
+      }
+      if (url.includes('part=status,processingDetails')) {
+        return { ok: true, json: async () => ({ items: [{ status: { uploadStatus: 'uploaded' } }] }) };
+      }
+      // Giả lập Captions upload lỗi 500
+      if (url.includes('/captions')) {
+        return { ok: false, status: 500, text: async () => 'Caption service unavailable' };
+      }
+      throw new Error(`Unexpected: ${url}`);
+    };
+
+    let threw = false;
+    try {
+      await uploadTwoVideosToYouTube(tmp, manifest, {
+        expectedEmail: 'trial_teacher@gmail.com',
+        expectedChannelId: 'UC_TRIAL_CHANNEL_999',
+        driveFolderId: 'FLD',
+        clientId: 'c',
+        clientSecret: 's',
+        refreshToken: 'r',
+        fetchImpl: mockFetch
+      });
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'CAPTION_UPLOAD_FAILED');
+      assert.ok(err.message.includes('CAPTION_UPLOAD_FAILED'));
+    }
+    assert.strictEqual(threw, true, 'Pipeline phải fail-closed với CAPTION_UPLOAD_FAILED');
+
+    const cp = loadCheckpoint(tmp);
+    assert.strictEqual(cp.state, 'CAPTION_UPLOAD_FAILED');
+  } finally {
+    cleanupTempDir(tmp);
+  }
+});
+
 // =========================================================================
-// SUITE 6: GOOGLE DRIVE FOLDER & HASH REUSE
+// SUITE 6: GOOGLE DRIVE ESCAPE QUERY & GET READ-BACK ĐỐI SOÁT
 // =========================================================================
-console.log(`\n--- [SUITE 6] Google Drive Folder & Hash Reuse (Chống Duplicate) ---`);
+console.log(`\n--- [SUITE 6] Google Drive Escape Query & GET Read-Back Đối Soát ---`);
 
 await itAsync('uploadDrivePdfWithHash: Tái sử dụng file cũ khi MD5 hash và tên file trùng khớp', async () => {
   const tmp = createTempDir();
   try {
-    const pdfPath = path.join(tmp, 'Bai_10_Ly_Thuyet.pdf');
+    const pdfPath = path.join(tmp, "Bai_10_Ly_Thuyet.pdf");
     fs.writeFileSync(pdfPath, '%PDF-1.4 sample content for hash reuse testing');
     const expectedMd5 = crypto.createHash('md5').update(fs.readFileSync(pdfPath)).digest('hex');
 
     let uploadCalled = false;
-    const mockFetch = async (url, opts) => {
+    const mockFetch = async (url) => {
       if (url.includes(DRIVE_FILES_URL)) {
-        // Trả về danh sách file có sẵn trong folder
         return {
           ok: true,
           json: async () => ({
@@ -520,6 +890,7 @@ await itAsync('uploadDrivePdfWithHash: Tái sử dụng file cũ khi MD5 hash v�
                 name: 'Bai_10_Ly_Thuyet.pdf',
                 md5Checksum: expectedMd5,
                 mimeType: 'application/pdf',
+                parents: ['FOLDER_TRIAL_ID'],
                 webViewLink: 'https://drive.google.com/file/d/DRIVE_FILE_REUSED_123/view'
               }
             ]
@@ -542,39 +913,100 @@ await itAsync('uploadDrivePdfWithHash: Tái sử dụng file cũ khi MD5 hash v�
   }
 });
 
-await itAsync('uploadDrivePdfWithHash: Upload mới khi chưa có file, gắn đúng parents folder và mimeType', async () => {
+await itAsync('uploadDrivePdfWithHash: Escape ký tự nháy đơn trong query, upload mới và GET read-back đối soát', async () => {
   const tmp = createTempDir();
   try {
-    const pdfPath = path.join(tmp, 'Bai_10_Luyen_Tap.pdf');
-    fs.writeFileSync(pdfPath, '%PDF-1.4 new unique content');
+    // Tên file có chứa dấu nháy đơn
+    const specialFileName = "Bai_10_O'Reilly_Ly_Thuyet.pdf";
+    const pdfPath = path.join(tmp, specialFileName);
+    fs.writeFileSync(pdfPath, '%PDF-1.4 special filename content');
+    const expectedMd5 = crypto.createHash('md5').update(fs.readFileSync(pdfPath)).digest('hex');
 
-    let multipartBodyCaptured = null;
+    let queryCaptured = '';
+    let readBackCalled = false;
+
     const mockFetch = async (url, opts) => {
-      if (url.includes(DRIVE_FILES_URL)) {
-        return { ok: true, json: async () => ({ files: [] }) }; // Thư mục chưa có file này
-      }
-      if (url.includes(DRIVE_UPLOAD_URL)) {
-        multipartBodyCaptured = opts.body;
+      if (url.includes('uploadType=multipart')) {
         return {
           ok: true,
           status: 200,
           json: async () => ({
-            id: 'DRIVE_NEW_UPLOAD_456',
-            name: 'Bai_10_Luyen_Tap.pdf',
-            mimeType: 'application/pdf',
-            parents: ['FOLDER_TRIAL_ID'],
-            webViewLink: 'https://drive.google.com/file/d/DRIVE_NEW_UPLOAD_456/view'
+            id: 'DRIVE_SPECIAL_UPLOAD_999',
+            name: specialFileName
           })
         };
+      }
+      if (url.includes('/files/DRIVE_SPECIAL_UPLOAD_999')) {
+        readBackCalled = true;
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            id: 'DRIVE_SPECIAL_UPLOAD_999',
+            name: specialFileName,
+            mimeType: 'application/pdf',
+            parents: ['FOLDER_TRIAL_ID'],
+            md5Checksum: expectedMd5,
+            webViewLink: 'https://drive.google.com/file/d/DRIVE_SPECIAL_UPLOAD_999/view'
+          })
+        };
+      }
+      if (url.includes(DRIVE_FILES_URL)) {
+        queryCaptured = decodeURIComponent(url);
+        return { ok: true, json: async () => ({ files: [] }) };
       }
       throw new Error(`Unexpected: ${url}`);
     };
 
     const res = await uploadDrivePdfWithHash(pdfPath, 'FOLDER_TRIAL_ID', 'mock_token', { fetchImpl: mockFetch });
-    assert.strictEqual(res.fileId, 'DRIVE_NEW_UPLOAD_456');
+    assert.strictEqual(res.fileId, 'DRIVE_SPECIAL_UPLOAD_999');
     assert.strictEqual(res.isReused, false);
-    assert.ok(multipartBodyCaptured.toString().includes('"parents":["FOLDER_TRIAL_ID"]'));
-    assert.ok(multipartBodyCaptured.toString().includes('application/pdf'));
+    assert.strictEqual(readBackCalled, true, 'Bắt buộc phải gọi GET read-back đối soát file sau upload');
+    // Kiểm tra query đã được escape dấu nháy đơn: O\'Reilly
+    assert.ok(queryCaptured.includes("Bai_10_O\\'Reilly_Ly_Thuyet.pdf"), `Query chưa escape đúng nháy đơn: ${queryCaptured}`);
+    assert.ok(queryCaptured.includes("'FOLDER_TRIAL_ID' in parents"));
+  } finally {
+    cleanupTempDir(tmp);
+  }
+});
+
+await itAsync('uploadDrivePdfWithHash: Ném DRIVE_VERIFICATION_FAILED nếu read-back phát hiện md5 không khớp', async () => {
+  const tmp = createTempDir();
+  try {
+    const pdfPath = path.join(tmp, 'tampered.pdf');
+    fs.writeFileSync(pdfPath, '%PDF-1.4 tampered content');
+
+    const mockFetch = async (url) => {
+      if (url.includes('uploadType=multipart')) {
+        return { ok: true, json: async () => ({ id: 'FILE_CORRUPTED_1' }) };
+      }
+      if (url.includes('/files/FILE_CORRUPTED_1')) {
+        // Read-back trả về hash khác
+        return {
+          ok: true,
+          json: async () => ({
+            id: 'FILE_CORRUPTED_1',
+            mimeType: 'application/pdf',
+            parents: ['FOLDER_TRIAL'],
+            md5Checksum: 'WRONG_MD5_HASH'
+          })
+        };
+      }
+      if (url.includes(DRIVE_FILES_URL)) {
+        return { ok: true, json: async () => ({ files: [] }) };
+      }
+      throw new Error(`Unexpected: ${url}`);
+    };
+
+    let threw = false;
+    try {
+      await uploadDrivePdfWithHash(pdfPath, 'FOLDER_TRIAL', 'mock_token', { fetchImpl: mockFetch });
+    } catch (err) {
+      threw = true;
+      assert.strictEqual(err.code, 'DRIVE_VERIFICATION_FAILED');
+      assert.ok(err.message.includes('không khớp mã hash'));
+    }
+    assert.strictEqual(threw, true);
   } finally {
     cleanupTempDir(tmp);
   }
