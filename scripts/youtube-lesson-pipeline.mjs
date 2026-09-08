@@ -493,7 +493,7 @@ export async function uploadTwoVideosToYouTube(inboxDir, manifest, options = {})
   try {
     identity = await verifyTrialIdentity(credentials, accessToken, options);
   } catch (err) {
-    checkpoint.state = 'OAUTH_ACTION_REQUIRED';
+    checkpoint.state = err.code || 'OAUTH_ACTION_REQUIRED';
     saveCheckpoint(inboxDir, checkpoint);
     throw err;
   }
@@ -502,31 +502,99 @@ export async function uploadTwoVideosToYouTube(inboxDir, manifest, options = {})
   const theoryVideoPath = path.join(srcDir, manifest.videoTheoryFile);
   const practiceVideoPath = path.join(srcDir, manifest.videoPracticeFile);
 
-  console.log(`[YouTube] Bắt đầu resumable upload video 1: Bài giảng...`);
-  const theoryRes = await uploadYouTubeVideoResumable(
-    theoryVideoPath,
-    {
-      title: `${manifest.lessonName} - Phần 1: Bài giảng lí thuyết`,
-      description: manifest.description || 'Bài học Vật Lý 12 Pilot',
-      tags: manifest.tags || ['Vật Lý 12', 'Pilot']
-    },
-    accessToken,
-    options
-  );
+  // 1. Upload Video 1 (Bài giảng lí thuyết) - Checkpoint độc lập
+  let theoryRes = null;
+  if (checkpoint.youtubeTheory && (checkpoint.youtubeTheory.status === 'UPLOADED_PRIVATE' || checkpoint.youtubeTheory.videoId)) {
+    console.log(`[YouTube] Video bài giảng đã tải lên trước đó (ID: ${checkpoint.youtubeTheory.videoId}). Tái sử dụng.`);
+    theoryRes = checkpoint.youtubeTheory;
+  } else {
+    console.log(`[YouTube] Bắt đầu resumable upload video 1: Bài giảng...`);
+    theoryRes = await uploadYouTubeVideoResumable(
+      theoryVideoPath,
+      {
+        title: `${manifest.lessonName} - Phần 1: Bài giảng lí thuyết`,
+        description: manifest.description || 'Bài học Vật Lý 12 Pilot',
+        tags: manifest.tags || ['Vật Lý 12', 'Pilot']
+      },
+      accessToken,
+      {
+        ...options,
+        existingCheckpoint: checkpoint.youtubeTheory,
+        onProgress: async (prog) => {
+          checkpoint.youtubeTheory = {
+            status: prog.status,
+            sessionUrl: prog.sessionUrl,
+            bytesConfirmed: prog.bytesConfirmed,
+            fileSize: prog.fileSize,
+            fileHash: prog.fileHash,
+            videoId: prog.videoId || checkpoint.youtubeTheory?.videoId,
+            channelId: identity.youtubeChannelId,
+            updatedAt: new Date().toISOString()
+          };
+          checkpoint.state = 'YOUTUBE_THEORY_UPLOADING';
+          saveCheckpoint(inboxDir, checkpoint);
+        }
+      }
+    );
 
-  console.log(`[YouTube] Bắt đầu resumable upload video 2: Chữa bài tập...`);
-  const practiceRes = await uploadYouTubeVideoResumable(
-    practiceVideoPath,
-    {
-      title: `${manifest.lessonName} - Phần 2: Chữa bài tập áp dụng & luyện tập`,
-      description: manifest.description || 'Bài học Vật Lý 12 Pilot',
-      tags: manifest.tags || ['Vật Lý 12', 'Pilot']
-    },
-    accessToken,
-    options
-  );
+    checkpoint.youtubeTheory = {
+      ...theoryRes,
+      status: 'UPLOADED_PRIVATE',
+      channelId: identity.youtubeChannelId,
+      updatedAt: new Date().toISOString()
+    };
+    checkpoint.state = 'YOUTUBE_THEORY_UPLOADED';
+    saveCheckpoint(inboxDir, checkpoint);
+    console.log(`[YouTube] ✓ Video 1 (Bài giảng) đã checkpoint độc lập thành công (ID: ${theoryRes.videoId})`);
+  }
 
-  // Upload phụ đề nếu cấu hình bật
+  // 2. Upload Video 2 (Chữa bài tập) - Checkpoint độc lập sau khi Video 1 hoàn tất
+  let practiceRes = null;
+  if (checkpoint.youtubePractice && (checkpoint.youtubePractice.status === 'UPLOADED_PRIVATE' || checkpoint.youtubePractice.videoId)) {
+    console.log(`[YouTube] Video chữa bài đã tải lên trước đó (ID: ${checkpoint.youtubePractice.videoId}). Tái sử dụng.`);
+    practiceRes = checkpoint.youtubePractice;
+  } else {
+    console.log(`[YouTube] Bắt đầu resumable upload video 2: Chữa bài tập...`);
+    practiceRes = await uploadYouTubeVideoResumable(
+      practiceVideoPath,
+      {
+        title: `${manifest.lessonName} - Phần 2: Chữa bài tập áp dụng & luyện tập`,
+        description: manifest.description || 'Bài học Vật Lý 12 Pilot',
+        tags: manifest.tags || ['Vật Lý 12', 'Pilot']
+      },
+      accessToken,
+      {
+        ...options,
+        existingCheckpoint: checkpoint.youtubePractice,
+        onProgress: async (prog) => {
+          checkpoint.youtubePractice = {
+            status: prog.status,
+            sessionUrl: prog.sessionUrl,
+            bytesConfirmed: prog.bytesConfirmed,
+            fileSize: prog.fileSize,
+            fileHash: prog.fileHash,
+            videoId: prog.videoId || checkpoint.youtubePractice?.videoId,
+            channelId: identity.youtubeChannelId,
+            updatedAt: new Date().toISOString()
+          };
+          checkpoint.state = 'YOUTUBE_PRACTICE_UPLOADING';
+          saveCheckpoint(inboxDir, checkpoint);
+        }
+      }
+    );
+
+    checkpoint.youtubePractice = {
+      ...practiceRes,
+      status: 'UPLOADED_PRIVATE',
+      channelId: identity.youtubeChannelId,
+      updatedAt: new Date().toISOString()
+    };
+    checkpoint.state = 'YOUTUBE_PRACTICE_UPLOADED';
+    saveCheckpoint(inboxDir, checkpoint);
+    console.log(`[YouTube] ✓ Video 2 (Chữa bài) đã checkpoint độc lập thành công (ID: ${practiceRes.videoId})`);
+  }
+
+  // 3. Upload phụ đề nếu cấu hình bật (lỗi phải ném dừng, không nuốt)
   const shouldUploadCaptions = Boolean(manifest.uploadCaptions || options.uploadCaptions);
   const srtPath = path.join(inboxDir, 'subtitles.srt');
   const vttPath = path.join(inboxDir, 'subtitles.vtt');
@@ -540,12 +608,14 @@ export async function uploadTwoVideosToYouTube(inboxDir, manifest, options = {})
         captionTheoryResult = await uploadYouTubeCaption(theoryRes.videoId, captionFile, accessToken, options);
         console.log(`          ✓ Đã tải phụ đề thành công (ID: ${captionTheoryResult.captionId})`);
       } catch (e) {
-        console.warn(`          ⚠️ Không thể tải phụ đề: ${e.message}`);
+        checkpoint.state = 'CAPTION_UPLOAD_FAILED';
+        saveCheckpoint(inboxDir, checkpoint);
+        throw e;
       }
     }
   }
 
-  // Kiểm tra trạng thái xử lý
+  // 4. Kiểm tra trạng thái xử lý tổng thể
   const isProcessingPending = theoryRes.processingStatus === 'processing' || practiceRes.processingStatus === 'processing';
   const finalStatus = isProcessingPending ? 'PROCESSING_PENDING' : 'UPLOADED_PRIVATE';
 
