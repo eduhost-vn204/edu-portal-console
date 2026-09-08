@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { execFileSync } from 'child_process';
-import { postAdminWriteCore, attachAdminKeyCore } from './postAdminWrite.mjs';
+import { postAdminWriteCore, postAdminJsonCore, attachAdminKeyCore } from './postAdminWrite.mjs';
 import { compareRealB10Snapshot, REAL_B10_REQUIRED_FIELDS } from './verify_real_b10.mjs';
 import {
   getTrialOAuthCredentials,
@@ -872,10 +872,9 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     existingMaBai = checkpoint.backend.lesson.maBai || '';
     lessonNeedsWrite = false;
   } else {
-    console.log(`[Backend] [1/3] Đang đối soát danh sách bài học hiện có trên backend (admin scope)...`);
-    const checkRes = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
-    const checkJson = await checkRes.json();
-    const existingList = Array.isArray(checkJson.data) ? checkJson.data : (Array.isArray(checkJson) ? checkJson : []);
+    console.log(`[Backend] [1/3] Đang đối soát danh sách bài học hiện có trên backend (admin POST)...`);
+    const checkRes = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaihocadmin', adminKey });
+    const existingList = Array.isArray(checkRes?.data) ? checkRes.data : (Array.isArray(checkRes) ? checkRes : []);
     const matchingLessons = existingList.filter(b => String(b.TenBai).trim() === manifest.lessonName);
 
     if (matchingLessons.length > 1) {
@@ -919,9 +918,13 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
       console.warn(`          ⚠️ Request savebaihoc không nhận phản hồi HTTP 200, kiểm tra read-back ngay lập tức...`);
     }
 
-    const verifyRes = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
-    const verifyJson = await verifyRes.json();
-    const listAfter = Array.isArray(verifyJson.data) ? verifyJson.data : (Array.isArray(verifyJson) ? verifyJson : []);
+    const verifyRes = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaihocadmin', adminKey });
+    if (verifyRes && verifyRes.ok === false && verifyRes.msg) {
+      const err = new Error(`Ghi bài học DRAFT thất bại: ${verifyRes.msg}`);
+      err.code = 'BACKEND_WRITE_FAILED_STEP1';
+      throw err;
+    }
+    const listAfter = Array.isArray(verifyRes?.data) ? verifyRes.data : (Array.isArray(verifyRes) ? verifyRes : []);
     const verifiedLesson = listAfter.find(b => String(b.TenBai).trim() === manifest.lessonName);
 
     if (!verifiedLesson) {
@@ -973,10 +976,9 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     console.log(`[Backend] [2/3] 20 câu VideoCauHoi đã được xác minh trước đó trong checkpoint. Bỏ qua ghi.`);
     vchNeedsWrite = false;
   } else {
-    console.log(`[Backend] [2/3] Đang đối soát 20 câu VideoCauHoi trên backend...`);
-    const resVchCheck = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-    const jsonVchCheck = await resVchCheck.json();
-    const rowsVch = Array.isArray(jsonVchCheck.data) ? jsonVchCheck.data : [];
+    console.log(`[Backend] [2/3] Đang đối soát 20 câu VideoCauHoi trên backend (admin POST)...`);
+    const resVchCheck = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getvideocauhoiadmin', adminKey, bai: manifest.lessonName });
+    const rowsVch = Array.isArray(resVchCheck?.data) ? resVchCheck.data : [];
 
     const compVch = compareVideoCauHoiList(questionsApplied, rowsVch);
     if (compVch.ok) {
@@ -1005,9 +1007,13 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
 
     await postAdminWriteCore(fetchImpl, dbUrl, vchPayload);
 
-    const resVerifyVch = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-    const jsonVerifyVch = await resVerifyVch.json();
-    const rowsAfter = Array.isArray(jsonVerifyVch.data) ? jsonVerifyVch.data : [];
+    const resVerifyVch = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getvideocauhoiadmin', adminKey, bai: manifest.lessonName });
+    if (resVerifyVch && resVerifyVch.ok === false && resVerifyVch.msg) {
+      const err = new Error(`Ghi VideoCauHoi thất bại: ${resVerifyVch.msg}`);
+      err.code = 'BACKEND_WRITE_FAILED_STEP2';
+      throw err;
+    }
+    const rowsAfter = Array.isArray(resVerifyVch?.data) ? resVerifyVch.data : [];
 
     const postCompVch = compareVideoCauHoiList(questionsApplied, rowsAfter);
     if (!postCompVch.ok) {
@@ -1039,10 +1045,9 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
     console.log(`[Backend] [3/3] 20 câu BaiTapTracNghiem đã được xác minh trước đó trong checkpoint. Bỏ qua ghi.`);
     btNeedsWrite = false;
   } else {
-    console.log(`[Backend] [3/3] Đang đối soát 20 câu BaiTapTracNghiem trên backend...`);
-    const resBtCheck = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-    const jsonBtCheck = await resBtCheck.json();
-    const rowsBt = Array.isArray(jsonBtCheck.data) ? jsonBtCheck.data : [];
+    console.log(`[Backend] [3/3] Đang đối soát 20 câu BaiTapTracNghiem trên backend (admin POST)...`);
+    const resBtCheck = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaitaptracnghiemadmin', adminKey, bai: manifest.lessonName });
+    const rowsBt = Array.isArray(resBtCheck?.data) ? resBtCheck.data : [];
 
     const compBt = compareBaiTapTracNghiemList(questionsPractice, rowsBt);
     if (compBt.ok) {
@@ -1071,9 +1076,13 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
 
     await postAdminWriteCore(fetchImpl, dbUrl, btPayload);
 
-    const resVerifyBt = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-    const jsonVerifyBt = await resVerifyBt.json();
-    const rowsBtAfter = Array.isArray(jsonVerifyBt.data) ? jsonVerifyBt.data : [];
+    const resVerifyBt = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaitaptracnghiemadmin', adminKey, bai: manifest.lessonName });
+    if (resVerifyBt && resVerifyBt.ok === false && resVerifyBt.msg) {
+      const err = new Error(`Ghi BaiTapTracNghiem thất bại: ${resVerifyBt.msg}`);
+      err.code = 'BACKEND_WRITE_FAILED_STEP3';
+      throw err;
+    }
+    const rowsBtAfter = Array.isArray(resVerifyBt?.data) ? resVerifyBt.data : [];
 
     const postCompBt = compareBaiTapTracNghiemList(questionsPractice, rowsBtAfter);
     if (!postCompBt.ok) {
@@ -1114,10 +1123,11 @@ export async function verifyBackendReadBack(manifest, options = {}) {
 
   console.log(`[Verify] Bắt đầu đối soát sâu dữ liệu Backend...`);
 
-  // 1. Đọc danh sách bài học (admin scope)
-  const resBaiHoc = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&t=${Date.now()}`);
-  const jsonBaiHoc = await resBaiHoc.json();
-  const baiHocList = Array.isArray(jsonBaiHoc.data) ? jsonBaiHoc.data : (Array.isArray(jsonBaiHoc) ? jsonBaiHoc : []);
+  const adminKey = options.adminKey || process.env.ADMIN_KEY || '';
+
+  // 1. Đọc danh sách bài học (admin POST)
+  const resBaiHoc = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaihocadmin', adminKey });
+  const baiHocList = Array.isArray(resBaiHoc?.data) ? resBaiHoc.data : (Array.isArray(resBaiHoc) ? resBaiHoc : []);
 
   // 1.1 Xác minh sâu toàn bộ 11 trường của bài pilot
   const pilotLesson = baiHocList.find(b => String(b.TenBai).trim() === manifest.lessonName);
@@ -1179,13 +1189,24 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   }
 
   // 1.3 KHÓA AN TOÀN BẮT BUỘC: Kiểm tra Public Endpoint (Draft Contract check)
-  // Bài draft tuyệt đối KHÔNG được xuất hiện trên endpoint công khai của học sinh (không có scope=admin)
+  // Bài draft tuyệt đối KHÔNG được xuất hiện trên endpoint công khai của học sinh (dù có truyền query scope=admin/includeDraft)
   const resPublic = await fetchImpl(`${dbUrl}?type=baihoc&t=${Date.now()}`);
   const jsonPublic = await resPublic.json();
   const publicList = Array.isArray(jsonPublic.data) ? jsonPublic.data : (Array.isArray(jsonPublic) ? jsonPublic : []);
   const leakedLesson = publicList.find(b => String(b.TenBai).trim() === manifest.lessonName);
   if (leakedLesson) {
     const leakErr = new Error(`PUBLIC_LEAK_DETECTED: Bài pilot draft [${manifest.lessonName}] bị lộ trên public endpoint dành cho học sinh!`);
+    leakErr.code = 'PUBLIC_LEAK_DETECTED';
+    throw leakErr;
+  }
+
+  // Kiểm tra chống vượt quyền bằng query param giả mạo (scope=admin, includeDraft=true)
+  const resForged = await fetchImpl(`${dbUrl}?type=baihoc&scope=admin&includeDraft=true&t=${Date.now()}`);
+  const jsonForged = await resForged.json();
+  const forgedList = Array.isArray(jsonForged.data) ? jsonForged.data : (Array.isArray(jsonForged) ? jsonForged : []);
+  const forgedLeak = forgedList.find(b => String(b.TenBai).trim() === manifest.lessonName);
+  if (forgedLeak) {
+    const leakErr = new Error(`PUBLIC_LEAK_DETECTED: Endpoint GET bị vượt quyền qua query param giả mạo!`);
     leakErr.code = 'PUBLIC_LEAK_DETECTED';
     throw leakErr;
   }
@@ -1211,10 +1232,9 @@ export async function verifyBackendReadBack(manifest, options = {}) {
   }
   console.log(`         ✓ [DRAFT CONTRACT VERIFIED] Đã xác minh bài pilot KHÔNG xuất hiện trên các endpoint công khai của học sinh!`);
 
-  // 2. Đọc và đối soát chi tiết 20 câu VideoCauHoi (admin scope)
-  const resVCH = await fetchImpl(`${dbUrl}?type=videocauhoi&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-  const jsonVCH = await resVCH.json();
-  const vchRows = Array.isArray(jsonVCH.data) ? jsonVCH.data : [];
+  // 2. Đọc và đối soát chi tiết 20 câu VideoCauHoi (admin POST)
+  const resVCH = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getvideocauhoiadmin', adminKey, bai: manifest.lessonName });
+  const vchRows = Array.isArray(resVCH?.data) ? resVCH.data : [];
   console.log(`         ✓ Đọc VideoCauHoi của bài pilot: ${vchRows.length} câu (yêu cầu đúng 20 câu).`);
 
   if (options.questionsApplied) {
@@ -1227,10 +1247,9 @@ export async function verifyBackendReadBack(manifest, options = {}) {
     throw new Error(`Đối soát VideoCauHoi thất bại: Số câu thực tế là ${vchRows.length}, yêu cầu đúng 20!`);
   }
 
-  // 3. Đọc và đối soát chi tiết 20 câu BaiTapTracNghiem (admin scope)
-  const resBT = await fetchImpl(`${dbUrl}?type=baitaptracnghiem&scope=admin&bai=${encodeURIComponent(manifest.lessonName)}&t=${Date.now()}`);
-  const jsonBT = await resBT.json();
-  const btRows = Array.isArray(jsonBT.data) ? jsonBT.data : [];
+  // 3. Đọc và đối soát chi tiết 20 câu BaiTapTracNghiem (admin POST)
+  const resBT = await postAdminJsonCore(fetchImpl, dbUrl, { action: 'getbaitaptracnghiemadmin', adminKey, bai: manifest.lessonName });
+  const btRows = Array.isArray(resBT?.data) ? resBT.data : [];
   console.log(`         ✓ Đọc BaiTapTracNghiem của bài pilot: ${btRows.length} câu (yêu cầu đúng 20 câu).`);
 
   if (options.questionsPractice) {

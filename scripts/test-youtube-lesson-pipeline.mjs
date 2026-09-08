@@ -115,6 +115,17 @@ async function runTests() {
       if (opts && opts.body) {
         const body = JSON.parse(opts.body);
         capturedPayloads.push(body);
+        if (body.action === 'getbaihocadmin') {
+          return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baihoc }) };
+        }
+        if (body.action === 'getvideocauhoiadmin') {
+          const baiKey = body.bai || body.baiKey;
+          return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.videocauhoi[baiKey] || [] }) };
+        }
+        if (body.action === 'getbaitaptracnghiemadmin') {
+          const baiKey = body.bai || body.baiKey;
+          return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baitaptracnghiem[baiKey] || [] }) };
+        }
         if (body.action === 'savebaihoc') {
           inMemoryDb.baihoc.push({
             MaBai: body.maBai || 'Bmock123456',
@@ -162,28 +173,23 @@ async function runTests() {
       }
 
       if (url.includes('type=baihoc')) {
-        const isAdmin = url.includes('scope=admin');
-        const list = isAdmin
-          ? inMemoryDb.baihoc
-          : inMemoryDb.baihoc.filter(b => (b.TrangThai || 'published') === 'published');
+        const list = inMemoryDb.baihoc.filter(b => (b.TrangThai || 'published') === 'published');
         return { ok: true, json: async () => ({ ok: true, data: list }) };
       }
       if (url.includes('type=videocauhoi')) {
-        const isAdmin = url.includes('scope=admin');
         const match = url.match(/bai=([^&]+)/);
         const baiKey = match ? decodeURIComponent(match[1]) : '';
         const lesson = inMemoryDb.baihoc.find(b => b.MaBai === baiKey || b.TenBai === baiKey);
-        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+        if (lesson && (lesson.TrangThai || 'published') !== 'published') {
           return { ok: true, json: async () => ({ ok: true, data: [] }) };
         }
         return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.videocauhoi[baiKey] || [] }) };
       }
       if (url.includes('type=baitaptracnghiem')) {
-        const isAdmin = url.includes('scope=admin');
         const match = url.match(/bai=([^&]+)/);
         const baiKey = match ? decodeURIComponent(match[1]) : '';
         const lesson = inMemoryDb.baihoc.find(b => b.MaBai === baiKey || b.TenBai === baiKey);
-        if (!isAdmin && lesson && (lesson.TrangThai || 'published') !== 'published') {
+        if (lesson && (lesson.TrangThai || 'published') !== 'published') {
           return { ok: true, json: async () => ({ ok: true, data: [] }) };
         }
         return { ok: true, json: async () => ({ ok: true, data: inMemoryDb.baitaptracnghiem[baiKey] || [] }) };
@@ -203,21 +209,22 @@ async function runTests() {
       { fetchImpl: mockFetch, adminKey: 'test_admin_key' }
     );
     assert(backendRes1.ok === true, 'Tạo bài học DRAFT và 2 nhóm câu hỏi trả về ok: true');
-    assert(capturedPayloads.length === 3, 'Backend nhận đúng 3 payloads (savebaihoc, savevideocauhoi, savebaitaptracnghiem)');
-    assert(capturedPayloads[0].action === 'savebaihoc', 'Payload 1 là savebaihoc');
-    assert(capturedPayloads[0].TenBai === PILOT_B10_LESSON_NAME, 'TenBai đúng khóa pilot');
-    assert(capturedPayloads[0].Video === videoRes1.theoryUrl, 'Link Video bài giảng khớp');
-    assert(capturedPayloads[0].VideoGiai === videoRes1.practiceUrl, 'Link VideoGiai chữa bài khớp');
-    assert(capturedPayloads[0].PDFLyThuyet === driveRes1.theoryPdfUrl, 'Link PDFLyThuyet khớp');
-    assert(capturedPayloads[0].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaihoc');
+    const writePayloads = capturedPayloads.filter(p => p.action && p.action.startsWith('save'));
+    assert(writePayloads.length === 3, 'Backend nhận đúng 3 payloads (savebaihoc, savevideocauhoi, savebaitaptracnghiem)');
+    assert(writePayloads[0].action === 'savebaihoc', 'Payload 1 là savebaihoc');
+    assert(writePayloads[0].TenBai === PILOT_B10_LESSON_NAME, 'TenBai đúng khóa pilot');
+    assert(writePayloads[0].Video === videoRes1.theoryUrl, 'Link Video bài giảng khớp');
+    assert(writePayloads[0].VideoGiai === videoRes1.practiceUrl, 'Link VideoGiai chữa bài khớp');
+    assert(writePayloads[0].PDFLyThuyet === driveRes1.theoryPdfUrl, 'Link PDFLyThuyet khớp');
+    assert(writePayloads[0].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaihoc');
 
-    assert(capturedPayloads[1].action === 'savevideocauhoi', 'Payload 2 là savevideocauhoi');
-    assert(capturedPayloads[1].items.length === 20, 'Gán đúng 20 câu VideoCauHoi có mốc');
-    assert(capturedPayloads[1].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savevideocauhoi');
+    assert(writePayloads[1].action === 'savevideocauhoi', 'Payload 2 là savevideocauhoi');
+    assert(writePayloads[1].items.length === 20, 'Gán đúng 20 câu VideoCauHoi có mốc');
+    assert(writePayloads[1].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savevideocauhoi');
 
-    assert(capturedPayloads[2].action === 'savebaitaptracnghiem', 'Payload 3 là savebaitaptracnghiem');
-    assert(capturedPayloads[2].items.length === 20, 'Gán đúng 20 câu BaiTapTracNghiem không mốc');
-    assert(capturedPayloads[2].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaitaptracnghiem');
+    assert(writePayloads[2].action === 'savebaitaptracnghiem', 'Payload 3 là savebaitaptracnghiem');
+    assert(writePayloads[2].items.length === 20, 'Gán đúng 20 câu BaiTapTracNghiem không mốc');
+    assert(writePayloads[2].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaitaptracnghiem');
 
     // ── TEST 7: Resume bài học đã tạo ──
     console.log(`\nTest 7: Không tạo trùng bài học khi checkpoint đã hoàn tất`);
@@ -276,34 +283,46 @@ async function runTests() {
       correct: q.correct
     }));
 
-    const mockVerifyFetch = async (url) => {
+    const mockVerifyFetch = async (url, opts) => {
+      if (opts && opts.body) {
+        const body = JSON.parse(opts.body);
+        if (body.action === 'getbaihocadmin') {
+          return {
+            ok: true,
+            json: async () => ({
+              ok: true,
+              data: [
+                { ...mockRealSnapshot },
+                {
+                  KhoaHoc: parsed.course,
+                  Chuong: parsed.chapter,
+                  TenBai: PILOT_B10_LESSON_NAME,
+                  ThuTuBai: 999,
+                  MoTaBai: parsed.description,
+                  Video: videoRes1.theoryUrl,
+                  VideoGiai: videoRes1.practiceUrl,
+                  PDFLyThuyet: driveRes1.theoryPdfUrl,
+                  PDF: driveRes1.appliedPdfUrl,
+                  PDFLuyenTap: driveRes1.practicePdfUrl,
+                  TrangThai: 'draft'
+                }
+              ]
+            })
+          };
+        }
+        if (body.action === 'getvideocauhoiadmin') {
+          return { ok: true, json: async () => ({ ok: true, data: mockVerifiedVchRows }) };
+        }
+        if (body.action === 'getbaitaptracnghiemadmin') {
+          return { ok: true, json: async () => ({ ok: true, data: mockVerifiedBtRows }) };
+        }
+      }
+
       if (url.includes('type=baihoc')) {
-        const isAdmin = url.includes('scope=admin');
-        const dataList = isAdmin ? [
-          { ...mockRealSnapshot },
-          {
-            KhoaHoc: parsed.course,
-            Chuong: parsed.chapter,
-            TenBai: PILOT_B10_LESSON_NAME,
-            ThuTuBai: 999,
-            MoTaBai: parsed.description,
-            Video: videoRes1.theoryUrl,
-            VideoGiai: videoRes1.practiceUrl,
-            PDFLyThuyet: driveRes1.theoryPdfUrl,
-            PDF: driveRes1.appliedPdfUrl,
-            PDFLuyenTap: driveRes1.practicePdfUrl,
-            TrangThai: 'draft'
-          }
-        ] : [ { ...mockRealSnapshot } ];
-        return { ok: true, json: async () => ({ ok: true, data: dataList }) };
+        return { ok: true, json: async () => ({ ok: true, data: [ { ...mockRealSnapshot } ] }) };
       }
-      if (url.includes('type=videocauhoi')) {
-        const isAdmin = url.includes('scope=admin');
-        return { ok: true, json: async () => ({ ok: true, data: isAdmin ? mockVerifiedVchRows : [] }) };
-      }
-      if (url.includes('type=baitaptracnghiem')) {
-        const isAdmin = url.includes('scope=admin');
-        return { ok: true, json: async () => ({ ok: true, data: isAdmin ? mockVerifiedBtRows : [] }) };
+      if (url.includes('type=videocauhoi') || url.includes('type=baitaptracnghiem')) {
+        return { ok: true, json: async () => ({ ok: true, data: [] }) };
       }
       return { ok: true, json: async () => ({ ok: true, data: [] }) };
     };

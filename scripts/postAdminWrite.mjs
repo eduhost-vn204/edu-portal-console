@@ -52,12 +52,48 @@ export async function postAdminWriteCore(fetchImpl, url, payload, options = {}) 
   }
 }
 
+/**
+ * Gửi 1 request POST xác thực và trả về toàn bộ JSON response.
+ *
+ * @param {(url: any, opts: any) => Promise<{ok:boolean, json:() => Promise<any>}>} fetchImpl
+ * @param {string} url
+ * @param {any} payload
+ * @param {{timeoutMs?: number}} [options]
+ * @returns {Promise<any>}
+ */
+export async function postAdminJsonCore(fetchImpl, url, payload, options = {}) {
+  const timeoutMs = options.timeoutMs ?? 55000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetchImpl(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+    if (!res) return { ok: false, msg: 'Không thể kết nối đến server' };
+    let json;
+    try {
+      json = await res.json();
+    } catch {
+      return { ok: false, msg: 'Phản hồi từ server không phải JSON hợp lệ' };
+    }
+    return json;
+  } catch (err) {
+    return { ok: false, msg: err.message || 'Lỗi mạng' };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export const ADMIN_WRITE_ACTIONS = [
   'savebaihoc', 'deletebaihoc', 'savequestions', 'savenganhang', 'deletenganhang',
   'updatenganhang', 'updatebaihocvideo', 'saveexam', 'deleteexam', 'savelivesession',
   'deletelivesession', 'setvipstatus', 'deleteaccount', 'savekhoaconfig', 'resetdevice',
   'savevideocauhoi', 'savehuongdan', 'bulksetbainganhang', 'bulksetchatluongnganhang',
-  'pingadmin', 'updateaccount', 'savebaitaptracnghiem', 'savesetting'
+  'pingadmin', 'updateaccount', 'savebaitaptracnghiem', 'savesetting',
+  'getbaihocadmin', 'getvideocauhoiadmin', 'getbaitaptracnghiemadmin'
 ];
 
 /**
