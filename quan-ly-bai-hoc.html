@@ -3652,8 +3652,35 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
 /* ── Form helpers ── */
 let qCount=0;
 let lmListScrollY=null; // ghi nhớ vị trí cuộn của danh sách bài học trước khi mở/đóng form sửa
+window._vqLoadStatus = 'success-empty';
+window._qbLoadStatus = 'success-empty';
+
+function showFormErrorBanner(msg){
+    let b=document.getElementById('fp-error-banner');
+    if(!b){
+        const body=document.querySelector('.fp-body');
+        if(body){
+            b=document.createElement('div');
+            b.id='fp-error-banner';
+            b.style.cssText='margin-bottom:14px;padding:12px 14px;background:#fef2f2;border:1.5px solid #ef4444;border-radius:8px;color:#991b1b;font-size:13px;line-height:1.5;font-weight:600';
+            body.insertBefore(b, body.firstChild);
+        }
+    }
+    if(b){
+        b.innerHTML='<i class="fa-solid fa-triangle-exclamation" style="margin-right:6px"></i> '+msg;
+        b.style.display='block';
+    }
+}
+function clearFormErrorBanner(){
+    const b=document.getElementById('fp-error-banner');
+    if(b){ b.innerHTML=''; b.style.display='none'; }
+}
 
 function openNewForm(){
+    clearFormErrorBanner();
+    window._vqLoadStatus='success-empty';
+    window._qbLoadStatus='success-empty';
+    window._vqTouched=false;
     document.getElementById('fp-empty').style.display='none';
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Thêm bài giảng mới';
@@ -3675,12 +3702,16 @@ function openNewForm(){
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
+    window._vqTouched=false;
     document.getElementById('quiz-builder').innerHTML='';
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    document.getElementById('btn-save-lesson').disabled=false;
-    document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    const btnSave=document.getElementById('btn-save-lesson');
+    if(btnSave){
+        btnSave.disabled=false;
+        btnSave.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    }
     lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
@@ -3689,6 +3720,7 @@ async function openEditForm(key){
     const parts=key.split('|||');
     const row=allLessons.find(r=>(khoaOf(r))===(parts[0]||'') && (r.Chuong||r.chuong||r.chapter||'')===(parts[1]||'') && (r.TenBai||r.tenbai||r.title||r.ten||'')===(parts[2]||''));
     if(!row){ toast('Không tìm thấy bài này!','err'); return; }
+    clearFormErrorBanner();
     document.getElementById('fp-empty').style.display='none';
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Sửa bài giảng';
@@ -3736,17 +3768,59 @@ async function openEditForm(key){
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    let baitapArr = await qbLoadFromGAS(maBai||key, key, migOldKey);
-    if(baitapArr===null){ try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){baitapArr=[];} }
+    vqReset();
+
+    const btnSave=document.getElementById('btn-save-lesson');
+    if(btnSave){
+        btnSave.disabled=true;
+        btnSave.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu bài học...';
+    }
+
+    // Await cả 2 request dữ liệu câu hỏi đồng thời
+    const [qbRes, vqRes] = await Promise.all([
+        qbLoadFromGAS(maBai||key, key, migOldKey),
+        vqLoadFromGAS(maBai||key, key, migOldKey)
+    ]);
+
+    // Nếu một trong hai request failed: hiển thị lỗi, khóa nút Lưu để không ghi đè dữ liệu rỗng
+    if(qbRes.status==='failed' || vqRes.status==='failed'){
+        const errs=[];
+        if(qbRes.status==='failed') errs.push('Bài tập trắc nghiệm ('+(qbRes.error||'Lỗi tải/Unauthorized')+')');
+        if(vqRes.status==='failed') errs.push('Câu hỏi video ('+(vqRes.error||'Lỗi tải/Unauthorized')+')');
+        const errMsg='Lỗi tải dữ liệu: '+errs.join('; ')+'. Đã khóa nút Lưu để bảo vệ dữ liệu trên máy chủ!';
+        showFormErrorBanner(errMsg);
+        toast(errMsg, 'err');
+        if(btnSave){
+            btnSave.disabled=true;
+            btnSave.innerHTML='<i class="fa-solid fa-ban"></i> Đã khóa lưu (lỗi tải dữ liệu)';
+        }
+        lmListScrollY=window.scrollY;
+        document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
+        return;
+    }
+
+    // Xử lý bài tập trắc nghiệm: chỉ fallback đọc cột BaiTap cũ khi status === 'success-empty'
+    let baitapArr=[];
+    if(qbRes.status==='success-with-data'){
+        baitapArr=qbRes.data;
+    } else if(qbRes.status==='success-empty'){
+        try{ baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]'); }catch(e){ baitapArr=[]; }
+    }
     baitapArr.forEach(q=>addQuestion(q));
-    vqReset(); vqLoadFromGAS(maBai||key, key, migOldKey);
-    document.getElementById('btn-save-lesson').disabled=false;
-    document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+
+    // Sau khi nạp dữ liệu xong, đảm bảo _vqTouched=false (chưa có thao tác chỉnh sửa)
+    window._vqTouched=false;
+
+    if(btnSave){
+        btnSave.disabled=false;
+        btnSave.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    }
     lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
 
 function closeForm(){
+    clearFormErrorBanner();
     document.getElementById('fp-empty').style.display='block';
     document.getElementById('fp-form').style.display='none';
     restoreListScrollY();
@@ -4189,25 +4263,64 @@ function vqValidate(){
 async function vqLoadFromGAS(key, ...altKeys){
     const box=document.getElementById('vq-list');
     if(box) box.innerHTML='<div style="color:var(--gray2);font-size:13px;padding:6px 0"><i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea3i c\u00e2u h\u1ecfi trong video...</div>';
+    window._vqLoadStatus='loading';
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         let found=[];
+        let anySuccess=false;
+        let lastErr='';
         for(const k of tryKeys){
             const res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
             if(res && res.ok && Array.isArray(res.data)){
+                anySuccess=true;
                 found=res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
                 if(found.length){ _vqSourceKey=k; break; }
             } else if(res && !res.ok){
+                lastErr = res.msg || 'Unauthorized hoặc lỗi máy chủ';
                 console.warn('vqLoadFromGAS: lỗi khi đọc câu hỏi video bài ' + k, res);
             }
         }
-        vqItems=found.map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
-        if(vqItems.length) window._vqTouched=true;
-    }catch(e){ console.error('vqLoadFromGAS error:', e); vqItems=[]; }
-    renderVQ();
+        if(found.length){
+            vqItems=found.map(rw=>({
+                t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),
+                nhId:(rw.nhId||'').toString(),
+                type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                q:(rw.question||'').toString(),
+                A:(rw.optA||'').toString(),
+                B:(rw.optB||'').toString(),
+                C:(rw.optC||'').toString(),
+                D:(rw.optD||'').toString(),
+                ans:String(rw.correct||'').toUpperCase().trim(),
+                correct:(rw.correct||'').toString()
+            }));
+            window._vqTouched=false; // Chỉ nạp dữ liệu có sẵn, chưa chỉnh sửa
+            window._vqLoadStatus='success-with-data';
+            renderVQ();
+            return { status:'success-with-data', data:vqItems };
+        } else if(anySuccess){
+            vqItems=[];
+            window._vqTouched=false;
+            window._vqLoadStatus='success-empty';
+            renderVQ();
+            return { status:'success-empty', data:[] };
+        } else {
+            window._vqLoadStatus='failed';
+            if(box) box.innerHTML='<div style="color:var(--red);font-size:13px;padding:6px 0"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải câu hỏi trong video: '+nhEsc(lastErr||'Không có quyền hoặc lỗi mạng')+'</div>';
+            return { status:'failed', data:[], error:lastErr||'Lỗi tải câu hỏi video' };
+        }
+    }catch(e){
+        console.error('vqLoadFromGAS error:', e);
+        window._vqLoadStatus='failed';
+        if(box) box.innerHTML='<div style="color:var(--red);font-size:13px;padding:6px 0"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải câu hỏi trong video: '+nhEsc(e.message)+'</div>';
+        return { status:'failed', data:[], error:e.message };
+    }
 }
 async function vqSaveToGAS(newKey, origKey){
-    if(!window._vqTouched && !vqItems.length) return; // b\u00e0i kh\u00f4ng d\u00f9ng t\u00ednh n\u0103ng n\u00e0y
+    if(window._vqLoadStatus==='failed'){
+        console.warn('vqSaveToGAS bị chặn vì vqLoadStatus=failed (tránh ghi đè mất dữ liệu)');
+        return;
+    }
+    if(!window._vqTouched) return; // Thầy không chỉnh sửa câu hỏi video (ví dụ chỉ sửa tiêu đề bài) -> không ghi đè
     // Gửi kèm 'type' + 'correct' (chuỗi 4 ký tự Đ/S cho tf, đáp số cho short) — GAS cần
     // lưu thêm cột 'loai' trong sheet VideoCauHoi mới đọc/ghi đủ 2 loại câu mới này,
     // nếu backend chưa có cột đó thì các trường thừa này bị bỏ qua vô hại (không lỗi).
@@ -4230,16 +4343,20 @@ async function vqSaveToGAS(newKey, origKey){
    với Câu hỏi trong video ở trên. Cột BaiTap cũ chỉ còn dùng làm fallback đọc cho
    các bài CŨ chưa từng được lưu lại bằng bản này (xem openEditForm/saveLessonForm). */
 async function qbLoadFromGAS(key, ...altKeys){
+    window._qbLoadStatus='loading';
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
+        let anySuccess=false;
+        let lastErr='';
         for(const k of tryKeys){
             const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
             if(res && res.ok && Array.isArray(res.data)){
+                anySuccess=true;
                 const rows = res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
                 if(rows.length){
                     _qbSourceKey=k;
                     rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
-                    return rows.map(rw=>({
+                    const data = rows.map(rw=>({
                         type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
                         q:(rw.question||'').toString(),
                         A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
@@ -4247,15 +4364,32 @@ async function qbLoadFromGAS(key, ...altKeys){
                         ans:String(rw.correct||'').toUpperCase().trim(),
                         correct:(rw.correct||'').toString()
                     }));
+                    window._qbLoadStatus='success-with-data';
+                    return { status:'success-with-data', data };
                 }
             } else if(res && !res.ok){
+                lastErr = res.msg || 'Unauthorized hoặc lỗi máy chủ';
                 console.warn('qbLoadFromGAS: lỗi khi đọc bài tập trắc nghiệm bài ' + k, res);
             }
         }
-    }catch(e){ console.error('qbLoadFromGAS error:', e); }
-    return null; // null = sheet mới chưa có dữ liệu cho bài này, nơi gọi tự fallback
+        if(anySuccess){
+            window._qbLoadStatus='success-empty';
+            return { status:'success-empty', data:[] };
+        } else {
+            window._qbLoadStatus='failed';
+            return { status:'failed', data:[], error:lastErr||'Lỗi tải bài tập trắc nghiệm' };
+        }
+    }catch(e){
+        console.error('qbLoadFromGAS error:', e);
+        window._qbLoadStatus='failed';
+        return { status:'failed', data:[], error:e.message };
+    }
 }
 async function qbSaveToGAS(newKey, origKey){
+    if(window._qbLoadStatus==='failed'){
+        console.warn('qbSaveToGAS bị chặn vì qbLoadStatus=failed (tránh ghi đè mất dữ liệu)');
+        return;
+    }
     const qs = getQuestionsFromForm();
     const ok = await postAdminWriteWithRetry({action:'savebaitaptracnghiem',baiKey:newKey,originalKey:origKey||'',items:qs});
     if(ok && _qbCounts){ _qbCounts[newKey]=qs.length; if(origKey&&origKey!==newKey) delete _qbCounts[origKey]; }
@@ -4441,6 +4575,10 @@ function getQuestionsFromForm(){
 }
 
 async function saveLessonForm(){
+    if(window._qbLoadStatus === 'failed' || window._vqLoadStatus === 'failed'){
+        toast('<i class="fa-solid fa-ban"></i> Không thể lưu vì dữ liệu câu hỏi chưa được tải an toàn từ máy chủ! Nút Lưu đã bị khóa.', 'err');
+        return;
+    }
     const lop=document.getElementById('f-lop').value.trim();
     const tenKhoa=currentTenKhoaValue();
     const khoa=buildKhoaHoc(lop, tenKhoa);
