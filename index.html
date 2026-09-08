@@ -484,14 +484,11 @@
         .em-title { font-size:15px; font-weight:800; letter-spacing:-.02em; margin-bottom:6px; }
         .em-meta { font-size:13px; color:var(--gray2); display:flex; gap:14px; flex-wrap:wrap; }
         .em-actions { display:flex; gap:0; border-top:1px solid var(--border); }
-        .em-btn { flex:1; padding:9px 4px; background:transparent; border:none; font-size:12px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:4px; transition:background .12s; color:var(--gray); }
-        .em-btn:not(:last-child) { border-right:1px solid var(--border); }
+        .em-btn { flex:1; padding:9px; background:transparent; border:none; font-size:12.5px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:5px; transition:background .12s; color:var(--gray); }
+        .em-btn:first-child { border-right:1px solid var(--border); }
         .em-btn.edit:hover { background:rgba(11,132,243,.06); color:var(--blue); }
-        .em-btn.view:hover { background:rgba(11,132,243,.08); color:var(--blue); font-weight:700; }
         .em-btn.del:hover { background:rgba(220,38,38,.06); color:var(--red); }
         .em-btn.toggle:hover { background:rgba(22,163,74,.06); color:var(--green); }
-        .kt-bulk-btn { font-size:12px; padding:6px 11px; border-radius:8px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s ease; font-family:'Inter',sans-serif; }
-        .kt-bulk-btn:hover { transform:translateY(-1px); }
 
         /* Exam form */
         .em-form { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; overflow:hidden; margin-top:10px; }
@@ -1057,8 +1054,13 @@
         </button>
     </div>
     <div class="filter-bar" id="filter-bar">
-        <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả</span>
+        <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả khóa</span>
         <span class="filter-chip" data-f="Vật Lý 12" onclick="filterCourse('Vật Lý 12',this)">⚛️ Vật Lý 12</span>
+        <span style="display:inline-block;width:1px;height:22px;background:var(--border);margin:0 4px;vertical-align:middle"></span>
+        <span class="filter-chip filter-status-chip active" data-status="all" onclick="filterStatus('all',this)">Tất cả trạng thái</span>
+        <span class="filter-chip filter-status-chip" data-status="published" onclick="filterStatus('published',this)" style="color:#047857">🟢 Published</span>
+        <span class="filter-chip filter-status-chip" data-status="draft" onclick="filterStatus('draft',this)" style="color:#b45309">🟡 Draft</span>
+        <span class="filter-chip filter-status-chip" data-status="archived" onclick="filterStatus('archived',this)" style="color:#6b7280">⚪ Archived</span>
     </div>
     <div class="bulk-action-bar" id="bulk-action-bar"></div>
     <!-- JS sẽ thêm filter chips động từ dữ liệu thực tế -->
@@ -1143,9 +1145,19 @@
                             <label>Link PDF Luyện Tập Thêm <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ — tách riêng khỏi bài tập trong video)</span></label>
                             <input id="f-pdfluyentap" placeholder="https://drive.google.com/file/d/...">
                         </div>
-                        <div class="form-field">
-                            <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
-                            <input id="f-thoigian" type="number" min="1" step="1" placeholder="VD: 15">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Thời gian làm bài <span style="font-weight:400;color:var(--gray2)">(phút — để trống nếu không giới hạn giờ)</span></label>
+                                <input id="f-thoigian" type="number" min="1" step="1" placeholder="VD: 15">
+                            </div>
+                            <div class="form-field">
+                                <label>Trạng thái bài học</label>
+                                <select id="f-trangthai">
+                                    <option value="published">🟢 Đã xuất bản (Published)</option>
+                                    <option value="draft">🟡 Bản nháp / Pilot (Draft - Ẩn với HS)</option>
+                                    <option value="archived">⚪ Lưu trữ (Archived - Ẩn với HS)</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-field" id="vq-section">
                             <div class="quiz-section-head">
@@ -1325,35 +1337,6 @@
           </button>
         </div>
       </div>
-
-      <!-- THANH TÁC VỤ DUYỆT HÀNG LOẠT (BULK APPROVAL TOOLBAR) -->
-      <div id="kt-bulk-toolbar" style="background:var(--bg2);padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;font-weight:700;user-select:none;color:var(--black)">
-            <input type="checkbox" id="kt-select-all-cb" onchange="toggleSelectAllKiemTra(this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
-            <span>Chọn tất cả</span>
-          </label>
-          <span id="kt-selected-count-badge" style="font-size:12px;color:var(--gray);background:var(--bg);padding:2px 8px;border-radius:12px;border:1px solid var(--border);font-weight:600">Đã chọn: 0 đề</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <button class="kt-bulk-btn btn-ghost2" style="color:#10b981;border-color:rgba(16,185,129,0.3)" onclick="bulkSetKiemTraVisibility('hien')" title="Duyệt Hiện các đề đã chọn lên web học sinh">
-            <i class="fa-solid fa-eye"></i> Hiện
-          </button>
-          <button class="kt-bulk-btn btn-ghost2" style="color:#6b7280;border-color:rgba(107,114,128,0.3)" onclick="bulkSetKiemTraVisibility('an')" title="Ẩn các đề đã chọn khỏi web học sinh">
-            <i class="fa-solid fa-eye-slash"></i> Ẩn
-          </button>
-          <button class="kt-bulk-btn btn-ghost2" style="color:var(--blue);border-color:rgba(11,132,243,0.3)" onclick="bulkSetKiemTraStatus('mo')" title="Mở quyền làm bài thi cho các đề đã chọn">
-            <i class="fa-solid fa-lock-open"></i> Mở
-          </button>
-          <button class="kt-bulk-btn btn-ghost2" style="color:#ef4444;border-color:rgba(239,68,68,0.3)" onclick="bulkSetKiemTraStatus('khoa')" title="Khóa quyền làm bài thi cho các đề đã chọn">
-            <i class="fa-solid fa-lock"></i> Khóa
-          </button>
-          <button class="kt-bulk-btn btn-ghost2" style="color:#dc2626;border-color:rgba(220,38,38,0.3);margin-left:auto" onclick="bulkDeleteKiemTraExams()" title="Xóa các đề đã chọn">
-            <i class="fa-solid fa-trash"></i> Xóa
-          </button>
-        </div>
-      </div>
-
       <div id="exam-list-panel"><div class="loading-row"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</div></div>
     </div>
 
@@ -1409,10 +1392,7 @@
             </div>
           </div>
 
-          <div class="action-row" style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn-ghost2" id="preview-sim-btn" onclick="previewDraftExamInModal()" style="padding:12px 18px;font-size:13.5px;font-weight:700;color:var(--blue);border-color:var(--blue);background:rgba(11,132,243,0.06)">
-                  <i class="fa-solid fa-eye"></i> Xem trước dạng phòng thi
-              </button>
+          <div class="action-row">
               <button class="btn-publish" id="publish-btn" onclick="publishExam()"><i class="fa-solid fa-rocket"></i> Xuất Bản Lên Web</button>
               <button class="btn-ghost2" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Làm lại</button>
           </div>
@@ -2149,7 +2129,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope','getbaihocadmin','getvideocauhoiadmin','getbaitaptracnghiemadmin'];
 (function(){
     const _fetch = window.fetch.bind(window);
     window.fetch = function(url, opts){
@@ -2389,8 +2369,8 @@ function initAdmin(){
     const preview=Promise.resolve().then(()=>loadLessonsPreview());
     Promise.all([loadSettings(),loadKhoaConfig(),preview]).then(()=>{
         renderLessonList();
-        if(!allLessons.length) loadLessons();
         loadTeachingScope();
+        loadLessons();
     });
 }
 
@@ -2677,48 +2657,9 @@ async function loadSettings(){
     }catch(e){ console.warn('Không tải được settings:', e); }
 }
 
-function normKey(k){
-    return (k === null || k === undefined) ? '' : String(k).trim().normalize('NFC');
-}
-
-function isLessonTeaching(l){
-    if(!currentTeachingLesson) return false;
-    const target = normKey(currentTeachingLesson);
-    if(!target) return false;
-    if(l.mabai && normKey(l.mabai) === target) return true;
-    if(normKey(l.legacyKey || `${l.khoa}|||${l.chuong}|||${l.ten}`) === target) return true;
-    return false;
-}
-
-function findTeachingLessonInfo(){
-    if(!currentTeachingLesson) return null;
-    const target = normKey(currentTeachingLesson);
-    if(!target) return null;
-    for(const r of allLessons){
-        const mb = normKey(r.MaBai || r.mabai || '');
-        const leg = normKey(`${r.KhoaHoc || r.khoahoc || r.course || r.mon || ''}|||${r.Chuong || r.chuong || r.chapter || ''}|||${r.TenBai || r.tenbai || r.title || r.ten || ''}`);
-        if((mb && mb === target) || leg === target){
-            return {
-                mabai: r.MaBai || r.mabai || '',
-                khoa: r.KhoaHoc || r.khoahoc || r.course || r.mon || '',
-                chuong: r.Chuong || r.chuong || r.chapter || '',
-                ten: r.TenBai || r.tenbai || r.title || r.ten || '',
-                legacyKey: leg
-            };
-        }
-    }
-    return null;
-}
-
-async function markTeachingLesson(preferredKey, legacyFallback){
-    const isCurrentlyActive = currentTeachingLesson && (
-        (preferredKey && normKey(currentTeachingLesson) === normKey(preferredKey)) ||
-        (legacyFallback && normKey(currentTeachingLesson) === normKey(legacyFallback))
-    );
+async function markTeachingLesson(key){
     const prev = currentTeachingLesson;
-    // Ưu tiên lưu MaBai (stable key) nếu có, fallback legacy key
-    const newTargetKey = (preferredKey || legacyFallback || '').trim();
-    currentTeachingLesson = isCurrentlyActive ? '' : newTargetKey;
+    currentTeachingLesson = (currentTeachingLesson === key) ? '' : key; // toggle
     renderLessonList();
     const ok = await postAdminWriteWithRetry({
         action: 'savesetting',
@@ -2727,30 +2668,12 @@ async function markTeachingLesson(preferredKey, legacyFallback){
     });
     if(ok){
         toast(currentTeachingLesson
-            ? '⭐ Đã đánh dấu bài đang dạy' + (preferredKey ? ' (Mã bài: ' + preferredKey + ')' : '')
-            : '☆ Đã bỏ đánh dấu bài đang dạy', 'ok');
+            ? '⭐ Đã đánh dấu bài đang dạy'
+            : '☆ Đã bỏ đánh dấu', 'ok');
     }else{
         currentTeachingLesson = prev;
         renderLessonList();
         toast('Lỗi lưu bài đang dạy lên máy chủ.', 'err');
-    }
-}
-
-async function clearOrphanTeachingLesson(){
-    const prev = currentTeachingLesson;
-    currentTeachingLesson = '';
-    renderLessonList();
-    const ok = await postAdminWriteWithRetry({
-        action: 'savesetting',
-        key: 'currentTeachingLesson',
-        value: ''
-    });
-    if(ok){
-        toast('Đã xoá cấu hình bài đang dạy không hợp lệ', 'ok');
-    }else{
-        currentTeachingLesson = prev;
-        renderLessonList();
-        toast('Lỗi khi xoá cấu hình bài đang dạy.', 'err');
     }
 }
 
@@ -3075,41 +2998,51 @@ async function saveLessonOrderFromDOM(wrap){
 async function loadLessons(){
     const CKEY = 'vlxt_admin_baihoc';
     const cached = aCache(CKEY);
-    if(cached){
-        allLessons = Array.isArray(cached.d) ? cached.d : (cached.d.baihoc || cached.d.data || []);
+    if(cached && cached.isAdmin){
+        allLessons = Array.isArray(cached.d) ? cached.d : [];
         renderLessonList();
-        if(aFresh(cached)) return;
-    } else {
-        document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải...</p></div>`;
+    } else if(!allLessons.length) {
+        document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải danh sách bài học (admin)...</p></div>`;
     }
     try{
-        const r = await fetch(DB_URL + '?type=baihoc');
-        const data = await r.json();
-        allLessons = Array.isArray(data) ? data : (data.baihoc || data.data || []);
-        aSetCache(CKEY, data);
+        const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+        if(res && res.ok && Array.isArray(res.data)){
+            allLessons = res.data;
+            aSetCache(CKEY, res.data);
+            const c = aCache(CKEY);
+            if(c){ c.isAdmin = true; localStorage.setItem(CKEY, JSON.stringify(c)); }
+        } else {
+            const errMsg = (res && res.msg) || 'Không có quyền truy cập hoặc lỗi máy chủ';
+            console.error('Lỗi tải bài học admin:', res);
+            toast('<i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải bài học: ' + errMsg, 'err');
+        }
     }catch(e){
-        console.warn('Không kết nối được Sheets:', e);
-        if(!allLessons.length) toast('<i class="fa-solid fa-triangle-exclamation"></i> Chưa kết nối được Google Sheets.', 'err');
+        console.error('Không kết nối được Sheets:', e);
+        toast('<i class="fa-solid fa-triangle-exclamation"></i> Không thể kết nối đến máy chủ quản trị.', 'err');
     }
     renderLessonList();
     loadQbCounts();
 }
 
 async function loadLessonsPreview(){
-    const CKEY='vlxt_admin_baihoc';
-    const cached=aCache(CKEY);
-    if(cached){
-        const rows=Array.isArray(cached.d)?cached.d:(cached.d.baihoc||cached.d.data||[]);
-        if(rows.length){ allLessons=rows; renderLessonList(); if(aFresh(cached)) return; }
+    const CKEY_PREVIEW = 'vlxt_admin_public_preview_baihoc';
+    const cached = aCache(CKEY_PREVIEW);
+    if(cached && !allLessons.length){
+        const rows = Array.isArray(cached.d) ? cached.d : [];
+        if(rows.length){ allLessons = rows; renderLessonList(); }
     }
     try{
-        const r=await fetch(PUBLIC_LESSONS_URL,{cache:'no-store'});
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        const data=await r.json();
-        const rows=Array.isArray(data)?data:(data.baihoc||data.data||[]);
+        const r = await fetch(PUBLIC_LESSONS_URL, { cache: 'no-store' });
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        const rows = Array.isArray(data) ? data : (data.baihoc || data.data || []);
         if(!rows.length) throw new Error('JSON bài học rỗng');
-        allLessons=rows; aSetCache(CKEY,rows); renderLessonList();
-    }catch(e){ console.warn('Không tải được bản xem nhanh bài học:',e); }
+        if(!allLessons.length){
+            allLessons = rows;
+            renderLessonList();
+        }
+        aSetCache(CKEY_PREVIEW, rows);
+    }catch(e){ console.warn('Không tải được bản xem nhanh bài học:', e); }
 }
 
 // Tai 1 lan toan bo sheet BaiTapTracNghiem de dem so cau/bai cho huy hieu trong
@@ -3117,17 +3050,23 @@ async function loadLessonsPreview(){
 // rieng - xem qbLoadFromGAS/qbSaveToGAS). Khong await o noi goi, chi ve sau render lai.
 async function loadQbCounts(){
     try{
-        const r = await fetch(DB_URL+'?type=baitaptracnghiem&t='+Date.now());
-        const j = await r.json();
-        const map = {};
-        (j&&j.data||[]).forEach(rw=>{
-            const k = String(rw&&rw.baiKey||'');
-            if(!k) return;
-            map[k] = (map[k]||0) + 1;
-        });
-        _qbCounts = map;
-        renderLessonList();
-    }catch(e){ if(_qbCounts===null) _qbCounts={}; }
+        const res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin' });
+        if(res && res.ok && Array.isArray(res.data)){
+            const map = {};
+            res.data.forEach(rw=>{
+                const k = String(rw && rw.baiKey || '');
+                if(!k) return;
+                map[k] = (map[k] || 0) + 1;
+            });
+            _qbCounts = map;
+            renderLessonList();
+        } else {
+            console.warn('loadQbCounts: getbaitaptracnghiemadmin thất bại', res);
+        }
+    }catch(e){
+        console.warn('loadQbCounts error:', e);
+        if(_qbCounts === null) _qbCounts = {};
+    }
 }
 
 // Lấy giá trị KhoaHoc thực tế của 1 dòng, fallback 'Khác' giống groupLessons (đồng bộ để xoá/sửa/đổi tên khoá 'Khác' hoạt động đúng)
@@ -3140,9 +3079,14 @@ function khoaOf(r){ return r.KhoaHoc||r.khoahoc||r.course||r.mon||'Khác'; }
 // mang tên mới, phần còn lại vẫn tên cũ) — sự cố xảy ra ngày 5/8/2026 với khóa "Chuyên Đề Lí
 // Thuyết GĐ1" (chỉ 17/33 bài được đổi tên vì allLessons lúc đó là cache thiếu bài).
 async function fetchFreshLessons(){
-    const r = await fetch(DB_URL + '?type=baihoc&t=' + Date.now());
-    const data = await r.json();
-    return Array.isArray(data) ? data : (data.baihoc || data.data || []);
+    const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+    if(res && res.ok && Array.isArray(res.data)){
+        return res.data;
+    }
+    const msg = (res && res.msg) || 'Không thể lấy danh sách bài học mới nhất từ admin backend';
+    console.error('fetchFreshLessons failed:', res);
+    toast('<i class="fa-solid fa-triangle-exclamation"></i> ' + msg, 'err');
+    throw new Error('FETCH_FRESH_LESSONS_FAILED: ' + msg);
 }
 
 function groupLessons(rows){
@@ -3159,15 +3103,15 @@ function groupLessons(rows){
         const ngaydang = r.NgayDang || r.ngaydang || r.date || '';
         const ttbRaw = (r.ThuTuBai !== undefined && r.ThuTuBai !== '') ? r.ThuTuBai : ((r.thutubai !== undefined) ? r.thutubai : '');
         const ttb = (ttbRaw !== '' && ttbRaw !== null && !isNaN(Number(ttbRaw))) ? Number(ttbRaw) : null;
-        const mabai = (r.MaBai !== undefined && r.MaBai !== null && r.MaBai !== '') ? String(r.MaBai).trim() : ((r.mabai !== undefined && r.mabai !== null && r.mabai !== '') ? String(r.mabai).trim() : '');
-        const legacyKey = `${khoa}|||${chuong}|||${ten}`;
+        const stRaw = (r.TrangThai || r.trangthai || r.status || 'published').toString().trim().toLowerCase();
+        const trangthai = (stRaw === 'draft' || stRaw === 'archived') ? stRaw : 'published';
         const sc = extractSC(khoa);
         const subj = sc.subject || khoa;
         const cname = sc.courseName || khoa; // tên khóa hiển thị
         if(!subjects[subj]) subjects[subj]={name:subj, courses:{}};
         if(!subjects[subj].courses[khoa]) subjects[subj].courses[khoa]={name:cname, fullName:khoa, chapters:{}};
         if(!subjects[subj].courses[khoa].chapters[chuong]) subjects[subj].courses[khoa].chapters[chuong]=[];
-        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb,mabai,legacyKey});
+        subjects[subj].courses[khoa].chapters[chuong].push({khoa,chuong,ten,video,videogiai,baitap,motabai,ngaydang,ttb,trangthai});
     });
     // Sắp xếp bài trong từng chương theo ThuTuBai (thầy tự kéo lên/xuống bằng nút mũi tên).
     // Bài chưa từng được sắp xếp (ttb=null) giữ nguyên thứ tự cũ nhờ Array.sort ổn định (stable).
@@ -3416,25 +3360,24 @@ function renderCourseBlock(course){
             const hasVid=!!ytId(l.video)||!!(l.video&&l.video.includes('drive.google.com'));
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
-            const legacyKey = l.legacyKey || `${l.khoa}|||${l.chuong}|||${l.ten}`;
-            const mabai = l.mabai || '';
-            const qbCount = (_qbCounts && _qbCounts[legacyKey]!==undefined) ? _qbCounts[legacyKey] : (_qbCounts && mabai && _qbCounts[mabai]!==undefined ? _qbCounts[mabai] : baitapArr.length);
-            const isTeaching = isLessonTeaching(l);
-            const safeKey = esc(legacyKey).replace(/'/g,"&#39;");
-            const safeMabai = esc(mabai).replace(/'/g,"&#39;");
-            const liSelected = bulkMode && bulkSelected.has(legacyKey);
-            html+=`<div class="lesson-item${isTeaching?' teaching':''}${liSelected?' bulk-selected':''}" draggable="${bulkMode?'false':'true'}" data-key="${esc(legacyKey)}"
+            const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
+            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
+            const isTeaching = (currentTeachingLesson === key);
+            const safeKey = esc(key).replace(/'/g,"&#39;");
+            const liSelected = bulkMode && bulkSelected.has(key);
+            html+=`<div class="lesson-item${isTeaching?' teaching':''}${liSelected?' bulk-selected':''}" draggable="${bulkMode?'false':'true'}" data-key="${esc(key)}"
                 ondragstart="lessonDragStart(event)" ondragover="lessonDragOver(event)" ondrop="lessonDrop(event)" ondragend="lessonDragEnd(event)">
                 ${bulkMode?`<input type="checkbox" class="bulk-checkbox li-check" ${liSelected?'checked':''} onclick="toggleBulkSelect('${safeKey}',this.checked)">`:`<div class="li-drag-handle" title="Kéo để đổi thứ tự"><i class="fa-solid fa-grip-vertical"></i></div>`}
                 <div class="li-name">${esc(l.ten)}</div>
                 <div class="li-badges">
                     ${isTeaching?'<span class="li-teaching-badge">⭐ Đang dạy</span>':''}
+                    ${l.trangthai==='draft'?'<span class="li-badge li-draft" style="background:#fef3c7;color:#b45309;font-weight:700"><i class="fa-solid fa-file-pen" style="font-size:9px"></i> Draft</span>':(l.trangthai==='archived'?'<span class="li-badge li-archived" style="background:#f3f4f6;color:#6b7280;font-weight:700"><i class="fa-solid fa-box-archive" style="font-size:9px"></i> Archived</span>':'<span class="li-badge li-pub" style="background:#ecfdf5;color:#047857;font-weight:700"><i class="fa-solid fa-circle-check" style="font-size:9px"></i> Published</span>')}
                     ${hasVid?'<span class="li-badge li-vid"><i class="fa-solid fa-play" style="font-size:9px"></i> Video</span>':'<span class="li-badge li-novid">Chưa có video</span>'}
                     ${hasGiai?'<span class="li-badge li-vid"><i class="fa-solid fa-lightbulb" style="font-size:9px"></i> Chữa</span>':''}
                     ${qbCount?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${qbCount} câu</span>`:''}
                 </div>
                 <div class="li-actions">
-                    <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeMabai}','${safeKey}')">⭐</button>
+                    <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeKey}')">⭐</button>
                     <button class="li-btn edit" title="Sửa bài" onclick="openEditForm('${safeKey}')"><i class="fa-solid fa-pen"></i></button>
                     <button class="li-btn del" title="Xóa bài" onclick="confirmDelete('${safeKey}')"><i class="fa-solid fa-trash"></i></button>
                 </div>
@@ -3446,26 +3389,37 @@ function renderCourseBlock(course){
     return html;
 }
 
+let currentStatusFilter = 'all';
+
+function filterStatus(st, el){
+    currentStatusFilter = st || 'all';
+    document.querySelectorAll('.filter-status-chip').forEach(c=>c.classList.remove('active'));
+    if(el) el.classList.add('active');
+    renderLessonList();
+}
+
 function renderLessonList(){
     const wrap = document.getElementById('lesson-list-wrap');
-    // Lọc: nếu currentFilter là subject, lấy tất cả bài có subject đó
-    const filtered = currentFilter==='all' ? allLessons : allLessons.filter(r=>{
-        const sc=extractSC(khoaOf(r));
-        return sc.subject===currentFilter || (khoaOf(r))===currentFilter;
+    // Lọc theo khóa/môn học và theo trạng thái (published / draft / archived)
+    const filtered = allLessons.filter(r=>{
+        if(currentFilter !== 'all'){
+            const sc=extractSC(khoaOf(r));
+            if(sc.subject !== currentFilter && (khoaOf(r)) !== currentFilter) return false;
+        }
+        if(currentStatusFilter !== 'all'){
+            const stRaw = (r.TrangThai || r.trangthai || r.status || 'published').toString().trim().toLowerCase();
+            const normalizedSt = (stRaw === 'draft' || stRaw === 'archived') ? stRaw : 'published';
+            if(normalizedSt !== currentStatusFilter) return false;
+        }
+        return true;
     });
     const subjects = groupLessons(filtered);
     if(Object.keys(subjects).length===0){
-        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
+        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào phù hợp với bộ lọc.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
         renderBulkActionBar();
         return;
     }
     let html='';
-    if(currentTeachingLesson && !findTeachingLessonInfo() && allLessons.length > 0){
-        html += `<div class="teaching-orphan-alert" style="margin-bottom:16px;padding:12px 18px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:10px;color:#fca5a5;font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-            <div><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;color:#ef4444"></i> <strong>Cảnh báo bài đang dạy:</strong> Giá trị hiện tại (<code>${esc(currentTeachingLesson)}</code>) không khớp với bài học nào. Thầy vui lòng bấm ⭐ trên bài học bên dưới để chọn lại.</div>
-            <button style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" onclick="clearOrphanTeachingLesson()"><i class="fa-solid fa-trash-can"></i> Xóa cấu hình này</button>
-        </div>`;
-    }
     Object.values(subjects).forEach(subj=>{
         const allCourses = Object.values(subj.courses).sort((a,b)=>{
             const ta = ADMIN_KHOACONFIG[a.fullName]?.thuTu ?? 999;
@@ -3487,7 +3441,7 @@ function renderLessonList(){
 
 function filterCourse(f,el){
     currentFilter=f;
-    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.filter-bar .filter-chip:not(.filter-status-chip)').forEach(c=>c.classList.remove('active'));
     el.classList.add('active');
     renderLessonList();
 }
@@ -3578,7 +3532,8 @@ async function renameCourse(fullName){
             PDF:l.PDF||l.pdf||'', PDFLyThuyet:l.PDFLyThuyet||l.pdflythuyet||l.pdflt||'',
             PDFLuyenTap:l.PDFLuyenTap||l.pdfluyentap||'', ThoiGianLamBai:l.ThoiGianLamBai||l.thoigianlambai||'',
             NgayDang:l.NgayDang||l.ngaydang||'',BaiTap:l.BaiTap||l.baitap||'',
-            ThuTuBai:l.ThuTuBai||l.thutubai||''
+            ThuTuBai:l.ThuTuBai||l.thutubai||'',
+            TrangThai:l.TrangThai||l.trangthai||l.status||'published'
         };
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
@@ -3697,8 +3652,35 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
 /* ── Form helpers ── */
 let qCount=0;
 let lmListScrollY=null; // ghi nhớ vị trí cuộn của danh sách bài học trước khi mở/đóng form sửa
+window._vqLoadStatus = 'success-empty';
+window._qbLoadStatus = 'success-empty';
+
+function showFormErrorBanner(msg){
+    let b=document.getElementById('fp-error-banner');
+    if(!b){
+        const body=document.querySelector('.fp-body');
+        if(body){
+            b=document.createElement('div');
+            b.id='fp-error-banner';
+            b.style.cssText='margin-bottom:14px;padding:12px 14px;background:#fef2f2;border:1.5px solid #ef4444;border-radius:8px;color:#991b1b;font-size:13px;line-height:1.5;font-weight:600';
+            body.insertBefore(b, body.firstChild);
+        }
+    }
+    if(b){
+        b.innerHTML='<i class="fa-solid fa-triangle-exclamation" style="margin-right:6px"></i> '+msg;
+        b.style.display='block';
+    }
+}
+function clearFormErrorBanner(){
+    const b=document.getElementById('fp-error-banner');
+    if(b){ b.innerHTML=''; b.style.display='none'; }
+}
 
 function openNewForm(){
+    clearFormErrorBanner();
+    window._vqLoadStatus='success-empty';
+    window._qbLoadStatus='success-empty';
+    window._vqTouched=false;
     document.getElementById('fp-empty').style.display='none';
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Thêm bài giảng mới';
@@ -3717,14 +3699,19 @@ function openNewForm(){
     document.getElementById('f-pdflt').value='';
     document.getElementById('f-pdfluyentap').value='';
     document.getElementById('f-thoigian').value='';
+    if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
+    window._vqTouched=false;
     document.getElementById('quiz-builder').innerHTML='';
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    document.getElementById('btn-save-lesson').disabled=false;
-    document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    const btnSave=document.getElementById('btn-save-lesson');
+    if(btnSave){
+        btnSave.disabled=false;
+        btnSave.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    }
     lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
@@ -3733,6 +3720,7 @@ async function openEditForm(key){
     const parts=key.split('|||');
     const row=allLessons.find(r=>(khoaOf(r))===(parts[0]||'') && (r.Chuong||r.chuong||r.chapter||'')===(parts[1]||'') && (r.TenBai||r.tenbai||r.title||r.ten||'')===(parts[2]||''));
     if(!row){ toast('Không tìm thấy bài này!','err'); return; }
+    clearFormErrorBanner();
     document.getElementById('fp-empty').style.display='none';
     document.getElementById('fp-form').style.display='block';
     document.getElementById('fp-title').textContent='Sửa bài giảng';
@@ -3772,23 +3760,67 @@ async function openEditForm(key){
     document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
     document.getElementById('f-pdfluyentap').value=row.PDFLuyenTap||row.pdfluyentap||'';
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
+    const rawSt = (row.TrangThai||row.trangthai||row.status||'published').toString().trim().toLowerCase();
+    if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value = (rawSt==='draft'||rawSt==='archived') ? rawSt : 'published';
     const nd=row.NgayDang||row.ngaydang||row.date||'';
     document.getElementById('f-ngaydang').value=nd;
     document.getElementById('quiz-builder').innerHTML='';
     document.getElementById('prev-video').style.display='none';
     document.getElementById('prev-giai').style.display='none';
     qCount=0;
-    let baitapArr = await qbLoadFromGAS(maBai||key, key, migOldKey);
-    if(baitapArr===null){ try{baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]');}catch(e){baitapArr=[];} }
+    vqReset();
+
+    const btnSave=document.getElementById('btn-save-lesson');
+    if(btnSave){
+        btnSave.disabled=true;
+        btnSave.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu bài học...';
+    }
+
+    // Await cả 2 request dữ liệu câu hỏi đồng thời
+    const [qbRes, vqRes] = await Promise.all([
+        qbLoadFromGAS(maBai||key, key, migOldKey),
+        vqLoadFromGAS(maBai||key, key, migOldKey)
+    ]);
+
+    // Nếu một trong hai request failed: hiển thị lỗi, khóa nút Lưu để không ghi đè dữ liệu rỗng
+    if(qbRes.status==='failed' || vqRes.status==='failed'){
+        const errs=[];
+        if(qbRes.status==='failed') errs.push('Bài tập trắc nghiệm ('+(qbRes.error||'Lỗi tải/Unauthorized')+')');
+        if(vqRes.status==='failed') errs.push('Câu hỏi video ('+(vqRes.error||'Lỗi tải/Unauthorized')+')');
+        const errMsg='Lỗi tải dữ liệu: '+errs.join('; ')+'. Đã khóa nút Lưu để bảo vệ dữ liệu trên máy chủ!';
+        showFormErrorBanner(errMsg);
+        toast(errMsg, 'err');
+        if(btnSave){
+            btnSave.disabled=true;
+            btnSave.innerHTML='<i class="fa-solid fa-ban"></i> Đã khóa lưu (lỗi tải dữ liệu)';
+        }
+        lmListScrollY=window.scrollY;
+        document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
+        return;
+    }
+
+    // Xử lý bài tập trắc nghiệm: chỉ fallback đọc cột BaiTap cũ khi status === 'success-empty'
+    let baitapArr=[];
+    if(qbRes.status==='success-with-data'){
+        baitapArr=qbRes.data;
+    } else if(qbRes.status==='success-empty'){
+        try{ baitapArr=JSON.parse(row.BaiTap||row.baitap||'[]'); }catch(e){ baitapArr=[]; }
+    }
     baitapArr.forEach(q=>addQuestion(q));
-    vqReset(); vqLoadFromGAS(maBai||key, key, migOldKey);
-    document.getElementById('btn-save-lesson').disabled=false;
-    document.getElementById('btn-save-lesson').innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+
+    // Sau khi nạp dữ liệu xong, đảm bảo _vqTouched=false (chưa có thao tác chỉnh sửa)
+    window._vqTouched=false;
+
+    if(btnSave){
+        btnSave.disabled=false;
+        btnSave.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Lưu bài giảng';
+    }
     lmListScrollY=window.scrollY;
     document.getElementById('form-panel').scrollIntoView({behavior:'smooth'});
 }
 
 function closeForm(){
+    clearFormErrorBanner();
     document.getElementById('fp-empty').style.display='block';
     document.getElementById('fp-form').style.display='none';
     restoreListScrollY();
@@ -4231,22 +4263,74 @@ function vqValidate(){
 async function vqLoadFromGAS(key, ...altKeys){
     const box=document.getElementById('vq-list');
     if(box) box.innerHTML='<div style="color:var(--gray2);font-size:13px;padding:6px 0"><i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea3i c\u00e2u h\u1ecfi trong video...</div>';
+    window._vqLoadStatus='loading';
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
         let found=[];
+        let hasError=false;
+        let lastErr='';
         for(const k of tryKeys){
-            const r=await fetch(DB_URL+'?type=videocauhoi&bai='+encodeURIComponent(k)+'&t='+Date.now());
-            const j=await r.json();
-            found=(j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
-            if(found.length){ _vqSourceKey=k; break; }
+            let res;
+            try {
+                res = await postAdminWriteJson({ action: 'getvideocauhoiadmin', bai: k });
+            } catch(err) {
+                hasError = true;
+                lastErr = err.message || 'Lỗi kết nối';
+                console.warn('vqLoadFromGAS: ngoại lệ khi đọc câu hỏi video bài ' + k, err);
+                continue;
+            }
+            if(res && res.ok && Array.isArray(res.data)){
+                found=res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+                if(found.length){ _vqSourceKey=k; break; }
+            } else {
+                hasError = true;
+                lastErr = (res && res.msg) || 'Unauthorized hoặc lỗi máy chủ';
+                console.warn('vqLoadFromGAS: lỗi khi đọc câu hỏi video bài ' + k, res);
+            }
         }
-        vqItems=found.map(rw=>({t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),nhId:(rw.nhId||'').toString(),type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',q:(rw.question||'').toString(),A:(rw.optA||'').toString(),B:(rw.optB||'').toString(),C:(rw.optC||'').toString(),D:(rw.optD||'').toString(),ans:String(rw.correct||'').toUpperCase().trim(),correct:(rw.correct||'').toString()}));
-        if(vqItems.length) window._vqTouched=true;
-    }catch(e){ vqItems=[]; }
-    renderVQ();
+        if(found.length){
+            vqItems=found.map(rw=>({
+                t:(rw.thoiGian===''||rw.thoiGian===null||rw.thoiGian===undefined)?null:(Number(rw.thoiGian)||0),
+                nhId:(rw.nhId||'').toString(),
+                type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                q:(rw.question||'').toString(),
+                A:(rw.optA||'').toString(),
+                B:(rw.optB||'').toString(),
+                C:(rw.optC||'').toString(),
+                D:(rw.optD||'').toString(),
+                ans:String(rw.correct||'').toUpperCase().trim(),
+                correct:(rw.correct||'').toString()
+            }));
+            window._vqTouched=false; // Chỉ nạp dữ liệu có sẵn, chưa chỉnh sửa
+            window._vqLoadStatus='success-with-data';
+            renderVQ();
+            return { status:'success-with-data', data:vqItems };
+        } else if(!hasError){
+            // TẤT CẢ alias đều phản hồi admin POST thành công và đều không có dữ liệu
+            vqItems=[];
+            window._vqTouched=false;
+            window._vqLoadStatus='success-empty';
+            renderVQ();
+            return { status:'success-empty', data:[] };
+        } else {
+            // Không tìm được data và có ít nhất 1 alias gặp lỗi -> fail-closed bắt buộc là failed
+            window._vqLoadStatus='failed';
+            if(box) box.innerHTML='<div style="color:var(--red);font-size:13px;padding:6px 0"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải câu hỏi trong video: '+nhEsc(lastErr||'Không có quyền hoặc lỗi mạng')+'</div>';
+            return { status:'failed', data:[], error:lastErr||'Lỗi tải câu hỏi video' };
+        }
+    }catch(e){
+        console.error('vqLoadFromGAS error:', e);
+        window._vqLoadStatus='failed';
+        if(box) box.innerHTML='<div style="color:var(--red);font-size:13px;padding:6px 0"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi tải câu hỏi trong video: '+nhEsc(e.message)+'</div>';
+        return { status:'failed', data:[], error:e.message };
+    }
 }
 async function vqSaveToGAS(newKey, origKey){
-    if(!window._vqTouched && !vqItems.length) return; // b\u00e0i kh\u00f4ng d\u00f9ng t\u00ednh n\u0103ng n\u00e0y
+    if(window._vqLoadStatus==='failed'){
+        console.warn('vqSaveToGAS bị chặn vì vqLoadStatus=failed (tránh ghi đè mất dữ liệu)');
+        return;
+    }
+    if(!window._vqTouched) return; // Thầy không chỉnh sửa câu hỏi video (ví dụ chỉ sửa tiêu đề bài) -> không ghi đè
     // Gửi kèm 'type' + 'correct' (chuỗi 4 ký tự Đ/S cho tf, đáp số cho short) — GAS cần
     // lưu thêm cột 'loai' trong sheet VideoCauHoi mới đọc/ghi đủ 2 loại câu mới này,
     // nếu backend chưa có cột đó thì các trường thừa này bị bỏ qua vô hại (không lỗi).
@@ -4269,29 +4353,66 @@ async function vqSaveToGAS(newKey, origKey){
    với Câu hỏi trong video ở trên. Cột BaiTap cũ chỉ còn dùng làm fallback đọc cho
    các bài CŨ chưa từng được lưu lại bằng bản này (xem openEditForm/saveLessonForm). */
 async function qbLoadFromGAS(key, ...altKeys){
+    window._qbLoadStatus='loading';
     try{
         const tryKeys=[key, ...altKeys.filter(k=>k && k!==key)];
+        let foundData=null;
+        let hasError=false;
+        let lastErr='';
         for(const k of tryKeys){
-            const r = await fetch(DB_URL+'?type=baitaptracnghiem&bai='+encodeURIComponent(k)+'&t='+Date.now());
-            const j = await r.json();
-            const rows = (j&&j.data||[]).filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
-            if(rows.length){
-                _qbSourceKey=k;
-                rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
-                return rows.map(rw=>({
-                    type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
-                    q:(rw.question||'').toString(),
-                    A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
-                    C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
-                    ans:String(rw.correct||'').toUpperCase().trim(),
-                    correct:(rw.correct||'').toString()
-                }));
+            let res;
+            try {
+                res = await postAdminWriteJson({ action: 'getbaitaptracnghiemadmin', bai: k });
+            } catch(err) {
+                hasError = true;
+                lastErr = err.message || 'Lỗi kết nối';
+                console.warn('qbLoadFromGAS: ngoại lệ khi đọc bài tập trắc nghiệm bài ' + k, err);
+                continue;
+            }
+            if(res && res.ok && Array.isArray(res.data)){
+                const rows = res.data.filter(rw=>rw&&rw.baiKey!==undefined&&String(rw.baiKey)===k);
+                if(rows.length){
+                    _qbSourceKey=k;
+                    rows.sort((a,b)=>(Number(a.thuTu)||0)-(Number(b.thuTu)||0));
+                    foundData = rows.map(rw=>({
+                        type:(rw.type==='tf'||rw.type==='short')?rw.type:'mc',
+                        q:(rw.question||'').toString(),
+                        A:(rw.optA||'').toString(), B:(rw.optB||'').toString(),
+                        C:(rw.optC||'').toString(), D:(rw.optD||'').toString(),
+                        ans:String(rw.correct||'').toUpperCase().trim(),
+                        correct:(rw.correct||'').toString()
+                    }));
+                    break;
+                }
+            } else {
+                hasError = true;
+                lastErr = (res && res.msg) || 'Unauthorized hoặc lỗi máy chủ';
+                console.warn('qbLoadFromGAS: lỗi khi đọc bài tập trắc nghiệm bài ' + k, res);
             }
         }
-    }catch(e){ /* rơi xuống fallback đọc cột BaiTap cũ ở nơi gọi */ }
-    return null; // null = sheet mới chưa có dữ liệu cho bài này, nơi gọi tự fallback
+        if(foundData && foundData.length){
+            window._qbLoadStatus='success-with-data';
+            return { status:'success-with-data', data:foundData };
+        } else if(!hasError){
+            // TẤT CẢ alias đều phản hồi admin POST thành công và đều không có dữ liệu
+            window._qbLoadStatus='success-empty';
+            return { status:'success-empty', data:[] };
+        } else {
+            // Không tìm được data và có ít nhất 1 alias gặp lỗi -> fail-closed bắt buộc là failed
+            window._qbLoadStatus='failed';
+            return { status:'failed', data:[], error:lastErr||'Lỗi tải bài tập trắc nghiệm' };
+        }
+    }catch(e){
+        console.error('qbLoadFromGAS error:', e);
+        window._qbLoadStatus='failed';
+        return { status:'failed', data:[], error:e.message };
+    }
 }
 async function qbSaveToGAS(newKey, origKey){
+    if(window._qbLoadStatus==='failed'){
+        console.warn('qbSaveToGAS bị chặn vì qbLoadStatus=failed (tránh ghi đè mất dữ liệu)');
+        return;
+    }
     const qs = getQuestionsFromForm();
     const ok = await postAdminWriteWithRetry({action:'savebaitaptracnghiem',baiKey:newKey,originalKey:origKey||'',items:qs});
     if(ok && _qbCounts){ _qbCounts[newKey]=qs.length; if(origKey&&origKey!==newKey) delete _qbCounts[origKey]; }
@@ -4477,6 +4598,10 @@ function getQuestionsFromForm(){
 }
 
 async function saveLessonForm(){
+    if(window._qbLoadStatus === 'failed' || window._vqLoadStatus === 'failed'){
+        toast('<i class="fa-solid fa-ban"></i> Không thể lưu vì dữ liệu câu hỏi chưa được tải an toàn từ máy chủ! Nút Lưu đã bị khóa.', 'err');
+        return;
+    }
     const lop=document.getElementById('f-lop').value.trim();
     const tenKhoa=currentTenKhoaValue();
     const khoa=buildKhoaHoc(lop, tenKhoa);
@@ -4503,6 +4628,7 @@ async function saveLessonForm(){
         PDFLyThuyet:document.getElementById('f-pdflt').value.trim(),
         PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
+        TrangThai:(document.getElementById('f-trangthai')?.value||'published').trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
         BaiTap:'', // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
         ThuTuBai:document.getElementById('f-original-ttb').value // giu nguyen thu tu cu khi sua bai - thieu field nay khien GAS ghi de ThuTuBai='' moi lan Luu, lam bai tu nhay xuong cuoi chuong
@@ -4533,7 +4659,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,TrangThai:payload.TrangThai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         renderLessonList();
     }catch(err){
