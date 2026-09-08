@@ -1,0 +1,162 @@
+[
+  {
+    "question_number": 1,
+    "timestamp": 1065,
+    "raw_timestamp": 1067.65,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Sau này chỉ các bạn làm 1 tương bài, tương bài 1"
+  },
+  {
+    "question_number": 2,
+    "timestamp": 1203,
+    "raw_timestamp": 1205.57,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 2"
+  },
+  {
+    "question_number": 3,
+    "timestamp": 1225,
+    "raw_timestamp": 1228.32,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu 3"
+  },
+  {
+    "question_number": 4,
+    "timestamp": 1234,
+    "raw_timestamp": 1237.18,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 4"
+  },
+  {
+    "question_number": 5,
+    "timestamp": 1259,
+    "raw_timestamp": 1262.26,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 5"
+  },
+  {
+    "question_number": 6,
+    "timestamp": 1276,
+    "raw_timestamp": 1278.59,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 6"
+  },
+  {
+    "question_number": 7,
+    "timestamp": 1285,
+    "raw_timestamp": 1288.12,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 7"
+  },
+  {
+    "question_number": 8,
+    "timestamp": 1322,
+    "raw_timestamp": 1325.49,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 8"
+  },
+  {
+    "question_number": 9,
+    "timestamp": 1378,
+    "raw_timestamp": 1380.72,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu số 9"
+  },
+  {
+    "question_number": 10,
+    "timestamp": 1425,
+    "raw_timestamp": 1428.47,
+    "confidence": "HIGH",
+    "score": 72,
+    "evidence": "Đại lượng nào sau đây luôn không đổi theo phương trình thái"
+  },
+  {
+    "question_number": 11,
+    "timestamp": 1439,
+    "raw_timestamp": 1441.53,
+    "confidence": "MEDIUM",
+    "score": 36,
+    "evidence": "Phương trình thái kí lý tưởng chỉ đúng khi"
+  },
+  {
+    "question_number": 12,
+    "timestamp": 1459,
+    "raw_timestamp": 1461.92,
+    "confidence": "HIGH",
+    "score": 78,
+    "evidence": "Rồi đến trạng thái cuối"
+  },
+  {
+    "question_number": 13,
+    "timestamp": 1528,
+    "raw_timestamp": 1531.12,
+    "confidence": "MEDIUM",
+    "score": 36,
+    "evidence": "Khối khí ở trạng thái 1"
+  },
+  {
+    "question_number": 14,
+    "timestamp": 1568,
+    "raw_timestamp": 1570.53,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "Câu 14"
+  },
+  {
+    "question_number": 15,
+    "timestamp": 1573,
+    "raw_timestamp": 1576.07,
+    "confidence": "MEDIUM",
+    "score": 30,
+    "evidence": "Bến đổi trạng thái"
+  },
+  {
+    "question_number": 16,
+    "timestamp": 1625,
+    "raw_timestamp": 1627.8,
+    "confidence": "LOW",
+    "score": 24,
+    "evidence": "Việc đội đơn vị nhiệt độ sang canvin"
+  },
+  {
+    "question_number": 17,
+    "timestamp": 1664,
+    "raw_timestamp": 1666.78,
+    "confidence": "HIGH",
+    "score": 66,
+    "evidence": "vừa thay đổi về hệ tích"
+  },
+  {
+    "question_number": 18,
+    "timestamp": 1777,
+    "raw_timestamp": 1780.21,
+    "confidence": "MEDIUM",
+    "score": 30,
+    "evidence": "biến đổi sang chạng thái 2"
+  },
+  {
+    "question_number": 19,
+    "timestamp": 1802,
+    "raw_timestamp": 1805.3,
+    "confidence": "LOW",
+    "score": 18,
+    "evidence": "có 19 kí sử dụng phương trình chẳng thấy"
+  },
+  {
+    "question_number": 20,
+    "timestamp": 1924,
+    "raw_timestamp": 1927.11,
+    "confidence": "HIGH",
+    "score": 60,
+    "evidence": "rồi, câu 20"
+  }
+]

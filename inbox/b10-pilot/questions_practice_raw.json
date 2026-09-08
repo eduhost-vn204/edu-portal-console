@@ -1,0 +1,222 @@
+[
+  {
+    "number": 1,
+    "stem": "Phương trình trạng thái của khí lí tưởng",
+    "options": {
+      "A": "pV/T = const.",
+      "B": "pV ~ T.",
+      "C": "pT/V = const.",
+      "D": "p/T = const."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 2,
+    "stem": "Công thức nào sau đây không liên quan đến các đẳng quá trình?",
+    "options": {
+      "A": "p/T = const.",
+      "B": "p/V = const.",
+      "C": "V/T = const.",
+      "D": "p₁V₁ = p₂V₂."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 3,
+    "stem": "Từ phương trình trạng thái của khí lí tưởng, có thể suy ra mối liên hệ nào giữa áp suất và nhiệt độ của một lượng khí trong quá trình biến đổi mà thể tích được giữ không đổi?",
+    "options": {
+      "A": "p = V/T.",
+      "B": "p₁/T₁ = p₂/T₂.",
+      "C": "p₁V₁ = p₂V₂.",
+      "D": "p₁/T₂ = p₂/T₁."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 4,
+    "stem": "Đối với một khối khí lí tưởng nhất định, khi áp suất tăng 3 lần và thể tích giảm 2 lần thì nhiệt độ tuyệt đối sẽ",
+    "options": {
+      "A": "giảm 6 lần.",
+      "B": "tăng 1,5 lần.",
+      "C": "tăng 6 lần.",
+      "D": "giảm 1,5 lần."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 5,
+    "stem": "Một khối khí lí tưởng có thể tích giảm và nhiệt độ tăng thì áp suất của khối khí sẽ",
+    "options": {
+      "A": "tăng.",
+      "B": "chưa đủ dữ kiện để kết luận.",
+      "C": "giảm.",
+      "D": "giữ không đổi."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 6,
+    "stem": "Trong quá trình nào sau đây, cả ba thông số trạng thái p, V, T của một lượng khí xác định đều thay đổi đáng kể?",
+    "options": {
+      "A": "Không khí được nung nóng trong một bình kín.",
+      "B": "Không khí trong một phòng mở cửa khi nhiệt độ môi trường và áp suất khí quyển tăng lên.",
+      "C": "Khí nitrogen trong quả bóng bay bị bóp xẹp từ từ.",
+      "D": "Khí oxygen trong bình kín vừa được làm lạnh vừa được nén cho áp suất không đổi."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 7,
+    "stem": "Nén đẳng nhiệt một khối khí từ thể tích V₁ xuống thể tích V₂ = V₁/3, áp suất tăng một lượng Δp = 50 kPa. Áp suất ban đầu của khối khí là",
+    "options": {
+      "A": "40 kPa.",
+      "B": "30 kPa.",
+      "C": "20 kPa.",
+      "D": "25 kPa."
+    },
+    "correct": "D"
+  },
+  {
+    "number": 8,
+    "stem": "Một khối khí lí tưởng đang ở áp suất 2 atm thì được nung nóng đến khi nhiệt độ tuyệt đối tăng lên 4 lần và thể tích tăng lên 2 lần. Áp suất của khối khí sau khi nung là",
+    "options": {
+      "A": "0,25 atm.",
+      "B": "4 atm.",
+      "C": "16 atm.",
+      "D": "2 atm."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 9,
+    "stem": "Tính nhiệt độ ban đầu của một khối khí xác định biết rằng khi nhiệt độ tăng thêm 16°C thì thể tích giảm đi 10% so với thể tích ban đầu, áp suất tăng thêm 20% so với áp suất ban đầu.",
+    "options": {
+      "A": "184 K.",
+      "B": "289 K.",
+      "C": "178 K.",
+      "D": "200 K."
+    },
+    "correct": "D"
+  },
+  {
+    "number": 10,
+    "stem": "Một xilanh kín được chia làm hai phần, mỗi phần dài 52 cm và ngăn cách nhau bằng pit-tông cách nhiệt. Mỗi phần chứa một lượng khí giống nhau ở 27°C, 750 mmHg. Khi nung nóng một phần thêm 50°C còn phần còn lại được giữ nguyên nhiệt độ ban đầu thì pit-tông dịch chuyển một đoạn bằng 4 cm. Áp suất sau khi nung của mỗi ngăn là",
+    "options": {
+      "A": "696,4 mmHg.",
+      "B": "812,5 mmHg.",
+      "C": "758,3 mmHg.",
+      "D": "524,8 mmHg."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 11,
+    "stem": "Ở thời kì nén của một động cơ đốt trong 4 kì, nhiệt độ của hỗn hợp khí tăng từ 47°C đến 367°C, còn thể tích của khí giảm từ 1,8 lít đến 0,3 lít. Áp suất của khí lúc bắt đầu nén là 100 kPa. Coi hỗn hợp khí như chất khí thuần nhất, áp suất cuối thời kì nén là",
+    "options": {
+      "A": "1,5·10⁶ Pa.",
+      "B": "1,2·10⁶ Pa.",
+      "C": "1,8·10⁶ Pa.",
+      "D": "2,4·10⁶ Pa."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 12,
+    "stem": "Trong xilanh của một động cơ đốt trong có 2 dm³ hỗn hợp khí dưới áp suất 1 atm và nhiệt độ 47°C. Pit-tông nén xuống làm cho thể tích của hỗn hợp khí chỉ còn 0,2 dm³ và áp suất tăng lên tới 15 atm. Nhiệt độ của hỗn hợp khí nén lúc này là",
+    "options": {
+      "A": "107°C.",
+      "B": "173°C.",
+      "C": "207°C.",
+      "D": "273°C."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 13,
+    "stem": "Trong phòng thí nghiệm, người ta điều chế được 60 cm³ khí hydrogen ở áp suất 750 mmHg và nhiệt độ 27°C. Ở điều kiện tiêu chuẩn (áp suất 760 mmHg và nhiệt độ 0°C) thì thể tích của lượng khí trên là",
+    "options": {
+      "A": "50 cm³.",
+      "B": "59,21 cm³.",
+      "C": "53,88 cm³.",
+      "D": "60,5 cm³."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 14,
+    "stem": "Trong xilanh của một động cơ có chứa một lượng khí ở nhiệt độ 47°C và áp suất 0,7 atm. Sau khi bị nén, thể tích của khí giảm đi 5 lần và áp suất tăng lên tới 8 atm. Nhiệt độ của khí ở cuối quá trình nén là",
+    "options": {
+      "A": "731 K.",
+      "B": "650 K.",
+      "C": "800 K.",
+      "D": "710 K."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 15,
+    "stem": "Trong xilanh của một động cơ có chứa một lượng khí ở nhiệt độ 47°C và áp suất 0,7 atm. Người ta tăng nhiệt độ của khí lên đến 273°C và giữ pit-tông cố định thì áp suất của khí khi đó là",
+    "options": {
+      "A": "1,19 atm.",
+      "B": "1,00 atm.",
+      "C": "1,30 atm.",
+      "D": "0,90 atm."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 16,
+    "stem": "Hỗn hợp khí trong xilanh có nhiệt độ là 47°C và áp suất ban đầu là 1 atm. Khi pit-tông nén khí trong xilanh làm thể tích giảm đi 10 lần và áp suất tăng lên đến 15 atm thì nhiệt độ của hỗn hợp khí trong xilanh là",
+    "options": {
+      "A": "423 K.",
+      "B": "480 K.",
+      "C": "517 K.",
+      "D": "470 K."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 17,
+    "stem": "Người ta nén 10 l khí ở nhiệt độ 27°C, áp suất 1 atm để thể tích của khí chỉ còn 4 l. Vì nén nhanh nên khí bị nóng lên đến 60°C. Áp suất khối khí sau khi nén là",
+    "options": {
+      "A": "2,775 atm.",
+      "B": "2,255 atm.",
+      "C": "5,565 atm.",
+      "D": "1,135 atm."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 18,
+    "stem": "Một cái bơm chứa 100 cm³ không khí ở nhiệt độ 27°C và áp suất 10⁵ Pa. Tính áp suất của không khí trong bơm khi nó bị nén xuống còn 20 cm³ và nhiệt độ tăng lên đến 39°C.",
+    "options": {
+      "A": "2,2·10⁵ Pa.",
+      "B": "5,2·10⁵ Pa.",
+      "C": "4,2·10⁵ Pa.",
+      "D": "3,2·10⁵ Pa."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 19,
+    "stem": "Trong một động cơ điêzen, khối khí có nhiệt độ ban đầu là 32°C được nén để thể tích giảm bằng 1/16 thể tích ban đầu và áp suất tăng bằng 48,5 lần áp suất ban đầu. Nhiệt độ khối khí sau khi nén sẽ bằng",
+    "options": {
+      "A": "97°C.",
+      "B": "652°C.",
+      "C": "1552°C.",
+      "D": "132°C."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 20,
+    "stem": "Nén khí đẳng nhiệt từ thể tích 10 lít đến thể tích 4 lít thì áp suất của khí tăng lên",
+    "options": {
+      "A": "2 lần.",
+      "B": "4 lần.",
+      "C": "1,5 lần.",
+      "D": "2,5 lần."
+    },
+    "correct": "D"
+  }
+]

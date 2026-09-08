@@ -1,0 +1,222 @@
+[
+  {
+    "number": 1,
+    "stem": "Phương trình trạng thái khí lí tưởng liên hệ giữa hai trạng thái (1) và (2) của một lượng khí xác định là",
+    "options": {
+      "A": "p₁V₁T₁ = p₂V₂T₂",
+      "B": "p₁V₁/T₁ = p₂V₂/T₂",
+      "C": "p₁/(V₁T₁) = p₂/(V₂T₂)",
+      "D": "p₁T₁/V₁ = p₂T₂/V₂"
+    },
+    "correct": "B"
+  },
+  {
+    "number": 2,
+    "stem": "Phương trình trạng thái khí lí tưởng áp dụng được cho",
+    "options": {
+      "A": "một lượng khí bất kì, khối lượng có thể thay đổi.",
+      "B": "một lượng khí xác định (khối lượng không đổi) chuyển từ trạng thái này sang trạng thái khác.",
+      "C": "chỉ khí ở nhiệt độ không đổi.",
+      "D": "chỉ khí ở thể tích không đổi."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 3,
+    "stem": "Trong phương trình trạng thái khí lí tưởng, nhiệt độ T phải được tính theo thang đo nào?",
+    "options": {
+      "A": "Celsius.",
+      "B": "Fahrenheit.",
+      "C": "Kelvin.",
+      "D": "Bất kì thang đo nào."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 4,
+    "stem": "Nếu trong quá trình biến đổi, nhiệt độ T không đổi, phương trình trạng thái khí lí tưởng trở thành định luật nào sau đây?",
+    "options": {
+      "A": "Định luật Boyle.",
+      "B": "Định luật Charles.",
+      "C": "Định luật Gay-Lussac.",
+      "D": "Phương trình Claperon – Mendeleev."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 5,
+    "stem": "Nếu áp suất p không đổi, phương trình trạng thái khí lí tưởng trở thành định luật nào sau đây?",
+    "options": {
+      "A": "Định luật Boyle.",
+      "B": "Định luật Charles.",
+      "C": "Định luật Gay-Lussac.",
+      "D": "Phương trình Claperon – Mendeleev."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 6,
+    "stem": "Nếu thể tích V không đổi, phương trình trạng thái khí lí tưởng trở thành định luật nào sau đây?",
+    "options": {
+      "A": "Định luật Boyle.",
+      "B": "Định luật Charles.",
+      "C": "Định luật Gay-Lussac.",
+      "D": "Phương trình Claperon – Mendeleev."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 7,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 2 atm, V₁ = 3 lít, T₁ = 300 K biến đổi sang trạng thái 2 có p₂ = 4 atm, V₂ = 3 lít. Nhiệt độ T₂ là",
+    "options": {
+      "A": "150 K.",
+      "B": "300 K.",
+      "C": "600 K.",
+      "D": "1200 K."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 8,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 1 atm, V₁ = 6 lít, T₁ = 300 K biến đổi sang trạng thái 2 có T₂ = 600 K, V₂ = 3 lít. Áp suất p₂ là",
+    "options": {
+      "A": "1 atm.",
+      "B": "2 atm.",
+      "C": "4 atm.",
+      "D": "8 atm."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 9,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 3 atm, V₁ = 4 lít, T₁ = 400 K biến đổi sang trạng thái 2 có p₂ = 2 atm, T₂ = 300 K. Thể tích V₂ là",
+    "options": {
+      "A": "3 lít.",
+      "B": "4,5 lít.",
+      "C": "6 lít.",
+      "D": "9 lít."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 10,
+    "stem": "Trong quá trình biến đổi trạng thái của một lượng khí xác định, đại lượng nào sau đây luôn không đổi theo phương trình trạng thái?",
+    "options": {
+      "A": "pV/T.",
+      "B": "p + V + T.",
+      "C": "p×V×T.",
+      "D": "p/V/T."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 11,
+    "stem": "Phương trình trạng thái khí lí tưởng chỉ đúng khi",
+    "options": {
+      "A": "khối lượng khí thay đổi trong quá trình biến đổi.",
+      "B": "khối lượng (số mol) khí không đổi trong suốt quá trình biến đổi.",
+      "C": "nhiệt độ luôn không đổi.",
+      "D": "áp suất luôn không đổi."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 12,
+    "stem": "Một lượng khí xác định biến đổi qua một trạng thái trung gian rồi đến trạng thái cuối. Để áp dụng trực tiếp phương trình trạng thái so sánh trạng thái đầu và trạng thái cuối, điều kiện cần là",
+    "options": {
+      "A": "chỉ cần biết trạng thái trung gian.",
+      "B": "khối lượng khí không đổi trong suốt cả quá trình.",
+      "C": "nhiệt độ ở hai trạng thái phải bằng nhau.",
+      "D": "áp suất ở hai trạng thái phải bằng nhau."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 13,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 5 atm, V₁ = 2 lít, T₁ = 250 K biến đổi sang trạng thái 2 có p₂ = 4 atm, V₂ = 5 lít. Nhiệt độ T₂ là",
+    "options": {
+      "A": "125 K.",
+      "B": "250 K.",
+      "C": "500 K.",
+      "D": "1000 K."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 14,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 2 atm, V₁ = 5 lít, T₁ = 400 K biến đổi sang trạng thái 2 có T₂ = 200 K, V₂ = 4 lít. Áp suất p₂ là",
+    "options": {
+      "A": "0,625 atm.",
+      "B": "1,25 atm.",
+      "C": "2,5 atm.",
+      "D": "5 atm."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 15,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 3 atm, V₁ = 8 lít, T₁ = 600 K biến đổi sang trạng thái 2 có p₂ = 6 atm, T₂ = 300 K. Thể tích V₂ là",
+    "options": {
+      "A": "1 lít.",
+      "B": "2 lít.",
+      "C": "4 lít.",
+      "D": "8 lít."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 16,
+    "stem": "Việc đổi đơn vị nhiệt độ sang Kelvin trước khi áp dụng phương trình trạng thái là bắt buộc vì",
+    "options": {
+      "A": "công thức chỉ đúng khi các tỉ số pV/T được tính theo thang nhiệt độ tuyệt đối.",
+      "B": "Kelvin luôn cho ra số đẹp hơn.",
+      "C": "Celsius không đo được nhiệt độ âm.",
+      "D": "quy định của SI không cho phép dùng độ C."
+    },
+    "correct": "A"
+  },
+  {
+    "number": 17,
+    "stem": "Nếu trong quá trình biến đổi, một khối khí vừa thay đổi áp suất, vừa thay đổi thể tích, vừa thay đổi nhiệt độ thì để giải bài toán, ta nên",
+    "options": {
+      "A": "chỉ dùng định luật Boyle.",
+      "B": "chỉ dùng định luật Charles.",
+      "C": "dùng trực tiếp phương trình trạng thái p₁V₁/T₁ = p₂V₂/T₂.",
+      "D": "không thể giải được."
+    },
+    "correct": "C"
+  },
+  {
+    "number": 18,
+    "stem": "Khối khí ở trạng thái 1 có p₁ = 1,5 atm, V₁ = 4 lít, T₁ = 300 K biến đổi sang trạng thái 2 có V₂ = 6 lít, T₂ = 450 K. Áp suất p₂ là",
+    "options": {
+      "A": "1 atm.",
+      "B": "1,5 atm.",
+      "C": "2 atm.",
+      "D": "3 atm."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 19,
+    "stem": "Khi sử dụng phương trình trạng thái khí lí tưởng, đơn vị của p và V ở hai trạng thái cần phải",
+    "options": {
+      "A": "luôn là đơn vị SI (Pa và m³).",
+      "B": "giống nhau ở cả hai trạng thái (có thể dùng atm, lít miễn nhất quán).",
+      "C": "luôn khác nhau để dễ tính toán.",
+      "D": "không quan trọng, có thể tuỳ ý."
+    },
+    "correct": "B"
+  },
+  {
+    "number": 20,
+    "stem": "Một bình kín có thể tích không đổi chứa khí ở trạng thái 1: p₁ = 2 atm, T₁ = 300 K. Đun nóng đẳng tích đến trạng thái 2 có T₂ = 450 K. Áp suất p₂ là",
+    "options": {
+      "A": "1,33 atm.",
+      "B": "2 atm.",
+      "C": "3 atm.",
+      "D": "4,5 atm."
+    },
+    "correct": "C"
+  }
+]

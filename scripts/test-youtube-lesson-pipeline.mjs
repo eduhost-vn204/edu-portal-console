@@ -3,10 +3,14 @@ import path from 'path';
 import os from 'os';
 import {
   readLessonManifest,
-  uploadVideoToYouTube,
-  createDraftLessonOnBackend,
-  runPipeline,
-  loadCheckpoint
+  uploadTwoVideosToYouTube,
+  uploadThreePdfsToDrive,
+  createFullDraftLessonOnBackend,
+  verifyBackendReadBack,
+  runFullPipeline,
+  loadCheckpoint,
+  REAL_B10_LESSON_NAME,
+  PILOT_B10_LESSON_NAME
 } from './youtube-lesson-pipeline.mjs';
 
 let passed = 0;
@@ -24,7 +28,7 @@ function assert(condition, message) {
 
 async function runTests() {
   console.log(`\n======================================================`);
-  console.log(`🧪 KIỂM THỬ HỆ THỐNG: VIDEO → YOUTUBE PRIVATE → BÀI HỌC DRAFT`);
+  console.log(`🧪 KIỂM THỬ TOÀN DIỆN HỆ THỐNG: AUTO-PUBLISH-LESSON-PILOT-B10`);
   console.log(`======================================================\n`);
 
   const tmpDir = path.join(os.tmpdir(), `vlxt-pipeline-test-${Date.now()}`);
@@ -34,80 +38,156 @@ async function runTests() {
     // ── TEST 1: Xác thực đọc Manifest ──
     console.log(`Test 1: Kiểm tra đọc và chuẩn hóa manifest.json`);
     const validManifest = {
-      title: 'B4. Khí Lý Tưởng',
+      title: 'B10 - QUY TRÌNH ĐĂNG BÀI TỰ ĐỘNG',
       course: 'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12',
-      chapter: 'CHƯƠNG 1 – VẬT LÝ NHIỆT',
-      description: 'Mô tả bài học',
-      videoFile: 'video.mp4',
-      pdfUrl: 'https://drive.google.com/test'
+      chapter: 'CHƯƠNG 2 – KHÍ LÍ TƯỞNG',
+      description: 'Mô tả bài học thử nghiệm',
+      videoTheoryFile: 'Bài 10 lý thuyết.mp4',
+      videoPracticeFile: 'Luyện tập.mp4',
+      pdfTheoryFile: 'theory.pdf',
+      pdfAppliedFile: 'applied.pdf',
+      pdfPracticeFile: 'practice.pdf'
     };
     fs.writeFileSync(path.join(tmpDir, 'manifest.json'), JSON.stringify(validManifest), 'utf8');
 
     const parsed = readLessonManifest(tmpDir);
-    assert(parsed.title === 'B4. Khí Lý Tưởng', 'Title khớp chính xác');
-    assert(parsed.lessonName === '[DRAFT] B4. Khí Lý Tưởng', 'Tự động thêm tiền tố [DRAFT]');
+    assert(parsed.title === 'B10 - QUY TRÌNH ĐĂNG BÀI TỰ ĐỘNG', 'Title khớp chính xác');
+    assert(parsed.lessonName === PILOT_B10_LESSON_NAME, 'Tự động thêm tiền tố [BẢN NHÁP THỬ NGHIỆM]');
     assert(parsed.course === 'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12', 'Course khớp');
 
-    // ── TEST 2: Upload Video Mock & Checkpoint ──
-    console.log(`\nTest 2: Tải video YouTube Private (Mock Mode) & Lưu Checkpoint`);
-    const videoRes1 = await uploadVideoToYouTube(tmpDir, parsed, { mock: true });
-    assert(videoRes1.videoId && videoRes1.videoId.startsWith('mock_'), 'Tạo videoId mock thành công');
+    // ── TEST 2: Khóa an toàn bắt buộc: Chặn ghi vào Bài 10 thật ──
+    console.log(`\nTest 2: Khóa an toàn: Từ chối nếu tiêu đề trùng Bài 10 thật`);
+    const dangerousManifest = {
+      title: REAL_B10_LESSON_NAME,
+      course: 'CHUYÊN ĐỀ LÝ THUYẾT GĐ1 - Vật Lý 12',
+      chapter: 'CHƯƠNG 2 – KHÍ LÍ TƯỞNG'
+    };
+    fs.writeFileSync(path.join(tmpDir, 'manifest.json'), JSON.stringify(dangerousManifest), 'utf8');
+    let safetyTriggered = false;
+    try {
+      readLessonManifest(tmpDir);
+    } catch (err) {
+      if (err.message.includes('VI PHẠM KHÓA AN TOÀN')) {
+        safetyTriggered = true;
+      }
+    }
+    assert(safetyTriggered === true, 'Đã kích hoạt khóa an toàn và chặn thành công bản ghi trùng Bài 10 thật');
+    // Khôi phục manifest hợp lệ
+    fs.writeFileSync(path.join(tmpDir, 'manifest.json'), JSON.stringify(validManifest), 'utf8');
+
+    // ── TEST 3: Upload 2 Video Mock & Checkpoint ──
+    console.log(`\nTest 3: Tải 2 video YouTube Private (Mock Mode) & Lưu Checkpoint`);
+    const videoRes1 = await uploadTwoVideosToYouTube(tmpDir, parsed, { mock: true });
+    assert(videoRes1.theoryVideoId && videoRes1.theoryVideoId.startsWith('mock_'), 'Tạo theoryVideoId mock thành công');
+    assert(videoRes1.practiceVideoId && videoRes1.practiceVideoId.startsWith('mock_'), 'Tạo practiceVideoId mock thành công');
     assert(videoRes1.isResumed === false, 'Lần chạy đầu tiên isResumed = false');
 
     const cp1 = loadCheckpoint(tmpDir);
-    assert(cp1 && cp1.uploadStatus === 'UPLOADED_PRIVATE', 'Lưu checkpoint uploadStatus = UPLOADED_PRIVATE');
-    assert(cp1.videoId === videoRes1.videoId, 'Checkpoint lưu đúng videoId');
+    assert(cp1 && cp1.youtube && cp1.youtube.status === 'UPLOADED_PRIVATE', 'Checkpoint lưu trạng thái YouTube UPLOADED_PRIVATE');
 
-    // ── TEST 3: Idempotency (Không upload lại khi đã có checkpoint) ──
-    console.log(`\nTest 3: Kiểm tra tính Idempotent (chạy lại không upload trùng)`);
-    const videoRes2 = await uploadVideoToYouTube(tmpDir, parsed, { mock: true });
-    assert(videoRes2.videoId === videoRes1.videoId, 'Giữ nguyên videoId cũ');
+    // ── TEST 4: Upload 3 PDF Mock lên Drive ──
+    console.log(`\nTest 4: Tải 3 file PDF lên Google Drive (Mock Mode)`);
+    const driveRes1 = await uploadThreePdfsToDrive(tmpDir, parsed, { mock: true });
+    assert(driveRes1.theoryPdfUrl && driveRes1.theoryPdfUrl.includes('mock_'), 'Tạo theoryPdfUrl mock thành công');
+    assert(driveRes1.appliedPdfUrl && driveRes1.appliedPdfUrl.includes('mock_'), 'Tạo appliedPdfUrl mock thành công');
+    assert(driveRes1.practicePdfUrl && driveRes1.practicePdfUrl.includes('mock_'), 'Tạo practicePdfUrl mock thành công');
+
+    // ── TEST 5: Idempotency (Không upload lại khi đã có checkpoint) ──
+    console.log(`\nTest 5: Kiểm tra tính Idempotent (chạy lại không upload trùng)`);
+    const videoRes2 = await uploadTwoVideosToYouTube(tmpDir, parsed, { mock: true });
+    assert(videoRes2.theoryVideoId === videoRes1.theoryVideoId, 'Giữ nguyên theoryVideoId cũ');
     assert(videoRes2.isResumed === true, 'Phát hiện checkpoint và đánh dấu isResumed = true');
 
-    // ── TEST 4: Tạo bài học DRAFT với Mock Fetch ──
-    console.log(`\nTest 4: Gửi bài học DRAFT lên backend với Mock Server`);
-    let capturedPayload = null;
+    const driveRes2 = await uploadThreePdfsToDrive(tmpDir, parsed, { mock: true });
+    assert(driveRes2.theoryPdfUrl === driveRes1.theoryPdfUrl, 'Giữ nguyên theoryPdfUrl cũ');
+    assert(driveRes2.isResumed === true, 'Phát hiện checkpoint Drive isResumed = true');
+
+    // ── TEST 6: Tạo bài học DRAFT + VideoCauHoi + BaiTapTracNghiem với Mock Server ──
+    console.log(`\nTest 6: Gửi bài học DRAFT & 2 nhóm câu hỏi lên backend với Mock Server`);
+    const capturedPayloads = [];
     const mockFetch = async (url, opts) => {
-      capturedPayload = JSON.parse(opts.body);
+      if (opts && opts.body) {
+        capturedPayloads.push(JSON.parse(opts.body));
+      }
       return {
         ok: true,
-        json: async () => ({ ok: true, action: 'created' })
+        json: async () => ({ ok: true, action: 'created', data: [] })
       };
     };
 
-    const backendRes1 = await createDraftLessonOnBackend(tmpDir, parsed, videoRes1, { fetchImpl: mockFetch });
-    assert(backendRes1.ok === true, 'Tạo bài học DRAFT trả về ok: true');
-    assert(capturedPayload && capturedPayload.action === 'savebaihoc', 'Payload action = savebaihoc');
-    assert(capturedPayload.TenBai === '[DRAFT] B4. Khí Lý Tưởng', 'TenBai có tiền tố [DRAFT]');
-    assert(capturedPayload.Video === videoRes1.youtubeUrl, 'Gắn đúng link YouTube Private');
+    const mockAppliedQs = Array.from({ length: 20 }, (_, i) => ({
+      thuTu: i + 1, t: (i + 1) * 60, nhId: '', type: 'mc', q: `Câu ${i + 1}`, A: 'A', B: 'B', C: 'C', D: 'D', ans: 'A'
+    }));
+    const mockPracticeQs = Array.from({ length: 20 }, (_, i) => ({
+      thuTu: i + 1, type: 'mc', q: `Câu ${i + 1}`, A: 'A', B: 'B', C: 'C', D: 'D', correct: 'B'
+    }));
 
-    const cp2 = loadCheckpoint(tmpDir);
-    assert(cp2.lessonStatus === 'DRAFT_SAVED', 'Checkpoint cập nhật lessonStatus = DRAFT_SAVED');
+    const backendRes1 = await createFullDraftLessonOnBackend(
+      tmpDir, parsed, videoRes1, driveRes1, mockAppliedQs, mockPracticeQs,
+      { fetchImpl: mockFetch, adminKey: 'test_admin_key' }
+    );
+    assert(backendRes1.ok === true, 'Tạo bài học DRAFT và 2 nhóm câu hỏi trả về ok: true');
+    assert(capturedPayloads.length === 3, 'Backend nhận đúng 3 payloads (savebaihoc, savevideocauhoi, savebaitaptracnghiem)');
+    assert(capturedPayloads[0].action === 'savebaihoc', 'Payload 1 là savebaihoc');
+    assert(capturedPayloads[0].TenBai === PILOT_B10_LESSON_NAME, 'TenBai đúng khóa pilot');
+    assert(capturedPayloads[0].Video === videoRes1.theoryUrl, 'Link Video bài giảng khớp');
+    assert(capturedPayloads[0].VideoGiai === videoRes1.practiceUrl, 'Link VideoGiai chữa bài khớp');
+    assert(capturedPayloads[0].PDFLyThuyet === driveRes1.theoryPdfUrl, 'Link PDFLyThuyet khớp');
+    assert(capturedPayloads[0].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaihoc');
 
-    // ── TEST 5: Resume bài học đã tạo ──
-    console.log(`\nTest 5: Không tạo trùng bài học khi checkpoint đã hoàn tất`);
+    assert(capturedPayloads[1].action === 'savevideocauhoi', 'Payload 2 là savevideocauhoi');
+    assert(capturedPayloads[1].items.length === 20, 'Gán đúng 20 câu VideoCauHoi có mốc');
+    assert(capturedPayloads[1].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savevideocauhoi');
+
+    assert(capturedPayloads[2].action === 'savebaitaptracnghiem', 'Payload 3 là savebaitaptracnghiem');
+    assert(capturedPayloads[2].items.length === 20, 'Gán đúng 20 câu BaiTapTracNghiem không mốc');
+    assert(capturedPayloads[2].adminKey === 'test_admin_key', 'Tự động gắn adminKey vào savebaitaptracnghiem');
+
+    // ── TEST 7: Resume bài học đã tạo ──
+    console.log(`\nTest 7: Không tạo trùng bài học khi checkpoint đã hoàn tất`);
     let fetchCalled = false;
     const mockFetchNoCall = async () => {
       fetchCalled = true;
       return { ok: true, json: async () => ({ ok: true }) };
     };
-    const backendRes2 = await createDraftLessonOnBackend(tmpDir, parsed, videoRes1, { fetchImpl: mockFetchNoCall });
+    const backendRes2 = await createFullDraftLessonOnBackend(
+      tmpDir, parsed, videoRes1, driveRes1, mockAppliedQs, mockPracticeQs,
+      { fetchImpl: mockFetchNoCall }
+    );
     assert(backendRes2.isResumed === true, 'Backend step đánh dấu isResumed = true');
     assert(fetchCalled === false, 'Không gọi network dư thừa khi đã lưu DRAFT');
 
-    // ── TEST 6: Toàn bộ quy trình End-to-End ──
-    console.log(`\nTest 6: Chạy toàn bộ pipeline trơn tru (runPipeline)`);
-    const tmpDir2 = path.join(os.tmpdir(), `vlxt-pipeline-test2-${Date.now()}`);
-    fs.mkdirSync(tmpDir2, { recursive: true });
-    fs.writeFileSync(path.join(tmpDir2, 'manifest.json'), JSON.stringify(validManifest), 'utf8');
+    // ── TEST 8: Đối soát Backend (Read-Back) & Xác minh Bài 10 thật nguyên vẹn ──
+    console.log(`\nTest 8: Đối soát Backend (Read-Back) & Bảo vệ Bài 10 thật`);
+    const mockVerifyFetch = async (url) => {
+      if (url.includes('type=baihoc')) {
+        return {
+          ok: true,
+          json: async () => ({
+            ok: true,
+            data: [
+              { TenBai: REAL_B10_LESSON_NAME, Video: 'https://real-video', PDF: 'https://real-pdf' },
+              { TenBai: PILOT_B10_LESSON_NAME, Video: videoRes1.theoryUrl, VideoGiai: videoRes1.practiceUrl, PDFLyThuyet: driveRes1.theoryPdfUrl }
+            ]
+          })
+        };
+      }
+      if (url.includes('type=videocauhoi')) {
+        return { ok: true, json: async () => ({ ok: true, data: mockAppliedQs }) };
+      }
+      if (url.includes('type=baitaptracnghiem')) {
+        return { ok: true, json: async () => ({ ok: true, data: mockPracticeQs }) };
+      }
+      return { ok: true, json: async () => ({ ok: true, data: [] }) };
+    };
 
-    const fullRunRes = await runPipeline(tmpDir2, { mock: true, fetchImpl: mockFetch });
-    assert(fullRunRes.success === true, 'runPipeline trả về success = true');
-    assert(fullRunRes.videoResult.videoId.startsWith('mock_'), 'Video ID hợp lệ');
-    assert(fullRunRes.backendResult.ok === true, 'Backend DRAFT lesson được tạo');
+    const verifyResult = await verifyBackendReadBack(parsed, { fetchImpl: mockVerifyFetch });
+    assert(verifyResult.verified === true, 'Read-back verification thành công 100%');
+    assert(verifyResult.realLessonUntouched === true, 'Bài 10 thật được xác minh nguyên vẹn');
+    assert(verifyResult.videoCauHoiCount === 20, 'Xác nhận đúng 20 câu VideoCauHoi');
+    assert(verifyResult.baiTapCount === 20, 'Xác nhận đúng 20 câu BaiTapTracNghiem');
 
   } finally {
-    // Dọn dẹp thư mục tạm
     try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
   }
 

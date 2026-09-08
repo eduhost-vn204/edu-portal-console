@@ -12,5 +12,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.DS_Store
-Thumbs.db
+# Binary Audio
+*.wav
+
+# Python
+__pycache__/
+*.pyc
