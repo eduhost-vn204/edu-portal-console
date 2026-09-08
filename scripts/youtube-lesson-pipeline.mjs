@@ -9,6 +9,14 @@ import crypto from 'crypto';
 import { execFileSync } from 'child_process';
 import { postAdminWriteCore, attachAdminKeyCore } from './postAdminWrite.mjs';
 import { compareRealB10Snapshot, REAL_B10_REQUIRED_FIELDS } from './verify_real_b10.mjs';
+import {
+  getTrialOAuthCredentials,
+  refreshAccessToken,
+  verifyTrialIdentity,
+  uploadYouTubeVideoResumable,
+  uploadYouTubeCaption,
+  uploadDrivePdfWithHash
+} from './google-oauth-trial-client.mjs';
 
 export const DEFAULT_DB_URL = 'https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec';
 export const REAL_B10_LESSON_NAME = 'B10. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÝ TƯỞNG';
@@ -23,6 +31,7 @@ export const CHECKPOINT_STEPS = [
   'TIMESTAMPS_MATCHED',
   'DRIVE_UPLOADED',
   'YOUTUBE_UPLOADED',
+  'YOUTUBE_PROCESSING_PENDING',
   'DRAFT_SAVED',
   'BACKEND_VERIFIED',
   'READY_MOCK_ONLY',
@@ -30,7 +39,8 @@ export const CHECKPOINT_STEPS = [
   'BACKEND_VERIFICATION_FAILED',
   'MANUAL_RECOVERY_REQUIRED',
   'INPUT_CHANGED_NEW_SESSION_REQUIRED',
-  'OAUTH_ACTION_REQUIRED'
+  'OAUTH_ACTION_REQUIRED',
+  'CONTRACT_BLOCKER_STUDENT_VISIBILITY'
 ];
 
 /**
@@ -427,7 +437,7 @@ export async function uploadTwoVideosToYouTube(inboxDir, manifest, options = {})
   const isMock = options.mock || process.env.MOCK_YOUTUBE === 'true' || process.env.MOCK_YOUTUBE === '1';
   const checkpoint = loadCheckpoint(inboxDir) || {};
 
-  if (checkpoint.youtube && checkpoint.youtube.status === 'UPLOADED_PRIVATE') {
+  if (checkpoint.youtube && (checkpoint.youtube.status === 'UPLOADED_PRIVATE' || checkpoint.youtube.status === 'PROCESSING_PENDING')) {
     console.log('[YouTube] Hai video đã được tải lên trước đó. Bỏ qua upload.');
     return { ...checkpoint.youtube, isResumed: true };
   }
@@ -459,19 +469,113 @@ export async function uploadTwoVideosToYouTube(inboxDir, manifest, options = {})
     return result;
   }
 
-  const clientId = process.env.TRIAL_YOUTUBE_CLIENT_ID;
-  const clientSecret = process.env.TRIAL_YOUTUBE_CLIENT_SECRET;
-  const refreshToken = process.env.TRIAL_YOUTUBE_REFRESH_TOKEN;
-
-  if (!clientId || !clientSecret || !refreshToken) {
-    const err = new Error(`OAUTH_ACTION_REQUIRED: Chưa có thông tin xác thực OAuth profile trial cho YouTube (TRIAL_YOUTUBE_CLIENT_ID / SECRET / REFRESH_TOKEN). Dùng --mock để chạy kiểm thử an toàn.`);
-    err.code = 'OAUTH_ACTION_REQUIRED';
+  // Chạy THẬT với OAuth Profile trial
+  let credentials;
+  try {
+    credentials = getTrialOAuthCredentials(options);
+  } catch (err) {
     checkpoint.state = 'OAUTH_ACTION_REQUIRED';
     saveCheckpoint(inboxDir, checkpoint);
     throw err;
   }
 
-  throw new Error('Chế độ YouTube thật với Trial OAuth đang chờ kết nối API Google Client.');
+  let accessToken;
+  try {
+    accessToken = await refreshAccessToken(credentials, options);
+  } catch (err) {
+    checkpoint.state = 'OAUTH_ACTION_REQUIRED';
+    saveCheckpoint(inboxDir, checkpoint);
+    throw err;
+  }
+
+  // Bắt buộc xác minh danh tính tài khoản trial trước khi upload
+  let identity;
+  try {
+    identity = await verifyTrialIdentity(credentials, accessToken, options);
+  } catch (err) {
+    checkpoint.state = 'OAUTH_ACTION_REQUIRED';
+    saveCheckpoint(inboxDir, checkpoint);
+    throw err;
+  }
+
+  const srcDir = manifest.sourceDir ? path.resolve(manifest.sourceDir) : inboxDir;
+  const theoryVideoPath = path.join(srcDir, manifest.videoTheoryFile);
+  const practiceVideoPath = path.join(srcDir, manifest.videoPracticeFile);
+
+  console.log(`[YouTube] Bắt đầu resumable upload video 1: Bài giảng...`);
+  const theoryRes = await uploadYouTubeVideoResumable(
+    theoryVideoPath,
+    {
+      title: `${manifest.lessonName} - Phần 1: Bài giảng lí thuyết`,
+      description: manifest.description || 'Bài học Vật Lý 12 Pilot',
+      tags: manifest.tags || ['Vật Lý 12', 'Pilot']
+    },
+    accessToken,
+    options
+  );
+
+  console.log(`[YouTube] Bắt đầu resumable upload video 2: Chữa bài tập...`);
+  const practiceRes = await uploadYouTubeVideoResumable(
+    practiceVideoPath,
+    {
+      title: `${manifest.lessonName} - Phần 2: Chữa bài tập áp dụng & luyện tập`,
+      description: manifest.description || 'Bài học Vật Lý 12 Pilot',
+      tags: manifest.tags || ['Vật Lý 12', 'Pilot']
+    },
+    accessToken,
+    options
+  );
+
+  // Upload phụ đề nếu cấu hình bật
+  const shouldUploadCaptions = Boolean(manifest.uploadCaptions || options.uploadCaptions);
+  const srtPath = path.join(inboxDir, 'subtitles.srt');
+  const vttPath = path.join(inboxDir, 'subtitles.vtt');
+  let captionTheoryResult = null;
+
+  if (shouldUploadCaptions) {
+    const captionFile = fs.existsSync(srtPath) ? srtPath : (fs.existsSync(vttPath) ? vttPath : null);
+    if (captionFile) {
+      console.log(`[YouTube] Tải phụ đề lên video bài giảng (${path.basename(captionFile)})...`);
+      try {
+        captionTheoryResult = await uploadYouTubeCaption(theoryRes.videoId, captionFile, accessToken, options);
+        console.log(`          ✓ Đã tải phụ đề thành công (ID: ${captionTheoryResult.captionId})`);
+      } catch (e) {
+        console.warn(`          ⚠️ Không thể tải phụ đề: ${e.message}`);
+      }
+    }
+  }
+
+  // Kiểm tra trạng thái xử lý
+  const isProcessingPending = theoryRes.processingStatus === 'processing' || practiceRes.processingStatus === 'processing';
+  const finalStatus = isProcessingPending ? 'PROCESSING_PENDING' : 'UPLOADED_PRIVATE';
+
+  const result = {
+    status: finalStatus,
+    privacyStatus: 'private',
+    oauthProfile: 'trial',
+    channelId: identity.youtubeChannelId,
+    theoryVideoId: theoryRes.videoId,
+    theoryUrl: theoryRes.url,
+    theoryFileHash: theoryRes.fileHash,
+    theoryProcessingStatus: theoryRes.processingStatus,
+    practiceVideoId: practiceRes.videoId,
+    practiceUrl: practiceRes.url,
+    practiceFileHash: practiceRes.fileHash,
+    practiceProcessingStatus: practiceRes.processingStatus,
+    caption: captionTheoryResult,
+    uploadedAt: new Date().toISOString(),
+    isResumed: false
+  };
+
+  checkpoint.youtube = result;
+  checkpoint.state = isProcessingPending ? 'YOUTUBE_PROCESSING_PENDING' : 'YOUTUBE_UPLOADED';
+  saveCheckpoint(inboxDir, checkpoint);
+
+  console.log(`[YouTube] Tải 2 video lên kênh trial thành công (Trạng thái: ${finalStatus}):`);
+  console.log(`          - Bài giảng: ${result.theoryUrl} [${result.theoryProcessingStatus}]`);
+  console.log(`          - Chữa bài:  ${result.practiceUrl} [${result.practiceProcessingStatus}]`);
+
+  return result;
 }
 
 /**
@@ -519,17 +623,78 @@ export async function uploadThreePdfsToDrive(inboxDir, manifest, options = {}) {
     return result;
   }
 
-  const driveToken = process.env.TRIAL_DRIVE_REFRESH_TOKEN;
-  const folderId = process.env.EXPECTED_TRIAL_DRIVE_FOLDER_ID;
-  if (!driveToken || !folderId) {
-    const err = new Error(`OAUTH_ACTION_REQUIRED: Chưa có Google Drive trial refresh token hoặc folder ID (EXPECTED_TRIAL_DRIVE_FOLDER_ID). Dùng --mock để chạy kiểm thử an toàn.`);
+  // Chạy THẬT với Drive Trial
+  const folderId = options.driveFolderId || manifest.pilotDriveFolderId || process.env.EXPECTED_TRIAL_DRIVE_FOLDER_ID;
+  if (!folderId) {
+    const err = new Error(`OAUTH_ACTION_REQUIRED: Chưa có Google Drive pilot folder ID (EXPECTED_TRIAL_DRIVE_FOLDER_ID hoặc manifest.pilotDriveFolderId).`);
     err.code = 'OAUTH_ACTION_REQUIRED';
     checkpoint.state = 'OAUTH_ACTION_REQUIRED';
     saveCheckpoint(inboxDir, checkpoint);
     throw err;
   }
 
-  throw new Error('Chế độ Drive thật đang chờ kết nối Google Drive API.');
+  let credentials;
+  try {
+    credentials = getTrialOAuthCredentials(options);
+  } catch (err) {
+    checkpoint.state = 'OAUTH_ACTION_REQUIRED';
+    saveCheckpoint(inboxDir, checkpoint);
+    throw err;
+  }
+
+  let accessToken;
+  try {
+    accessToken = await refreshAccessToken(credentials, options);
+  } catch (err) {
+    checkpoint.state = 'OAUTH_ACTION_REQUIRED';
+    saveCheckpoint(inboxDir, checkpoint);
+    throw err;
+  }
+
+  const srcDir = manifest.sourceDir ? path.resolve(manifest.sourceDir) : inboxDir;
+  const thPath = path.join(srcDir, manifest.pdfTheoryFile);
+  const apPath = path.join(srcDir, manifest.pdfAppliedFile);
+  const prPath = path.join(srcDir, manifest.pdfPracticeFile);
+
+  console.log(`[Drive] Đang tải/đối soát file 1: PDF Lí thuyết...`);
+  const thRes = await uploadDrivePdfWithHash(thPath, folderId, accessToken, options);
+
+  console.log(`[Drive] Đang tải/đối soát file 2: PDF Bài tập áp dụng...`);
+  const apRes = await uploadDrivePdfWithHash(apPath, folderId, accessToken, options);
+
+  console.log(`[Drive] Đang tải/đối soát file 3: PDF Bài tập luyện tập...`);
+  const prRes = await uploadDrivePdfWithHash(prPath, folderId, accessToken, options);
+
+  const result = {
+    status: 'UPLOADED_DRIVE',
+    oauthProfile: 'trial',
+    driveFolderId: folderId,
+    theoryPdfId: thRes.fileId,
+    theoryPdfUrl: thRes.webViewLink,
+    theoryPdfHash: thRes.sha256Hash,
+    theoryPdfReused: thRes.isReused,
+    appliedPdfId: apRes.fileId,
+    appliedPdfUrl: apRes.webViewLink,
+    appliedPdfHash: apRes.sha256Hash,
+    appliedPdfReused: apRes.isReused,
+    practicePdfId: prRes.fileId,
+    practicePdfUrl: prRes.webViewLink,
+    practicePdfHash: prRes.sha256Hash,
+    practicePdfReused: prRes.isReused,
+    uploadedAt: new Date().toISOString(),
+    isResumed: false
+  };
+
+  checkpoint.drive = result;
+  checkpoint.state = 'DRIVE_UPLOADED';
+  saveCheckpoint(inboxDir, checkpoint);
+
+  console.log('[Drive] Hoàn tất nạp 3 file PDF lên Google Drive pilot:');
+  console.log(`        - Lý thuyết:  ${result.theoryPdfUrl} (Reused: ${result.theoryPdfReused})`);
+  console.log(`        - Áp dụng:    ${result.appliedPdfUrl} (Reused: ${result.appliedPdfReused})`);
+  console.log(`        - Luyện tập:  ${result.practicePdfUrl} (Reused: ${result.practicePdfReused})`);
+
+  return result;
 }
 
 /**
@@ -544,6 +709,20 @@ export async function createFullDraftLessonOnBackend(inboxDir, manifest, videoRe
 
   if (!checkpoint.backend) {
     checkpoint.backend = {};
+  }
+
+  // Khóa an toàn: Kiểm tra rủi ro hiển thị bài pilot cho học sinh khi gọi Live Production
+  // Backend Google Apps Script hiện tại chưa có trường 'draft' hay 'hidden' trong bảng BaiHoc.
+  const isCustomFetch = Boolean(options.fetchImpl && options.fetchImpl !== globalThis.fetch);
+  const isProductionLive = !isMockBackend && !isCustomFetch;
+  if (isProductionLive && !options.allowPublicPilotOnStudentPortal) {
+    const err = new Error(
+      `CONTRACT_BLOCKER_STUDENT_VISIBILITY: Bảng tính BaiHoc trong Google Apps Script (src/Mã.js COLS) chưa hỗ trợ cột 'draft' hoặc 'hidden'. Nếu ghi bài học pilot thật lên database, bài học sẽ xuất hiện công khai trên giao diện web học sinh (danhsach-ly12.html). Quy trình pilot dừng an toàn. Cần Thầy xác nhận thay đổi contract hoặc chọn khóa học riêng!`
+    );
+    err.code = 'CONTRACT_BLOCKER_STUDENT_VISIBILITY';
+    checkpoint.state = 'CONTRACT_BLOCKER_STUDENT_VISIBILITY';
+    saveCheckpoint(inboxDir, checkpoint);
+    throw err;
   }
 
   // Khóa an toàn: Kiểm tra nếu toàn bộ 3 bước đã hoàn thành
