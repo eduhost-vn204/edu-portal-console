@@ -3361,7 +3361,8 @@ function renderCourseBlock(course){
             const hasGiai=!!ytId(l.videogiai)||!!(l.videogiai&&l.videogiai.includes('drive.google.com'));
             let baitapArr=[]; try{baitapArr=JSON.parse(l.baitap||'[]');}catch(e){}
             const key=`${l.khoa}|||${l.chuong}|||${l.ten}`;
-            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : baitapArr.length;
+            const mb=(l.mabai||l.MaBai||'').toString().trim();
+            const qbCount = (_qbCounts && _qbCounts[key]!==undefined) ? _qbCounts[key] : ((_qbCounts && mb && _qbCounts[mb]!==undefined) ? _qbCounts[mb] : baitapArr.length);
             const isTeaching = (currentTeachingLesson === key);
             const safeKey = esc(key).replace(/'/g,"&#39;");
             const liSelected = bulkMode && bulkSelected.has(key);
