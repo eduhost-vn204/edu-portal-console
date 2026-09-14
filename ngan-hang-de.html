@@ -1521,7 +1521,7 @@
         <div>
             <div class="nh-filter-row">
                 <select id="nh-f-mon" onchange="bankFiltersChanged()"><option value="">Tất cả lớp</option></select>
-                <select id="nh-f-chuong" onchange="bankFiltersChanged()"><option value="">Tất cả chương</option></select>
+                <select id="nh-f-chuong" onchange="onBankChuongFilterChanged()"><option value="">Tất cả chương</option></select>
                 <select id="nh-f-mucdo" onchange="bankFiltersChanged()">
                     <option value="">Mọi mức độ</option>
                     <option value="NB">Nhận biết</option><option value="TH">Thông hiểu</option>
@@ -6295,12 +6295,90 @@ async function loadBank(force){
     }
 }
 
+const CANONICAL_CHAPTER_MAP = {
+    'Vật lí nhiệt': 'CHƯƠNG 1 – VẬT LÝ NHIỆT',
+    'Chương 1 – Vật lí nhiệt': 'CHƯƠNG 1 – VẬT LÝ NHIỆT',
+    'Chương 2: Khí lí tưởng': 'Chương 2 – Khí lí tưởng',
+    'Chương 2 – Khí lí tưởng': 'Chương 2 – Khí lí tưởng',
+    'Chương 3 – Từ trường': 'Chương 3 – Từ trường',
+    'Chương 4 – Vật lí hạt nhân': 'Chương 4 – Vật lí hạt nhân'
+};
+
+const CANONICAL_LESSON_MAP = {
+    "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ" },
+    "B2. LỰC LIÊN KẾT VÀ CHUYỂN THỂ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT" },
+    "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT" },
+    "B2. SỰ CHUYỂN THỂ CỦA CÁC CHẤT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT" },
+    "B3. NHIỆT ĐỘ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ" },
+    "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ" },
+    "B3. NHIỆT ĐỘ, THANG NHIỆT ĐỘ VÀ NHIỆT KẾ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ" },
+    "B3. THANG NHIỆT ĐỘ - NHIỆT KẾ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ" },
+    "THANG NHIỆT ĐỘ VÀ NHIỆT KẾ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ" },
+    "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG" },
+    "B4. NHIỆT DUNG VÀ NHIỆT CHUYỂN THỂ": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG" },
+    "B5. NỘI NĂNG VÀ ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC" },
+    "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC" },
+    "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT" },
+    "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT" },
+    "B8. TỔNG ÔN BÀI TẬP & ĐỒ THỊ CHƯƠNG 1": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)" },
+    "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)" },
+
+    "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG" },
+    "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG" },
+    "B10. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÝ TƯỞNG": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B10. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÝ TƯỞNG" },
+    "B10. ĐỊNH LUẬT BOYLE (ĐẲNG NHIỆT)": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT" },
+    "B11. ĐỊNH LUẬT BOYLE - QUÁ TRÌNH ĐẲNG NHIỆT": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT" },
+    "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT" },
+    "B11. ĐỊNH LUẬT CHARLES (ĐẲNG ÁP)": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B12. ĐỊNH LUẬT CHARLES - QUÁ TRÌNH ĐẲNG ÁP" },
+    "B12. ĐỊNH LUẬT CHARLES - QUÁ TRÌNH ĐẲNG ÁP": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B12. ĐỊNH LUẬT CHARLES - QUÁ TRÌNH ĐẲNG ÁP" },
+    "B12. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÍ TƯỞNG": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B10. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÝ TƯỞNG" },
+    "B13. ĐỊNH LUẬT GAY LUSSAC - QUÁ TRÌNH ĐẲNG TÍCH": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B13. ĐỊNH LUẬT GAY LUSSAC - QUÁ TRÌNH ĐẲNG TÍCH" },
+    "B13. ÁP SUẤT KHÍ VÀ ĐỘNG NĂNG PHÂN TỬ": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B15. ÁP SUẤT THEO MÔ HÌNH ĐỘNG HỌC PHÂN TỬ - QUAN HỆ ĐỘNG NĂNG PHÂN TỬ VÀ NHIỆT ĐỘ" },
+    "B14. PHƯƠNG TRÌNH CLAPERON - MENDELEEV": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B14. PHƯƠNG TRÌNH CLAPERON – MENDELEEV" },
+    "B14. PHƯƠNG TRÌNH CLAPERON – MENDELEEV": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B14. PHƯƠNG TRÌNH CLAPERON – MENDELEEV" },
+    "B14. ĐỒ THỊ TRẠNG THÁI VÀ CHU TRÌNH NHIỆT": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B16. ĐỒ THỊ KHÍ LÝ TƯỞNG" },
+    "B15. ÁP SUẤT THEO MÔ HÌNH ĐỘNG HỌC PHÂN TỬ - QUAN HỆ ĐỘNG NĂNG PHÂN TỬ VÀ NHIỆT ĐỘ": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B15. ÁP SUẤT THEO MÔ HÌNH ĐỘNG HỌC PHÂN TỬ - QUAN HỆ ĐỘNG NĂNG PHÂN TỬ VÀ NHIỆT ĐỘ" },
+    "B16. ĐỒ THỊ KHÍ LÝ TƯỞNG": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B16. ĐỒ THỊ KHÍ LÝ TƯỞNG" },
+    "B17. ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC ĐỐI VỚI CÁC ĐẲNG QUÁ TRÌNH": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B17. ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC ĐỐI VỚI CÁC ĐẲNG QUÁ TRÌNH" },
+
+    "B21. TỪ TRƯỜNG": { chuong: "Chương 3 – Từ trường", baiHoc: "B21. TỪ TRƯỜNG" },
+    "B21. TỪ TRƯỜNG VÀ ĐƯỜNG SỨC TỪ": { chuong: "Chương 3 – Từ trường", baiHoc: "B21. TỪ TRƯỜNG" },
+    "B22. CẢM ỨNG TỪ - LỰC TỪ": { chuong: "Chương 3 – Từ trường", baiHoc: "B22. CẢM ỨNG TỪ - LỰC TỪ" },
+    "B22. LỰC TỪ TÁC DỤNG LÊN ĐOẠN DÂY DẪN": { chuong: "Chương 3 – Từ trường", baiHoc: "B22. CẢM ỨNG TỪ - LỰC TỪ" },
+    "B23. CẢM ỨNG TỪ CỦA DÒNG ĐIỆN ĐẶC BIỆT": { chuong: "Chương 3 – Từ trường", baiHoc: "B22. CẢM ỨNG TỪ - LỰC TỪ" },
+    "B23. TỪ THÔNG": { chuong: "Chương 3 – Từ trường", baiHoc: "B23. TỪ THÔNG" },
+    "B24. HIỆN TƯỢNG CẢM ỨNG ĐIỆN TỪ – ĐỊNH LUẬT LENZ": { chuong: "Chương 3 – Từ trường", baiHoc: "B24. HIỆN TƯỢNG CẢM ỨNG ĐIỆN TỪ – ĐỊNH LUẬT LENZ" },
+    "B24. LỰC LORENTZ": { chuong: "Chương 3 – Từ trường", baiHoc: "B22. CẢM ỨNG TỪ - LỰC TỪ" },
+    "B25. SUẤT ĐIỆN ĐỘNG CẢM ỨNG - ĐỊNH LUẬT FARADAY": { chuong: "Chương 3 – Từ trường", baiHoc: "B25. SUẤT ĐIỆN ĐỘNG CẢM ỨNG - ĐỊNH LUẬT FARADAY" },
+    "B25. TỪ THÔNG VÀ CẢM ỨNG ĐIỆN TỪ": { chuong: "Chương 3 – Từ trường", baiHoc: "B23. TỪ THÔNG" },
+    "B26. DÒNG ĐIỆN XOAY CHIỀU – MÁY PHÁT ĐIỆN XOAY CHIỀU": { chuong: "Chương 3 – Từ trường", baiHoc: "B26. DÒNG ĐIỆN XOAY CHIỀU – MÁY PHÁT ĐIỆN XOAY CHIỀU" },
+    "B26. SUẤT ĐIỆN ĐỘNG CẢM ỨNG": { chuong: "Chương 3 – Từ trường", baiHoc: "B25. SUẤT ĐIỆN ĐỘNG CẢM ỨNG - ĐỊNH LUẬT FARADAY" },
+    "B27. HIỆN TƯỢNG TỰ CẢM": { chuong: "Chương 3 – Từ trường", baiHoc: "B27. ỨNG DỤNG HIỆN TƯỢNG CẢM ỨNG ĐIỆN TỪ" },
+    "B27. ỨNG DỤNG HIỆN TƯỢNG CẢM ỨNG ĐIỆN TỪ": { chuong: "Chương 3 – Từ trường", baiHoc: "B27. ỨNG DỤNG HIỆN TƯỢNG CẢM ỨNG ĐIỆN TỪ" },
+    "B28. ĐIỆN TỪ TRƯỜNG & SÓNG ĐIỆN TỪ": { chuong: "Chương 3 – Từ trường", baiHoc: "B28. ĐIỆN TỪ TRƯỜNG & SÓNG ĐIỆN TỪ" },
+
+    "B31. CẤU TẠO HẠT NHÂN NGUYÊN TỬ": { chuong: "Chương 4 – Vật lí hạt nhân", baiHoc: "B31. CẤU TẠO HẠT NHÂN NGUYÊN TỬ" },
+    "B32. NĂNG LƯỢNG LIÊN KẾT HẠT NHÂN": { chuong: "Chương 4 – Vật lí hạt nhân", baiHoc: "B32. NĂNG LƯỢNG LIÊN KẾT HẠT NHÂN" },
+    "B33. PHẢN ỨNG HẠT NHÂN": { chuong: "Chương 4 – Vật lí hạt nhân", baiHoc: "B33. PHẢN ỨNG HẠT NHÂN" },
+    "B34. HIỆN TƯỢNG PHÓNG XẠ": { chuong: "Chương 4 – Vật lí hạt nhân", baiHoc: "B34. HIỆN TƯỢNG PHÓNG XẠ" },
+    "B35. ĐỒ THỊ PHÓNG XẠ - ỨNG DỤNG CỦA HIỆN TƯỢNG PHÓNG XẠ": { chuong: "Chương 4 – Vật lí hạt nhân", baiHoc: "B35. ĐỒ THỊ PHÓNG XẠ - ỨNG DỤNG CỦA HIỆN TƯỢNG PHÓNG XẠ" }
+};
+
 function applyBankRows(rows){
     bankData = rows.map(q => {
+        let rawCh = String(q.chuong || '').trim();
+        let rawBai = String(q.baiHoc || '').trim();
+        if (CANONICAL_CHAPTER_MAP[rawCh]) rawCh = CANONICAL_CHAPTER_MAP[rawCh];
+        if (CANONICAL_LESSON_MAP[rawBai]) {
+            const cMap = CANONICAL_LESSON_MAP[rawBai];
+            rawBai = cMap.baiHoc;
+            if (!rawCh || rawCh === 'Chương chưa phân loại' || CANONICAL_CHAPTER_MAP[rawCh]) rawCh = cMap.chuong;
+        }
         return {
             ...q,
+            chuong: rawCh,
             loai: (q.loai || 'TN').toString().toUpperCase().trim(),
-            baiHoc: String(q.baiHoc || '').trim(),
+            baiHoc: rawBai,
             chatLuong: String(q.chatLuong || '').trim().toLowerCase(),
             kyThuat: String(q.kyThuat || 'Dat').trim()
         };
@@ -6325,19 +6403,59 @@ function renderBankStats(){
     document.getElementById('nh-s-tinh').textContent=tinhCount.toLocaleString();
 }
 
+function updateBankBaiOptions(selectedChuong, preserveVal){
+    const sb = document.getElementById('nh-f-bai');
+    if (!sb) return;
+    const filteredRows = selectedChuong ? bankData.filter(q => q.chuong === selectedChuong) : bankData;
+    const bais = [...new Set(filteredRows.flatMap(q => (q.baiHoc || '').split(',').map(s => s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi',{numeric:true}));
+    const unsetCount = filteredRows.filter(q => !(q.baiHoc || '').trim()).length;
+
+    sb.innerHTML = '<option value="">Tất cả bài</option>'
+        + `<option value="__EMPTY__">⚠️ Chưa gán bài (${unsetCount})</option>`
+        + bais.map(m => `<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
+
+    if (preserveVal && (bais.includes(preserveVal) || preserveVal === '__EMPTY__')) {
+        sb.value = preserveVal;
+    } else {
+        sb.value = '';
+    }
+}
+
+function onBankChuongFilterChanged(){
+    const sc = document.getElementById('nh-f-chuong');
+    const selectedChuong = sc ? sc.value : '';
+    updateBankBaiOptions(selectedChuong, '');
+    bankFiltersChanged();
+}
+
 function fillBankFilters(){
-    const mons=[...new Set(bankData.map(q=>q.mon).filter(Boolean))].sort();
-    const chuongs=[...new Set(bankData.map(q=>q.chuong).filter(Boolean))].sort();
-    const bais=[...new Set(bankData.flatMap(q=>(q.baiHoc||'').split(',').map(s=>s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi',{numeric:true}));
-    const unsetCount=bankData.filter(q=>!(q.baiHoc||'').trim()).length;
-    const sm=document.getElementById('nh-f-mon'), sc=document.getElementById('nh-f-chuong'), sb=document.getElementById('nh-f-bai');
-    const vm=sm.value, vc=sc.value, vb=sb.value;
-    sm.innerHTML='<option value="">Tất cả lớp</option>'+mons.map(m=>`<option>${nhEsc(m)}</option>`).join('');
-    sc.innerHTML='<option value="">Tất cả chương</option>'+chuongs.map(m=>`<option>${nhEsc(m)}</option>`).join('');
-    sb.innerHTML='<option value="">Tất cả bài</option>'
-        +`<option value="__EMPTY__">⚠️ Chưa gán bài (${unsetCount})</option>`
-        +bais.map(m=>`<option value="${nhEsc(m)}">${nhEsc(m)}</option>`).join('');
-    sm.value=vm; sc.value=vc; sb.value=vb;
+    const sm = document.getElementById('nh-f-mon');
+    const sc = document.getElementById('nh-f-chuong');
+    const sb = document.getElementById('nh-f-bai');
+    const vm = sm ? sm.value : '', vc = sc ? sc.value : '', vb = sb ? sb.value : '';
+
+    const mons = [...new Set(bankData.map(q => q.mon).filter(Boolean))].sort();
+    if (sm) {
+        sm.innerHTML = '<option value="">Tất cả lớp</option>' + mons.map(m => `<option>${nhEsc(m)}</option>`).join('');
+        sm.value = vm;
+    }
+
+    const canonicalChapters = [
+        'CHƯƠNG 1 – VẬT LÝ NHIỆT',
+        'Chương 2 – Khí lí tưởng',
+        'Chương 3 – Từ trường',
+        'Chương 4 – Vật lí hạt nhân'
+    ];
+    const dataChuongs = [...new Set(bankData.map(q => q.chuong).filter(Boolean))];
+    const otherChuongs = dataChuongs.filter(c => !canonicalChapters.includes(c)).sort((a,b)=>a.localeCompare(b,'vi'));
+    const finalChapters = [...canonicalChapters.filter(c => dataChuongs.includes(c) || true), ...otherChuongs];
+
+    if (sc) {
+        sc.innerHTML = '<option value="">Tất cả chương</option>' + finalChapters.map(c => `<option value="${nhEsc(c)}">${nhEsc(c)}</option>`).join('');
+        sc.value = vc;
+    }
+
+    updateBankBaiOptions(vc, vb);
 }
 
 function bankFiltered(){
