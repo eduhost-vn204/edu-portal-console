@@ -29,7 +29,6 @@ function doGet(e) {
     if (type === 'questionstats' || type === 'getquestionstats') return getQuestionStats(e);
     if (type === 'repairp107_251') return repairBatchP107_251_AutoFix(e);
     if (type === 'patchspecificfields') return patchSpecificFields_AuditFidelity(e);
-    if (type === 'inspectfullsheetduplicatecolumns' || type === 'inspectduplicatecolumns') return inspectFullSheetDuplicateColumns(e);
     return getExamQuestions('de01'); // backward compat — không có type param
   } catch(err) {
     return jsonOut({ error: err.message });
@@ -59,7 +58,6 @@ function doPost(e) {
     if (action === 'updatenganhang')     return updateNganHang(data);
     if (action === 'clonenganhangtostaging') return cloneNganHangToStaging(data);
     if (action === 'repairipclassbatch') return repairIpclassBatch(data);
-    if (action === 'inspectfullsheetduplicatecolumns' || action === 'inspectduplicatecolumns') return inspectFullSheetDuplicateColumns(data);
     if (action === 'updateexistingnganhangfromfile') return updateExistingNganHangFromFile(data);
     if (action === 'repairlessonbatch' || action === 'repair_lesson_batch' || action === 'repairquestionslessonbatch') return repairLessonBatch(data);
     if (action === 'repairbatchp107_251_autofix') return repairBatchP107_251_AutoFix(data);
@@ -4273,7 +4271,18 @@ function repairIpclassBatch(data) {
           let matches = Boolean(readBackRow && readBackRow.length === rollbackItem.rowData.length);
           if (matches) {
             for (let c = 0; c < rollbackItem.rowData.length; c++) {
-              if (String(readBackRow[c] || '') !== String(rollbackItem.rowData[c] || '')) {
+              const valA = readBackRow[c];
+              const valB = rollbackItem.rowData[c];
+              const isBlankA = (valA === null || valA === undefined || valA === '');
+              const isBlankB = (valB === null || valB === undefined || valB === '');
+              if (isBlankA && isBlankB) {
+                continue; // cả hai đều rỗng/trống
+              }
+              if (isBlankA !== isBlankB) {
+                matches = false;
+                break;
+              }
+              if (valA !== valB && String(valA) !== String(valB)) {
                 matches = false;
                 break;
               }
@@ -4341,23 +4350,27 @@ function repairIpclassBatch(data) {
   }
 }
 
-// ── CÔNG CỤ CHỈ ĐỌC: KIỂM KÊ TOÀN BỘ SHEET CỘT 22–37 (KHÔNG THAY ĐỔI DỮ LIỆU) ──
-function inspectFullSheetDuplicateColumns(dataOrEvent) {
+// ── HÀM NỘI BỘ CHỈ ĐỌC: KIỂM KÊ TOÀN BỘ SHEET CỘT 22–37 (KHÔNG LỘ NỘI DUNG, KHÔNG CÔNG KHAI) ──
+function inspectFullSheetDuplicateColumns(targetSheetNameOrObj) {
   try {
-    const params = (dataOrEvent && dataOrEvent.parameter) ? dataOrEvent.parameter : (dataOrEvent || {});
-    const targetSheetName = String(params.sheetName || 'NganHang').trim();
+    let sheetName = 'NganHang';
+    if (typeof targetSheetNameOrObj === 'string') {
+      sheetName = targetSheetNameOrObj.trim();
+    } else if (targetSheetNameOrObj && typeof targetSheetNameOrObj === 'object') {
+      sheetName = String(targetSheetNameOrObj.sheetName || 'NganHang').trim();
+    }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(targetSheetName);
+    const sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
-      return jsonOut({ ok: false, error: 'SheetNotFound', msg: 'Không tìm thấy sheet: ' + targetSheetName });
+      return { ok: false, error: 'SheetNotFound', msg: 'Không tìm thấy sheet: ' + sheetName };
     }
 
     const lastRow = sheet.getLastRow();
     const lastCol = sheet.getLastColumn();
 
     if (lastRow < 1 || lastCol < 1) {
-      return jsonOut({ ok: false, error: 'EmptySheet', msg: 'Sheet rỗng' });
+      return { ok: false, error: 'EmptySheet', msg: 'Sheet rỗng' };
     }
 
     const headerRow = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
@@ -4391,37 +4404,38 @@ function inspectFullSheetDuplicateColumns(dataOrEvent) {
         const idVal = String(rowData[0] || '').trim();
 
         let rowHasDataInDupCols = false;
-        const dupCellDetails = [];
+        const dupColumnsSummary = [];
 
         for (let c = duplicateColStart; c <= duplicateColEnd; c++) {
           const colIdx0 = c - 1;
           const cellVal = rowData[colIdx0];
-          const cellStr = (cellVal !== undefined && cellVal !== null) ? String(cellVal).trim() : '';
+          const isBlank = (cellVal === null || cellVal === undefined || cellVal === '');
 
-          if (cellStr) {
+          if (!isBlank) {
+            const cellStr = String(cellVal);
             dataConcatenation += 'r' + rowNum + 'c' + c + ':' + cellStr + ';';
             columnStats[c].nonEmptyCount++;
             rowHasDataInDupCols = true;
 
             const canonicalCol = c - 16;
             const canonicalVal = (canonicalCol >= 1 && canonicalCol <= lastCol)
-              ? String(rowData[canonicalCol - 1] || '').trim()
+              ? rowData[canonicalCol - 1]
               : '';
 
-            const isIdentical = (cellStr === canonicalVal);
+            const isCanonicalBlank = (canonicalVal === null || canonicalVal === undefined || canonicalVal === '');
+            const isIdentical = (!isCanonicalBlank && (cellVal === canonicalVal || String(cellVal) === String(canonicalVal)));
+
             if (isIdentical) {
               identicalToCanonicalCount++;
             } else {
               differentFromCanonicalCount++;
             }
 
-            dupCellDetails.push({
+            // CHỈ LƯU METADATA CỘT & TRẠNG THÁI TRÙNG/KHÁC, TUYỆT ĐỐI KHÔNG LƯU NỘI DUNG THÂN CÂU, PHƯƠNG ÁN HAY LỜI GIẢI
+            dupColumnsSummary.push({
               colNumber: c,
               header: columnStats[c].header,
-              value: cellStr,
               canonicalCol: canonicalCol,
-              canonicalHeader: headerRow[canonicalCol - 1] !== undefined ? String(headerRow[canonicalCol - 1]).trim() : '',
-              canonicalValue: canonicalVal,
               isIdentical: isIdentical
             });
           }
@@ -4431,7 +4445,7 @@ function inspectFullSheetDuplicateColumns(dataOrEvent) {
           rowsWithData.push({
             rowNumber: rowNum,
             id: idVal,
-            cells: dupCellDetails
+            columnsWithData: dupColumnsSummary
           });
         }
       }
@@ -4448,10 +4462,10 @@ function inspectFullSheetDuplicateColumns(dataOrEvent) {
       sha256Hash = crypto.createHash('sha256').update(dataConcatenation, 'utf8').digest('hex');
     }
 
-    return jsonOut({
+    return {
       ok: true,
       readOnly: true,
-      targetSheetName: targetSheetName,
+      targetSheetName: sheetName,
       totalRows: lastRow,
       totalCols: lastCol,
       dataRowsCount: Math.max(0, lastRow - 1),
@@ -4463,16 +4477,41 @@ function inspectFullSheetDuplicateColumns(dataOrEvent) {
       },
       columnStats: Object.values(columnStats),
       rowsWithDataCount: rowsWithData.length,
-      rowsWithData: rowsWithData,
+      rowsWithData: rowsWithData, // Chỉ chứa rowNumber, ID, colNumber, header, isIdentical (0 ô nội dung ngân hàng)
       comparisonWithCanonical: {
         identicalCount: identicalToCanonicalCount,
         differentCount: differentFromCanonicalCount,
         totalNonEmptyCells: identicalToCanonicalCount + differentFromCanonicalCount
       },
-      sha256HashOfColumns22To37: sha256Hash,
-      dataConcatenationLength: dataConcatenation.length
-    });
+      sha256HashOfColumns22To37: sha256Hash
+    };
   } catch (err) {
-    return jsonOut({ ok: false, error: err.toString() });
+    return { ok: false, error: err.toString() };
   }
+}
+
+// ── HÀM ĐIỀU HÀNH NỘI BỘ XÁC THỰC: CHẠY TRỰC TIẾP TRÊN CẢ NGANHANG & STAGING ──
+function runAuthenticatedFullSheetInspection() {
+  const resultNganHang = inspectFullSheetDuplicateColumns('NganHang');
+  const resultStaging = inspectFullSheetDuplicateColumns('NganHang_Staging_20260914_104227');
+
+  const report = {
+    executedAt: new Date().toISOString(),
+    nganHang: resultNganHang,
+    nganHangStaging: resultStaging,
+    bothMatch: Boolean(
+      resultNganHang && resultStaging &&
+      resultNganHang.ok === true &&
+      resultStaging.ok === true &&
+      resultNganHang.totalRows === resultStaging.totalRows &&
+      resultNganHang.totalCols === resultStaging.totalCols &&
+      resultNganHang.sha256HashOfColumns22To37 === resultStaging.sha256HashOfColumns22To37 &&
+      resultNganHang.rowsWithDataCount === resultStaging.rowsWithDataCount &&
+      resultNganHang.comparisonWithCanonical.identicalCount === resultStaging.comparisonWithCanonical.identicalCount &&
+      resultNganHang.comparisonWithCanonical.differentCount === resultStaging.comparisonWithCanonical.differentCount
+    )
+  };
+
+  Logger.log(JSON.stringify(report, null, 2));
+  return report;
 }

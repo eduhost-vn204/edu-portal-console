@@ -107,6 +107,7 @@ const normalizeLessonCode = extractFunction(maContent, 'normalizeLesson');
 const buildSheetHeaderMapCode = extractFunction(maContent, 'buildSheetHeaderMap');
 const repairIpclassBatchCode = extractFunction(maContent, 'repairIpclassBatch');
 const inspectFullSheetDuplicateColumnsCode = extractFunction(maContent, 'inspectFullSheetDuplicateColumns');
+const runAuthenticatedFullSheetInspectionCode = extractFunction(maContent, 'runAuthenticatedFullSheetInspection');
 
 let currentSpreadsheetApp = null;
 const jsonOut = (obj) => obj;
@@ -136,10 +137,12 @@ const mockLockService = {
 const evalFactory = new Function('getSpreadsheetApp', 'getLockService', 'jsonOut', 'crypto', `
   var SpreadsheetApp;
   var LockService;
+  var Logger = { log: (s) => {} };
   ${normalizeLessonCode}
   ${buildSheetHeaderMapCode}
   ${repairIpclassBatchCode}
   ${inspectFullSheetDuplicateColumnsCode}
+  ${runAuthenticatedFullSheetInspectionCode}
   function repairIpclassBatchWrapper(data) {
     SpreadsheetApp = getSpreadsheetApp();
     LockService = getLockService();
@@ -149,15 +152,26 @@ const evalFactory = new Function('getSpreadsheetApp', 'getLockService', 'jsonOut
     SpreadsheetApp = getSpreadsheetApp();
     return inspectFullSheetDuplicateColumns(data);
   }
+  function runAuthenticatedFullSheetInspectionWrapper() {
+    SpreadsheetApp = getSpreadsheetApp();
+    return runAuthenticatedFullSheetInspection();
+  }
   return {
     normalizeLesson,
     buildSheetHeaderMap,
     repairIpclassBatch: repairIpclassBatchWrapper,
-    inspectFullSheetDuplicateColumns: inspectFullSheetDuplicateColumnsWrapper
+    inspectFullSheetDuplicateColumns: inspectFullSheetDuplicateColumnsWrapper,
+    runAuthenticatedFullSheetInspection: runAuthenticatedFullSheetInspectionWrapper
   };
 `);
 
-const { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch, inspectFullSheetDuplicateColumns } = evalFactory(
+const {
+  normalizeLesson,
+  buildSheetHeaderMap,
+  repairIpclassBatch,
+  inspectFullSheetDuplicateColumns,
+  runAuthenticatedFullSheetInspection
+} = evalFactory(
   () => currentSpreadsheetApp,
   () => mockLockService,
   jsonOut,
@@ -551,6 +565,36 @@ console.log('\nTEST 9e (Yêu cầu 4): LockService được lấy và giải ph�
   simulateLockTimeout = false;
 }
 
+// ── TEST 9f (Yêu cầu 11): Bảo toàn giá trị số 0 và boolean false trong Rollback comparison
+console.log('\nTEST 9f (Yêu cầu 11): Bảo toàn giá trị 0 và false khi Rollback');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  // Row 1 có giá trị số 0 và false ở cột chuong và mucDo
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', 'Vật lý 12', 0, false, 'TN', '', '', 'Old 1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q02', 'Vật lý 12', 'C1', 'TH', 'TN', '', '', 'Old 2', 'A', 'B', 'C', 'D', 'B', '', 'GT', '', 'B1', 'tho', 'Dat', '', '']
+    ],
+    failOnRow: 3 // Ghi dòng 2 thành công, lỗi ở dòng 3 -> rollback dòng 2
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'New 1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q02', question: 'New 2', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'B', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  });
+
+  assert(!res.ok, 'Giao dịch phải thất bại');
+  assert(res.error === 'TransactionWriteFailedAndRolledBack', 'Rollback phải thành công');
+  assert(res.rollbackVerifiedCount === 1, 'Dòng có giá trị 0 và false phải được verify rollback thành công');
+  assert(mockSheet._getRows()[1][2] === 0, 'Giá trị 0 phải được bảo toàn nguyên vẹn');
+  assert(mockSheet._getRows()[1][3] === false, 'Giá trị false phải được bảo toàn nguyên vẹn');
+}
+
 // ── TEST 10 (Yêu cầu 7): Payload có đúng 217 ID khớp chính xác Snapshot (SHA-256)
 console.log('\nTEST 10 (Yêu cầu 7): Kiểm tra danh sách 217 ID khớp chính xác Snapshot');
 {
@@ -659,6 +703,7 @@ console.log('\nTEST 12 (Yêu cầu 2): Kiểm kê toàn bộ Sheet theo cách ch
   assert(res12a.rowsWithDataCount === 2, `rowsWithDataCount phải là 2 (nhận: ${res12a.rowsWithDataCount})`);
   assert(res12a.rowsWithData[0].rowNumber === 6 && res12a.rowsWithData[0].id === 'ID_6', 'Phải ghi nhận dòng 6 có ID_6');
   assert(res12a.rowsWithData[1].rowNumber === 7 && res12a.rowsWithData[1].id === 'ID_7', 'Phải ghi nhận dòng 7 có ID_7');
+  assert(!res12a.rowsWithData[0].columnsWithData[0].hasOwnProperty('value'), 'Tuyệt đối không để lộ trường value trong response');
 
   // So sánh với canonical cột 6-21
   assert(res12a.comparisonWithCanonical.identicalCount === 1, 'Số giá trị trùng hoàn toàn phải là 1 (ô cột 24 khớp cột 8)');
@@ -683,6 +728,51 @@ console.log('\nTEST 12 (Yêu cầu 2): Kiểm kê toàn bộ Sheet theo cách ch
   assert(res12b.comparisonWithCanonical.totalNonEmptyCells === 0, 'Tổng số ô có dữ liệu phải là 0');
   assert(res12b.sha256HashOfColumns22To37 === 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
     'Mã băm SHA-256 khi rỗng phải đúng chuẩn sha256("")');
+}
+
+// ── TEST 13 (Yêu cầu 9 & 10): runAuthenticatedFullSheetInspection trên cả NganHang và Staging
+console.log('\nTEST 13 (Yêu cầu 9 & 10): runAuthenticatedFullSheetInspection trên cả NganHang và Staging');
+{
+  const real37Headers = [
+    'id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question',
+    'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem',
+    'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId',
+    'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct',
+    'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'
+  ];
+
+  // Giả lập 3.033 dòng dữ liệu (tổng 3.034 dòng gồm header) cho cả 2 sheet
+  const mockRows3033 = [];
+  for (let r = 2; r <= 3034; r++) {
+    const row = new Array(37).fill('');
+    row[0] = 'ID_' + r;
+    row[7] = 'Cau hoi ' + r;
+    row[12] = 'A';
+    mockRows3033.push(row);
+  }
+
+  const mockSheetNganHang = createMockSheet({ headers: real37Headers, rows: mockRows3033, sheetName: 'NganHang' });
+  const mockSheetStaging = createMockSheet({ headers: real37Headers, rows: mockRows3033, sheetName: 'NganHang_Staging_20260914_104227' });
+
+  currentSpreadsheetApp = createMockSpreadsheetApp({
+    'NganHang': mockSheetNganHang,
+    'NganHang_Staging_20260914_104227': mockSheetStaging
+  });
+
+  const fullReport = runAuthenticatedFullSheetInspection();
+  assert(fullReport.nganHang.ok === true, 'Kiểm kê NganHang phải ok === true');
+  assert(fullReport.nganHangStaging.ok === true, 'Kiểm kê NganHang_Staging phải ok === true');
+  assert(fullReport.nganHang.totalRows === 3034, `NganHang phải có đúng 3.034 dòng (nhận: ${fullReport.nganHang.totalRows})`);
+  assert(fullReport.nganHangStaging.totalRows === 3034, `Staging phải có đúng 3.034 dòng (nhận: ${fullReport.nganHangStaging.totalRows})`);
+  assert(fullReport.nganHang.totalCols === 37, 'NganHang phải có đúng 37 cột');
+  assert(fullReport.nganHangStaging.totalCols === 37, 'Staging phải có đúng 37 cột');
+  assert(fullReport.bothMatch === true, 'Hai sheet phải khớp nhau 100% về cấu trúc và mã băm');
+  assert(fullReport.nganHang.sha256HashOfColumns22To37 === fullReport.nganHangStaging.sha256HashOfColumns22To37,
+    'Mã băm cột 22-37 giữa 2 sheet phải khớp tuyệt đối');
+
+  // Kiểm tra tính không đột biến (Non-mutation): số dòng setValues phải bằng 0
+  assert(mockSheetNganHang._getSetValuesCalls().length === 0, 'Tuyệt đối 0 thao tác ghi nào trên NganHang trong suốt quá trình inspector');
+  assert(mockSheetStaging._getSetValuesCalls().length === 0, 'Tuyệt đối 0 thao tác ghi nào trên Staging trong suốt quá trình inspector');
 }
 
 console.log('\n================================================================');
