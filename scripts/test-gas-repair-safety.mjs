@@ -11,17 +11,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Mock SpreadsheetApp environment
-function createMockSheet({ headers, rows, sheetName = 'NganHang', failOnRow = null }) {
+function createMockSheet({ headers, rows, sheetName = 'NganHang', failOnRow = null, failOnRollbackRow = null, corruptReadBackRow = null }) {
   let setValuesCalls = [];
+  let isRollingBack = false;
   const allRows = [headers, ...rows.map(r => [...r])];
 
   return {
     getName: () => sheetName,
     getLastColumn: () => headers.length,
     getLastRow: () => allRows.length,
+    _setRollingBack: (flag) => { isRollingBack = flag; },
     getRange: (startRow, startCol, numRows, numCols) => {
       return {
         getValues: () => {
+          if (corruptReadBackRow && startRow === corruptReadBackRow && isRollingBack) {
+            return [['__CORRUPTED_VALUE_DURING_ROLLBACK__']];
+          }
           const result = [];
           for (let r = 0; r < numRows; r++) {
             const rowIndex = (startRow - 1) + r;
@@ -36,10 +41,14 @@ function createMockSheet({ headers, rows, sheetName = 'NganHang', failOnRow = nu
           return result;
         },
         setValues: (values) => {
-          if (failOnRow && startRow === failOnRow) {
-            throw new Error('Simulated QuotaExceeded on row ' + startRow);
+          if (failOnRow && startRow === failOnRow && !isRollingBack) {
+            isRollingBack = true;
+            throw new Error('Simulated QuotaExceeded on write row ' + startRow);
           }
-          setValuesCalls.push({ startRow, startCol, numRows, numCols, values });
+          if (failOnRollbackRow && startRow === failOnRollbackRow && isRollingBack) {
+            throw new Error('Simulated NetworkDisconnect on rollback row ' + startRow);
+          }
+          setValuesCalls.push({ startRow, startCol, numRows, numCols, values, isRollingBack });
           for (let r = 0; r < numRows; r++) {
             const rowIndex = (startRow - 1) + r;
             if (!allRows[rowIndex]) allRows[rowIndex] = [];
@@ -97,23 +106,63 @@ function extractFunction(code, funcName) {
 const normalizeLessonCode = extractFunction(maContent, 'normalizeLesson');
 const buildSheetHeaderMapCode = extractFunction(maContent, 'buildSheetHeaderMap');
 const repairIpclassBatchCode = extractFunction(maContent, 'repairIpclassBatch');
+const inspectFullSheetDuplicateColumnsCode = extractFunction(maContent, 'inspectFullSheetDuplicateColumns');
 
 let currentSpreadsheetApp = null;
 const jsonOut = (obj) => obj;
 
-const evalFactory = new Function('getSpreadsheetApp', 'jsonOut', `
+let lockAcquiredCount = 0;
+let lockReleasedCount = 0;
+let lockWaitTimeouts = 0;
+let simulateLockTimeout = false;
+
+const mockLock = {
+  waitLock: (ms) => {
+    if (simulateLockTimeout) {
+      lockWaitTimeouts++;
+      throw new Error('Lock timeout waiting for script lock');
+    }
+    lockAcquiredCount++;
+  },
+  releaseLock: () => {
+    lockReleasedCount++;
+  }
+};
+
+const mockLockService = {
+  getScriptLock: () => mockLock
+};
+
+const evalFactory = new Function('getSpreadsheetApp', 'getLockService', 'jsonOut', 'crypto', `
   var SpreadsheetApp;
+  var LockService;
   ${normalizeLessonCode}
   ${buildSheetHeaderMapCode}
   ${repairIpclassBatchCode}
+  ${inspectFullSheetDuplicateColumnsCode}
   function repairIpclassBatchWrapper(data) {
     SpreadsheetApp = getSpreadsheetApp();
+    LockService = getLockService();
     return repairIpclassBatch(data);
   }
-  return { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch: repairIpclassBatchWrapper };
+  function inspectFullSheetDuplicateColumnsWrapper(data) {
+    SpreadsheetApp = getSpreadsheetApp();
+    return inspectFullSheetDuplicateColumns(data);
+  }
+  return {
+    normalizeLesson,
+    buildSheetHeaderMap,
+    repairIpclassBatch: repairIpclassBatchWrapper,
+    inspectFullSheetDuplicateColumns: inspectFullSheetDuplicateColumnsWrapper
+  };
 `);
 
-const { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch } = evalFactory(() => currentSpreadsheetApp, jsonOut);
+const { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch, inspectFullSheetDuplicateColumns } = evalFactory(
+  () => currentSpreadsheetApp,
+  () => mockLockService,
+  jsonOut,
+  crypto
+);
 
 let passedTests = 0;
 let totalTests = 0;
@@ -417,6 +466,91 @@ console.log('\nTEST 9b (Yêu cầu 5): Phục hồi tự động (Rollback) từ
   assert(mockSheet._getRows()[3][7] === 'Old 3', 'Dòng 3 giữ nguyên giá trị Old 3');
 }
 
+// ── TEST 9c (Yêu cầu 4): Lỗi thứ cấp khi đang Rollback -> Báo TransactionWriteFailedRollbackIncomplete
+console.log('\nTEST 9c (Yêu cầu 4): Lỗi thứ cấp khi Rollback dòng k -> TransactionWriteFailedRollbackIncomplete');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Old 1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q02', '', '', '', '', '', '', 'Old 2', 'A', 'B', 'C', 'D', 'B', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q03', '', '', '', '', '', '', 'Old 3', 'A', 'B', 'C', 'D', 'C', '', 'GT', '', 'B1', 'tho', 'Dat', '', '']
+    ],
+    failOnRow: 4,          // Ghi dòng 2 và 3 thành công, lỗi ở dòng 4 (IPC-L01-Q03)
+    failOnRollbackRow: 2   // Khi rollback dòng 2 (IPC-L01-Q01) thì gặp lỗi mạng/quota
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'New 1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q02', question: 'New 2', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'B', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q03', question: 'New 3', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'C', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  });
+
+  assert(!res.ok, 'Giao dịch phải trả về thất bại');
+  assert(res.error === 'TransactionWriteFailedRollbackIncomplete',
+    `Lỗi phải là TransactionWriteFailedRollbackIncomplete khi rollback thất bại (nhận: ${res.error})`);
+  assert(res.rollbackFailedRows.length === 1, 'Phải ghi nhận đúng 1 dòng rollback thất bại');
+  assert(res.rollbackFailedRows[0].rowIndex === 2, 'Dòng rollback thất bại phải là dòng 2');
+  assert(res.rollbackFailedRows[0].reason === 'RollbackWriteFailed', 'Lý do phải là RollbackWriteFailed');
+  assert(res.rollbackVerifiedCount === 1, 'Dòng 3 phải rollback thành công (verifiedCount === 1)');
+}
+
+// ── TEST 9d (Yêu cầu 4): Đọc lại không khớp sau Rollback (ReadBackMismatch)
+console.log('\nTEST 9d (Yêu cầu 4): Đọc lại sau Rollback không khớp Before-Image -> TransactionWriteFailedRollbackIncomplete');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Old 1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q02', '', '', '', '', '', '', 'Old 2', 'A', 'B', 'C', 'D', 'B', '', 'GT', '', 'B1', 'tho', 'Dat', '', '']
+    ],
+    failOnRow: 3,             // Ghi dòng 2 thành công, lỗi ở dòng 3
+    corruptReadBackRow: 2     // Khi đọc lại dòng 2 để verify rollback, dữ liệu trả về bị sai lệch
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'New 1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q02', question: 'New 2', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'B', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  });
+
+  assert(!res.ok, 'Giao dịch phải trả về thất bại');
+  assert(res.error === 'TransactionWriteFailedRollbackIncomplete', 'Lỗi phải là TransactionWriteFailedRollbackIncomplete khi read-back mismatch');
+  assert(res.rollbackFailedRows.length === 1 && res.rollbackFailedRows[0].reason === 'ReadBackMismatch',
+    'Phải ghi nhận lỗi ReadBackMismatch');
+  assert(res.rollbackVerifiedCount === 0, 'rollbackVerifiedCount phải là 0 vì không có dòng nào qua được kiểm tra đọc lại');
+}
+
+// ── TEST 9e (Yêu cầu 4): LockService được lấy và giải phóng an toàn qua try/finally
+console.log('\nTEST 9e (Yêu cầu 4): LockService được lấy và giải phóng an toàn');
+{
+  assert(lockAcquiredCount > 0, `Script lock phải được lấy ít nhất 1 lần (đã lấy ${lockAcquiredCount} lần)`);
+  assert(lockAcquiredCount === lockReleasedCount,
+    `Tất cả các lần lấy lock đều phải được giải phóng qua finally (acquired: ${lockAcquiredCount}, released: ${lockReleasedCount})`);
+
+  // Test Lock Timeout
+  simulateLockTimeout = true;
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({ headers: standardHeaders, rows: [] });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: true,
+    updates: [{ id: 'IPC-L01-Q01', question: 'Q', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }]
+  });
+  assert(!res.ok && res.error === 'LockTimeout', 'Khi không lấy được lock phải trả về LockTimeout fail-closed');
+  simulateLockTimeout = false;
+}
+
 // ── TEST 10 (Yêu cầu 7): Payload có đúng 217 ID khớp chính xác Snapshot (SHA-256)
 console.log('\nTEST 10 (Yêu cầu 7): Kiểm tra danh sách 217 ID khớp chính xác Snapshot');
 {
@@ -468,6 +602,87 @@ console.log('\nTEST 11 (Yêu cầu 7 & 8): Kiểm tra toàn bộ 217 câu với 
   const emptyExp = verifiedQuestions.filter(q => !q.giaiThich);
   assert(emptyAns.length === 0, `Không được có câu nào trống đáp án (có ${emptyAns.length})`);
   assert(emptyExp.length === 0, `Không được có câu nào trống lời giải (có ${emptyExp.length})`);
+}
+
+// ── TEST 12 (Yêu cầu 2): Kiểm kê toàn bộ Sheet theo cách chỉ đọc (inspectFullSheetDuplicateColumns)
+console.log('\nTEST 12 (Yêu cầu 2): Kiểm kê toàn bộ Sheet theo cách chỉ đọc');
+{
+  const real37Headers = [
+    'id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question',
+    'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem',
+    'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId',
+    'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct',
+    'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'
+  ];
+
+  // 12a: Sheet 37 cột với dữ liệu phân tán ở cột 22-37
+  // Giả lập 9 dòng dữ liệu (tổng 10 dòng)
+  // Dòng 6 (rowIndex 6): cột 24 ('Q6_dup') khớp canonical cột 8 ('Q6_dup')
+  // Dòng 7 (rowIndex 7): cột 29 ('B') khác canonical cột 13 ('A')
+  const rows10 = [];
+  for (let r = 2; r <= 10; r++) {
+    const row = new Array(37).fill('');
+    row[0] = 'ID_' + r;
+    row[7] = (r === 6 ? 'Q6_dup' : 'Q_' + r); // col 8
+    row[12] = 'A'; // col 13
+    if (r === 6) {
+      row[23] = 'Q6_dup'; // col 24 (khớp col 8)
+    }
+    if (r === 7) {
+      row[28] = 'B'; // col 29 (khác col 13)
+    }
+    rows10.push(row);
+  }
+
+  const mockSheet37 = createMockSheet({ headers: real37Headers, rows: rows10 });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet37 });
+
+  const res12a = inspectFullSheetDuplicateColumns({ sheetName: 'NganHang' });
+  assert(res12a.ok === true, 'Inspector phải trả về ok === true');
+  assert(res12a.readOnly === true, 'Inspector phải xác nhận readOnly === true');
+  assert(res12a.totalRows === 10, `totalRows phải là 10 (nhận: ${res12a.totalRows})`);
+  assert(res12a.totalCols === 37, `totalCols phải là 37 (nhận: ${res12a.totalCols})`);
+  assert(res12a.dataRowsCount === 9, `dataRowsCount phải là 9 (nhận: ${res12a.dataRowsCount})`);
+  assert(res12a.duplicateColumnsRange.startCol === 22 && res12a.duplicateColumnsRange.endCol === 37,
+    'Phạm vi cột trùng phải từ 22 đến 37');
+  assert(res12a.duplicateColumnsRange.totalColsInRange === 16, 'Tổng số cột trong phạm vi trùng phải là 16');
+
+  // Kiểm tra nonEmptyCount
+  const col24Stats = res12a.columnStats.find(c => c.colNumber === 24);
+  const col29Stats = res12a.columnStats.find(c => c.colNumber === 29);
+  const col22Stats = res12a.columnStats.find(c => c.colNumber === 22);
+  assert(col24Stats && col24Stats.nonEmptyCount === 1, 'Cột 24 phải có đúng 1 ô có dữ liệu');
+  assert(col29Stats && col29Stats.nonEmptyCount === 1, 'Cột 29 phải có đúng 1 ô có dữ liệu');
+  assert(col22Stats && col22Stats.nonEmptyCount === 0, 'Cột 22 phải có 0 ô dữ liệu');
+
+  // Kiểm tra danh sách dòng có dữ liệu
+  assert(res12a.rowsWithDataCount === 2, `rowsWithDataCount phải là 2 (nhận: ${res12a.rowsWithDataCount})`);
+  assert(res12a.rowsWithData[0].rowNumber === 6 && res12a.rowsWithData[0].id === 'ID_6', 'Phải ghi nhận dòng 6 có ID_6');
+  assert(res12a.rowsWithData[1].rowNumber === 7 && res12a.rowsWithData[1].id === 'ID_7', 'Phải ghi nhận dòng 7 có ID_7');
+
+  // So sánh với canonical cột 6-21
+  assert(res12a.comparisonWithCanonical.identicalCount === 1, 'Số giá trị trùng hoàn toàn phải là 1 (ô cột 24 khớp cột 8)');
+  assert(res12a.comparisonWithCanonical.differentCount === 1, 'Số giá trị khác phải là 1 (ô cột 29 khác cột 13)');
+  assert(res12a.sha256HashOfColumns22To37 && res12a.sha256HashOfColumns22To37.length === 64,
+    'Mã băm SHA-256 phải là chuỗi hex 64 ký tự hợp lệ');
+
+  // 12b: Sheet 37 cột với 0 dữ liệu ở cột 22-37 (tất cả rỗng)
+  const emptyRows = [];
+  for (let r = 2; r <= 10; r++) {
+    const row = new Array(37).fill('');
+    row[0] = 'ID_' + r;
+    row[7] = 'Q_' + r;
+    emptyRows.push(row);
+  }
+  const mockSheetEmpty = createMockSheet({ headers: real37Headers, rows: emptyRows });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheetEmpty });
+
+  const res12b = inspectFullSheetDuplicateColumns({ sheetName: 'NganHang' });
+  assert(res12b.ok === true, 'Inspector phải thành công trên sheet có cột 22-37 rỗng');
+  assert(res12b.rowsWithDataCount === 0, 'rowsWithDataCount phải là 0 khi tất cả cột 22-37 đều rỗng');
+  assert(res12b.comparisonWithCanonical.totalNonEmptyCells === 0, 'Tổng số ô có dữ liệu phải là 0');
+  assert(res12b.sha256HashOfColumns22To37 === 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+    'Mã băm SHA-256 khi rỗng phải đúng chuẩn sha256("")');
 }
 
 console.log('\n================================================================');

@@ -29,6 +29,7 @@ function doGet(e) {
     if (type === 'questionstats' || type === 'getquestionstats') return getQuestionStats(e);
     if (type === 'repairp107_251') return repairBatchP107_251_AutoFix(e);
     if (type === 'patchspecificfields') return patchSpecificFields_AuditFidelity(e);
+    if (type === 'inspectfullsheetduplicatecolumns' || type === 'inspectduplicatecolumns') return inspectFullSheetDuplicateColumns(e);
     return getExamQuestions('de01'); // backward compat — không có type param
   } catch(err) {
     return jsonOut({ error: err.message });
@@ -58,6 +59,7 @@ function doPost(e) {
     if (action === 'updatenganhang')     return updateNganHang(data);
     if (action === 'clonenganhangtostaging') return cloneNganHangToStaging(data);
     if (action === 'repairipclassbatch') return repairIpclassBatch(data);
+    if (action === 'inspectfullsheetduplicatecolumns' || action === 'inspectduplicatecolumns') return inspectFullSheetDuplicateColumns(data);
     if (action === 'updateexistingnganhangfromfile') return updateExistingNganHangFromFile(data);
     if (action === 'repairlessonbatch' || action === 'repair_lesson_batch' || action === 'repairquestionslessonbatch') return repairLessonBatch(data);
     if (action === 'repairbatchp107_251_autofix') return repairBatchP107_251_AutoFix(data);
@@ -3935,6 +3937,23 @@ function cloneNganHangToStaging(data) {
 
 // ── SỬA BATCH IPCLASS CÓ KIỂM SOÁT & DRY-RUN AN TOÀN THEO 7 GATES ──
 function repairIpclassBatch(data) {
+  let lockAcquired = false;
+  let lock = null;
+  if (typeof LockService !== 'undefined' && LockService.getScriptLock) {
+    try {
+      lock = LockService.getScriptLock();
+      lock.waitLock(30000);
+      lockAcquired = true;
+    } catch (lockErr) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'LockTimeout',
+        msg: 'Không thể lấy script lock sau 30 giây: ' + lockErr.toString()
+      });
+    }
+  }
+
   try {
     // GATE 7: Mặc định dryRun = true
     const dryRun = (data.dryRun !== false && data.dryRun !== 'false');
@@ -4226,6 +4245,7 @@ function repairIpclassBatch(data) {
     }
 
     let appliedCount = 0;
+    let writeErr = null;
     try {
       for (let a = 0; a < rowsToApply.length; a++) {
         const item = rowsToApply[a];
@@ -4233,24 +4253,68 @@ function repairIpclassBatch(data) {
         appliedCount++;
       }
       SpreadsheetApp.flush();
-    } catch (writeErr) {
-      // TỰ ĐỘNG ROLLBACK TOÀN BỘ CÁC DÒNG ĐÃ GHI NẾU GẶP LỖI Ở BẤT KỲ DÒNG NÀO
+    } catch (err) {
+      writeErr = err;
+    }
+
+    if (writeErr) {
+      // TỰ ĐỘNG PHỤC HỒI (ROLLBACK) VÀ XÁC MINH ĐỐI CHIẾU ĐỌC LẠI (READ-BACK VERIFIED ROLLBACK)
+      let rollbackVerifiedCount = 0;
+      const rollbackFailedRows = [];
+
       for (let r = 0; r < appliedCount; r++) {
         const rollbackItem = beforeImages[r];
         try {
           sheet.getRange(rollbackItem.rowIndex, 1, 1, rollbackItem.rowData.length).setValues([rollbackItem.rowData]);
-        } catch (rbErr) {}
+          SpreadsheetApp.flush();
+
+          // Đọc lại từ Sheet để xác minh khớp trước khi tăng restoredCount
+          const readBackRow = sheet.getRange(rollbackItem.rowIndex, 1, 1, rollbackItem.rowData.length).getValues()[0];
+          let matches = Boolean(readBackRow && readBackRow.length === rollbackItem.rowData.length);
+          if (matches) {
+            for (let c = 0; c < rollbackItem.rowData.length; c++) {
+              if (String(readBackRow[c] || '') !== String(rollbackItem.rowData[c] || '')) {
+                matches = false;
+                break;
+              }
+            }
+          }
+
+          if (matches) {
+            rollbackVerifiedCount++;
+          } else {
+            rollbackFailedRows.push({
+              rowIndex: rollbackItem.rowIndex,
+              reason: 'ReadBackMismatch',
+              expected: rollbackItem.rowData,
+              actual: readBackRow
+            });
+          }
+        } catch (rbErr) {
+          rollbackFailedRows.push({
+            rowIndex: rollbackItem.rowIndex,
+            reason: 'RollbackWriteFailed',
+            error: rbErr.toString()
+          });
+        }
       }
-      try { SpreadsheetApp.flush(); } catch (fErr) {}
+
+      const allRolledBack = (rollbackFailedRows.length === 0 && rollbackVerifiedCount === appliedCount);
+      const errorCode = allRolledBack ? 'TransactionWriteFailedAndRolledBack' : 'TransactionWriteFailedRollbackIncomplete';
 
       return jsonOut({
         ok: false,
         success: false,
-        error: 'TransactionWriteFailedAndRolledBack',
+        error: errorCode,
         failedAtRowIndex: appliedCount + 1,
-        restoredCount: appliedCount,
+        attemptedCount: appliedCount,
+        restoredCount: rollbackVerifiedCount,
+        rollbackVerifiedCount: rollbackVerifiedCount,
+        rollbackFailedRows: rollbackFailedRows,
         originalError: writeErr.toString(),
-        msg: 'Gặp lỗi trong quá trình ghi tại dòng ' + (appliedCount + 1) + '. Đã tự động phục hồi (rollback) thành công ' + appliedCount + ' dòng đã ghi trước đó về nguyên trạng.'
+        msg: allRolledBack
+          ? 'Gặp lỗi trong quá trình ghi tại dòng ' + (appliedCount + 1) + '. Đã tự động phục hồi và xác minh đối chiếu đọc lại thành công ' + rollbackVerifiedCount + '/' + appliedCount + ' dòng về nguyên trạng.'
+          : 'CẢNH BÁO NGUY HIỂM: Gặp lỗi ghi tại dòng ' + (appliedCount + 1) + ' VÀ phục hồi (rollback) thất bại trên ' + rollbackFailedRows.length + ' dòng! Đã xác minh phục hồi: ' + rollbackVerifiedCount + '/' + appliedCount + ' dòng.'
       });
     }
 
@@ -4265,6 +4329,148 @@ function repairIpclassBatch(data) {
       repairedAnswerCount: willRepairAnswer,
       repairedTaxonomyCount: willRepairTaxonomy,
       msg: 'Đã cập nhật an toàn ' + rowsToApply.length + ' câu trên sheet ' + targetSheetName
+    });
+  } catch (err) {
+    return jsonOut({ ok: false, error: err.toString() });
+  } finally {
+    if (lockAcquired && lock && typeof lock.releaseLock === 'function') {
+      try {
+        lock.releaseLock();
+      } catch (relErr) {}
+    }
+  }
+}
+
+// ── CÔNG CỤ CHỈ ĐỌC: KIỂM KÊ TOÀN BỘ SHEET CỘT 22–37 (KHÔNG THAY ĐỔI DỮ LIỆU) ──
+function inspectFullSheetDuplicateColumns(dataOrEvent) {
+  try {
+    const params = (dataOrEvent && dataOrEvent.parameter) ? dataOrEvent.parameter : (dataOrEvent || {});
+    const targetSheetName = String(params.sheetName || 'NganHang').trim();
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(targetSheetName);
+    if (!sheet) {
+      return jsonOut({ ok: false, error: 'SheetNotFound', msg: 'Không tìm thấy sheet: ' + targetSheetName });
+    }
+
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn();
+
+    if (lastRow < 1 || lastCol < 1) {
+      return jsonOut({ ok: false, error: 'EmptySheet', msg: 'Sheet rỗng' });
+    }
+
+    const headerRow = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    const headerNames = headerRow.map(function(h, i) {
+      return { colNumber: i + 1, header: String(h || '').trim() };
+    });
+
+    const duplicateColStart = 22;
+    const duplicateColEnd = Math.min(lastCol, 37);
+
+    const columnStats = {};
+    for (let c = duplicateColStart; c <= duplicateColEnd; c++) {
+      columnStats[c] = {
+        colNumber: c,
+        header: headerRow[c - 1] !== undefined ? String(headerRow[c - 1]).trim() : '',
+        nonEmptyCount: 0
+      };
+    }
+
+    const rowsWithData = [];
+    let identicalToCanonicalCount = 0;
+    let differentFromCanonicalCount = 0;
+    let dataConcatenation = '';
+
+    if (lastRow >= 2 && duplicateColEnd >= duplicateColStart) {
+      const fullRangeValues = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+      for (let r = 0; r < fullRangeValues.length; r++) {
+        const rowNum = r + 2;
+        const rowData = fullRangeValues[r];
+        const idVal = String(rowData[0] || '').trim();
+
+        let rowHasDataInDupCols = false;
+        const dupCellDetails = [];
+
+        for (let c = duplicateColStart; c <= duplicateColEnd; c++) {
+          const colIdx0 = c - 1;
+          const cellVal = rowData[colIdx0];
+          const cellStr = (cellVal !== undefined && cellVal !== null) ? String(cellVal).trim() : '';
+
+          if (cellStr) {
+            dataConcatenation += 'r' + rowNum + 'c' + c + ':' + cellStr + ';';
+            columnStats[c].nonEmptyCount++;
+            rowHasDataInDupCols = true;
+
+            const canonicalCol = c - 16;
+            const canonicalVal = (canonicalCol >= 1 && canonicalCol <= lastCol)
+              ? String(rowData[canonicalCol - 1] || '').trim()
+              : '';
+
+            const isIdentical = (cellStr === canonicalVal);
+            if (isIdentical) {
+              identicalToCanonicalCount++;
+            } else {
+              differentFromCanonicalCount++;
+            }
+
+            dupCellDetails.push({
+              colNumber: c,
+              header: columnStats[c].header,
+              value: cellStr,
+              canonicalCol: canonicalCol,
+              canonicalHeader: headerRow[canonicalCol - 1] !== undefined ? String(headerRow[canonicalCol - 1]).trim() : '',
+              canonicalValue: canonicalVal,
+              isIdentical: isIdentical
+            });
+          }
+        }
+
+        if (rowHasDataInDupCols) {
+          rowsWithData.push({
+            rowNumber: rowNum,
+            id: idVal,
+            cells: dupCellDetails
+          });
+        }
+      }
+    }
+
+    let sha256Hash = '';
+    if (typeof Utilities !== 'undefined' && Utilities.computeDigest) {
+      const rawBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, dataConcatenation, Utilities.Charset.UTF_8);
+      sha256Hash = rawBytes.map(function(byte) {
+        const v = (byte < 0 ? byte + 256 : byte).toString(16);
+        return v.length === 1 ? '0' + v : v;
+      }).join('');
+    } else if (typeof crypto !== 'undefined' && crypto.createHash) {
+      sha256Hash = crypto.createHash('sha256').update(dataConcatenation, 'utf8').digest('hex');
+    }
+
+    return jsonOut({
+      ok: true,
+      readOnly: true,
+      targetSheetName: targetSheetName,
+      totalRows: lastRow,
+      totalCols: lastCol,
+      dataRowsCount: Math.max(0, lastRow - 1),
+      headerNames: headerNames,
+      duplicateColumnsRange: {
+        startCol: duplicateColStart,
+        endCol: duplicateColEnd,
+        totalColsInRange: duplicateColEnd >= duplicateColStart ? (duplicateColEnd - duplicateColStart + 1) : 0
+      },
+      columnStats: Object.values(columnStats),
+      rowsWithDataCount: rowsWithData.length,
+      rowsWithData: rowsWithData,
+      comparisonWithCanonical: {
+        identicalCount: identicalToCanonicalCount,
+        differentCount: differentFromCanonicalCount,
+        totalNonEmptyCells: identicalToCanonicalCount + differentFromCanonicalCount
+      },
+      sha256HashOfColumns22To37: sha256Hash,
+      dataConcatenationLength: dataConcatenation.length
     });
   } catch (err) {
     return jsonOut({ ok: false, error: err.toString() });
