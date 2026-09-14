@@ -56,6 +56,8 @@ function doPost(e) {
     if (action === 'savehuongdan')     return saveHuongDan(data);
     if (action === 'deletenganhang')     return deleteNganHang(data);
     if (action === 'updatenganhang')     return updateNganHang(data);
+    if (action === 'clonenganhangtostaging') return cloneNganHangToStaging(data);
+    if (action === 'repairipclassbatch') return repairIpclassBatch(data);
     if (action === 'updateexistingnganhangfromfile') return updateExistingNganHangFromFile(data);
     if (action === 'repairlessonbatch' || action === 'repair_lesson_batch' || action === 'repairquestionslessonbatch') return repairLessonBatch(data);
     if (action === 'repairbatchp107_251_autofix') return repairBatchP107_251_AutoFix(data);
@@ -3750,4 +3752,488 @@ function repairBatchP107_251_AutoFix(e) {
     newSafeQuestions: toAppend.map(function(x) { return { id: x.id, stem: x.question, baiHoc: x.baiHoc }; }),
     msg: (dryRun ? 'Dry-run hoàn tất: Sẽ sửa ' + updatedCount + ' dòng cũ & bổ sung ' + toAppend.length + ' câu mới an toàn (Tổng gói đúng 390 câu).' : 'Đã cập nhật thành công ' + updatedCount + ' dòng cũ & bổ sung ' + toAppend.length + ' câu mới an toàn.')
   });
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BỘ HÀM CHUẨN HOÁ TAXONOMY & KIỂM SOÁT AN TOÀN NGÂN HÀNG (7 FAILURE GATES)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function normalizeLesson(bh) {
+  const s = String(bh || '').trim();
+  if (!s) return '';
+  const upper = s.toUpperCase();
+  if (upper === 'G12_C1_B01' || /^B1\b/.test(upper)) return 'B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ';
+  if (upper === 'G12_C1_B02' || /^B2\b/.test(upper)) return 'B2. LỰC LIÊN KẾT VÀ SỰ CHUYỂN THỂ CỦA CHẤT';
+  if (upper === 'G12_C1_B03' || /^B3\b/.test(upper)) return 'B3. NHIỆT ĐỘ – THANG NHIỆT ĐỘ – NHIỆT KẾ';
+  if (upper === 'G12_C1_B04' || /^B4\b/.test(upper)) return 'B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG';
+  if (upper === 'G12_C1_B05' || /^B5\b/.test(upper)) return 'B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC';
+  if (upper === 'G12_C1_B06' || /^B6\b/.test(upper)) return 'B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT';
+  if (upper === 'G12_C2_B09' || /^B9\b/.test(upper)) return 'B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG';
+  if (upper === 'G12_C2_B10' || /^B10\b/.test(upper)) return 'B10. PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÝ TƯỞNG';
+  if (upper === 'G12_C2_B11' || /^B11\b/.test(upper)) return 'B11. ĐỊNH LUẬT BOYLE - QUÁ TRÌNH ĐẲNG NHIỆT';
+  if (upper === 'G12_C2_B12' || /^B12\b/.test(upper)) return 'B12. ĐỊNH LUẬT CHARLES - QUÁ TRÌNH ĐẲNG ÁP';
+  if (upper === 'G12_C2_B13' || /^B13\b/.test(upper)) return 'B13. ĐỊNH LUẬT GAY LUSSAC - QUÁ TRÌNH ĐẲNG TÍCH';
+  if (upper === 'G12_C2_B14' || /^B14\b/.test(upper)) return 'B14. PHƯƠNG TRÌNH CLAPERON - MENDELEEV';
+  if (upper === 'G12_C2_B15' || /^B15\b/.test(upper)) return 'B15. ÁP SUẤT THEO MÔ HÌNH ĐỘNG HỌC PHÂN TỬ - QUAN HỆ ĐỘNG NĂNG PHÂN TỬ VÀ NHIỆT ĐỘ';
+  if (upper === 'G12_C2_B16' || /^B16\b/.test(upper)) return 'B16. ĐỒ THỊ KHÍ LÝ TƯỞNG';
+  if (upper === 'G12_C2_B17' || /^B17\b/.test(upper)) return 'B17. ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC ĐỐI VỚI CÁC ĐẲNG QUÁ TRÌNH';
+  if (upper === 'G12_C2_B18' || /^B18\b/.test(upper)) return 'B18. TỔNG ÔN CHƯƠNG II - KHÍ LÝ TƯỞNG (P1)';
+  if (upper === 'G12_C2_B19' || /^B19\b/.test(upper)) return 'B19. TỔNG ÔN CHƯƠNG II - KHÍ LÝ TƯỞNG (P2)';
+  return '';
+}
+
+// ── GATE 1: Quét toàn diện Header Map, phát hiện và từ chối nếu có Header trùng lặp (FailClosedDuplicateHeaders)
+function buildSheetHeaderMap(sheet, requiredHeaders) {
+  const lastCol = sheet.getLastColumn();
+  if (lastCol < 1) {
+    return { ok: false, error: 'SheetHasNoColumns', msg: 'Sheet không có cột nào' };
+  }
+  const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  
+  const aliasMap = {
+    'id': ['id'],
+    'question': ['question', 'cauhoi', 'debai', 'content', 'stem'],
+    'optA': ['opta', 'a'],
+    'optB': ['optb', 'b'],
+    'optC': ['optc', 'c'],
+    'optD': ['optd', 'd'],
+    'correct': ['correct', 'dapan', 'answer'],
+    'mon': ['mon', 'subject', 'lop'],
+    'chuong': ['chuong', 'chapter'],
+    'baiHoc': ['baihoc', 'lesson'],
+    'mucDo': ['mucdo', 'difficulty'],
+    'loai': ['loai', 'type'],
+    'chatLuong': ['chatluong'],
+    'kyThuat': ['kythuat'],
+    'lyDoCachLy': ['lydocachly'],
+    'batchId': ['batchid', 'sourcebatch'],
+    'giaiThich': ['giaithich', 'explanation', 'solution'],
+    'hinhAnh': ['hinhanh', 'image', 'cropimage'],
+    'ngayThem': ['ngaythem', 'timestamp'],
+    'nhomId': ['nhomid'],
+    'deBaiChung': ['debaichung']
+  };
+
+  const reverseAlias = {};
+  for (const [canon, aliases] of Object.entries(aliasMap)) {
+    for (const a of aliases) {
+      reverseAlias[a.toLowerCase()] = canon;
+    }
+  }
+
+  const colOccurrences = {};
+  for (let c = 0; c < headers.length; c++) {
+    const raw = String(headers[c] || '').trim();
+    const rawLower = raw.toLowerCase();
+    if (!rawLower) continue;
+
+    const canon = reverseAlias[rawLower];
+    if (canon) {
+      if (!colOccurrences[canon]) colOccurrences[canon] = [];
+      colOccurrences[canon].push(c);
+    }
+  }
+
+  const reqList = Array.isArray(requiredHeaders) ? requiredHeaders : ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc'];
+  
+  // 1. Kiểm tra header trùng lặp trong số các header bắt buộc (FailClosedDuplicateHeaders)
+  const dupHeaders = [];
+  for (const req of reqList) {
+    if (colOccurrences[req] && colOccurrences[req].length > 1) {
+      dupHeaders.push({
+        header: req,
+        columns: colOccurrences[req].map(i => i + 1)
+      });
+    }
+  }
+  if (dupHeaders.length > 0) {
+    return {
+      ok: false,
+      error: 'FailClosedDuplicateHeaders',
+      duplicates: dupHeaders,
+      colCount: lastCol,
+      msg: 'Phát hiện header bắt buộc bị trùng lặp trong Sheet: ' + dupHeaders.map(d => d.header + ' (cột ' + d.columns.join(', ') + ')').join('; ')
+    };
+  }
+
+  // 2. Kiểm tra header thiếu (FailClosedMissingHeaders)
+  const missingHeaders = [];
+  const resolved = {};
+  for (const req of reqList) {
+    if (!colOccurrences[req] || colOccurrences[req].length === 0) {
+      missingHeaders.push(req);
+    } else {
+      resolved[req] = colOccurrences[req][0];
+    }
+  }
+  if (missingHeaders.length > 0) {
+    return {
+      ok: false,
+      error: 'FailClosedMissingHeaders',
+      missing: missingHeaders,
+      colCount: lastCol,
+      msg: 'Sheet thiếu các header bắt buộc: ' + missingHeaders.join(', ')
+    };
+  }
+
+  // Map các trường còn lại nếu chỉ xuất hiện đúng 1 lần
+  for (const [canon, cols] of Object.entries(colOccurrences)) {
+    if (!resolved.hasOwnProperty(canon) && cols.length === 1) {
+      resolved[canon] = cols[0];
+    }
+  }
+
+  return {
+    ok: true,
+    colCount: lastCol,
+    headerMap: resolved,
+    rawHeaders: headers
+  };
+}
+
+function createRowFromHeaderMap(dataObj, headerInfo) {
+  const row = new Array(headerInfo.colCount).fill('');
+  for (const [canonKey, colIdx0] of Object.entries(headerInfo.headerMap)) {
+    if (dataObj.hasOwnProperty(canonKey) && dataObj[canonKey] !== undefined && dataObj[canonKey] !== null) {
+      row[colIdx0] = dataObj[canonKey];
+    }
+  }
+  return row;
+}
+
+// ── SAO CHÉP SHEET NGANHANG SANG SHEET THỬ NGHIỆM (STAGING) ──
+function cloneNganHangToStaging(data) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const srcSheet = ss.getSheetByName('NganHang');
+    if (!srcSheet) return jsonOut({ ok: false, error: 'Sheet NganHang not found' });
+    
+    const stagingName = String((data && data.stagingSheetName) || 'NganHang_Staging_Test').trim();
+    let stagingSheet = ss.getSheetByName(stagingName);
+    if (stagingSheet) {
+      ss.deleteSheet(stagingSheet);
+    }
+    
+    stagingSheet = srcSheet.copyTo(ss);
+    stagingSheet.setName(stagingName);
+    SpreadsheetApp.flush();
+    
+    return jsonOut({
+      ok: true,
+      success: true,
+      copiedFrom: 'NganHang',
+      stagingSheetName: stagingName,
+      totalRows: stagingSheet.getLastRow(),
+      totalCols: stagingSheet.getLastColumn(),
+      msg: 'Đã sao chép thành công sheet NganHang sang ' + stagingName
+    });
+  } catch (err) {
+    return jsonOut({ ok: false, error: err.toString() });
+  }
+}
+
+// ── SỬA BATCH IPCLASS CÓ KIỂM SOÁT & DRY-RUN AN TOÀN THEO 7 GATES ──
+function repairIpclassBatch(data) {
+  try {
+    // GATE 7: Mặc định dryRun = true
+    const dryRun = (data.dryRun !== false && data.dryRun !== 'false');
+    const targetSheetName = String(data.targetSheetName || 'NganHang').trim();
+    const rawUpdates = Array.isArray(data.updates) ? data.updates : (Array.isArray(data.questions) ? data.questions : []);
+
+    if (!rawUpdates.length) {
+      return jsonOut({ ok: false, success: false, error: 'EmptyUpdates', msg: 'Không có danh sách câu hỏi cần sửa' });
+    }
+
+    // GATE 2: Phát hiện ID trùng lặp trong payload
+    const seenPayloadIds = new Set();
+    const dupPayloadIds = [];
+    for (let i = 0; i < rawUpdates.length; i++) {
+      const pid = String(rawUpdates[i].id || '').trim();
+      if (!pid.startsWith('IPC-')) {
+        return jsonOut({
+          ok: false,
+          success: false,
+          error: 'InvalidTargetId',
+          msg: 'Từ chối cập nhật ID không thuộc IPC: ' + pid
+        });
+      }
+      if (seenPayloadIds.has(pid)) {
+        dupPayloadIds.push(pid);
+      } else {
+        seenPayloadIds.add(pid);
+      }
+    }
+    if (dupPayloadIds.length > 0) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'FailClosedDuplicatePayloadIds',
+        duplicates: dupPayloadIds,
+        msg: 'Phát hiện ID trùng lặp trong payload: ' + dupPayloadIds.join(', ')
+      });
+    }
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(targetSheetName);
+    if (!sheet) {
+      return jsonOut({ ok: false, success: false, error: 'SheetNotFound', msg: 'Không tìm thấy sheet: ' + targetSheetName });
+    }
+
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn();
+    if (lastRow < 2) {
+      return jsonOut({ ok: false, success: false, error: 'EmptySheet', msg: 'Sheet ' + targetSheetName + ' không có dữ liệu' });
+    }
+
+    // GATE 1: Kiểm tra HeaderMap & Header trùng lặp trong Sheet
+    const headerCheck = buildSheetHeaderMap(sheet, ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc', 'chatLuong']);
+    if (!headerCheck.ok) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: headerCheck.error,
+        details: headerCheck,
+        msg: headerCheck.msg
+      });
+    }
+
+    const hMap = headerCheck.headerMap;
+
+    // Đọc toàn bộ bảng để kiểm tra ID trong Sheet
+    const fullData = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+    const sheetIdCounts = new Map();
+    const sheetIdFirstRow = new Map();
+
+    for (let r = 1; r < fullData.length; r++) {
+      const rid = String(fullData[r][hMap.id] || '').trim();
+      if (!rid) continue;
+      if (sheetIdCounts.has(rid)) {
+        sheetIdCounts.set(rid, sheetIdCounts.get(rid) + 1);
+      } else {
+        sheetIdCounts.set(rid, 1);
+        sheetIdFirstRow.set(rid, { rowIndex: r + 1, rowData: fullData[r] });
+      }
+    }
+
+    // GATE 3: Phát hiện ID mục tiêu bị trùng lặp trong Google Sheet
+    const targetedDupsInSheet = [];
+    for (const pid of seenPayloadIds) {
+      if (sheetIdCounts.get(pid) > 1) {
+        targetedDupsInSheet.push(pid);
+      }
+    }
+    if (targetedDupsInSheet.length > 0) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'FailClosedDuplicateSheetIds',
+        duplicates: targetedDupsInSheet,
+        msg: 'Phát hiện ID mục tiêu bị trùng lặp trong Sheet: ' + targetedDupsInSheet.join(', ') + '. Map.set() sẽ âm thầm ghi đè nếu tiếp tục!'
+      });
+    }
+
+    // GATE 4: Phát hiện ID mục tiêu thiếu trong Sheet
+    const missingSheetIds = [];
+    for (const pid of seenPayloadIds) {
+      if (!sheetIdCounts.has(pid)) {
+        missingSheetIds.push(pid);
+      }
+    }
+    if (missingSheetIds.length > 0) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'FailClosedMissingSheetIds',
+        missing: missingSheetIds,
+        msg: 'Không tìm thấy ID mục tiêu trong Sheet: ' + missingSheetIds.join(', ')
+      });
+    }
+
+    // GATE 5 & GATE 6 & GATE 8: Kiểm tra tính hợp lệ trước khi ghi
+    // - stem, optA-D, correct, explanation, baiHoc KHÔNG ĐƯỢC RỖNG
+    // - TUYỆT ĐỐI KHÔNG FALLBACK B3
+    // - Không đặt chatLuong="tinh" hoặc kyThuat="Dat" cho câu thiếu đáp án hoặc lời giải
+    const validationErrors = [];
+    for (let idx = 0; idx < rawUpdates.length; idx++) {
+      const u = rawUpdates[idx];
+      const pid = String(u.id || '').trim();
+
+      const newQ = String(u.question || u.stem || '').trim();
+      if (!newQ) {
+        validationErrors.push({ id: pid, error: 'FailClosedEmptyQuestion', field: 'question' });
+      }
+
+      const newOptA = String(u.optA !== undefined ? u.optA : (u.a !== undefined ? u.a : '')).trim();
+      const newOptB = String(u.optB !== undefined ? u.optB : (u.b !== undefined ? u.b : '')).trim();
+      const newOptC = String(u.optC !== undefined ? u.optC : (u.c !== undefined ? u.c : '')).trim();
+      const newOptD = String(u.optD !== undefined ? u.optD : (u.d !== undefined ? u.d : '')).trim();
+      if (!newOptA || !newOptB || !newOptC || !newOptD) {
+        validationErrors.push({
+          id: pid,
+          error: 'FailClosedEmptyOptions',
+          field: 'options',
+          details: { optA: !newOptA, optB: !newOptB, optC: !newOptC, optD: !newOptD }
+        });
+      }
+
+      const newCorrect = String(u.correct || u.correctAnswer || '').trim().toUpperCase();
+      if (!['A', 'B', 'C', 'D'].includes(newCorrect)) {
+        validationErrors.push({ id: pid, error: 'FailClosedInvalidCorrectAnswer', field: 'correct', value: newCorrect });
+      }
+
+      const newGiaiThich = String(u.giaiThich || u.explanation || '').trim();
+      if (!newGiaiThich) {
+        validationErrors.push({ id: pid, error: 'FailClosedEmptyExplanation', field: 'giaiThich' });
+      }
+
+      // GATE 6: Bỏ fallback B3; từ chối baiHoc rỗng hoặc không hợp lệ
+      const rawBai = String(u.baiHoc || u.lesson || '').trim();
+      if (!rawBai) {
+        validationErrors.push({ id: pid, error: 'FailClosedEmptyBaiHoc', field: 'baiHoc' });
+      } else {
+        const normBai = normalizeLesson(rawBai);
+        if (!normBai) {
+          validationErrors.push({ id: pid, error: 'FailClosedInvalidBaiHoc', field: 'baiHoc', value: rawBai });
+        }
+      }
+
+      // GATE 8: Không cho phép gán chatLuong="tinh" hoặc kyThuat="Dat" nếu câu thiếu đáp án hoặc lời giải
+      const curChatLuong = String(u.chatLuong || '').trim();
+      const curKyThuat = String(u.kyThuat || '').trim();
+      if ((curChatLuong === 'tinh' || curKyThuat === 'Dat') && (!newCorrect || !newGiaiThich)) {
+        validationErrors.push({ id: pid, error: 'FailClosedInvalidQualityRating', field: 'chatLuong/kyThuat' });
+      }
+    }
+
+    if (validationErrors.length > 0) {
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'FailClosedValidationError',
+        errors: validationErrors,
+        msg: 'Dữ liệu đầu vào không hợp lệ (' + validationErrors.length + ' lỗi): ' + validationErrors.slice(0, 5).map(e => e.id + ':' + e.error).join('; ')
+      });
+    }
+
+    // Xây dựng danh sách cập nhật
+    const rowsToApply = [];
+    let willRepairQuestion = 0;
+    let willRepairOptions = 0;
+    let willRepairAnswer = 0;
+    let willRepairTaxonomy = 0;
+    let unchangedCount = 0;
+    const sampleChanges = [];
+
+    for (let idx = 0; idx < rawUpdates.length; idx++) {
+      const u = rawUpdates[idx];
+      const pid = String(u.id || '').trim();
+      const entry = sheetIdFirstRow.get(pid);
+      const curRow = entry.rowData;
+      const rowNum = entry.rowIndex;
+
+      const newQ = String(u.question || u.stem || '').trim();
+      const newOptA = String(u.optA !== undefined ? u.optA : (u.a !== undefined ? u.a : '')).trim();
+      const newOptB = String(u.optB !== undefined ? u.optB : (u.b !== undefined ? u.b : '')).trim();
+      const newOptC = String(u.optC !== undefined ? u.optC : (u.c !== undefined ? u.c : '')).trim();
+      const newOptD = String(u.optD !== undefined ? u.optD : (u.d !== undefined ? u.d : '')).trim();
+      const newCorrect = String(u.correct || u.correctAnswer || '').trim().toUpperCase();
+      const newGiaiThich = String(u.giaiThich || u.explanation || '').trim();
+      const newMon = String(u.mon || 'Vật lý 12').trim();
+      const newChuong = String(u.chuong || 'CHƯƠNG 1 – VẬT LÝ NHIỆT').trim();
+      const newBai = normalizeLesson(String(u.baiHoc || u.lesson || '').trim());
+      const newBatchId = String(u.batchId || '').trim();
+      const newChatLuong = String(u.chatLuong || 'tinh').trim();
+      const newKyThuat = String(u.kyThuat || 'Dat').trim();
+
+      const curQ = String(curRow[hMap.question] || '').trim();
+      const curOptA = String(curRow[hMap.optA] || '').trim();
+      const curOptB = String(curRow[hMap.optB] || '').trim();
+      const curOptC = String(curRow[hMap.optC] || '').trim();
+      const curOptD = String(curRow[hMap.optD] || '').trim();
+      const curCorrect = String(curRow[hMap.correct] || '').trim().toUpperCase();
+      const curBai = hMap.hasOwnProperty('baiHoc') ? String(curRow[hMap.baiHoc] || '').trim() : '';
+
+      let changedQ = (curQ !== newQ);
+      let changedOpts = (curOptA !== newOptA || curOptB !== newOptB || curOptC !== newOptC || curOptD !== newOptD);
+      let changedAns = (curCorrect !== newCorrect);
+      let changedTax = (curBai !== newBai);
+
+      if (changedQ) willRepairQuestion++;
+      if (changedOpts) willRepairOptions++;
+      if (changedAns) willRepairAnswer++;
+      if (changedTax) willRepairTaxonomy++;
+      if (!changedQ && !changedOpts && !changedAns && !changedTax) unchangedCount++;
+
+      const newRow = [...curRow];
+      newRow[hMap.question] = newQ;
+      newRow[hMap.optA] = newOptA;
+      newRow[hMap.optB] = newOptB;
+      newRow[hMap.optC] = newOptC;
+      newRow[hMap.optD] = newOptD;
+      newRow[hMap.correct] = newCorrect;
+      if (hMap.hasOwnProperty('giaiThich')) newRow[hMap.giaiThich] = newGiaiThich;
+      if (hMap.hasOwnProperty('mon')) newRow[hMap.mon] = newMon;
+      if (hMap.hasOwnProperty('chuong')) newRow[hMap.chuong] = newChuong;
+      if (hMap.hasOwnProperty('baiHoc')) newRow[hMap.baiHoc] = newBai;
+      if (hMap.hasOwnProperty('batchId') && newBatchId) newRow[hMap.batchId] = newBatchId;
+      if (hMap.hasOwnProperty('chatLuong')) newRow[hMap.chatLuong] = newChatLuong;
+      if (hMap.hasOwnProperty('kyThuat')) newRow[hMap.kyThuat] = newKyThuat;
+
+      rowsToApply.push({
+        rowIndex: rowNum,
+        rowData: newRow
+      });
+
+      if (sampleChanges.length < 10) {
+        sampleChanges.push({
+          id: pid,
+          rowIndex: rowNum,
+          before: { question: curQ.slice(0, 60), optA: curOptA, optB: curOptB, correct: curCorrect, baiHoc: curBai },
+          after: { question: newQ.slice(0, 60), optA: newOptA, optB: newOptB, correct: newCorrect, baiHoc: newBai }
+        });
+      }
+    }
+
+    // GATE 7: DRY-RUN NON-MUTATION ASSERTION
+    if (dryRun) {
+      return jsonOut({
+        ok: true,
+        success: true,
+        dryRun: true,
+        targetSheetName: targetSheetName,
+        targetCount: rawUpdates.length,
+        foundCount: rowsToApply.length,
+        willRepairQuestion: willRepairQuestion,
+        willRepairOptions: willRepairOptions,
+        willRepairAnswer: willRepairAnswer,
+        willRepairTaxonomy: willRepairTaxonomy,
+        unchangedCount: unchangedCount,
+        sampleChanges: sampleChanges,
+        msg: 'Dry-run an toàn hoàn tất (0 dòng bị ghi đè): Có ' + rowsToApply.length + ' câu sẵn sàng cập nhật.'
+      });
+    }
+
+    // NON-DRYRUN: GHI THẬT IN-PLACE (chỉ khi dryRun === false và đã vượt qua 100% các cổng kiểm tra)
+    for (let a = 0; a < rowsToApply.length; a++) {
+      const item = rowsToApply[a];
+      sheet.getRange(item.rowIndex, 1, 1, item.rowData.length).setValues([item.rowData]);
+    }
+    SpreadsheetApp.flush();
+
+    return jsonOut({
+      ok: true,
+      success: true,
+      dryRun: false,
+      targetSheetName: targetSheetName,
+      appliedRowsCount: rowsToApply.length,
+      repairedQuestionCount: willRepairQuestion,
+      repairedOptionsCount: willRepairOptions,
+      repairedAnswerCount: willRepairAnswer,
+      repairedTaxonomyCount: willRepairTaxonomy,
+      msg: 'Đã cập nhật an toàn ' + rowsToApply.length + ' câu trên sheet ' + targetSheetName
+    });
+  } catch (err) {
+    return jsonOut({ ok: false, error: err.toString() });
+  }
 }

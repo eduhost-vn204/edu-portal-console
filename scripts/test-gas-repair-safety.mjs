@@ -1,0 +1,440 @@
+// scripts/test-gas-repair-safety.mjs
+// Automated test suite verifying all failure gates and safety contracts in GAS Mã.js
+// Completely self-contained with relative paths.
+
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Mock SpreadsheetApp environment
+function createMockSheet({ headers, rows, sheetName = 'NganHang' }) {
+  let setValuesCalls = [];
+  const allRows = [headers, ...rows.map(r => [...r])];
+
+  return {
+    getName: () => sheetName,
+    getLastColumn: () => headers.length,
+    getLastRow: () => allRows.length,
+    getRange: (startRow, startCol, numRows, numCols) => {
+      return {
+        getValues: () => {
+          const result = [];
+          for (let r = 0; r < numRows; r++) {
+            const rowIndex = (startRow - 1) + r;
+            const rowData = allRows[rowIndex] || [];
+            const sliced = [];
+            for (let c = 0; c < numCols; c++) {
+              const colIndex = (startCol - 1) + c;
+              sliced.push(rowData[colIndex] !== undefined ? rowData[colIndex] : '');
+            }
+            result.push(sliced);
+          }
+          return result;
+        },
+        setValues: (values) => {
+          setValuesCalls.push({ startRow, startCol, numRows, numCols, values });
+          for (let r = 0; r < numRows; r++) {
+            const rowIndex = (startRow - 1) + r;
+            if (!allRows[rowIndex]) allRows[rowIndex] = [];
+            for (let c = 0; c < numCols; c++) {
+              const colIndex = (startCol - 1) + c;
+              allRows[rowIndex][colIndex] = values[r][c];
+            }
+          }
+        }
+      };
+    },
+    _getSetValuesCalls: () => setValuesCalls,
+    _getRows: () => allRows
+  };
+}
+
+function createMockSpreadsheetApp(sheetsMap) {
+  return {
+    getActiveSpreadsheet: () => ({
+      getSheetByName: (name) => sheetsMap[name] || null
+    }),
+    flush: () => {}
+  };
+}
+
+// 1. Resolve relative path to Mã.js
+const maPath = path.resolve(__dirname, '../src/Mã.js');
+if (!fs.existsSync(maPath)) {
+  throw new Error('Mã.js not found at relative path: ' + maPath);
+}
+const maContent = fs.readFileSync(maPath, 'utf-8');
+
+function extractFunction(code, funcName) {
+  const targetStr = 'function ' + funcName + '(';
+  const startIdx = code.indexOf(targetStr);
+  if (startIdx === -1) throw new Error('Function ' + funcName + ' not found in Mã.js');
+  let braceCount = 0;
+  let foundFirstBrace = false;
+  let endIdx = startIdx;
+  for (let i = startIdx; i < code.length; i++) {
+    if (code[i] === '{') {
+      braceCount++;
+      foundFirstBrace = true;
+    } else if (code[i] === '}') {
+      braceCount--;
+      if (foundFirstBrace && braceCount === 0) {
+        endIdx = i + 1;
+        break;
+      }
+    }
+  }
+  return code.slice(startIdx, endIdx);
+}
+
+const normalizeLessonCode = extractFunction(maContent, 'normalizeLesson');
+const buildSheetHeaderMapCode = extractFunction(maContent, 'buildSheetHeaderMap');
+const repairIpclassBatchCode = extractFunction(maContent, 'repairIpclassBatch');
+
+let currentSpreadsheetApp = null;
+const jsonOut = (obj) => obj;
+
+const evalFactory = new Function('getSpreadsheetApp', 'jsonOut', `
+  var SpreadsheetApp;
+  ${normalizeLessonCode}
+  ${buildSheetHeaderMapCode}
+  ${repairIpclassBatchCode}
+  function repairIpclassBatchWrapper(data) {
+    SpreadsheetApp = getSpreadsheetApp();
+    return repairIpclassBatch(data);
+  }
+  return { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch: repairIpclassBatchWrapper };
+`);
+
+const { normalizeLesson, buildSheetHeaderMap, repairIpclassBatch } = evalFactory(() => currentSpreadsheetApp, jsonOut);
+
+let passedTests = 0;
+let totalTests = 0;
+
+function assert(condition, message) {
+  totalTests++;
+  if (condition) {
+    passedTests++;
+    console.log(`  [PASS] ${message}`);
+  } else {
+    console.error(`  [FAIL] ${message}`);
+    throw new Error(`Assertion failed: ${message}`);
+  }
+}
+
+console.log('================================================================');
+console.log('BẮT ĐẦU CHẠY BỘ KIỂM THỬ AN TOÀN TOÀN DIỆN (7+ FAILURE GATES)');
+console.log('================================================================\n');
+
+// ── TEST 1: Duplicate Header Detection in Sheet (FailClosedDuplicateHeaders)
+console.log('TEST 1: Duplicate Header Detection in Sheet');
+{
+  const duplicateHeaders = [
+    'id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question',
+    'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem',
+    'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId',
+    'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct'
+  ];
+  const mockSheet = createMockSheet({ headers: duplicateHeaders, rows: [] });
+  const res = buildSheetHeaderMap(mockSheet, ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc']);
+  assert(!res.ok, 'Phải trả về ok === false khi có header trùng');
+  assert(res.error === 'FailClosedDuplicateHeaders', `Lỗi trả về phải là FailClosedDuplicateHeaders (nhận: ${res.error})`);
+  assert(res.duplicates.length > 0, `Phải liệt kê danh sách duplicate (tìm thấy ${res.duplicates.length} headers trùng)`);
+}
+
+// ── TEST 1b: Missing Required Header Detection (FailClosedMissingHeaders)
+console.log('\nTEST 1b: Missing Required Header Detection');
+{
+  const missingHeaderList = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'optA', 'optB', 'optC', 'optD', 'correct'];
+  const mockSheet = createMockSheet({ headers: missingHeaderList, rows: [] });
+  const res = buildSheetHeaderMap(mockSheet, ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc']);
+  assert(!res.ok, 'Phải trả về ok === false khi thiếu header bắt buộc');
+  assert(res.error === 'FailClosedMissingHeaders', `Lỗi trả về phải là FailClosedMissingHeaders (nhận: ${res.error})`);
+  assert(res.missing.includes('question') && res.missing.includes('baiHoc'), 'Phải báo thiếu question và baiHoc');
+}
+
+// ── TEST 1c (Yêu cầu 7): Trực tiếp Fixture 37 Header thật của Production
+console.log('\nTEST 1c (Yêu cầu 7): Fixture 37 Header Production thật');
+{
+  const real37Headers = [
+    'id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question',
+    'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem',
+    'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId',
+    'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct',
+    'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'
+  ];
+  assert(real37Headers.length === 37, 'Fixture phải có đúng 37 cột');
+  const mockSheet37 = createMockSheet({ headers: real37Headers, rows: [] });
+  const res = buildSheetHeaderMap(mockSheet37, ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc', 'chatLuong']);
+  assert(!res.ok, 'Phải chặn Fail-Closed đối với Sheet 37 cột');
+  assert(res.error === 'FailClosedDuplicateHeaders', 'Lỗi phải là FailClosedDuplicateHeaders');
+  const dupHeaderNames = res.duplicates.map(d => d.header);
+  assert(dupHeaderNames.includes('question') && dupHeaderNames.includes('optA') && dupHeaderNames.includes('correct') && dupHeaderNames.includes('baiHoc'),
+    'Phải phát hiện chính xác tất cả các header bắt buộc bị trùng lặp ở cột 22-37');
+}
+
+// ── TEST 2: Duplicate ID in Payload Detection (FailClosedDuplicatePayloadIds)
+console.log('\nTEST 2: Duplicate ID in Payload Detection');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({ headers: standardHeaders, rows: [['IPC-L01-Q01', '', '', '', '', '', '', 'Q1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tinh', 'Dat', '', 'B1']] });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const payload = {
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'Q1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q01', question: 'Q1 dup', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  };
+  const res = repairIpclassBatch(payload);
+  assert(!res.ok, 'Phải từ chối khi payload có ID trùng');
+  assert(res.error === 'FailClosedDuplicatePayloadIds', `Lỗi phải là FailClosedDuplicatePayloadIds (nhận: ${res.error})`);
+  assert(res.duplicates.includes('IPC-L01-Q01'), 'Phải chỉ đích danh IPC-L01-Q01');
+}
+
+// ── TEST 3: Duplicate ID in Sheet Detection (FailClosedDuplicateSheetIds)
+console.log('\nTEST 3: Duplicate ID in Sheet Detection');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Q1-row1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tinh', 'Dat', '', 'B1'],
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Q1-row2', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tinh', 'Dat', '', 'B1']
+    ]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const payload = {
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'Q1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  };
+  const res = repairIpclassBatch(payload);
+  assert(!res.ok, 'Phải từ chối khi Sheet có ID mục tiêu bị trùng dòng');
+  assert(res.error === 'FailClosedDuplicateSheetIds', `Lỗi phải là FailClosedDuplicateSheetIds (nhận: ${res.error})`);
+}
+
+// ── TEST 4: Missing Target ID in Sheet Detection (FailClosedMissingSheetIds)
+console.log('\nTEST 4: Missing Target ID in Sheet Detection');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Q1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tinh', 'Dat', '', 'B1']
+    ]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const payload = {
+    updates: [
+      { id: 'IPC-L99-Q99', question: 'Q99', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  };
+  const res = repairIpclassBatch(payload);
+  assert(!res.ok, 'Phải từ chối khi ID mục tiêu không có trong Sheet');
+  assert(res.error === 'FailClosedMissingSheetIds', `Lỗi phải là FailClosedMissingSheetIds (nhận: ${res.error})`);
+  assert(res.missing.includes('IPC-L99-Q99'), 'Phải báo thiếu IPC-L99-Q99');
+}
+
+// ── TEST 5: Pre-Write Field Validation (Stem, Options, Correct, Explanation)
+console.log('\nTEST 5: Pre-Write Field Validation');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'B1', 'tho', 'ChuaDat', '', 'B1']
+    ]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  // 5a. Missing stem
+  let res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: '', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }]
+  });
+  assert(!res.ok && res.error === 'FailClosedValidationError', 'Phải chặn khi thân câu rỗng');
+  assert(res.errors.some(e => e.error === 'FailClosedEmptyQuestion'), 'Phải báo lỗi FailClosedEmptyQuestion');
+
+  // 5b. Missing option
+  res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: 'Valid Q', optA: 'A', optB: '', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' }]
+  });
+  assert(!res.ok && res.errors.some(e => e.error === 'FailClosedEmptyOptions'), 'Phải chặn khi phương án bị rỗng');
+
+  // 5c. Invalid correct answer (not A/B/C/D)
+  res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: 'Valid Q', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'E', giaiThich: 'GT', baiHoc: 'B1' }]
+  });
+  assert(!res.ok && res.errors.some(e => e.error === 'FailClosedInvalidCorrectAnswer'), 'Phải chặn khi đáp án không thuộc A/B/C/D');
+
+  // 5d. Missing explanation
+  res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: 'Valid Q', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: '', baiHoc: 'B1' }]
+  });
+  assert(!res.ok && res.errors.some(e => e.error === 'FailClosedEmptyExplanation'), 'Phải chặn khi lời giải rỗng');
+}
+
+// ── TEST 6: Strict Lesson Validation & Rejection of B3 Fallback
+console.log('\nTEST 6: Strict Lesson Validation & Rejection of B3 Fallback');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [['IPC-L01-Q01', '', '', '', '', '', '', 'Q', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'ChuaDat', '', 'B1']]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  // 6a. Empty baiHoc must NOT default to B3, must FAIL CLOSED
+  let res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: 'Valid Q', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: '' }]
+  });
+  assert(!res.ok && res.errors.some(e => e.error === 'FailClosedEmptyBaiHoc'), 'Bắt buộc phải chặn khi baiHoc bị rỗng (tuyệt đối không default sang B3)');
+
+  // 6b. Garbage baiHoc must FAIL CLOSED
+  res = repairIpclassBatch({
+    updates: [{ id: 'IPC-L01-Q01', question: 'Valid Q', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'BAI_HOC_KHONG_TON_TAI' }]
+  });
+  assert(!res.ok && res.errors.some(e => e.error === 'FailClosedInvalidBaiHoc'), 'Bắt buộc phải chặn khi baiHoc không nằm trong danh mục chuẩn');
+}
+
+// ── TEST 7: Dry-Run Non-Mutation Assertion
+console.log('\nTEST 7: Dry-Run Non-Mutation Assertion');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'tho', 'ChuaDat', '', 'B1']
+    ]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const payload = {
+    dryRun: true,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'Valid Q1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'Detailed Explanation', baiHoc: 'B1' }
+    ]
+  };
+  const res = repairIpclassBatch(payload);
+  assert(res.ok === true, 'Dry-run phải trả về ok === true khi dữ liệu chuẩn');
+  assert(res.dryRun === true, 'Kết quả phải ghi nhận dryRun === true');
+  assert(res.foundCount === 1, 'Phải tìm thấy 1 dòng cần sửa');
+  assert(mockSheet._getSetValuesCalls().length === 0, 'Tuyệt đối KHÔNG ĐƯỢC gọi setValues() khi dryRun === true');
+}
+
+// ── TEST 8 (Yêu cầu 7): Bảo toàn toàn bộ các cột ngoài phạm vi cập nhật
+console.log('\nTEST 8 (Yêu cầu 7): Bảo toàn cột ngoài phạm vi cập nhật');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const originalRow = [
+    'IPC-L01-Q01', 'Vật lý 12', 'CHƯƠNG 1', 'NB', 'TN', '', '', '',
+    '', '', '', '', '', 'https://img.host/diagram1.png', '', '2026-09-01T12:00:00.000Z',
+    '', 'tho', 'ChuaDat', 'CACH_LY_DOC_QUYEN_XPS', 'BATCH_01'
+  ];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [originalRow]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'New Question', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'New Explanation', baiHoc: 'B1' }
+    ]
+  });
+  assert(res.ok === true, 'Cập nhật phải thành công');
+  const updatedRow = mockSheet._getRows()[1];
+  assert(updatedRow[13] === 'https://img.host/diagram1.png', 'Cột hinhAnh phải được bảo toàn nguyên vẹn');
+  assert(updatedRow[15] === '2026-09-01T12:00:00.000Z', 'Cột ngayThem phải được bảo toàn nguyên vẹn');
+  assert(updatedRow[19] === 'CACH_LY_DOC_QUYEN_XPS', 'Cột lyDoCachLy phải được bảo toàn nguyên vẹn');
+}
+
+// ── TEST 9 (Yêu cầu 7): Không để trạng thái nửa thành công (Atomic Transaction)
+console.log('\nTEST 9 (Yêu cầu 7): Tính nguyên tử - Không để trạng thái nửa thành công');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Old 1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q02', '', '', '', '', '', '', 'Old 2', 'A', 'B', 'C', 'D', 'B', '', 'GT', '', 'B1', 'tho', 'Dat', '', '']
+    ]
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  // Payload: câu 1 hợp lệ, câu 2 LỖI (đáp án 'Z' không hợp lệ)
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'Valid New 1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q02', question: 'Invalid New 2', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'Z', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  });
+  assert(!res.ok, 'Toàn bộ giao dịch phải bị từ chối khi có 1 câu lỗi');
+  assert(mockSheet._getSetValuesCalls().length === 0, 'Tuyệt đối 0 dòng nào được ghi khi có lỗi biên');
+  assert(mockSheet._getRows()[1][7] === 'Old 1', 'Dòng 1 phải giữ nguyên giá trị cũ (không bị ghi đè nửa vời)');
+}
+
+// ── TEST 10 (Yêu cầu 7): Payload có đúng 217 ID khớp chính xác Snapshot (SHA-256)
+console.log('\nTEST 10 (Yêu cầu 7): Kiểm tra danh sách 217 ID khớp chính xác Snapshot');
+{
+  const fixturePath = path.resolve(__dirname, 'fixtures/verified_217_ready_for_production.json');
+  assert(fs.existsSync(fixturePath), `Fixture verified_217_ready_for_production.json phải tồn tại tại ${fixturePath}`);
+  const rawFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'));
+  const questions = Array.isArray(rawFixture) ? rawFixture : (rawFixture.questions || []);
+
+  assert(questions.length === 217, `Payload phải có đúng 217 câu (có ${questions.length})`);
+  
+  const payloadIds = questions.map(q => q.id).sort();
+  const payloadIdString = payloadIds.join(',');
+  const computedHash = crypto.createHash('sha256').update(payloadIdString, 'utf-8').digest('hex');
+  const EXPECTED_SNAPSHOT_ID_HASH = '47076d88603deb3bcd693b4daa77b70219ff568cf3422a0c603f183fd2ff8cc5';
+
+  assert(computedHash === EXPECTED_SNAPSHOT_ID_HASH,
+    `Mã băm SHA-256 của danh mục 217 ID phải khớp tuyệt đối snapshot trước khi sửa (${computedHash})`);
+}
+
+// ── TEST 11 (Yêu cầu 7 & 8): Full Payload Verification with Verified 217 Dataset
+console.log('\nTEST 11 (Yêu cầu 7 & 8): Kiểm tra toàn bộ 217 câu với tập dữ liệu kiểm định');
+{
+  const fixturePath = path.resolve(__dirname, 'fixtures/verified_217_ready_for_production.json');
+  const rawFixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'));
+  const verifiedQuestions = Array.isArray(rawFixture) ? rawFixture : (rawFixture.questions || []);
+
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockRows = verifiedQuestions.map(q => [q.id, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'tho', 'ChuaDat', '', '']);
+  const mockSheet = createMockSheet({ headers: standardHeaders, rows: mockRows });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: true,
+    updates: verifiedQuestions
+  });
+
+  assert(res.ok === true, 'Bộ dữ liệu 217 câu chuẩn phải vượt qua 100% các cổng');
+  assert(res.foundCount === 217, `Phải khớp đúng 217 dòng trong Sheet (khớp: ${res.foundCount})`);
+  assert(res.willRepairQuestion === 217, `Phải sửa đủ 217 câu hỏi (sẽ sửa: ${res.willRepairQuestion})`);
+  assert(res.willRepairAnswer === 217, `Phải sửa đủ 217 đáp án (sẽ sửa: ${res.willRepairAnswer})`);
+  assert(mockSheet._getSetValuesCalls().length === 0, 'Zero mutations khi dryRun === true');
+
+  // Kiểm tra câu IPC-L07-Q32 phải là B4
+  const q32 = verifiedQuestions.find(q => q.id === 'IPC-L07-Q32');
+  assert(q32.baiHoc === 'B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG', `IPC-L07-Q32 phải là B4 (nhận: ${q32.baiHoc})`);
+
+  // Kiểm tra không có câu nào thiếu đáp án hoặc lời giải
+  const emptyAns = verifiedQuestions.filter(q => !q.correct);
+  const emptyExp = verifiedQuestions.filter(q => !q.giaiThich);
+  assert(emptyAns.length === 0, `Không được có câu nào trống đáp án (có ${emptyAns.length})`);
+  assert(emptyExp.length === 0, `Không được có câu nào trống lời giải (có ${emptyExp.length})`);
+}
+
+console.log('\n================================================================');
+console.log(`KẾT QUẢ: TẤT CẢ ${passedTests}/${totalTests} TESTS ĐỀU ĐẠT CHUẨN 100%!`);
+console.log('================================================================');
