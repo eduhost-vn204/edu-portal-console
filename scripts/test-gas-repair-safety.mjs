@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Mock SpreadsheetApp environment
-function createMockSheet({ headers, rows, sheetName = 'NganHang' }) {
+function createMockSheet({ headers, rows, sheetName = 'NganHang', failOnRow = null }) {
   let setValuesCalls = [];
   const allRows = [headers, ...rows.map(r => [...r])];
 
@@ -36,6 +36,9 @@ function createMockSheet({ headers, rows, sheetName = 'NganHang' }) {
           return result;
         },
         setValues: (values) => {
+          if (failOnRow && startRow === failOnRow) {
+            throw new Error('Simulated QuotaExceeded on row ' + startRow);
+          }
           setValuesCalls.push({ startRow, startCol, numRows, numCols, values });
           for (let r = 0; r < numRows; r++) {
             const rowIndex = (startRow - 1) + r;
@@ -380,6 +383,38 @@ console.log('\nTEST 9 (Yêu cầu 7): Tính nguyên tử - Không để trạng 
   assert(!res.ok, 'Toàn bộ giao dịch phải bị từ chối khi có 1 câu lỗi');
   assert(mockSheet._getSetValuesCalls().length === 0, 'Tuyệt đối 0 dòng nào được ghi khi có lỗi biên');
   assert(mockSheet._getRows()[1][7] === 'Old 1', 'Dòng 1 phải giữ nguyên giá trị cũ (không bị ghi đè nửa vời)');
+}
+
+// ── TEST 9b (Yêu cầu 5): Tự động Rollback từ Before-Image khi ghi lỗi giữa chừng
+console.log('\nTEST 9b (Yêu cầu 5): Phục hồi tự động (Rollback) từ Before-Image khi lỗi giữa chừng');
+{
+  const standardHeaders = ['id', 'mon', 'chuong', 'mucDo', 'loai', 'nhomId', 'deBaiChung', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'hinhAnh', 'giaiThich', 'ngayThem', 'baiHoc', 'chatLuong', 'kyThuat', 'lyDoCachLy', 'batchId'];
+  const mockSheet = createMockSheet({
+    headers: standardHeaders,
+    rows: [
+      ['IPC-L01-Q01', '', '', '', '', '', '', 'Old 1', 'A', 'B', 'C', 'D', 'A', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q02', '', '', '', '', '', '', 'Old 2', 'A', 'B', 'C', 'D', 'B', '', 'GT', '', 'B1', 'tho', 'Dat', '', ''],
+      ['IPC-L01-Q03', '', '', '', '', '', '', 'Old 3', 'A', 'B', 'C', 'D', 'C', '', 'GT', '', 'B1', 'tho', 'Dat', '', '']
+    ],
+    failOnRow: 3
+  });
+  currentSpreadsheetApp = createMockSpreadsheetApp({ 'NganHang': mockSheet });
+
+  const res = repairIpclassBatch({
+    dryRun: false,
+    updates: [
+      { id: 'IPC-L01-Q01', question: 'New 1', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'A', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q02', question: 'New 2', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'B', giaiThich: 'GT', baiHoc: 'B1' },
+      { id: 'IPC-L01-Q03', question: 'New 3', optA: 'A', optB: 'B', optC: 'C', optD: 'D', correct: 'C', giaiThich: 'GT', baiHoc: 'B1' }
+    ]
+  });
+
+  assert(!res.ok, 'Giao dịch phải trả về thất bại khi có lỗi xảy ra');
+  assert(res.error === 'TransactionWriteFailedAndRolledBack', 'Lỗi phải là TransactionWriteFailedAndRolledBack');
+  assert(res.restoredCount === 1, 'Phải ghi nhận đã rollback phục hồi 1 dòng đã ghi trước đó');
+  assert(mockSheet._getRows()[1][7] === 'Old 1', 'Dòng 1 đã được phục hồi nguyên vẹn về giá trị Old 1 (không bị sửa nửa vời)');
+  assert(mockSheet._getRows()[2][7] === 'Old 2', 'Dòng 2 giữ nguyên giá trị Old 2');
+  assert(mockSheet._getRows()[3][7] === 'Old 3', 'Dòng 3 giữ nguyên giá trị Old 3');
 }
 
 // ── TEST 10 (Yêu cầu 7): Payload có đúng 217 ID khớp chính xác Snapshot (SHA-256)

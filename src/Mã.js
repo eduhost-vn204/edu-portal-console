@@ -4214,12 +4214,45 @@ function repairIpclassBatch(data) {
       });
     }
 
-    // NON-DRYRUN: GHI THẬT IN-PLACE (chỉ khi dryRun === false và đã vượt qua 100% các cổng kiểm tra)
-    for (let a = 0; a < rowsToApply.length; a++) {
-      const item = rowsToApply[a];
-      sheet.getRange(item.rowIndex, 1, 1, item.rowData.length).setValues([item.rowData]);
+    // NON-DRYRUN: GHI CÓ CƠ CHẾ PHỤC HỒI TỰ ĐỘNG (BEFORE-IMAGE ROLLBACK BẢO ĐẢM TÍNH NGUYÊN TỬ)
+    const beforeImages = [];
+    for (let b = 0; b < rowsToApply.length; b++) {
+      const item = rowsToApply[b];
+      const origRow = sheet.getRange(item.rowIndex, 1, 1, item.rowData.length).getValues()[0];
+      beforeImages.push({
+        rowIndex: item.rowIndex,
+        rowData: origRow
+      });
     }
-    SpreadsheetApp.flush();
+
+    let appliedCount = 0;
+    try {
+      for (let a = 0; a < rowsToApply.length; a++) {
+        const item = rowsToApply[a];
+        sheet.getRange(item.rowIndex, 1, 1, item.rowData.length).setValues([item.rowData]);
+        appliedCount++;
+      }
+      SpreadsheetApp.flush();
+    } catch (writeErr) {
+      // TỰ ĐỘNG ROLLBACK TOÀN BỘ CÁC DÒNG ĐÃ GHI NẾU GẶP LỖI Ở BẤT KỲ DÒNG NÀO
+      for (let r = 0; r < appliedCount; r++) {
+        const rollbackItem = beforeImages[r];
+        try {
+          sheet.getRange(rollbackItem.rowIndex, 1, 1, rollbackItem.rowData.length).setValues([rollbackItem.rowData]);
+        } catch (rbErr) {}
+      }
+      try { SpreadsheetApp.flush(); } catch (fErr) {}
+
+      return jsonOut({
+        ok: false,
+        success: false,
+        error: 'TransactionWriteFailedAndRolledBack',
+        failedAtRowIndex: appliedCount + 1,
+        restoredCount: appliedCount,
+        originalError: writeErr.toString(),
+        msg: 'Gặp lỗi trong quá trình ghi tại dòng ' + (appliedCount + 1) + '. Đã tự động phục hồi (rollback) thành công ' + appliedCount + ' dòng đã ghi trước đó về nguyên trạng.'
+      });
+    }
 
     return jsonOut({
       ok: true,
