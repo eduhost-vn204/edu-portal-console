@@ -6320,8 +6320,6 @@ const CANONICAL_LESSON_MAP = {
     "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B5. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC" },
     "B6. ĐỘNG CƠ NHIỆT – ĐỒ THỊ NHIỆT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT" },
     "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B6. ĐỘNG CƠ NHIỆT - ĐỒ THỊ NHIỆT" },
-    "B8. TỔNG ÔN BÀI TẬP & ĐỒ THỊ CHƯƠNG 1": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)" },
-    "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)": { chuong: "CHƯƠNG 1 – VẬT LÝ NHIỆT", baiHoc: "B8. TỔNG ÔN CHƯƠNG I – VẬT LÝ NHIỆT (P2)" },
 
     "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG" },
     "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG": { chuong: "Chương 2 – Khí lí tưởng", baiHoc: "B9. MÔ HÌNH ĐỘNG HỌC PHÂN TỬ CHẤT KHÍ - KHÍ LÝ TƯỞNG" },
@@ -6407,7 +6405,9 @@ function updateBankBaiOptions(selectedChuong, preserveVal){
     const sb = document.getElementById('nh-f-bai');
     if (!sb) return;
     const filteredRows = selectedChuong ? bankData.filter(q => q.chuong === selectedChuong) : bankData;
-    const bais = [...new Set(filteredRows.flatMap(q => (q.baiHoc || '').split(',').map(s => s.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b,'vi',{numeric:true}));
+    const bais = [...new Set(filteredRows.flatMap(q => (q.baiHoc || '').split(',').map(s => s.trim()).filter(Boolean)))]
+        .filter(b => !b.startsWith('B8.') && !b.includes('TỔNG ÔN'))
+        .sort((a,b)=>a.localeCompare(b,'vi',{numeric:true}));
     const unsetCount = filteredRows.filter(q => !(q.baiHoc || '').trim()).length;
 
     sb.innerHTML = '<option value="">Tất cả bài</option>'
