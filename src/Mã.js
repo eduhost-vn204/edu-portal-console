@@ -1,28 +1,6 @@
 const DEVICE_LOCK_ENABLED = false; // Mặc định tắt khóa thiết bị thử nghiệm
 
-let _currentRequestStaging = false;
-
-function isStagingEnv(dataOrEvent) {
-  if (_currentRequestStaging) return true;
-  if (dataOrEvent) {
-    if (dataOrEvent.env === 'staging' || dataOrEvent.isStaging === true) return true;
-    if (dataOrEvent.parameter && (dataOrEvent.parameter.env === 'staging' || dataOrEvent.parameter.staging === '1')) return true;
-  }
-  return false;
-}
-
-function resolveSheetName(name) {
-  if (_currentRequestStaging) {
-    const stagingEligible = ['TaiKhoan', 'BaiHoc', 'ThietBiHocThu', 'TienDo', 'TrialActivity'];
-    if (stagingEligible.includes(name)) {
-      return name + '_Staging';
-    }
-  }
-  return name;
-}
-
 function doGet(e) {
-  _currentRequestStaging = Boolean(e && e.parameter && (e.parameter.env === 'staging' || e.parameter.staging === '1'));
   const type   = (e.parameter.type || '').toLowerCase();
   const hs     = e.parameter.hs || '';
   const examId = e.parameter.examId || '';
@@ -63,11 +41,8 @@ function doGet(e) {
 function doPost(e) {
   try {
     const data   = JSON.parse(e.postData.contents);
-    _currentRequestStaging = Boolean((data && (data.env === 'staging' || data.isStaging === true)) || (e && e.parameter && (e.parameter.env === 'staging' || e.parameter.staging === '1')));
     const action = (data.action || data.type || '').toLowerCase();
     if (action === 'checkauthconfig' || action === 'check_auth_config') return checkAuthConfig(data);
-    if (action === 'initstagingauth' || action === 'setup_staging_auth') return initStagingAuth(data);
-    if (action === 'seedstagingdata' || action === 'seed_staging_data') return seedStagingData(data);
     if (action === 'getprofile' || action === 'profile') return getProfile(data);
     if (action === 'gettriallimit' || action === 'triallimit') return getTrialLimit(data);
     if (action === 'starttriallesson')   return startTrialLesson(data);
@@ -138,18 +113,9 @@ function requireAdmin(key) {
 
 function getOrCreate(name, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const actualName = resolveSheetName(name);
-  let sheet = ss.getSheetByName(actualName);
+  let sheet = ss.getSheetByName(name);
   if (!sheet) {
-    if (_currentRequestStaging && actualName.endsWith('_Staging')) {
-      const originalSheet = ss.getSheetByName(name);
-      if (originalSheet && name === 'BaiHoc') {
-        sheet = originalSheet.copyTo(ss);
-        sheet.setName(actualName);
-        return sheet;
-      }
-    }
-    sheet = ss.insertSheet(actualName);
+    sheet = ss.insertSheet(name);
     if (headers && headers.length) sheet.appendRow(headers);
   } else if (headers && headers.length) {
     // Thêm cột mới nếu sheet đã tồn tại nhưng thiếu cột
@@ -241,7 +207,6 @@ function normSdt(s) {
 }
 
 function checkAuthConfig(data) {
-  const isStg = isStagingEnv(data);
   let hasSecret = false;
   let secretLength = 0;
   try {
@@ -260,7 +225,6 @@ function checkAuthConfig(data) {
 
   return jsonOut({
     ok: hasSecret && hasGoogleClientId,
-    isStaging: isStg,
     hasAuthSecret: hasSecret,
     secretLength: secretLength,
     isStrongSecret: secretLength >= 32,
@@ -271,107 +235,12 @@ function checkAuthConfig(data) {
 }
 
 function getAuthSecret() {
-  const isStg = isStagingEnv();
   const props = PropertiesService.getScriptProperties();
-  if (isStg) {
-    const stgSecret = props.getProperty('AUTH_SECRET_STAGING');
-    if (stgSecret && stgSecret.trim()) return stgSecret.trim();
-  }
   const secret = props.getProperty('AUTH_SECRET');
   if (!secret || !secret.trim()) {
     throw new Error('AUTH_SECRET_NOT_CONFIGURED');
   }
   return secret.trim();
-}
-
-function initStagingAuth(data) {
-  const stagingSecret = String((data && (data.authSecretStaging || data.authSecret)) || '').trim();
-  const googleClientId = String((data && data.googleClientId) || '1022891995284-miquu1f7rlpie7ug9884sgagf21nputc.apps.googleusercontent.com').trim();
-
-  if (!stagingSecret || stagingSecret.length < 32) {
-    return jsonOut({ ok: false, msg: 'authSecretStaging phải có độ dài tối thiểu 32 ký tự' });
-  }
-
-  const props = PropertiesService.getScriptProperties();
-  props.setProperty('AUTH_SECRET_STAGING', stagingSecret);
-  props.setProperty('GOOGLE_CLIENT_ID', googleClientId);
-
-  return jsonOut({
-    ok: true,
-    msg: 'Đã cấu hình AUTH_SECRET_STAGING và GOOGLE_CLIENT_ID thành công',
-    hasStagingSecret: true,
-    stagingSecretLength: stagingSecret.length,
-    hasGoogleClientId: true,
-    googleClientIdTail: googleClientId.slice(-25)
-  });
-}
-
-function seedStagingData(data) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  // 1. BaiHoc_Staging
-  const baiHocCols = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai','BaiNenTang'];
-  let bSheet = ss.getSheetByName('BaiHoc_Staging');
-  if (bSheet) {
-    ss.deleteSheet(bSheet);
-  }
-  bSheet = ss.insertSheet('BaiHoc_Staging');
-  bSheet.appendRow(baiHocCols);
-
-  const sampleLessons = [
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 1: Cấu trúc chất', Video: 'https://youtu.be/sample_v1', VideoGiai: '', MoTaBai: 'Mô hình động học phân tử', NgayDang: '2026-09-01', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 1, MaBai: 'B01', TrangThai: 'published', BaiNenTang: '' },
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 2: Thuyết động học phân tử chất khí', Video: 'https://youtu.be/sample_v2', VideoGiai: '', MoTaBai: 'Chuyển động Brown và nhiệt độ', NgayDang: '2026-09-02', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 2, MaBai: 'B02', TrangThai: 'published', BaiNenTang: 'B01' },
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 3: Nhiệt dung riêng', Video: 'https://youtu.be/sample_v3', VideoGiai: '', MoTaBai: 'Nhiệt dung riêng và cân bằng nhiệt', NgayDang: '2026-09-03', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 3, MaBai: 'B03', TrangThai: 'published', BaiNenTang: 'B01, B02' },
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 4: Nhiệt nóng chảy riêng', Video: 'https://youtu.be/sample_v4', VideoGiai: '', MoTaBai: 'Nóng chảy và đông đặc', NgayDang: '2026-09-04', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 4, MaBai: 'B04', TrangThai: 'published', BaiNenTang: 'B03' },
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 2 — Khí lí tưởng', TenBai: 'Bài 11: Định luật Boyle (Draft Pilot)', Video: 'https://youtu.be/sample_v11', VideoGiai: '', MoTaBai: 'Bản nháp ẩn với học sinh', NgayDang: '2026-09-10', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 11, MaBai: 'B11_DRAFT', TrangThai: 'draft', BaiNenTang: 'B02' },
-    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 2 — Khí lí tưởng', TenBai: 'Bài 12: Bài trống chưa có video', Video: '', VideoGiai: '', MoTaBai: 'Bài chưa xuất bản', NgayDang: '2026-09-11', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 12, MaBai: 'B12_EMPTY', TrangThai: 'draft', BaiNenTang: '' }
-  ];
-
-  sampleLessons.forEach(function(l) { appendRowNamed(bSheet, l); });
-
-  // 2. TaiKhoan_Staging
-  const tkCols = ['sdt','hoten','lop','matkhau','ngayDK','lpTotal','diemGame','loaiTK','trialExpiry','mienVideo','tracNghiemVideo','mienLuyenTap'];
-  let tkSheet = ss.getSheetByName('TaiKhoan_Staging');
-  if (tkSheet) {
-    ss.deleteSheet(tkSheet);
-  }
-  tkSheet = ss.insertSheet('TaiKhoan_Staging');
-  tkSheet.appendRow(tkCols);
-
-  // 3. ThietBiHocThu_Staging
-  const devCols = ['deviceId','sdt','hoten','trialStart','trialExpiry','soLanChan'];
-  let devSheet = ss.getSheetByName('ThietBiHocThu_Staging');
-  if (devSheet) {
-    ss.deleteSheet(devSheet);
-  }
-  devSheet = ss.insertSheet('ThietBiHocThu_Staging');
-  devSheet.appendRow(devCols);
-
-  // 4. TrialActivity_Staging
-  const actCols = ['sdt','mabai','dateStr','thoigian','deviceId','hoten'];
-  let actSheet = ss.getSheetByName('TrialActivity_Staging');
-  if (actSheet) {
-    ss.deleteSheet(actSheet);
-  }
-  actSheet = ss.insertSheet('TrialActivity_Staging');
-  actSheet.appendRow(actCols);
-
-  // 5. TienDo_Staging
-  const tdCols = ['sdt','lesson','khoa','ten','lop','ngay'];
-  let tdSheet = ss.getSheetByName('TienDo_Staging');
-  if (tdSheet) {
-    ss.deleteSheet(tdSheet);
-  }
-  tdSheet = ss.insertSheet('TienDo_Staging');
-  tdSheet.appendRow(tdCols);
-
-  SpreadsheetApp.flush();
-
-  return jsonOut({
-    ok: true,
-    msg: 'Đã khởi tạo dữ liệu Staging thành công (5 sheets test)',
-    totalLessons: sampleLessons.length
-  });
 }
 
 function generateUserToken(sdt, userMeta) {
@@ -835,7 +704,7 @@ function isLessonPublished(baiKey) {
   if (!baiKey) return false;
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(resolveSheetName('BaiHoc'));
+    const sheet = ss.getSheetByName('BaiHoc');
     if (!sheet) return false;
     const rows = sheetToJson(sheet);
     const target = rows.find(function(r) {

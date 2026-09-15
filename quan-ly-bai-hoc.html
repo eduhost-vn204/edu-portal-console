@@ -1052,9 +1052,6 @@
         <button class="btn-bulk-toggle" id="btn-bulk-toggle" onclick="toggleBulkMode()" title="Chọn nhiều bài để chuyển chương/xóa cùng lúc">
             <i class="fa-solid fa-list-check"></i> Sửa hàng loạt
         </button>
-        <button id="btn-env-toggle" onclick="toggleAdminEnv()" style="padding:9px 14px; border-radius:8px; border:1.5px solid #10b981; background:rgba(16,185,129,.1); color:#047857; font-weight:700; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .15s; margin-left:auto;" title="Bấm để chuyển đổi giữa Production và Staging">
-            <i class="fa-solid fa-server"></i> <span id="env-toggle-label">Môi trường: PRODUCTION</span>
-        </button>
     </div>
     <div class="filter-bar" id="filter-bar">
         <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả khóa</span>
@@ -2027,51 +2024,7 @@
    CẤU HÌNH
 ════════════════════════════════════ */
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
-const PROD_DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
-const STAGING_DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
-
-function isAdminStagingMode() {
-    const p = new URLSearchParams(window.location.search);
-    return p.get('env') === 'staging' || sessionStorage.getItem('VLXT_ADMIN_ENV') === 'staging';
-}
-
-function getActiveDBUrl() {
-    return isAdminStagingMode() ? STAGING_DB_URL : PROD_DB_URL;
-}
-
-function updateAdminEnvUI() {
-    const btn = document.getElementById('btn-env-toggle');
-    const lbl = document.getElementById('env-toggle-label');
-    if (!btn || !lbl) return;
-    if (isAdminStagingMode()) {
-        btn.style.borderColor = '#f59e0b';
-        btn.style.background = 'rgba(245,158,11,.1)';
-        btn.style.color = '#b45309';
-        lbl.textContent = 'Môi trường: STAGING (Test)';
-    } else {
-        btn.style.borderColor = '#10b981';
-        btn.style.background = 'rgba(16,185,129,.1)';
-        btn.style.color = '#047857';
-        lbl.textContent = 'Môi trường: PRODUCTION';
-    }
-}
-
-function toggleAdminEnv() {
-    if (isAdminStagingMode()) {
-        sessionStorage.removeItem('VLXT_ADMIN_ENV');
-        const u = new URL(window.location.href);
-        u.searchParams.delete('env');
-        window.location.href = u.toString();
-    } else {
-        sessionStorage.setItem('VLXT_ADMIN_ENV', 'staging');
-        const u = new URL(window.location.href);
-        u.searchParams.set('env', 'staging');
-        window.location.href = u.toString();
-    }
-}
-document.addEventListener('DOMContentLoaded', updateAdminEnvUI);
-
-const DB_URL = getActiveDBUrl();
+const DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 
@@ -3694,14 +3647,11 @@ async function postAdminWriteJson(payload, options){
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try{
         const bodyObj = Object.assign({}, payload);
-        if (isAdminStagingMode()) {
-            bodyObj.env = 'staging';
-        }
         if(!bodyObj.adminKey){
             const k = getAdminKey();
             if(k) bodyObj.adminKey = k;
         }
-        const res = await fetch(getActiveDBUrl(), {
+        const res = await fetch(DB_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(bodyObj),
@@ -4883,9 +4833,6 @@ async function saveLessonForm(){
         BaiTap:'', // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
         ThuTuBai:document.getElementById('f-original-ttb').value // giu nguyen thu tu cu khi sua bai - thieu field nay khien GAS ghi de ThuTuBai='' moi lan Luu, lam bai tu nhay xuong cuoi chuong
     };
-    if(isAdminStagingMode()){
-        payload.env = 'staging';
-    }
     const btn=document.getElementById('btn-save-lesson');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     try{

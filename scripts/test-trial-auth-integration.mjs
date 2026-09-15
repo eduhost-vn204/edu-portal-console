@@ -720,83 +720,11 @@ it('33. doPost case insensitive: hỗ trợ action dạng lowercase và alias', 
   assert.equal(res.sdt, '988888888');
 });
 
-it('34. Staging routing: env="staging" định tuyến sang các sheet _Staging mà không đụng sheet Prod', () => {
-  resetDatabase();
-  // Đăng ký tài khoản trên môi trường staging
-  const regEv = {
-    postData: { contents: JSON.stringify({
-      action: 'register',
-      env: 'staging',
-      sdt: '0999111222',
-      hoten: 'Học sinh Staging',
-      matkhau: 'staging_pass_123',
-      lop: '12'
-    }) }
-  };
-  const regRes = sandbox.doPost(regEv);
-  assert.equal(regRes.ok, true);
-  assert(regRes.token || (regRes.user && regRes.user.token), 'Phải cấp session token');
-
-  // Kiểm tra: sheet TaiKhoan_Staging có user, nhưng sheet TaiKhoan production KHÔNG CÓ user này
-  const stgSheet = activeSpreadsheet.getSheetByName('TaiKhoan_Staging');
-  assert(stgSheet, 'Phải tạo sheet TaiKhoan_Staging');
-  const prodSheet = activeSpreadsheet.getSheetByName('TaiKhoan');
-  const inStaging = stgSheet.data.some(r => r[0] === '0999111222');
-  const inProd = prodSheet.data.some(r => r[0] === '0999111222');
-  assert.equal(inStaging, true, 'User phải nằm trong TaiKhoan_Staging');
-  assert.equal(inProd, false, 'User tuyệt đối KHÔNG được nằm trong TaiKhoan production');
-});
-
-it('35. initStagingAuth: Cấu hình an toàn AUTH_SECRET_STAGING và GOOGLE_CLIENT_ID', () => {
-  resetDatabase();
-  const ev = {
-    postData: { contents: JSON.stringify({
-      action: 'initstagingauth',
-      authSecretStaging: 'a_very_secure_random_staging_secret_key_64_characters_long_12345678',
-      googleClientId: '1022891995284-miquu1f7rlpie7ug9884sgagf21nputc.apps.googleusercontent.com'
-    }) }
-  };
-  const res = sandbox.doPost(ev);
-  assert.equal(res.ok, true);
-  assert.equal(res.hasStagingSecret, true);
-  assert.equal(res.hasGoogleClientId, true);
-
-  const checkEv = {
-    postData: { contents: JSON.stringify({ action: 'checkauthconfig', env: 'staging' }) }
-  };
-  const checkRes = sandbox.doPost(checkEv);
-  assert.equal(checkRes.ok, true);
-  assert.equal(checkRes.isStaging, true);
-  assert.equal(checkRes.isStrongSecret, true);
-  assert.equal(checkRes.hasGoogleClientId, true);
-});
-
-it('36. seedStagingData: Khởi tạo đủ 5 test sheets với dữ liệu mẫu chuẩn', () => {
-  resetDatabase();
-  const ev = {
-    postData: { contents: JSON.stringify({ action: 'seedstagingdata' }) }
-  };
-  const res = sandbox.doPost(ev);
-  assert.equal(res.ok, true);
-  assert.equal(res.totalLessons, 6);
-
-  assert(activeSpreadsheet.getSheetByName('BaiHoc_Staging'), 'Phải có BaiHoc_Staging');
-  assert(activeSpreadsheet.getSheetByName('TaiKhoan_Staging'), 'Phải có TaiKhoan_Staging');
-  assert(activeSpreadsheet.getSheetByName('ThietBiHocThu_Staging'), 'Phải có ThietBiHocThu_Staging');
-  assert(activeSpreadsheet.getSheetByName('TrialActivity_Staging'), 'Phải có TrialActivity_Staging');
-  assert(activeSpreadsheet.getSheetByName('TienDo_Staging'), 'Phải có TienDo_Staging');
-
-  // Kiểm tra BaiHoc_Staging có đủ 6 bài
-  const bData = activeSpreadsheet.getSheetByName('BaiHoc_Staging').data;
-  assert.equal(bData.length, 7); // 1 header + 6 bài
-});
-
-it('37. saveBaiHoc: Lưu thành công trường BaiNenTang trên môi trường staging', () => {
+it('34. saveBaiHoc: Lưu thành công trường BaiNenTang trên sheet BaiHoc chuẩn', () => {
   resetDatabase();
   const ev = {
     postData: { contents: JSON.stringify({
       action: 'savebaihoc',
-      env: 'staging',
       adminKey: 'secret_test_admin_key',
       KhoaHoc: 'Vật Lý 12',
       Chuong: 'Chương 1 — Vật lý nhiệt',
@@ -810,29 +738,35 @@ it('37. saveBaiHoc: Lưu thành công trường BaiNenTang trên môi trường 
   assert.equal(res.ok, true);
   assert.equal(res.BaiNenTang, 'B01, B02');
 
-  // Kiểm tra dòng trong BaiHoc_Staging
-  const bSheet = activeSpreadsheet.getSheetByName('BaiHoc_Staging');
-  assert(bSheet, 'Phải có BaiHoc_Staging');
+  // Kiểm tra dòng trong BaiHoc
+  const bSheet = activeSpreadsheet.getSheetByName('BaiHoc');
+  assert(bSheet, 'Phải có BaiHoc');
   const headers = bSheet.data[0];
   const bntCol = headers.indexOf('BaiNenTang');
   assert(bntCol >= 0, 'Phải có cột BaiNenTang trong header');
   const row = bSheet.data.find(r => r[headers.indexOf('MaBai')] === 'B_TEST_PREREQ');
-  assert(row, 'Phải tìm thấy bài trong BaiHoc_Staging');
+  assert(row, 'Phải tìm thấy bài trong BaiHoc');
   assert.equal(row[bntCol], 'B01, B02');
 });
 
-it('38. getBaiHoc: Public GET trả về BaiNenTang và bảo đảm ẩn bài draft/rỗng', () => {
+it('35. getBaiHoc: Public GET trả về BaiNenTang và bảo đảm ẩn bài draft/rỗng trên sheet BaiHoc', () => {
   resetDatabase();
-  // Nạp seed data vào staging
-  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'seedstagingdata' }) } });
+  const baiHocCols = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai','BaiNenTang'];
+  const bSheet = sandbox.getOrCreate('BaiHoc', baiHocCols);
+  bSheet.data = [
+    baiHocCols,
+    ['Vật Lý 12','Chương 1','B1: Cấu trúc chất','https://youtu.be/v1','','','2026-09-01','','','','',15,1,'B01','published',''],
+    ['Vật Lý 12','Chương 1','B2: Thuyết động học','https://youtu.be/v2','','','2026-09-02','','','','',15,2,'B02','published','B01'],
+    ['Vật Lý 12','Chương 2','B11: Nháp Boyle','https://youtu.be/v11','','','2026-09-10','','','','',15,11,'B11_DRAFT','draft','B02'],
+    ['Vật Lý 12','Chương 2','B12: Bài rỗng','','','','2026-09-11','','','','',15,12,'B12_EMPTY','draft','']
+  ];
 
   const getEv = {
-    parameter: { type: 'baihoc', env: 'staging' }
+    parameter: { type: 'baihoc' }
   };
   const res = sandbox.doGet(getEv);
   assert(Array.isArray(res), 'Public GET baihoc phải trả về mảng');
-  // 6 bài trong seed: 4 published (B01, B02, B03, B04), 2 draft (B11_DRAFT, B12_EMPTY)
-  assert.equal(res.length, 4, 'Chỉ 4 bài published được trả về');
+  assert.equal(res.length, 2, 'Chỉ 2 bài published được trả về');
 
   // Kiểm tra bài B02 có BaiNenTang = 'B01'
   const b02 = res.find(r => r.MaBai === 'B02');
