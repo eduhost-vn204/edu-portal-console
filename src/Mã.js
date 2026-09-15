@@ -46,6 +46,7 @@ function doPost(e) {
     if (action === 'getprofile' || action === 'profile') return getProfile(data);
     if (action === 'gettriallimit' || action === 'triallimit') return getTrialLimit(data);
     if (action === 'starttriallesson')   return startTrialLesson(data);
+    if (action === 'completetriallesson') return completeTrialLesson(data);
     if (action === 'getbaihocadmin' || action === 'get_bai_hoc_admin') return getBaiHocAdmin(data);
     if (action === 'getvideocauhoiadmin' || action === 'get_video_cau_hoi_admin') return getVideoCauHoiAdmin(data);
     if (action === 'getbaitaptracnghiemadmin' || action === 'get_bai_tap_trac_nghiem_admin') return getBaiTapTracNghiemAdmin(data);
@@ -976,6 +977,8 @@ function saveProgress(data) {
       break;
     }
   }
+  // Ghi nhận hoàn thành bài học thử nếu là tài khoản trial
+  try { completeTrialLesson(data); } catch(e) {}
   return jsonOut({ ok: true, lpEarned: lpEarned, lpTotal: lpTotal, rankUp: rankUp });
 }
 
@@ -5004,59 +5007,132 @@ function startTrialLesson(data) {
       return jsonOut({ ok: false, reason: 'invalid_account', msg: 'Tài khoản không phải trial hợp lệ còn hạn' });
     }
 
-    // 2. Đọc bảng TrialActivity
+    // 2. Đọc bảng TrialActivity để đếm SỐ BÀI ĐÃ HOÀN THÀNH HÔM NAY (chỉ tính bài đã học xong)
     const actSheet = getOrCreate('TrialActivity', ['sdt','mabai','dateStr','thoigian','deviceId','hoten']);
-    const actRows = sheetToJson(actSheet);
-
-    // Kiểm tra bài đã từng bắt đầu chưa (chống tính trùng)
-    const alreadyStarted = actRows.some(function(r) {
-      return sameTaiKhoan(r.sdt, sdt) && String(r.mabai || '').trim() === mabai;
-    });
-
+    const actVals = actSheet.getDataRange().getValues();
+    let alreadyCompleted = false;
+    let countCompletedToday = 0;
     const todayVN = getVietnamDateString();
-    const countToday = actRows.filter(function(r) {
-      return sameTaiKhoan(r.sdt, sdt) && normalizeDateStr(r.dateStr) === todayVN;
-    }).length;
 
-    if (alreadyStarted) {
+    if (actVals.length > 1) {
+      const actHeaders = actVals[0].map(function(h){ return String(h||'').toLowerCase().trim(); });
+      const sIdx = actHeaders.indexOf('sdt');
+      const mIdx = actHeaders.indexOf('mabai');
+      const dIdx = actHeaders.indexOf('datestr');
+      for (let i = 1; i < actVals.length; i++) {
+        if (sameTaiKhoan(actVals[i][sIdx], sdt)) {
+          if (String(actVals[i][mIdx] || '').trim() === mabai) {
+            alreadyCompleted = true;
+          }
+          if (normalizeDateStr(actVals[i][dIdx]) === todayVN) {
+            countCompletedToday++;
+          }
+        }
+      }
+    }
+
+    // Bài ĐÃ TỪNG HOÀN THÀNH: ôn tập thoải mái, không giới hạn
+    if (alreadyCompleted) {
       return jsonOut({
         ok: true,
         isNew: false,
-        alreadyStarted: true,
-        dailyCount: countToday,
-        remaining: Math.max(0, 2 - countToday)
+        alreadyCompleted: true,
+        dailyCompletedCount: countCompletedToday,
+        remaining: Math.max(0, 2 - countCompletedToday)
       });
     }
 
-    // Nếu là bài mới: kiểm tra hạn mức 2 bài/ngày
-    if (countToday >= 2) {
+    // Bài MỚI: nếu hôm nay ĐÃ HOÀN THÀNH ĐỦ 2 BÀI thì mới chặn bài mới thứ 3
+    if (countCompletedToday >= 2) {
       return jsonOut({
         ok: false,
         reason: 'trial_limit',
-        msg: 'Hôm nay em đã dùng đủ 2/2 bài học mới theo hạn mức học thử.',
-        dailyCount: countToday,
+        msg: 'Hôm nay em đã hoàn thành đủ 2/2 bài học mới theo hạn mức học thử. Lượt học mới sẽ tự động mở lại vào 00:00 ngày mai.',
+        dailyCompletedCount: countCompletedToday,
         maxDaily: 2,
         remaining: 0
       });
     }
 
-    // Ghi nhận bài mới
-    appendRowNamed(actSheet, {
-      sdt: sdt,
-      mabai: mabai,
-      dateStr: "'" + todayVN,
-      thoigian: new Date().toISOString(),
-      deviceId: String(data.deviceId || ''),
-      hoten: String(data.hoten || (userRow ? userRow.hoten : ''))
-    });
-
+    // Học sinh chưa hoàn thành đủ 2 bài: CHO PHÉP VÀO HỌC BÀI NÀY
+    // QUAN TRỌNG: TUYỆT ĐỐI KHÔNG append vào TrialActivity ở đây vì học sinh mới nhấp vào mở bài, chưa học xong!
     return jsonOut({
       ok: true,
       isNew: true,
-      dailyCount: countToday + 1,
-      remaining: Math.max(0, 2 - (countToday + 1))
+      alreadyCompleted: false,
+      dailyCompletedCount: countCompletedToday,
+      remaining: Math.max(0, 2 - countCompletedToday)
     });
 
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// POST: Ghi nhận bài học thử ĐÃ HỌC XONG (HOÀN THÀNH) - CHỈ TÍNH HẠN MỨC TẠI ĐÂY
+function completeTrialLesson(data) {
+  const token = (data && (data.token || data.authToken)) || '';
+  let authSdt = null;
+  if (token) {
+    try { authSdt = verifyUserToken(token); } catch(e){}
+  }
+  const clientSdt = String(data.sdt || '').trim();
+  const sdt = authSdt || clientSdt;
+  if (!sdt) return jsonOut({ ok: false, error: 'Unauthorized', msg: 'Thiếu thông tin tài khoản' });
+
+  const mabai = String(data.mabai || data.lesson || data.key || '').trim();
+  if (!mabai) return jsonOut({ ok: false, msg: 'Thiếu mã bài học' });
+
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(10000);
+  } catch(e) {
+    return jsonOut({ ok: false, msg: 'Hệ thống đang bận, vui lòng thử lại sau' });
+  }
+
+  try {
+    const actSheet = getOrCreate('TrialActivity', ['sdt','mabai','dateStr','thoigian','deviceId','hoten']);
+    const actVals = actSheet.getDataRange().getValues();
+    const todayVN = getVietnamDateString();
+    let alreadyCompleted = false;
+    let countCompletedToday = 0;
+
+    if (actVals.length > 1) {
+      const actHeaders = actVals[0].map(function(h){ return String(h||'').toLowerCase().trim(); });
+      const sIdx = actHeaders.indexOf('sdt');
+      const mIdx = actHeaders.indexOf('mabai');
+      const dIdx = actHeaders.indexOf('datestr');
+      for (let i = 1; i < actVals.length; i++) {
+        if (sameTaiKhoan(actVals[i][sIdx], sdt)) {
+          if (String(actVals[i][mIdx] || '').trim() === mabai) {
+            alreadyCompleted = true;
+          }
+          if (normalizeDateStr(actVals[i][dIdx]) === todayVN) {
+            countCompletedToday++;
+          }
+        }
+      }
+    }
+
+    if (!alreadyCompleted) {
+      appendRowNamed(actSheet, {
+        sdt: sdt,
+        mabai: mabai,
+        dateStr: "'" + todayVN,
+        thoigian: new Date().toISOString(),
+        deviceId: String(data.deviceId || ''),
+        hoten: String(data.hoten || data.ten || '')
+      });
+      countCompletedToday++;
+    }
+
+    return jsonOut({
+      ok: true,
+      completed: true,
+      mabai: mabai,
+      dailyCompletedCount: countCompletedToday,
+      remaining: Math.max(0, 2 - countCompletedToday)
+    });
   } finally {
     lock.releaseLock();
   }

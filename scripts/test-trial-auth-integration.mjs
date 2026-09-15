@@ -629,43 +629,55 @@ it('28. POST gettriallimit: Token tài khoản A không đọc được hạn m�
   assert.equal(res.error, 'Forbidden');
 });
 
-it('29. POST starttriallesson: Bắt đầu bài mới thứ 1 và 2 thành công theo giờ VN', () => {
+it('29. POST starttriallesson: Nhấp mở bài không trừ lượt (chỉ cấp quyền)', () => {
   resetDatabase();
   const loginRes = sandbox.loginUser({ sdt: '0988888888', matkhau: 'pass456' });
   const token = loginRes.user.token;
 
-  // Bài 1
+  // Bài 1: Mở bài nhưng chưa học xong
   const ev1 = {
     postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B01' }) }
   };
   const res1 = sandbox.doPost(ev1);
   assert.equal(res1.ok, true);
   assert.equal(res1.isNew, true);
-  assert.equal(res1.dailyCount, 1);
-  assert.equal(res1.remaining, 1);
+  assert.equal(res1.dailyCompletedCount, 0);
+  assert.equal(res1.remaining, 2);
 
-  // Bài 2
+  // Bài 2: Mở tiếp bài 2 khi chưa học xong bài 1
   const ev2 = {
     postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B02' }) }
   };
   const res2 = sandbox.doPost(ev2);
   assert.equal(res2.ok, true);
   assert.equal(res2.isNew, true);
-  assert.equal(res2.dailyCount, 2);
-  assert.equal(res2.remaining, 0);
+  assert.equal(res2.dailyCompletedCount, 0);
+  assert.equal(res2.remaining, 2);
+
+  // Bài 3: Vẫn được phép mở xem vì chưa hoàn thành đủ 2 bài
+  const ev3 = {
+    postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B03' }) }
+  };
+  const res3 = sandbox.doPost(ev3);
+  assert.equal(res3.ok, true);
 });
 
-it('30. POST starttriallesson: Bị chặn triallimit khi mở bài mới thứ 3 trong ngày', () => {
+it('30. POST completetriallesson: Chỉ khi học xong 2 bài mới chặn bài mới thứ 3', () => {
   resetDatabase();
   const loginRes = sandbox.loginUser({ sdt: '0988888888', matkhau: 'pass456' });
   const token = loginRes.user.token;
 
-  // Bài 1
-  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B01' }) } });
-  // Bài 2
-  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B02' }) } });
+  // Hoàn thành Bài 1
+  const comp1 = sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'completetriallesson', token: token, mabai: 'B01' }) } });
+  assert.equal(comp1.ok, true);
+  assert.equal(comp1.dailyCompletedCount, 1);
 
-  // Bài 3: Phải bị từ chối
+  // Hoàn thành Bài 2
+  const comp2 = sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'completetriallesson', token: token, mabai: 'B02' }) } });
+  assert.equal(comp2.ok, true);
+  assert.equal(comp2.dailyCompletedCount, 2);
+
+  // Bài 3: Mở bài mới thứ 3 khi đã hoàn thành 2 bài -> Phải bị chặn
   const ev3 = {
     postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B03' }) }
   };
@@ -675,23 +687,22 @@ it('30. POST starttriallesson: Bị chặn triallimit khi mở bài mới thứ 
   assert.equal(res3.remaining, 0);
 });
 
-it('31. POST starttriallesson: Xem lại bài cũ đã học không bị tính lượt', () => {
+it('31. POST starttriallesson: Xem lại bài cũ đã hoàn thành không bị tính lượt', () => {
   resetDatabase();
   const loginRes = sandbox.loginUser({ sdt: '0988888888', matkhau: 'pass456' });
   const token = loginRes.user.token;
 
-  // Bài 1 & Bài 2
-  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B01' }) } });
-  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B02' }) } });
+  // Hoàn thành Bài 1 & Bài 2
+  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'completetriallesson', token: token, mabai: 'B01' }) } });
+  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'completetriallesson', token: token, mabai: 'B02' }) } });
 
-  // Xem lại Bài 1 (đã mở): Cho phép xem lại tự do
+  // Xem lại Bài 1 (đã hoàn thành): Cho phép xem lại tự do
   const evReopen = {
     postData: { contents: JSON.stringify({ action: 'starttriallesson', token: token, mabai: 'B01' }) }
   };
   const resReopen = sandbox.doPost(evReopen);
   assert.equal(resReopen.ok, true);
-  assert.equal(resReopen.isNew, false);
-  assert.equal(resReopen.alreadyStarted, true);
+  assert.equal(resReopen.alreadyCompleted, true);
 });
 
 it('32. POST starttriallesson: Tài khoản Premium không dùng endpoint trial limit', () => {
