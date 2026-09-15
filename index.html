@@ -1159,14 +1159,21 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-field" id="bnt-section">
-                            <label>Bài nền tảng (BaiNenTang) <span style="font-weight:400;color:var(--gray2)">(Chọn các bài kiến thức cần học trước bài này)</span></label>
-                            <div style="border:1.5px solid var(--border); border-radius:8px; padding:12px; background:var(--bg2);">
+                        <div class="form-field" id="bnt-section" style="border:1.5px solid #0b84f3; border-radius:10px; padding:14px; background:rgba(11,132,243,.04); margin-top:14px; margin-bottom:14px;">
+                            <label style="font-size:13.5px; font-weight:700; color:var(--blue); display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                <i class="fa-solid fa-graduation-cap" style="font-size:15px;"></i>
+                                <span>Bài nền tảng (BaiNenTang)</span>
+                                <span style="font-weight:400;color:var(--gray2);font-size:12px;">(Chọn các bài kiến thức cần học trước bài này)</span>
+                            </label>
+                            <div style="font-size:12px; color:var(--gray2); margin-bottom:10px; line-height:1.4;">
+                                <i class="fa-solid fa-circle-info" style="color:var(--blue);"></i> Học sinh học thử mở bài này sẽ được gợi ý các bài nền tảng trước nếu chưa học xong.
+                            </div>
+                            <div style="border:1.5px solid var(--border); border-radius:8px; padding:12px; background:var(--bg);">
                                 <div id="bnt-selected-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; min-height:32px; align-items:center;">
                                     <span style="font-size:12.5px; color:var(--gray2); font-style:italic;" id="bnt-empty-hint">Chưa chọn bài nền tảng nào</span>
                                 </div>
                                 <div style="display:flex; gap:8px; align-items:center;">
-                                    <select id="f-bnt-select" style="flex:1; padding:8px 12px; border-radius:6px; border:1.5px solid var(--border); background:var(--bg); color:var(--black); font-size:13px;" onchange="onAddBaiNenTang(this.value)">
+                                    <select id="f-bnt-select" style="flex:1; padding:8px 12px; border-radius:6px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:13px;" onchange="onAddBaiNenTang(this.value)">
                                         <option value="">-- Chọn bài nền tảng để thêm --</option>
                                     </select>
                                     <button type="button" class="btn-preview" onclick="clearAllBaiNenTang()" style="padding:7px 12px; font-size:12px;">Xóa hết</button>
@@ -3568,6 +3575,12 @@ function renderCourseBlock(course){
                     ${hasVid?'<span class="li-badge li-vid"><i class="fa-solid fa-play" style="font-size:9px"></i> Video</span>':'<span class="li-badge li-novid">Chưa có video</span>'}
                     ${hasGiai?'<span class="li-badge li-vid"><i class="fa-solid fa-lightbulb" style="font-size:9px"></i> Chữa</span>':''}
                     ${qbCount?`<span class="li-badge li-quiz"><i class="fa-solid fa-pen-to-square" style="font-size:9px"></i> ${qbCount} câu</span>`:''}
+                    ${(function(){
+                        const rawBnt = String(l.bainentang || l.BaiNenTang || '').trim();
+                        if(!rawBnt) return '';
+                        const bntCount = rawBnt.split(/[,;|]+/).map(s=>s.trim()).filter(Boolean).length;
+                        return `<span class="li-badge" style="background:#e0f2fe;color:#0284c7;border:1px solid #bae6fd;font-weight:700" title="Bài nền tảng: ${esc(rawBnt)}"><i class="fa-solid fa-graduation-cap" style="font-size:9px"></i> Nền tảng (${bntCount})</span>`;
+                    })()}
                 </div>
                 <div class="li-actions">
                     <button class="li-btn star${isTeaching?' active':''}" title="${isTeaching?'Bỏ đánh dấu đang dạy':'Đánh dấu đang dạy đến đây'}" onclick="markTeachingLesson('${safeKey}')">⭐</button>
