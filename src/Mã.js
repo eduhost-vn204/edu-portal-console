@@ -223,13 +223,33 @@ function checkAuthConfig(data) {
     googleClientIdTail = cid ? cid.slice(-25) : '';
   } catch(e) {}
 
+  let hasTrialActivity = false;
+  let trialActivityHeaders = [];
+  let hasExact6Headers = false;
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const actSheet = ss.getSheetByName('TrialActivity');
+    if (actSheet) {
+      hasTrialActivity = true;
+      const lastCol = actSheet.getLastColumn();
+      if (lastCol > 0) {
+        trialActivityHeaders = actSheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h || '').trim(); });
+      }
+      const expected = ['sdt','mabai','dateStr','thoigian','deviceId','hoten'];
+      hasExact6Headers = (trialActivityHeaders.length === 6) && expected.every(function(h, idx) { return trialActivityHeaders[idx] === h; });
+    }
+  } catch(e) {}
+
   return jsonOut({
-    ok: hasSecret && hasGoogleClientId,
+    ok: hasSecret && hasGoogleClientId && hasExact6Headers,
     hasAuthSecret: hasSecret,
     secretLength: secretLength,
     isStrongSecret: secretLength >= 32,
     hasGoogleClientId: hasGoogleClientId,
-    googleClientIdTail: googleClientIdTail
+    googleClientIdTail: googleClientIdTail,
+    hasTrialActivitySheet: hasTrialActivity,
+    trialActivityHeaders: trialActivityHeaders,
+    hasExact6Headers: hasExact6Headers
     // Tuyệt đối không chứa hoặc hiển thị secret value
   });
 }
@@ -1549,6 +1569,12 @@ function updateExistingNganHangFromFile(data) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// Temporary acceptance wrapper; logs only boolean status, never a key.
+function runAdminSelfTestReport() {
+  const result = runAdminSelfTest();
+  console.log(JSON.stringify({ ok: result && result.ok === true, passed: result && result.passed === true, step: result && result.step || '' }));
 }
 
 // ── POST: Gán "Bài học" cho nhiều câu cùng lúc (phân loại hàng loạt) ──
@@ -3098,6 +3124,14 @@ function runAdminSelfTest() {
     return { ok: false, step: 'check_key', msg: 'ADMIN_KEY is not configured in Script Properties' };
   }
 
+  const resultOk = function(res) {
+    try {
+      const value = res && typeof res.getContent === 'function'
+        ? JSON.parse(res.getContent()) : res;
+      return Boolean(value && value.ok === true);
+    } catch(e) { return false; }
+  };
+
   const testSdt = '0999999999_selftest_' + Date.now();
   try {
     // 1. Tạo tài khoản test cô lập
@@ -3106,28 +3140,28 @@ function runAdminSelfTest() {
 
     // 2. Kiểm thử pingAdmin
     const pingRes = pingAdmin({ adminKey: adminKey });
-    if (!pingRes || pingRes.ok !== true) {
+    if (!resultOk(pingRes)) {
       deleteAccount({ adminKey: adminKey, sdt: testSdt });
       return { ok: false, step: 'ping_admin', msg: 'pingAdmin failed' };
     }
 
     // 3. Kiểm thử Premium (trialExpiry = 0)
     const premRes = setVipStatus({ adminKey: adminKey, sdt: testSdt, loaiTK: 'premium' });
-    if (!premRes || premRes.ok !== true) {
+    if (!resultOk(premRes)) {
       deleteAccount({ adminKey: adminKey, sdt: testSdt });
       return { ok: false, step: 'set_premium', msg: 'setVipStatus premium failed' };
     }
 
     // 4. Kiểm thử VIP với số ngày (trialExpiry > 0)
     const vipRes = setVipStatus({ adminKey: adminKey, sdt: testSdt, loaiTK: 'vip', days: 30 });
-    if (!vipRes || vipRes.ok !== true) {
+    if (!resultOk(vipRes)) {
       deleteAccount({ adminKey: adminKey, sdt: testSdt });
       return { ok: false, step: 'set_vip', msg: 'setVipStatus vip failed' };
     }
 
     // 5. Kiểm thử Free (trialExpiry = 0)
     const freeRes = setVipStatus({ adminKey: adminKey, sdt: testSdt, loaiTK: 'free' });
-    if (!freeRes || freeRes.ok !== true) {
+    if (!resultOk(freeRes)) {
       deleteAccount({ adminKey: adminKey, sdt: testSdt });
       return { ok: false, step: 'set_free', msg: 'setVipStatus free failed' };
     }
@@ -3141,7 +3175,7 @@ function runAdminSelfTest() {
 
     // 7. Kiểm thử deleteAccount và dọn dẹp liên hoàn
     const delRes = deleteAccount({ adminKey: adminKey, sdt: testSdt });
-    if (!delRes || delRes.ok !== true) {
+    if (!resultOk(delRes)) {
       return { ok: false, step: 'delete_account', msg: 'deleteAccount failed' };
     }
 
