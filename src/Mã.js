@@ -47,6 +47,7 @@ function doPost(e) {
     if (action === 'gettriallimit' || action === 'triallimit') return getTrialLimit(data);
     if (action === 'starttriallesson')   return startTrialLesson(data);
     if (action === 'completetriallesson') return completeTrialLesson(data);
+    if (action === 'cleartrialactivity') return clearTrialActivity(data);
     if (action === 'getbaihocadmin' || action === 'get_bai_hoc_admin') return getBaiHocAdmin(data);
     if (action === 'getvideocauhoiadmin' || action === 'get_video_cau_hoi_admin') return getVideoCauHoiAdmin(data);
     if (action === 'getbaitaptracnghiemadmin' || action === 'get_bai_tap_trac_nghiem_admin') return getBaiTapTracNghiemAdmin(data);
@@ -5133,6 +5134,40 @@ function completeTrialLesson(data) {
       dailyCompletedCount: countCompletedToday,
       remaining: Math.max(0, 2 - countCompletedToday)
     });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// POST: Tự động dọn dẹp các bản ghi thử nghiệm trong TrialActivity (yêu cầu adminKey)
+function clearTrialActivity(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(10000);
+  } catch(e) {
+    return jsonOut({ ok: false, msg: 'Hệ thống đang bận, vui lòng thử lại sau' });
+  }
+
+  try {
+    const sheet = getOrCreate('TrialActivity', ['sdt','mabai','dateStr','thoigian','deviceId','hoten']);
+    const lastRow = sheet.getLastRow();
+    let deleted = 0;
+    if (lastRow > 1) {
+      deleted = lastRow - 1;
+      sheet.deleteRows(2, lastRow - 1);
+    }
+    // Xóa cache
+    try {
+      const cache = CacheService.getScriptCache();
+      if (cache && data && data.sdt) {
+        cache.remove('trial_usr_' + normSdt(data.sdt));
+      }
+    } catch(ce) {}
+
+    return jsonOut({ ok: true, deleted: deleted });
   } finally {
     lock.releaseLock();
   }
