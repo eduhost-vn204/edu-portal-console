@@ -42,6 +42,7 @@ function doPost(e) {
   try {
     const data   = JSON.parse(e.postData.contents);
     const action = (data.action || data.type || '').toLowerCase();
+    if (action === 'checkauthconfig' || action === 'check_auth_config') return checkAuthConfig();
     if (action === 'getprofile' || action === 'profile') return getProfile(data);
     if (action === 'gettriallimit' || action === 'triallimit') return getTrialLimit(data);
     if (action === 'starttriallesson')   return startTrialLesson(data);
@@ -203,6 +204,34 @@ function normSdt(s) {
   const str = String(s || '').trim();
   if (str.includes('@')) return str.toLowerCase();
   return str.replace(/\D/g,'').replace(/^0+/,'');
+}
+
+function checkAuthConfig() {
+  let hasSecret = false;
+  let secretLength = 0;
+  try {
+    const s = getAuthSecret();
+    hasSecret = Boolean(s && s.length >= 32);
+    secretLength = s ? s.length : 0;
+  } catch(e) {}
+
+  let hasGoogleClientId = false;
+  let googleClientIdTail = '';
+  try {
+    const cid = getGoogleClientId();
+    hasGoogleClientId = Boolean(cid && cid.includes('.apps.googleusercontent.com'));
+    googleClientIdTail = cid ? cid.slice(-25) : '';
+  } catch(e) {}
+
+  return jsonOut({
+    ok: hasSecret && hasGoogleClientId,
+    hasAuthSecret: hasSecret,
+    secretLength: secretLength,
+    isStrongSecret: secretLength >= 32,
+    hasGoogleClientId: hasGoogleClientId,
+    googleClientIdTail: googleClientIdTail
+    // Tuyệt đối không chứa hoặc hiển thị secret value
+  });
 }
 
 function getAuthSecret() {

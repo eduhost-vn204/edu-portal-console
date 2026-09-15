@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-const CLASP_JS = 'C:/Users/xuant/AppData/Roaming/npm/node_modules/@google/clasp/build/src/index.js';
+const CLASP_JS = 'C:/Users/Xuan Truong/AppData/Roaming/npm/node_modules/@google/clasp/build/src/index.js';
 
 export function runClasp(args, cwd = process.cwd()) {
   return new Promise((resolve, reject) => {
