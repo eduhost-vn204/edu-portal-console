@@ -1,6 +1,28 @@
 const DEVICE_LOCK_ENABLED = false; // Mặc định tắt khóa thiết bị thử nghiệm
 
+let _currentRequestStaging = false;
+
+function isStagingEnv(dataOrEvent) {
+  if (_currentRequestStaging) return true;
+  if (dataOrEvent) {
+    if (dataOrEvent.env === 'staging' || dataOrEvent.isStaging === true) return true;
+    if (dataOrEvent.parameter && (dataOrEvent.parameter.env === 'staging' || dataOrEvent.parameter.staging === '1')) return true;
+  }
+  return false;
+}
+
+function resolveSheetName(name) {
+  if (_currentRequestStaging) {
+    const stagingEligible = ['TaiKhoan', 'BaiHoc', 'ThietBiHocThu', 'TienDo', 'TrialActivity'];
+    if (stagingEligible.includes(name)) {
+      return name + '_Staging';
+    }
+  }
+  return name;
+}
+
 function doGet(e) {
+  _currentRequestStaging = Boolean(e && e.parameter && (e.parameter.env === 'staging' || e.parameter.staging === '1'));
   const type   = (e.parameter.type || '').toLowerCase();
   const hs     = e.parameter.hs || '';
   const examId = e.parameter.examId || '';
@@ -41,8 +63,11 @@ function doGet(e) {
 function doPost(e) {
   try {
     const data   = JSON.parse(e.postData.contents);
+    _currentRequestStaging = Boolean((data && (data.env === 'staging' || data.isStaging === true)) || (e && e.parameter && (e.parameter.env === 'staging' || e.parameter.staging === '1')));
     const action = (data.action || data.type || '').toLowerCase();
-    if (action === 'checkauthconfig' || action === 'check_auth_config') return checkAuthConfig();
+    if (action === 'checkauthconfig' || action === 'check_auth_config') return checkAuthConfig(data);
+    if (action === 'initstagingauth' || action === 'setup_staging_auth') return initStagingAuth(data);
+    if (action === 'seedstagingdata' || action === 'seed_staging_data') return seedStagingData(data);
     if (action === 'getprofile' || action === 'profile') return getProfile(data);
     if (action === 'gettriallimit' || action === 'triallimit') return getTrialLimit(data);
     if (action === 'starttriallesson')   return startTrialLesson(data);
@@ -113,9 +138,18 @@ function requireAdmin(key) {
 
 function getOrCreate(name, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(name);
+  const actualName = resolveSheetName(name);
+  let sheet = ss.getSheetByName(actualName);
   if (!sheet) {
-    sheet = ss.insertSheet(name);
+    if (_currentRequestStaging && actualName.endsWith('_Staging')) {
+      const originalSheet = ss.getSheetByName(name);
+      if (originalSheet && name === 'BaiHoc') {
+        sheet = originalSheet.copyTo(ss);
+        sheet.setName(actualName);
+        return sheet;
+      }
+    }
+    sheet = ss.insertSheet(actualName);
     if (headers && headers.length) sheet.appendRow(headers);
   } else if (headers && headers.length) {
     // Thêm cột mới nếu sheet đã tồn tại nhưng thiếu cột
@@ -206,7 +240,8 @@ function normSdt(s) {
   return str.replace(/\D/g,'').replace(/^0+/,'');
 }
 
-function checkAuthConfig() {
+function checkAuthConfig(data) {
+  const isStg = isStagingEnv(data);
   let hasSecret = false;
   let secretLength = 0;
   try {
@@ -225,6 +260,7 @@ function checkAuthConfig() {
 
   return jsonOut({
     ok: hasSecret && hasGoogleClientId,
+    isStaging: isStg,
     hasAuthSecret: hasSecret,
     secretLength: secretLength,
     isStrongSecret: secretLength >= 32,
@@ -235,11 +271,107 @@ function checkAuthConfig() {
 }
 
 function getAuthSecret() {
-  const secret = PropertiesService.getScriptProperties().getProperty('AUTH_SECRET');
+  const isStg = isStagingEnv();
+  const props = PropertiesService.getScriptProperties();
+  if (isStg) {
+    const stgSecret = props.getProperty('AUTH_SECRET_STAGING');
+    if (stgSecret && stgSecret.trim()) return stgSecret.trim();
+  }
+  const secret = props.getProperty('AUTH_SECRET');
   if (!secret || !secret.trim()) {
     throw new Error('AUTH_SECRET_NOT_CONFIGURED');
   }
   return secret.trim();
+}
+
+function initStagingAuth(data) {
+  const stagingSecret = String((data && (data.authSecretStaging || data.authSecret)) || '').trim();
+  const googleClientId = String((data && data.googleClientId) || '1022891995284-miquu1f7rlpie7ug9884sgagf21nputc.apps.googleusercontent.com').trim();
+
+  if (!stagingSecret || stagingSecret.length < 32) {
+    return jsonOut({ ok: false, msg: 'authSecretStaging phải có độ dài tối thiểu 32 ký tự' });
+  }
+
+  const props = PropertiesService.getScriptProperties();
+  props.setProperty('AUTH_SECRET_STAGING', stagingSecret);
+  props.setProperty('GOOGLE_CLIENT_ID', googleClientId);
+
+  return jsonOut({
+    ok: true,
+    msg: 'Đã cấu hình AUTH_SECRET_STAGING và GOOGLE_CLIENT_ID thành công',
+    hasStagingSecret: true,
+    stagingSecretLength: stagingSecret.length,
+    hasGoogleClientId: true,
+    googleClientIdTail: googleClientId.slice(-25)
+  });
+}
+
+function seedStagingData(data) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // 1. BaiHoc_Staging
+  const baiHocCols = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai','BaiNenTang'];
+  let bSheet = ss.getSheetByName('BaiHoc_Staging');
+  if (bSheet) {
+    ss.deleteSheet(bSheet);
+  }
+  bSheet = ss.insertSheet('BaiHoc_Staging');
+  bSheet.appendRow(baiHocCols);
+
+  const sampleLessons = [
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 1: Cấu trúc chất', Video: 'https://youtu.be/sample_v1', VideoGiai: '', MoTaBai: 'Mô hình động học phân tử', NgayDang: '2026-09-01', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 1, MaBai: 'B01', TrangThai: 'published', BaiNenTang: '' },
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 2: Thuyết động học phân tử chất khí', Video: 'https://youtu.be/sample_v2', VideoGiai: '', MoTaBai: 'Chuyển động Brown và nhiệt độ', NgayDang: '2026-09-02', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 2, MaBai: 'B02', TrangThai: 'published', BaiNenTang: 'B01' },
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 3: Nhiệt dung riêng', Video: 'https://youtu.be/sample_v3', VideoGiai: '', MoTaBai: 'Nhiệt dung riêng và cân bằng nhiệt', NgayDang: '2026-09-03', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 3, MaBai: 'B03', TrangThai: 'published', BaiNenTang: 'B01, B02' },
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 1 — Vật lý nhiệt', TenBai: 'Bài 4: Nhiệt nóng chảy riêng', Video: 'https://youtu.be/sample_v4', VideoGiai: '', MoTaBai: 'Nóng chảy và đông đặc', NgayDang: '2026-09-04', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 4, MaBai: 'B04', TrangThai: 'published', BaiNenTang: 'B03' },
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 2 — Khí lí tưởng', TenBai: 'Bài 11: Định luật Boyle (Draft Pilot)', Video: 'https://youtu.be/sample_v11', VideoGiai: '', MoTaBai: 'Bản nháp ẩn với học sinh', NgayDang: '2026-09-10', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 11, MaBai: 'B11_DRAFT', TrangThai: 'draft', BaiNenTang: 'B02' },
+    { KhoaHoc: 'Vật Lý 12', Chuong: 'Chương 2 — Khí lí tưởng', TenBai: 'Bài 12: Bài trống chưa có video', Video: '', VideoGiai: '', MoTaBai: 'Bài chưa xuất bản', NgayDang: '2026-09-11', BaiTap: '', PDF: '', PDFLyThuyet: '', PDFLuyenTap: '', ThoiGianLamBai: 15, ThuTuBai: 12, MaBai: 'B12_EMPTY', TrangThai: 'draft', BaiNenTang: '' }
+  ];
+
+  sampleLessons.forEach(function(l) { appendRowNamed(bSheet, l); });
+
+  // 2. TaiKhoan_Staging
+  const tkCols = ['sdt','hoten','lop','matkhau','ngayDK','lpTotal','diemGame','loaiTK','trialExpiry','mienVideo','tracNghiemVideo','mienLuyenTap'];
+  let tkSheet = ss.getSheetByName('TaiKhoan_Staging');
+  if (tkSheet) {
+    ss.deleteSheet(tkSheet);
+  }
+  tkSheet = ss.insertSheet('TaiKhoan_Staging');
+  tkSheet.appendRow(tkCols);
+
+  // 3. ThietBiHocThu_Staging
+  const devCols = ['deviceId','sdt','hoten','trialStart','trialExpiry','soLanChan'];
+  let devSheet = ss.getSheetByName('ThietBiHocThu_Staging');
+  if (devSheet) {
+    ss.deleteSheet(devSheet);
+  }
+  devSheet = ss.insertSheet('ThietBiHocThu_Staging');
+  devSheet.appendRow(devCols);
+
+  // 4. TrialActivity_Staging
+  const actCols = ['sdt','mabai','dateStr','thoigian','deviceId','hoten'];
+  let actSheet = ss.getSheetByName('TrialActivity_Staging');
+  if (actSheet) {
+    ss.deleteSheet(actSheet);
+  }
+  actSheet = ss.insertSheet('TrialActivity_Staging');
+  actSheet.appendRow(actCols);
+
+  // 5. TienDo_Staging
+  const tdCols = ['sdt','lesson','khoa','ten','lop','ngay'];
+  let tdSheet = ss.getSheetByName('TienDo_Staging');
+  if (tdSheet) {
+    ss.deleteSheet(tdSheet);
+  }
+  tdSheet = ss.insertSheet('TienDo_Staging');
+  tdSheet.appendRow(tdCols);
+
+  SpreadsheetApp.flush();
+
+  return jsonOut({
+    ok: true,
+    msg: 'Đã khởi tạo dữ liệu Staging thành công (5 sheets test)',
+    totalLessons: sampleLessons.length
+  });
 }
 
 function generateUserToken(sdt, userMeta) {
@@ -691,7 +823,7 @@ function getLeaderboard() {
 }
 
 // ── GET: Bài học ──────────────────────────────────────────────
-const BAIHOC_COLS = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
+const BAIHOC_COLS = ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai','BaiNenTang'];
 
 function normalizeLessonStatus(st) {
   const s = (st === undefined || st === null) ? '' : String(st).trim().toLowerCase();
@@ -703,7 +835,7 @@ function isLessonPublished(baiKey) {
   if (!baiKey) return false;
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('BaiHoc');
+    const sheet = ss.getSheetByName(resolveSheetName('BaiHoc'));
     if (!sheet) return false;
     const rows = sheetToJson(sheet);
     const target = rows.find(function(r) {
@@ -964,9 +1096,10 @@ function saveBaiHoc(data) {
   if (!requireAdmin(data && data.adminKey)) {
     return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
   }
-  const COLS = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'];
+  const COLS = typeof BAIHOC_COLS !== 'undefined' ? BAIHOC_COLS : ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap','ThoiGianLamBai','ThuTuBai','MaBai','TrangThai','BaiNenTang'];
   const sheet = getOrCreate('BaiHoc', COLS); // tự thêm cột thiếu nếu sheet cũ
-  const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.originalKey);
+  const inputMaBai = String((data && (data.maBai || data.MaBai)) || '').trim();
+  const rowIdx = (inputMaBai && findRowByMaBai(sheet, inputMaBai)) || data.rowIndex || findRowByKey(sheet, data.originalKey);
   // MaBai: ma dinh danh ON DINH cho moi bai hoc, KHONG BAO GIO doi khi doi ten khoa/chuong/bai
   // hoac sap xep lai vi tri - tien do hoc sinh (TienDo.lesson) bam theo ma nay de khong bao gio mat.
   let maBai = '';
@@ -987,7 +1120,7 @@ function saveBaiHoc(data) {
       existingTrangThai = (s_===null || s_===undefined) ? '' : s_;
     }
   }
-  if (!maBai) maBai = data.maBai || ('B' + Utilities.getUuid().replace(/-/g,'').slice(0,12));
+  if (!maBai) maBai = inputMaBai || ('B' + Utilities.getUuid().replace(/-/g,'').slice(0,12));
   // Giu nguyen ThuTuBai hien co neu client khong gui gia tri hop le (VD: cache trinh duyet cu
   // luc mo form Sua bai chua co ThuTuBai) - tranh bai tu "nhay xuong cuoi chuong" moi lan Luu (6/8/2026).
   const ttbToSave = (data.ThuTuBai !== undefined && data.ThuTuBai !== null && data.ThuTuBai !== '') ? data.ThuTuBai : existingThuTuBai;
@@ -1009,7 +1142,8 @@ function saveBaiHoc(data) {
     ThoiGianLamBai: data.ThoiGianLamBai || '',
     ThuTuBai: ttbToSave,
     MaBai:     maBai,
-    TrangThai: trangThaiToSave
+    TrangThai: trangThaiToSave,
+    BaiNenTang: data.BaiNenTang || ''
   };
   if (rowIdx) {
     writeRowNamed(sheet, rowIdx, rowData);
@@ -1017,7 +1151,7 @@ function saveBaiHoc(data) {
     appendRowNamed(sheet, rowData);
   }
   triggerStaticRefresh();
-  return jsonOut({ ok: true, maBai: maBai, TrangThai: trangThaiToSave });
+  return jsonOut({ ok: true, maBai: maBai, TrangThai: trangThaiToSave, BaiNenTang: rowData.BaiNenTang });
 }
 
 function deleteBaiHoc(data) {
@@ -3155,7 +3289,7 @@ function runExamControlsSelfTest() {
   if (!adminKey) {
     return { ok: false, step: 'check_key', msg: 'ADMIN_KEY is not configured in Script Properties' };
   }
-  
+
   const testExamId = 'vedich2k9_de02';
   try {
     // 1. Check initial state
@@ -4077,7 +4211,7 @@ function buildSheetHeaderMap(sheet, requiredHeaders) {
     return { ok: false, error: 'SheetHasNoColumns', msg: 'Sheet không có cột nào' };
   }
   const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  
+
   const aliasMap = {
     'id': ['id'],
     'question': ['question', 'cauhoi', 'debai', 'content', 'stem'],
@@ -4123,7 +4257,7 @@ function buildSheetHeaderMap(sheet, requiredHeaders) {
   }
 
   const reqList = Array.isArray(requiredHeaders) ? requiredHeaders : ['id', 'question', 'optA', 'optB', 'optC', 'optD', 'correct', 'baiHoc'];
-  
+
   // 1. Kiểm tra header trùng lặp trong số các header bắt buộc (FailClosedDuplicateHeaders)
   const dupHeaders = [];
   for (const req of reqList) {
@@ -4195,17 +4329,17 @@ function cloneNganHangToStaging(data) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const srcSheet = ss.getSheetByName('NganHang');
     if (!srcSheet) return jsonOut({ ok: false, error: 'Sheet NganHang not found' });
-    
+
     const stagingName = String((data && data.stagingSheetName) || 'NganHang_Staging_Test').trim();
     let stagingSheet = ss.getSheetByName(stagingName);
     if (stagingSheet) {
       ss.deleteSheet(stagingSheet);
     }
-    
+
     stagingSheet = srcSheet.copyTo(ss);
     stagingSheet.setName(stagingName);
     SpreadsheetApp.flush();
-    
+
     return jsonOut({
       ok: true,
       success: true,
@@ -4829,6 +4963,19 @@ function getVietnamDateString(d) {
   }
 }
 
+function normalizeDateStr(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  try {
+    const d = (val instanceof Date) ? val : new Date(val);
+    if (!isNaN(d.getTime())) {
+      return Utilities.formatDate(d, 'Asia/Saigon', 'yyyy-MM-dd');
+    }
+  } catch(e) {}
+  return s;
+}
+
 // POST: Lấy trạng thái hạn mức bài mới của học sinh (BẢO VỆ BẰNG TOKEN PHIÊN TRONG BODY)
 function getTrialLimit(data) {
   const token = (data && (data.token || data.authToken)) || '';
@@ -4873,7 +5020,7 @@ function getTrialLimit(data) {
   const userActs = actRows.filter(function(r) { return sameTaiKhoan(r.sdt, hs); });
 
   const todayVN = getVietnamDateString();
-  const todayActs = userActs.filter(function(r) { return String(r.dateStr) === todayVN; });
+  const todayActs = userActs.filter(function(r) { return normalizeDateStr(r.dateStr) === todayVN; });
   const dailyCount = todayActs.length;
   const maxDaily = 2;
 
@@ -4881,7 +5028,7 @@ function getTrialLimit(data) {
     return {
       key: String(r.mabai || '').trim(),
       mabai: String(r.mabai || '').trim(),
-      date: String(r.dateStr || '').trim(),
+      date: normalizeDateStr(r.dateStr),
       timestamp: r.thoigian ? new Date(r.thoigian).getTime() : Date.now()
     };
   });
@@ -4965,7 +5112,7 @@ function startTrialLesson(data) {
 
     const todayVN = getVietnamDateString();
     const countToday = actRows.filter(function(r) {
-      return sameTaiKhoan(r.sdt, sdt) && String(r.dateStr) === todayVN;
+      return sameTaiKhoan(r.sdt, sdt) && normalizeDateStr(r.dateStr) === todayVN;
     }).length;
 
     if (alreadyStarted) {
@@ -4994,7 +5141,7 @@ function startTrialLesson(data) {
     appendRowNamed(actSheet, {
       sdt: sdt,
       mabai: mabai,
-      dateStr: todayVN,
+      dateStr: "'" + todayVN,
       thoigian: new Date().toISOString(),
       deviceId: String(data.deviceId || ''),
       hoten: String(data.hoten || (userRow ? userRow.hoten : ''))

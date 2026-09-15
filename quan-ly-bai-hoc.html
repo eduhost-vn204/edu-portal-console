@@ -1052,6 +1052,9 @@
         <button class="btn-bulk-toggle" id="btn-bulk-toggle" onclick="toggleBulkMode()" title="Chọn nhiều bài để chuyển chương/xóa cùng lúc">
             <i class="fa-solid fa-list-check"></i> Sửa hàng loạt
         </button>
+        <button id="btn-env-toggle" onclick="toggleAdminEnv()" style="padding:9px 14px; border-radius:8px; border:1.5px solid #10b981; background:rgba(16,185,129,.1); color:#047857; font-weight:700; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .15s; margin-left:auto;" title="Bấm để chuyển đổi giữa Production và Staging">
+            <i class="fa-solid fa-server"></i> <span id="env-toggle-label">Môi trường: PRODUCTION</span>
+        </button>
     </div>
     <div class="filter-bar" id="filter-bar">
         <span class="filter-chip active" data-f="all" onclick="filterCourse('all',this)">Tất cả khóa</span>
@@ -1158,6 +1161,23 @@
                                     <option value="archived">⚪ Lưu trữ (Archived - Ẩn với HS)</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-field" id="bnt-section">
+                            <label>Bài nền tảng (BaiNenTang) <span style="font-weight:400;color:var(--gray2)">(Chọn các bài kiến thức cần học trước bài này)</span></label>
+                            <div style="border:1.5px solid var(--border); border-radius:8px; padding:12px; background:var(--bg2);">
+                                <div id="bnt-selected-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; min-height:32px; align-items:center;">
+                                    <span style="font-size:12.5px; color:var(--gray2); font-style:italic;" id="bnt-empty-hint">Chưa chọn bài nền tảng nào</span>
+                                </div>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <select id="f-bnt-select" style="flex:1; padding:8px 12px; border-radius:6px; border:1.5px solid var(--border); background:var(--bg); color:var(--black); font-size:13px;" onchange="onAddBaiNenTang(this.value)">
+                                        <option value="">-- Chọn bài nền tảng để thêm --</option>
+                                    </select>
+                                    <button type="button" class="btn-preview" onclick="clearAllBaiNenTang()" style="padding:7px 12px; font-size:12px;">Xóa hết</button>
+                                </div>
+                                <div id="bnt-cycle-warning" style="display:none; margin-top:10px; padding:10px 12px; border-radius:6px; background:#fee2e2; border:1px solid #ef4444; color:#b91c1c; font-size:12.5px; font-weight:600; line-height:1.4;"></div>
+                                <div id="bnt-notfound-warning" style="display:none; margin-top:8px; padding:8px 12px; border-radius:6px; background:#fef3c7; border:1px solid #f59e0b; color:#b45309; font-size:12px; font-weight:600;"></div>
+                            </div>
+                            <input type="hidden" id="f-bainentang" value="">
                         </div>
                         <div class="form-field" id="vq-section">
                             <div class="quiz-section-head">
@@ -2007,7 +2027,51 @@
    CẤU HÌNH
 ════════════════════════════════════ */
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
-const DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
+const PROD_DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
+const STAGING_DB_URL = "https://script.google.com/macros/s/AKfycbyqejp4SzgwNsJb3QrTP76C5-6K2MYqv5T1CzPyi6KUOEEsC7GKQLCnR07i0DNbqKBL/exec";
+
+function isAdminStagingMode() {
+    const p = new URLSearchParams(window.location.search);
+    return p.get('env') === 'staging' || sessionStorage.getItem('VLXT_ADMIN_ENV') === 'staging';
+}
+
+function getActiveDBUrl() {
+    return isAdminStagingMode() ? STAGING_DB_URL : PROD_DB_URL;
+}
+
+function updateAdminEnvUI() {
+    const btn = document.getElementById('btn-env-toggle');
+    const lbl = document.getElementById('env-toggle-label');
+    if (!btn || !lbl) return;
+    if (isAdminStagingMode()) {
+        btn.style.borderColor = '#f59e0b';
+        btn.style.background = 'rgba(245,158,11,.1)';
+        btn.style.color = '#b45309';
+        lbl.textContent = 'Môi trường: STAGING (Test)';
+    } else {
+        btn.style.borderColor = '#10b981';
+        btn.style.background = 'rgba(16,185,129,.1)';
+        btn.style.color = '#047857';
+        lbl.textContent = 'Môi trường: PRODUCTION';
+    }
+}
+
+function toggleAdminEnv() {
+    if (isAdminStagingMode()) {
+        sessionStorage.removeItem('VLXT_ADMIN_ENV');
+        const u = new URL(window.location.href);
+        u.searchParams.delete('env');
+        window.location.href = u.toString();
+    } else {
+        sessionStorage.setItem('VLXT_ADMIN_ENV', 'staging');
+        const u = new URL(window.location.href);
+        u.searchParams.set('env', 'staging');
+        window.location.href = u.toString();
+    }
+}
+document.addEventListener('DOMContentLoaded', updateAdminEnvUI);
+
+const DB_URL = getActiveDBUrl();
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 
@@ -3304,6 +3368,182 @@ function checkChuongDup(){
     }
 }
 
+/* ════════════════════════════════════
+   QUẢN LÝ BÀI NỀN TẢNG (BAINENTANG)
+════════════════════════════════════ */
+let currentSelectedPrereqs = [];
+let currentEditingMaBai = '';
+let hasPrereqCycle = false;
+
+function initBaiNenTangUI(initialPrereqs, editingMaBai) {
+    currentEditingMaBai = String(editingMaBai || '').trim();
+    currentSelectedPrereqs = [];
+    if (Array.isArray(initialPrereqs)) {
+        currentSelectedPrereqs = initialPrereqs.map(x => String(x || '').trim()).filter(Boolean);
+    } else if (typeof initialPrereqs === 'string' && initialPrereqs.trim()) {
+        currentSelectedPrereqs = initialPrereqs.split(/[,;|]+/).map(s => s.trim()).filter(Boolean);
+    }
+    renderBaiNenTangUI();
+}
+
+function onAddBaiNenTang(val) {
+    const sel = document.getElementById('f-bnt-select');
+    if (!val) return;
+    const mb = String(val).trim();
+    if (!mb) return;
+
+    // 1. Chặn tự phụ thuộc chính nó
+    if (currentEditingMaBai && mb === currentEditingMaBai) {
+        alert('Một bài học không thể tự phụ thuộc chính nó!');
+        if (sel) sel.value = '';
+        return;
+    }
+
+    if (!currentSelectedPrereqs.includes(mb)) {
+        currentSelectedPrereqs.push(mb);
+    }
+    if (sel) sel.value = '';
+    renderBaiNenTangUI();
+}
+
+function removeBaiNenTang(mb) {
+    currentSelectedPrereqs = currentSelectedPrereqs.filter(x => x !== mb);
+    renderBaiNenTangUI();
+}
+
+function clearAllBaiNenTang() {
+    currentSelectedPrereqs = [];
+    renderBaiNenTangUI();
+}
+
+function checkPrerequisiteCycle(targetMaBai, selectedPrereqIds, lessonList) {
+    if (!targetMaBai || !selectedPrereqIds || !selectedPrereqIds.length) return null;
+
+    const graph = new Map();
+    (lessonList || []).forEach(l => {
+        const mb = String(l.MaBai || l.mabai || '').trim();
+        if (!mb) return;
+        const bntRaw = String(l.BaiNenTang || l.bainentang || '').trim();
+        const prereqs = bntRaw.split(/[,;|]+/).map(s => s.trim()).filter(Boolean);
+        graph.set(mb, prereqs);
+    });
+
+    graph.set(targetMaBai, [...selectedPrereqIds]);
+
+    function findCyclePath(curr, target, visited = new Set(), path = []) {
+        visited.add(curr);
+        path.push(curr);
+        const neighbors = graph.get(curr) || [];
+        for (const next of neighbors) {
+            if (next === target) {
+                return [...path, target];
+            }
+            if (!visited.has(next)) {
+                const p = findCyclePath(next, target, visited, [...path]);
+                if (p) return p;
+            }
+        }
+        return null;
+    }
+
+    for (const prereqId of selectedPrereqIds) {
+        if (prereqId === targetMaBai) return [targetMaBai, targetMaBai];
+        const cycle = findCyclePath(prereqId, targetMaBai, new Set(), [targetMaBai]);
+        if (cycle) return cycle;
+    }
+    return null;
+}
+
+function renderBaiNenTangUI() {
+    const chipsWrap = document.getElementById('bnt-selected-chips');
+    const sel = document.getElementById('f-bnt-select');
+    const hiddenInput = document.getElementById('f-bainentang');
+    const cycleWarn = document.getElementById('bnt-cycle-warning');
+    const notfoundWarn = document.getElementById('bnt-notfound-warning');
+    const btnSave = document.getElementById('btn-save-lesson');
+
+    if (hiddenInput) {
+        hiddenInput.value = currentSelectedPrereqs.join(', ');
+    }
+
+    // 1. Render dropdown các bài có thể chọn (loại bỏ bài đang sửa & các bài đã chọn)
+    if (sel) {
+        let opts = '<option value="">-- Chọn bài nền tảng để thêm --</option>';
+        (allLessons || []).forEach(l => {
+            const mb = String(l.MaBai || l.mabai || '').trim();
+            if (!mb) return;
+            // Không cho chọn chính nó
+            if (currentEditingMaBai && mb === currentEditingMaBai) return;
+            // Không cho chọn bài đã có trong danh sách
+            if (currentSelectedPrereqs.includes(mb)) return;
+            const ten = String(l.TenBai || l.tenbai || l.title || l.ten || '').trim();
+            const chuong = String(l.Chuong || l.chuong || '').trim();
+            opts += `<option value="${esc(mb)}">[${esc(mb)}] ${esc(ten)} (${esc(chuong)})</option>`;
+        });
+        sel.innerHTML = opts;
+    }
+
+    // 2. Render chips
+    let missingCount = 0;
+    if (chipsWrap) {
+        if (!currentSelectedPrereqs.length) {
+            chipsWrap.innerHTML = '<span style="font-size:12.5px; color:var(--gray2); font-style:italic;" id="bnt-empty-hint">Chưa chọn bài nền tảng nào</span>';
+        } else {
+            chipsWrap.innerHTML = currentSelectedPrereqs.map(mb => {
+                const found = (allLessons || []).find(l => String(l.MaBai || l.mabai || '').trim() === mb);
+                if (!found) {
+                    missingCount++;
+                    return `<span style="display:inline-flex; align-items:center; gap:6px; background:#fef3c7; color:#b45309; border:1px solid #f59e0b; padding:4px 10px; border-radius:100px; font-size:12px; font-weight:600;">
+                        <span>⚠️ [${esc(mb)}] (Mã không tồn tại)</span>
+                        <i class="fa-solid fa-xmark" style="cursor:pointer; opacity:.7;" onclick="removeBaiNenTang('${esc(mb)}')"></i>
+                    </span>`;
+                }
+                const ten = String(found.TenBai || found.tenbai || found.title || found.ten || '').trim();
+                return `<span style="display:inline-flex; align-items:center; gap:6px; background:rgba(11,132,243,.1); color:var(--blue); border:1px solid rgba(11,132,243,.25); padding:4px 10px; border-radius:100px; font-size:12px; font-weight:600;">
+                    <span>[${esc(mb)}] ${esc(ten)}</span>
+                    <i class="fa-solid fa-xmark" style="cursor:pointer; opacity:.7;" onclick="removeBaiNenTang('${esc(mb)}')"></i>
+                </span>`;
+            }).join('');
+        }
+    }
+
+    // 3. Kiểm tra mã bài không tồn tại
+    if (notfoundWarn) {
+        if (missingCount > 0) {
+            notfoundWarn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo: Có <b>${missingCount}</b> mã bài nền tảng không tìm thấy trong danh mục bài học.`;
+            notfoundWarn.style.display = 'block';
+        } else {
+            notfoundWarn.style.display = 'none';
+        }
+    }
+
+    // 4. Kiểm tra chu trình phụ thuộc (Cycle Detection)
+    const cycle = checkPrerequisiteCycle(currentEditingMaBai, currentSelectedPrereqs, allLessons);
+    hasPrereqCycle = Boolean(cycle);
+
+    if (cycleWarn) {
+        if (cycle) {
+            const formattedCycle = cycle.map(id => {
+                const l = (allLessons || []).find(x => String(x.MaBai || x.mabai || '').trim() === id);
+                const name = l ? String(l.TenBai || l.tenbai || '').trim() : id;
+                return `[${id}: ${name}]`;
+            }).join(' ➔ ');
+            cycleWarn.innerHTML = `<i class="fa-solid fa-ban"></i> <b>CẢNH BÁO VÒNG PHỤ THUỘC (A ➔ B ➔ A):</b><br>Phát hiện chu trình: ${formattedCycle}.<br>Vui lòng xóa bài gây lặp để có thể lưu!`;
+            cycleWarn.style.display = 'block';
+            if (btnSave) {
+                btnSave.disabled = true;
+                btnSave.title = 'Không thể lưu khi có vòng phụ thuộc';
+            }
+        } else {
+            cycleWarn.style.display = 'none';
+            if (btnSave && btnSave.innerHTML.includes('Lưu bài giảng')) {
+                btnSave.disabled = false;
+                btnSave.title = '';
+            }
+        }
+    }
+}
+
 function renderCourseBlock(course){
     const total=Object.values(course.chapters).reduce((s,arr)=>s+arr.length,0);
     const fn=esc(course.fullName).replace(/'/g,"&#39;");
@@ -3454,11 +3694,14 @@ async function postAdminWriteJson(payload, options){
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try{
         const bodyObj = Object.assign({}, payload);
+        if (isAdminStagingMode()) {
+            bodyObj.env = 'staging';
+        }
         if(!bodyObj.adminKey){
             const k = getAdminKey();
             if(k) bodyObj.adminKey = k;
         }
-        const res = await fetch(DB_URL, {
+        const res = await fetch(getActiveDBUrl(), {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(bodyObj),
@@ -3700,6 +3943,7 @@ function openNewForm(){
     document.getElementById('f-pdfluyentap').value='';
     document.getElementById('f-thoigian').value='';
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
+    initBaiNenTangUI([], '');
     document.getElementById('f-ngaydang').valueAsDate=new Date();
     vqReset();
     window._vqTouched=false;
@@ -3762,6 +4006,7 @@ async function openEditForm(key){
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
     const rawSt = (row.TrangThai||row.trangthai||row.status||'published').toString().trim().toLowerCase();
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value = (rawSt==='draft'||rawSt==='archived') ? rawSt : 'published';
+    initBaiNenTangUI(row.BaiNenTang || row.bainentang || '', maBai);
     const nd=row.NgayDang||row.ngaydang||row.date||'';
     document.getElementById('f-ngaydang').value=nd;
     document.getElementById('quiz-builder').innerHTML='';
@@ -4617,6 +4862,10 @@ async function saveLessonForm(){
     if(badQ.length){ toast(`<i class="fa-solid fa-triangle-exclamation"></i> ${badQ.length} câu chưa đủ đáp án đúng!`,'err'); return; }
     const vqErr=vqValidate();
     if(vqErr){ toast('<i class="fa-solid fa-triangle-exclamation"></i> Câu hỏi trong video — '+vqErr,'err'); return; }
+    if(hasPrereqCycle){
+        toast('<i class="fa-solid fa-ban"></i> Không thể lưu vì có vòng phụ thuộc kiến thức (A ➔ B ➔ A)!','err');
+        return;
+    }
     const payload={
         action:'saveBaiHoc',
         originalKey:document.getElementById('f-original-key').value,
@@ -4629,10 +4878,14 @@ async function saveLessonForm(){
         PDFLuyenTap:document.getElementById('f-pdfluyentap').value.trim(),
         ThoiGianLamBai:document.getElementById('f-thoigian').value.trim(),
         TrangThai:(document.getElementById('f-trangthai')?.value||'published').trim(),
+        BaiNenTang:(document.getElementById('f-bainentang')?.value||'').trim(),
         NgayDang:document.getElementById('f-ngaydang').value||todayStr(),
         BaiTap:'', // Luyen tap trac nghiem gio luu o sheet rieng BaiTapTracNghiem (xem qbSaveToGAS ben duoi) - khong con ghi JSON vao cot nay nua de tranh gioi han 50.000 ky tu/o cua Google Sheets
         ThuTuBai:document.getElementById('f-original-ttb').value // giu nguyen thu tu cu khi sua bai - thieu field nay khien GAS ghi de ThuTuBai='' moi lan Luu, lam bai tu nhay xuong cuoi chuong
     };
+    if(isAdminStagingMode()){
+        payload.env = 'staging';
+    }
     const btn=document.getElementById('btn-save-lesson');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     try{
@@ -5693,21 +5946,21 @@ async function bulkUpdateBatch2k9(field, value) {
 function showExamFormModal(examId, defaultLoaiDe) {
     const overlay = document.getElementById('exam-form-modal-overlay');
     if (!overlay) return;
-    
+
     const errEl = document.getElementById('efm-error-msg');
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-    
+
     if (examId) {
         const ex = examListData.find(e => e.examId === examId) || { examId };
         document.getElementById('efm-title-text').textContent = 'Sửa thông tin đề thi: ' + examId;
         document.getElementById('efm-mode').value = 'edit';
-        
+
         const idInput = document.getElementById('efm-examid');
         idInput.value = examId;
         idInput.disabled = true;
         idInput.style.background = 'var(--bg2)';
         idInput.style.cursor = 'not-allowed';
-        
+
         document.getElementById('efm-tende').value = ex.tenDe || '';
         document.getElementById('efm-mota').value = ex.moTa || '';
         document.getElementById('efm-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
@@ -5715,22 +5968,22 @@ function showExamFormModal(examId, defaultLoaiDe) {
         document.getElementById('efm-socau').value = ex.soCau || 28;
         document.getElementById('efm-lop').value = ex.lop || '12';
         document.getElementById('efm-loaide').value = ex.loaiDe || defaultLoaiDe || 'thithu';
-        
+
         const isHien = (ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true');
         document.getElementById('efm-hienthi').value = isHien ? 'hien' : 'an';
-        
+
         const isMo = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo');
         document.getElementById('efm-trangthai').value = isMo ? 'mo' : 'khoa';
     } else {
         document.getElementById('efm-title-text').textContent = 'Tạo đề thi mới';
         document.getElementById('efm-mode').value = 'create';
-        
+
         const idInput = document.getElementById('efm-examid');
         idInput.value = '';
         idInput.disabled = false;
         idInput.style.background = 'var(--bg)';
         idInput.style.cursor = 'text';
-        
+
         document.getElementById('efm-tende').value = '';
         document.getElementById('efm-mota').value = '';
         document.getElementById('efm-videourl').value = '';
@@ -5741,7 +5994,7 @@ function showExamFormModal(examId, defaultLoaiDe) {
         document.getElementById('efm-hienthi').value = 'an'; // Mặc định ẩn an toàn
         document.getElementById('efm-trangthai').value = 'khoa'; // Mặc định khóa an toàn
     }
-    
+
     overlay.classList.add('show');
 }
 
@@ -5757,7 +6010,7 @@ async function submitExamFormModal() {
     const btn = document.getElementById('efm-save-btn');
     const errEl = document.getElementById('efm-error-msg');
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-    
+
     const examId = (document.getElementById('efm-examid').value || '').trim().replace(/\s+/g, '').toLowerCase();
     const tenDe = (document.getElementById('efm-tende').value || '').trim();
     const moTa = (document.getElementById('efm-mota').value || '').trim();
@@ -5768,7 +6021,7 @@ async function submitExamFormModal() {
     const loaiDe = document.getElementById('efm-loaide').value || 'thithu';
     const hienThi = document.getElementById('efm-hienthi').value || 'an';
     const trangThai = document.getElementById('efm-trangthai').value || 'khoa';
-    
+
     if (!examId) {
         if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ Vui lòng nhập mã đề (examId).'; }
         else alert('Vui lòng nhập mã đề (examId).');
@@ -5779,10 +6032,10 @@ async function submitExamFormModal() {
         else alert('Vui lòng nhập tên đề thi.');
         return;
     }
-    
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-    
+
     const payload = {
         action: 'saveExam',
         examId,
@@ -5796,11 +6049,11 @@ async function submitExamFormModal() {
         hienThi,
         trangThai
     };
-    
+
     const res = await postAdminWriteJson(payload);
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
-    
+
     if (!res || res.ok !== true) {
         const errMsg = (res && res.msg) ? res.msg : 'Lỗi máy chủ không xác định';
         if (errEl) {
@@ -5810,7 +6063,7 @@ async function submitExamFormModal() {
         toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI: ' + errMsg, 'err');
         return; // Giữ nguyên form để Thầy không mất nội dung vừa gõ
     }
-    
+
     // Cập nhật ngay trong bộ nhớ local và render lại
     const localIdx = examListData.findIndex(e => e.examId === examId);
     if (localIdx >= 0) {

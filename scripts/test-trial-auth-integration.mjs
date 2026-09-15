@@ -96,6 +96,10 @@ class MockSpreadsheet {
     this.sheets.set(name, s);
     return s;
   }
+  deleteSheet(s) {
+    if (typeof s === 'string') this.sheets.delete(s);
+    else if (s && s.name) this.sheets.delete(s.name);
+  }
 }
 
 const DEFAULT_GOOGLE_CLIENT_ID = '1022891995284-miquu1f7rlpie7ug9884sgagf21nputc.apps.googleusercontent.com';
@@ -118,6 +122,9 @@ const sandbox = {
       return {
         getProperty(k) {
           return sandboxProperties[k] || null;
+        },
+        setProperty(k, v) {
+          sandboxProperties[k] = String(v);
         }
       };
     }
@@ -125,7 +132,8 @@ const sandbox = {
   SpreadsheetApp: {
     getActiveSpreadsheet() {
       return activeSpreadsheet;
-    }
+    },
+    flush() {}
   },
   ContentService: {
     createTextOutput(text) {
@@ -247,7 +255,7 @@ function resetDatabase() {
   sandboxProperties.AUTH_SECRET = TEST_AUTH_SECRET;
   sandboxProperties.GOOGLE_CLIENT_ID = DEFAULT_GOOGLE_CLIENT_ID;
   mockFetchHandler = null;
-  
+
   // 1. TaiKhoan
   const tk = sandbox.getOrCreate('TaiKhoan', ['sdt','hoten','lop','matkhau','ngayDK','lpTotal','diemGame','loaiTK','trialExpiry','mienVideo','tracNghiemVideo','mienLuyenTap']);
   tk.appendRow(['0999999999', 'Hoc Sinh Test', '12', 'pass123', '2026-08-27', 100, 50, 'free', 0, false, true, false]);
@@ -447,7 +455,7 @@ it('18. Token giả mạo hoặc sai chữ ký bị verifyUserToken từ chối 
   resetDatabase();
   const legitRes = sandbox.loginUser({ sdt: '0988888888', matkhau: 'pass456' });
   const validToken = legitRes.user.token;
-  
+
   // Sửa 1 byte trong token
   const tamperedToken = validToken.slice(0, -4) + 'abcd';
   assert.equal(sandbox.verifyUserToken(tamperedToken), null);
@@ -467,7 +475,7 @@ it('19. Token hết hạn bị verifyUserToken từ chối (null)', () => {
     sandbox.Utilities.computeHmacSha256Signature(raw, TEST_AUTH_SECRET)
   );
   const expiredToken = sandbox.Utilities.base64EncodeWebSafe(`${raw}:${sig}`);
-  
+
   assert.equal(sandbox.verifyUserToken(expiredToken), null);
 });
 
@@ -710,6 +718,132 @@ it('33. doPost case insensitive: hỗ trợ action dạng lowercase và alias', 
   const res = sandbox.doPost(ev);
   assert.equal(res.ok, true);
   assert.equal(res.sdt, '988888888');
+});
+
+it('34. Staging routing: env="staging" định tuyến sang các sheet _Staging mà không đụng sheet Prod', () => {
+  resetDatabase();
+  // Đăng ký tài khoản trên môi trường staging
+  const regEv = {
+    postData: { contents: JSON.stringify({
+      action: 'register',
+      env: 'staging',
+      sdt: '0999111222',
+      hoten: 'Học sinh Staging',
+      matkhau: 'staging_pass_123',
+      lop: '12'
+    }) }
+  };
+  const regRes = sandbox.doPost(regEv);
+  assert.equal(regRes.ok, true);
+  assert(regRes.token || (regRes.user && regRes.user.token), 'Phải cấp session token');
+
+  // Kiểm tra: sheet TaiKhoan_Staging có user, nhưng sheet TaiKhoan production KHÔNG CÓ user này
+  const stgSheet = activeSpreadsheet.getSheetByName('TaiKhoan_Staging');
+  assert(stgSheet, 'Phải tạo sheet TaiKhoan_Staging');
+  const prodSheet = activeSpreadsheet.getSheetByName('TaiKhoan');
+  const inStaging = stgSheet.data.some(r => r[0] === '0999111222');
+  const inProd = prodSheet.data.some(r => r[0] === '0999111222');
+  assert.equal(inStaging, true, 'User phải nằm trong TaiKhoan_Staging');
+  assert.equal(inProd, false, 'User tuyệt đối KHÔNG được nằm trong TaiKhoan production');
+});
+
+it('35. initStagingAuth: Cấu hình an toàn AUTH_SECRET_STAGING và GOOGLE_CLIENT_ID', () => {
+  resetDatabase();
+  const ev = {
+    postData: { contents: JSON.stringify({
+      action: 'initstagingauth',
+      authSecretStaging: 'a_very_secure_random_staging_secret_key_64_characters_long_12345678',
+      googleClientId: '1022891995284-miquu1f7rlpie7ug9884sgagf21nputc.apps.googleusercontent.com'
+    }) }
+  };
+  const res = sandbox.doPost(ev);
+  assert.equal(res.ok, true);
+  assert.equal(res.hasStagingSecret, true);
+  assert.equal(res.hasGoogleClientId, true);
+
+  const checkEv = {
+    postData: { contents: JSON.stringify({ action: 'checkauthconfig', env: 'staging' }) }
+  };
+  const checkRes = sandbox.doPost(checkEv);
+  assert.equal(checkRes.ok, true);
+  assert.equal(checkRes.isStaging, true);
+  assert.equal(checkRes.isStrongSecret, true);
+  assert.equal(checkRes.hasGoogleClientId, true);
+});
+
+it('36. seedStagingData: Khởi tạo đủ 5 test sheets với dữ liệu mẫu chuẩn', () => {
+  resetDatabase();
+  const ev = {
+    postData: { contents: JSON.stringify({ action: 'seedstagingdata' }) }
+  };
+  const res = sandbox.doPost(ev);
+  assert.equal(res.ok, true);
+  assert.equal(res.totalLessons, 6);
+
+  assert(activeSpreadsheet.getSheetByName('BaiHoc_Staging'), 'Phải có BaiHoc_Staging');
+  assert(activeSpreadsheet.getSheetByName('TaiKhoan_Staging'), 'Phải có TaiKhoan_Staging');
+  assert(activeSpreadsheet.getSheetByName('ThietBiHocThu_Staging'), 'Phải có ThietBiHocThu_Staging');
+  assert(activeSpreadsheet.getSheetByName('TrialActivity_Staging'), 'Phải có TrialActivity_Staging');
+  assert(activeSpreadsheet.getSheetByName('TienDo_Staging'), 'Phải có TienDo_Staging');
+
+  // Kiểm tra BaiHoc_Staging có đủ 6 bài
+  const bData = activeSpreadsheet.getSheetByName('BaiHoc_Staging').data;
+  assert.equal(bData.length, 7); // 1 header + 6 bài
+});
+
+it('37. saveBaiHoc: Lưu thành công trường BaiNenTang trên môi trường staging', () => {
+  resetDatabase();
+  const ev = {
+    postData: { contents: JSON.stringify({
+      action: 'savebaihoc',
+      env: 'staging',
+      adminKey: 'secret_test_admin_key',
+      KhoaHoc: 'Vật Lý 12',
+      Chuong: 'Chương 1 — Vật lý nhiệt',
+      TenBai: 'Bài Test Có Nền Tảng',
+      MaBai: 'B_TEST_PREREQ',
+      TrangThai: 'published',
+      BaiNenTang: 'B01, B02'
+    }) }
+  };
+  const res = sandbox.doPost(ev);
+  assert.equal(res.ok, true);
+  assert.equal(res.BaiNenTang, 'B01, B02');
+
+  // Kiểm tra dòng trong BaiHoc_Staging
+  const bSheet = activeSpreadsheet.getSheetByName('BaiHoc_Staging');
+  assert(bSheet, 'Phải có BaiHoc_Staging');
+  const headers = bSheet.data[0];
+  const bntCol = headers.indexOf('BaiNenTang');
+  assert(bntCol >= 0, 'Phải có cột BaiNenTang trong header');
+  const row = bSheet.data.find(r => r[headers.indexOf('MaBai')] === 'B_TEST_PREREQ');
+  assert(row, 'Phải tìm thấy bài trong BaiHoc_Staging');
+  assert.equal(row[bntCol], 'B01, B02');
+});
+
+it('38. getBaiHoc: Public GET trả về BaiNenTang và bảo đảm ẩn bài draft/rỗng', () => {
+  resetDatabase();
+  // Nạp seed data vào staging
+  sandbox.doPost({ postData: { contents: JSON.stringify({ action: 'seedstagingdata' }) } });
+
+  const getEv = {
+    parameter: { type: 'baihoc', env: 'staging' }
+  };
+  const res = sandbox.doGet(getEv);
+  assert(Array.isArray(res), 'Public GET baihoc phải trả về mảng');
+  // 6 bài trong seed: 4 published (B01, B02, B03, B04), 2 draft (B11_DRAFT, B12_EMPTY)
+  assert.equal(res.length, 4, 'Chỉ 4 bài published được trả về');
+
+  // Kiểm tra bài B02 có BaiNenTang = 'B01'
+  const b02 = res.find(r => r.MaBai === 'B02');
+  assert(b02, 'B02 phải xuất hiện trong public list');
+  assert.equal(b02.BaiNenTang, 'B01');
+
+  // Kiểm tra draft bài B11_DRAFT và B12_EMPTY bị ẩn 100%
+  const b11 = res.find(r => r.MaBai === 'B11_DRAFT');
+  const b12 = res.find(r => r.MaBai === 'B12_EMPTY');
+  assert.equal(b11, undefined, 'B11_DRAFT phải bị ẩn');
+  assert.equal(b12, undefined, 'B12_EMPTY phải bị ẩn');
 });
 
 console.log('\n===============================================================');
