@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Trị | Vật Lý Xuân Trường</title>
+    <title>Quản Trị Live & Xem Lại | Vật Lý Xuân Trường</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
@@ -990,14 +990,14 @@
         <div class="nav-breadcrumb" id="nav-breadcrumb">
             <span class="nb-root">Admin</span>
             <i class="fa-solid fa-chevron-right nb-sep"></i>
-            <span class="nb-current" id="nb-current-title">Quản lý bài học</span>
+            <span class="nb-current" id="nb-current-title">Quản lý Live & Xem lại</span>
         </div>
     </div>
     <div class="nav-right">
         <button class="theme-toggle" onclick="toggleTheme()" title="Chuyển giao diện sáng/tối"><i class="fa-solid fa-circle-half-stroke"></i></button>
         <button class="theme-toggle" onclick="openBackendKeyModal()" title="Cài đặt khóa kết nối backend (ADMIN_KEY)"><i class="fa-solid fa-key"></i></button>
         <span class="sync-badge" id="sync-badge"><i class="fa-solid fa-circle-check"></i> Đã lưu</span>
-        <a href="https://vatlyxuantruong.io.vn/baihoc.html" target="_blank" class="btn-deploy" style="text-decoration:none">
+        <a href="https://vatlyxuantruong.io.vn/live-record.html" target="_blank" class="btn-deploy" style="text-decoration:none">
             <i class="fa-solid fa-eye"></i> Xem Web Học Sinh
         </a>
         <span class="admin-chip"><i class="fa-solid fa-gauge-high"></i> &nbsp;Admin</span>
@@ -1022,7 +1022,7 @@
     <div class="drawer-sub">HỆ THỐNG QUẢN TRỊ ADMIN</div>
     <nav class="drawer-nav">
         <a href="index.html" class="drawer-item" data-module="baihoc"><i class="fa-solid fa-book-open"></i><span>Quản lý bài học</span></a>
-        <a href="quan-ly-live.html" class="drawer-item" data-module="liverecord"><i class="fa-solid fa-satellite-dish" style="color:#dc2626"></i><span>Live & Xem lại</span></a>
+        <a href="quan-ly-live.html" class="drawer-item active" data-module="liverecord"><i class="fa-solid fa-satellite-dish" style="color:#dc2626"></i><span>Live & Xem lại</span></a>
         <a href="pham-vi-giang-day.html" class="drawer-item" data-module="teachingscope"><i class="fa-solid fa-chalkboard-user"></i><span>Phạm vi giảng dạy</span></a>
         <a href="phong-thi-thu.html" class="drawer-item" data-module="phongthithu"><i class="fa-solid fa-clipboard-check"></i><span>Phòng thi thử</span></a>
         <a href="phong-kiem-tra.html" class="drawer-item" data-module="soande"><i class="fa-solid fa-file-pen"></i><span>Phòng kiểm tra</span></a>
@@ -1035,7 +1035,7 @@
         <a href="huong-dan-he-thong.html" class="drawer-item" data-module="huongdan"><i class="fa-solid fa-circle-play"></i><span>Hướng Dẫn</span></a>
     </nav>
     <div class="drawer-foot">
-        <a href="https://vatlyxuantruong.io.vn/baihoc.html" target="_blank" class="drawer-foot-btn"><i class="fa-solid fa-eye"></i> Xem Web Học Sinh</a>
+        <a href="https://vatlyxuantruong.io.vn/live-record.html" target="_blank" class="drawer-foot-btn"><i class="fa-solid fa-eye"></i> Xem Web Học Sinh</a>
     </div>
 </aside>
 
@@ -1046,9 +1046,9 @@
 <div class="tab-content active" id="tab-baihoc">
 <div class="wrap">
     <div class="lm-toolbar">
-        <h2><i class="fa-solid fa-book-open" style="color:var(--blue);font-size:20px"></i> Danh sách bài giảng</h2>
+        <h2><i class="fa-solid fa-satellite-dish" style="color:#dc2626;font-size:20px"></i> Danh sách buổi Live & Xem lại</h2>
         <button class="btn-new" onclick="openNewForm()">
-            <i class="fa-solid fa-plus"></i> Thêm bài mới
+            <i class="fa-solid fa-plus"></i> Thêm buổi Live mới
         </button>
         <button class="btn-bulk-toggle" id="btn-bulk-toggle" onclick="toggleBulkMode()" title="Chọn nhiều bài để chuyển chương/xóa cùng lúc">
             <i class="fa-solid fa-list-check"></i> Sửa hàng loạt
@@ -1073,7 +1073,7 @@
             <div class="form-panel" id="form-panel">
                 <div class="fp-empty" id="fp-empty">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <p>Chọn một bài để sửa<br>hoặc nhấn <strong>Thêm bài mới</strong></p>
+                    <p>Chọn một bài để sửa<br>hoặc nhấn <strong>Thêm buổi Live mới</strong></p>
                 </div>
                 <div id="fp-form" style="display:none">
                     <div class="fp-head">
@@ -1109,6 +1109,32 @@
                             <select id="f-chuong" onchange="onChuongSelectChange()"></select>
                             <input id="f-chuong-new" placeholder="Nhập tên chương MỚI, VD: Chương 1 — Vật lý nhiệt" style="display:none;margin-top:6px" oninput="checkChuongDup()">
                             <div class="dup-warn" id="f-chuong-warn" style="display:none"></div>
+                        </div>
+                        <!-- ─── KHUNG CẤU HÌNH LIVE & XEM LẠI ─── -->
+                        <div class="form-field" style="border:1.5px solid #0b84f3;border-radius:10px;padding:14px 16px;background:rgba(11,132,243,0.03);margin:14px 0">
+                            <div style="font-weight:800;font-size:13.5px;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                                <i class="fa-solid fa-satellite-dish"></i> CẤU HÌNH PHIÊN LIVE & XEM LẠI
+                            </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>Ngày & Giờ phát sóng Live</label>
+                                    <input type="datetime-local" id="f-live-time">
+                                </div>
+                                <div class="form-field">
+                                    <label>Link phòng Live (YouTube Live / Zoom / Meet)</label>
+                                    <input id="f-live-link" placeholder="https://www.youtube.com/watch?v=...">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>Tài liệu chuẩn bị trước Live (PDF Drive)</label>
+                                    <input id="f-live-doc" placeholder="https://drive.google.com/file/d/...">
+                                </div>
+                                <div class="form-field">
+                                    <label>Link video ghi lại (sau khi Live xong)</label>
+                                    <input id="f-live-record" placeholder="https://youtu.be/... (dán khi live xong)">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-field">
                             <label>Tên bài <span>*</span></label>
@@ -2147,7 +2173,7 @@ function invalidateCache(key){
 /* ════════════════════════════════════
    KHOÁ GHI: tự gắn mật khẩu admin vào mọi thao tác ghi
 ════════════════════════════════════ */
-const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope','getbaihocadmin','getvideocauhoiadmin','getbaitaptracnghiemadmin'];
+const ADMIN_WRITE_ACTIONS = ['savebaihoc','deletebaihoc','savequestions','savenganhang','deletenganhang','updatenganhang','importnganhang','updatebaihocvideo','saveexam','bulkupdateexams','deleteexam','savelivesession','deletelivesession','setvipstatus','deleteaccount','savekhoaconfig','resetdevice','savevideocauhoi','savehuongdan','bulksetbainganhang','bulksetchatluongnganhang','pingadmin','updateaccount','savebaitaptracnghiem','savesetting','saveteachingscope','getliverecordadmin','saveliverecord','deleteliverecord','getvideocauhoiadmin','getbaitaptracnghiemadmin'];
 (function(){
     const _fetch = window.fetch.bind(window);
     window.fetch = function(url, opts){
@@ -2860,7 +2886,7 @@ async function bulkDeleteSelected(){
     let ok=0, fail=0;
     for(const key of keys){
         const parts = key.split('|||');
-        const payload = {action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:parts[0]||'', Chuong:parts[1]||'', TenBai:parts[2]||''};
+        const payload = {action:'deleteLiveRecord', key, originalKey:key, KhoaHoc:parts[0]||'', Chuong:parts[1]||'', TenBai:parts[2]||''};
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
     }
@@ -2913,7 +2939,7 @@ async function confirmBulkMove(){
         const row = allLessons.find(r=>lessonKeyOf(r)===key);
         if(!row){ fail++; continue; }
         const payload = {
-            action:'saveBaiHoc', originalKey:key,
+            action:'saveLiveRecord', originalKey:key,
             KhoaHoc:khoaDich, Chuong:chuongDich, TenBai:tenBai,
             Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
             MoTaBai:row.MoTaBai||row.motabai||'',
@@ -2981,7 +3007,7 @@ async function saveLessonOrderFromDOM(wrap){
         byKey[khoa+'|||'+chuong+'|||'+ten] = r;
     });
     const buildPayload = (r, key, ttb) => ({
-        action:'saveBaiHoc',
+        action:'saveLiveRecord',
         originalKey: key,
         KhoaHoc: khoa, Chuong: chuong,
         TenBai: r.TenBai||r.tenbai||r.title||r.ten||'',
@@ -3023,7 +3049,7 @@ async function loadLessons(){
         document.getElementById('lesson-list-wrap').innerHTML=`<div class="loading-row"><i class="fa-solid fa-spinner fa-spin" style="color:var(--blue);font-size:24px"></i><p style="margin-top:12px;font-size:14px">Đang tải danh sách bài học (admin)...</p></div>`;
     }
     try{
-        const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+        const res = await postAdminWriteJson({ action: 'getliverecordadmin' });
         if(res && res.ok && Array.isArray(res.data)){
             allLessons = res.data;
             aSetCache(CKEY, res.data);
@@ -3097,7 +3123,7 @@ function khoaOf(r){ return r.KhoaHoc||r.khoahoc||r.course||r.mon||'Khác'; }
 // mang tên mới, phần còn lại vẫn tên cũ) — sự cố xảy ra ngày 5/8/2026 với khóa "Chuyên Đề Lí
 // Thuyết GĐ1" (chỉ 17/33 bài được đổi tên vì allLessons lúc đó là cache thiếu bài).
 async function fetchFreshLessons(){
-    const res = await postAdminWriteJson({ action: 'getbaihocadmin' });
+    const res = await postAdminWriteJson({ action: 'getliverecordadmin' });
     if(res && res.ok && Array.isArray(res.data)){
         return res.data;
     }
@@ -3609,7 +3635,7 @@ function renderLessonList(){
     });
     const subjects = groupLessons(filtered);
     if(Object.keys(subjects).length===0){
-        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào phù hợp với bộ lọc.<br>Nhấn <strong>Thêm bài mới</strong> để bắt đầu!</p></div>';
+        wrap.innerHTML='<div class="empty-list"><i class="fa-solid fa-box-open"></i><p>Chưa có bài giảng nào phù hợp với bộ lọc.<br>Nhấn <strong>Thêm buổi Live mới</strong> để bắt đầu!</p></div>';
         renderBulkActionBar();
         return;
     }
@@ -3718,7 +3744,7 @@ async function renameCourse(fullName){
     let ok=0, fail=0;
     for(const l of lessons){
         const payload={
-            action:'saveBaiHoc',
+            action:'saveLiveRecord',
             originalKey:(l.KhoaHoc||'')+'|||'+(l.Chuong||l.chuong||'')+'|||'+(l.TenBai||l.tenbai||''),
             KhoaHoc:newFull,Chuong:l.Chuong||l.chuong||'',TenBai:l.TenBai||l.tenbai||'',
             Video:l.Video||l.video||'',VideoGiai:l.VideoGiai||l.videogiai||'',
@@ -3759,7 +3785,7 @@ async function deleteCourse(fullName){
     for(const l of lessons){
         const khoaV=l.KhoaHoc||'', chuongV=l.Chuong||l.chuong||'', tenBaiV=l.TenBai||l.tenbai||'';
         const key=khoaV+'|||'+chuongV+'|||'+tenBaiV;
-        const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoaV, Chuong:chuongV, TenBai:tenBaiV};
+        const payload={action:'deleteLiveRecord', key, originalKey:key, KhoaHoc:khoaV, Chuong:chuongV, TenBai:tenBaiV};
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
     }
@@ -3779,7 +3805,7 @@ async function deleteCourse(fullName){
     renderLessonList();
 }
 
-// Thêm bài mới với subject được chọn sẵn
+// Thêm buổi Live mới với subject được chọn sẵn
 function openNewFormForSubject(subjectName){
     openNewForm();
     const lopEl = document.getElementById('f-lop');
@@ -3799,7 +3825,7 @@ Tên mới:`, oldChuong);
     let ok=0, fail=0;
     for(const row of affected){
         const key=`${khoa}|||${oldChuong}|||${row.TenBai||row.tenbai||row.title||row.ten||''}`;
-        const payload={action:'saveBaiHoc', originalKey:key, KhoaHoc:khoa, Chuong:newName,
+        const payload={action:'saveLiveRecord', originalKey:key, KhoaHoc:khoa, Chuong:newName,
             TenBai:row.TenBai||row.tenbai||row.title||row.ten||'',
             Video:row.Video||row.video||'', VideoGiai:row.VideoGiai||row.videogiai||'',
             MoTaBai:row.MoTaBai||row.motabai||'', PDF:row.PDF||row.pdf||'',
@@ -3826,7 +3852,7 @@ Sẽ xóa ${affected.length} bài. Không thể hoàn tác!`)) return;
     for(const row of affected){
         const tenBaiV = row.TenBai||row.tenbai||row.title||row.ten||'';
         const key = khoa+'|||'+chuong+'|||'+tenBaiV;
-        const payload={action:'deleteBaiHoc', key, originalKey:key, KhoaHoc:khoa, Chuong:chuong, TenBai:tenBaiV};
+        const payload={action:'deleteLiveRecord', key, originalKey:key, KhoaHoc:khoa, Chuong:chuong, TenBai:tenBaiV};
         if(await postAdminWriteWithRetry(payload)) ok++; else fail++;
         await sleep(150);
     }
@@ -3893,6 +3919,10 @@ function openNewForm(){
     document.getElementById('f-pdflt').value='';
     document.getElementById('f-pdfluyentap').value='';
     document.getElementById('f-thoigian').value='';
+    if(document.getElementById('f-live-time')) document.getElementById('f-live-time').value='';
+    if(document.getElementById('f-live-link')) document.getElementById('f-live-link').value='';
+    if(document.getElementById('f-live-doc')) document.getElementById('f-live-doc').value='';
+    if(document.getElementById('f-live-record')) document.getElementById('f-live-record').value='';
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
     initBaiNenTangUI([], '');
     document.getElementById('f-ngaydang').valueAsDate=new Date();
@@ -3955,6 +3985,21 @@ async function openEditForm(key){
     document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
     document.getElementById('f-pdfluyentap').value=row.PDFLuyenTap||row.pdfluyentap||'';
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
+    const ltVal = (row.NgayGioLive || row.ngaygiolive || '').toString().trim();
+    let ltFormatted = '';
+    if(ltVal){
+        try {
+            const d = new Date(ltVal);
+            if(!isNaN(d.getTime())){
+                const pad = n => String(n).padStart(2, '0');
+                ltFormatted = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            } else { ltFormatted = ltVal; }
+        }catch(e){ ltFormatted = ltVal; }
+    }
+    if(document.getElementById('f-live-time')) document.getElementById('f-live-time').value = ltFormatted;
+    if(document.getElementById('f-live-link')) document.getElementById('f-live-link').value = row.LinkLive || row.linklive || '';
+    if(document.getElementById('f-live-doc')) document.getElementById('f-live-doc').value = row.TaiLieuLive || row.tailieulive || '';
+    if(document.getElementById('f-live-record')) document.getElementById('f-live-record').value = row.VideoGhiLai || row.videoghilai || '';
     const rawSt = (row.TrangThai||row.trangthai||row.status||'published').toString().trim().toLowerCase();
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value = (rawSt==='draft'||rawSt==='archived') ? rawSt : 'published';
     initBaiNenTangUI(row.BaiNenTang || row.bainentang || '', maBai);
@@ -4818,9 +4863,13 @@ async function saveLessonForm(){
         return;
     }
     const payload={
-        action:'saveBaiHoc',
+        action:'saveLiveRecord',
         originalKey:document.getElementById('f-original-key').value,
         KhoaHoc:khoa, Chuong:chuong, TenBai:tenbai,
+        NgayGioLive:(document.getElementById('f-live-time')?.value||'').trim(),
+        LinkLive:(document.getElementById('f-live-link')?.value||'').trim(),
+        TaiLieuLive:(document.getElementById('f-live-doc')?.value||'').trim(),
+        VideoGhiLai:(document.getElementById('f-live-record')?.value||'').trim(),
         Video:document.getElementById('f-video').value.trim(),
         VideoGiai:document.getElementById('f-videogiai').value.trim(),
         MoTaBai:document.getElementById('f-motabai').value.trim(),
@@ -4860,7 +4909,7 @@ async function saveLessonForm(){
         const orig=document.getElementById('f-original-key').value;
         if(orig && orig!==newKey){ allLessons=allLessons.filter(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k!==orig; }); }
         const existing=allLessons.findIndex(r=>{ const k=(khoaOf(r))+'|||'+(r.Chuong||r.chuong||r.chapter||'')+'|||'+(r.TenBai||r.tenbai||r.title||r.ten||''); return k===newKey; });
-        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,TrangThai:payload.TrangThai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
+        const newRow={KhoaHoc:khoa,Chuong:chuong,TenBai:tenbai,NgayGioLive:payload.NgayGioLive,LinkLive:payload.LinkLive,TaiLieuLive:payload.TaiLieuLive,VideoGhiLai:payload.VideoGhiLai,Video:payload.Video,VideoGiai:payload.VideoGiai,MoTaBai:payload.MoTaBai,PDF:payload.PDF,PDFLyThuyet:payload.PDFLyThuyet,PDFLuyenTap:payload.PDFLuyenTap,ThoiGianLamBai:payload.ThoiGianLamBai,TrangThai:payload.TrangThai,NgayDang:payload.NgayDang,BaiTap:payload.BaiTap,ThuTuBai:payload.ThuTuBai};
         if(existing>=0) allLessons[existing]=newRow; else allLessons.push(newRow);
         renderLessonList();
     }catch(err){
@@ -4885,7 +4934,7 @@ async function doDelete(){
     const keyToDelete=pendingDelete;
     closeConfirm();
     const parts=keyToDelete.split('|||');
-    const payload={action:'deleteBaiHoc', key:keyToDelete, originalKey:keyToDelete, KhoaHoc:parts[0]||'',Chuong:parts[1]||'',TenBai:parts[2]||''};
+    const payload={action:'deleteLiveRecord', key:keyToDelete, originalKey:keyToDelete, KhoaHoc:parts[0]||'',Chuong:parts[1]||'',TenBai:parts[2]||''};
     try{
         const success = await postAdminWrite(payload);
         if(!success){ toast('<i class="fa-solid fa-bug"></i> Lỗi xóa: Google Sheets từ chối (thử lại nhé)','err'); return; }

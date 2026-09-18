@@ -1,0 +1,26 @@
+// ══════════════════════════════════════════════════════════════════
+// CẬP NHẬT BACKEND GOOGLE APPS SCRIPT: TÍNH NĂNG "LIVE & XEM LẠI"
+// Sheet độc lập: LiveRecord
+// Tuyệt đối không can thiệp hay làm ảnh hưởng sheet BaiHoc
+// ══════════════════════════════════════════════════════════════════
+
+// 1. SCHEMA SHEET LiveRecord:
+const LIVERECORD_COLS = [
+  'KhoaHoc','Chuong','TenBai','NgayGioLive','LinkLive','TaiLieuLive','VideoGhiLai',
+  'Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap',
+  'ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'
+];
+
+// 2. ROUTING:
+// Trong doGet(e):
+//   if (type === 'liverecord') return getLiveRecord(e);
+// Trong doPost(e):
+//   if (action === 'getliverecordadmin') return getLiveRecordAdmin(data);
+//   if (action === 'saveliverecord') return saveLiveRecord(data);
+//   if (action === 'deleteliverecord') return deleteLiveRecord(data);
+
+// 3. CÁC HÀM XỬ LÝ (ĐÃ TÍCH HỢP TRONG src/Mã.js):
+// - getLiveRecord(e): Trả về JSON các buổi Live có trạng thái published
+// - getLiveRecordAdmin(data): Trả về toàn bộ bản ghi Live cho trang Quản trị Admin
+// - saveLiveRecord(data): Thêm mới hoặc cập nhật thông tin phiên Live (kèm ngày giờ, link live, tài liệu, video ghi lại)
+// - deleteLiveRecord(data): Xóa bản ghi trong sheet LiveRecord
