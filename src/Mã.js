@@ -9,6 +9,7 @@ function doGet(e) {
     if (type === 'baitaptracnghiem') return getBaiTapTracNghiem(e.parameter.bai || '');
     if (type === 'transcript')       return getVideoTranscript(e.parameter.v || '', e.parameter.lang || '');
     if (type === 'baihoc')           return getBaiHoc();
+    if (type === 'liverecord')       return getLiveRecord(e);
     if (type === 'diemthi')          return getDiemThi();
     if (type === 'tiendo')           return getTienDo(hs);
     if (type === 'triallimit')       return jsonOut({ ok: false, error: 'METHOD_NOT_ALLOWED', msg: 'Trial limit endpoint yêu cầu phương thức POST với token trong request body' });
@@ -49,6 +50,9 @@ function doPost(e) {
     if (action === 'completetriallesson') return completeTrialLesson(data);
     if (action === 'cleartrialactivity') return clearTrialActivity(data);
     if (action === 'getbaihocadmin' || action === 'get_bai_hoc_admin') return getBaiHocAdmin(data);
+    if (action === 'getliverecordadmin' || action === 'get_live_record_admin') return getLiveRecordAdmin(data);
+    if (action === 'saveliverecord' || action === 'save_live_record') return saveLiveRecord(data);
+    if (action === 'deleteliverecord' || action === 'delete_live_record') return deleteLiveRecord(data);
     if (action === 'getvideocauhoiadmin' || action === 'get_video_cau_hoi_admin') return getVideoCauHoiAdmin(data);
     if (action === 'getbaitaptracnghiemadmin' || action === 'get_bai_tap_trac_nghiem_admin') return getBaiTapTracNghiemAdmin(data);
     if (action === 'getquestionstats' || action === 'get_question_stats') return getQuestionStats(data);
@@ -1052,6 +1056,118 @@ function deleteBaiHoc(data) {
     return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
   }
   const sheet = getOrCreate('BaiHoc', ['KhoaHoc','Chuong','TenBai','Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','ThoiGianLamBai']);
+  const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.key || data.originalKey);
+  if (rowIdx) sheet.deleteRow(rowIdx);
+  triggerStaticRefresh();
+  return jsonOut({ ok: true });
+}
+
+
+// ── GET & POST: Live & Xem Lại (LiveRecord) ──────────────────
+const LIVERECORD_COLS = [
+  'KhoaHoc','Chuong','TenBai','NgayGioLive','LinkLive','TaiLieuLive','VideoGhiLai',
+  'Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap',
+  'ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'
+];
+
+function getLiveRecord(e) {
+  const sheet = getOrCreate('LiveRecord', LIVERECORD_COLS);
+  const rawRows = sheetToJson(sheet);
+  const publicRows = rawRows
+    .map(function(r) {
+      const st = normalizeLessonStatus(r.TrangThai || r.trangThai);
+      return Object.assign({}, r, { TrangThai: st });
+    })
+    .filter(function(r) {
+      return r.TrangThai === 'published';
+    });
+  return jsonOut(publicRows);
+}
+
+function getLiveRecordAdmin(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const sheet = getOrCreate('LiveRecord', LIVERECORD_COLS);
+  const rawRows = sheetToJson(sheet);
+  const allRows = rawRows.map(function(r) {
+    const st = normalizeLessonStatus(r.TrangThai || r.trangThai);
+    return Object.assign({}, r, { TrangThai: st });
+  });
+  return jsonOut({ ok: true, data: allRows });
+}
+
+function saveLiveRecord(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const COLS = typeof LIVERECORD_COLS !== 'undefined' ? LIVERECORD_COLS : [
+    'KhoaHoc','Chuong','TenBai','NgayGioLive','LinkLive','TaiLieuLive','VideoGhiLai',
+    'Video','VideoGiai','MoTaBai','NgayDang','BaiTap','PDF','PDFLyThuyet','PDFLuyenTap',
+    'ThoiGianLamBai','ThuTuBai','MaBai','TrangThai'
+  ];
+  const sheet = getOrCreate('LiveRecord', COLS);
+  const inputMaBai = String((data && (data.maBai || data.MaBai)) || '').trim();
+  const rowIdx = (inputMaBai && findRowByMaBai(sheet, inputMaBai)) || data.rowIndex || findRowByKey(sheet, data.originalKey);
+
+  let maBai = '';
+  let existingThuTuBai = '';
+  let existingTrangThai = '';
+  if (rowIdx) {
+    const h_ = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
+    const c_ = h_.indexOf('MaBai');
+    if (c_ >= 0) maBai = sheet.getRange(rowIdx, c_+1).getValue() || '';
+    const ct_ = h_.indexOf('ThuTuBai');
+    if (ct_ >= 0) {
+      const v_ = sheet.getRange(rowIdx, ct_+1).getValue();
+      existingThuTuBai = (v_===null || v_===undefined) ? '' : v_;
+    }
+    const cs_ = h_.indexOf('TrangThai');
+    if (cs_ >= 0) {
+      const s_ = sheet.getRange(rowIdx, cs_+1).getValue();
+      existingTrangThai = (s_===null || s_===undefined) ? '' : s_;
+    }
+  }
+  if (!maBai) maBai = inputMaBai || ('LIVE_' + Utilities.getUuid().replace(/-/g,'').slice(0,10));
+  const ttbToSave = (data.ThuTuBai !== undefined && data.ThuTuBai !== null && data.ThuTuBai !== '') ? data.ThuTuBai : existingThuTuBai;
+  const rawStatus = (data.TrangThai !== undefined && data.TrangThai !== null) ? data.TrangThai : ((data.trangThai !== undefined && data.trangThai !== null) ? data.trangThai : existingTrangThai);
+  const trangThaiToSave = normalizeLessonStatus(rawStatus);
+
+  const rowData = {
+    KhoaHoc:     data.KhoaHoc     || '',
+    Chuong:      data.Chuong      || '',
+    TenBai:      data.TenBai      || '',
+    NgayGioLive: data.NgayGioLive || '',
+    LinkLive:    data.LinkLive    || '',
+    TaiLieuLive: data.TaiLieuLive || '',
+    VideoGhiLai: data.VideoGhiLai || '',
+    Video:       data.Video       || data.VideoGhiLai || '',
+    VideoGiai:   data.VideoGiai   || '',
+    MoTaBai:     data.MoTaBai     || '',
+    NgayDang:    data.NgayDang    || new Date().toISOString(),
+    BaiTap:      data.BaiTap      || '',
+    PDF:         data.PDF         || data.TaiLieuLive || '',
+    PDFLyThuyet: data.PDFLyThuyet || '',
+    PDFLuyenTap: data.PDFLuyenTap || '',
+    ThoiGianLamBai: data.ThoiGianLamBai || '',
+    ThuTuBai:    ttbToSave,
+    MaBai:       maBai,
+    TrangThai:   trangThaiToSave
+  };
+  if (rowIdx) {
+    writeRowNamed(sheet, rowIdx, rowData);
+  } else {
+    appendRowNamed(sheet, rowData);
+  }
+  triggerStaticRefresh();
+  return jsonOut({ ok: true, maBai: maBai, TrangThai: trangThaiToSave });
+}
+
+function deleteLiveRecord(data) {
+  if (!requireAdmin(data && data.adminKey)) {
+    return jsonOut({ ok: false, msg: 'Unauthorized: sai hoặc thiếu adminKey' });
+  }
+  const sheet = getOrCreate('LiveRecord', LIVERECORD_COLS);
   const rowIdx = (data.maBai && findRowByMaBai(sheet, data.maBai)) || data.rowIndex || findRowByKey(sheet, data.key || data.originalKey);
   if (rowIdx) sheet.deleteRow(rowIdx);
   triggerStaticRefresh();
