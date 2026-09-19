@@ -1110,30 +1110,15 @@
                             <input id="f-chuong-new" placeholder="Nhập tên chương MỚI, VD: Chương 1 — Vật lý nhiệt" style="display:none;margin-top:6px" oninput="checkChuongDup()">
                             <div class="dup-warn" id="f-chuong-warn" style="display:none"></div>
                         </div>
-                        <!-- ─── KHUNG CẤU HÌNH LIVE & XEM LẠI ─── -->
-                        <div class="form-field" style="border:1.5px solid #0b84f3;border-radius:10px;padding:14px 16px;background:rgba(11,132,243,0.03);margin:14px 0">
-                            <div style="font-weight:800;font-size:13.5px;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px">
-                                <i class="fa-solid fa-satellite-dish"></i> CẤU HÌNH PHIÊN LIVE & XEM LẠI
+                        <!-- ─── THÔNG TIN BUỔI LIVE ─── -->
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Ngày & Giờ phát sóng Live <span style="font-weight:400;color:var(--gray2)">(để trống nếu chưa lên lịch)</span></label>
+                                <input type="datetime-local" id="f-live-time">
                             </div>
-                            <div class="form-row">
-                                <div class="form-field">
-                                    <label>Ngày & Giờ phát sóng Live</label>
-                                    <input type="datetime-local" id="f-live-time">
-                                </div>
-                                <div class="form-field">
-                                    <label>Link phòng Live (YouTube Live / Zoom / Meet)</label>
-                                    <input id="f-live-link" placeholder="https://www.youtube.com/watch?v=...">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-field">
-                                    <label>Tài liệu chuẩn bị trước Live (PDF Drive)</label>
-                                    <input id="f-live-doc" placeholder="https://drive.google.com/file/d/...">
-                                </div>
-                                <div class="form-field">
-                                    <label>Link video ghi lại (sau khi Live xong)</label>
-                                    <input id="f-live-record" placeholder="https://youtu.be/... (dán khi live xong)">
-                                </div>
+                            <div class="form-field">
+                                <label>Link phòng Live trực tiếp <span style="font-weight:400;color:var(--gray2)">(YouTube Live / Zoom / Meet khi đang phát)</span></label>
+                                <input id="f-live-link" placeholder="https://www.youtube.com/watch?v=...">
                             </div>
                         </div>
                         <div class="form-field">
@@ -1141,9 +1126,9 @@
                             <input id="f-tenbai" placeholder="VD: Bài 1: Nhiệt năng và nội năng">
                         </div>
                         <div class="form-field">
-                            <label>Link Video YouTube (bài giảng)</label>
+                            <label>Link Video YouTube (bài giảng / video xem lại sau Live)</label>
                             <div class="input-wrap">
-                                <input id="f-video" placeholder="https://youtu.be/...">
+                                <input id="f-video" placeholder="https://youtu.be/... (video phát lại sau live)">
                                 <button class="btn-preview" onclick="previewVid('f-video','prev-video')"><i class="fa-solid fa-eye"></i></button>
                             </div>
                             <div class="video-preview" id="prev-video"><iframe allowfullscreen></iframe></div>
@@ -1165,7 +1150,7 @@
                             <input id="f-pdflt" placeholder="https://drive.google.com/file/d/...">
                         </div>
                         <div class="form-field">
-                            <label>Link PDF Bài Tập <span style="font-weight:400;color:var(--gray2)">(Google Drive, dán link chia sẻ — bài tập áp dụng trong video)</span></label>
+                            <label>Link PDF Bài Tập / Tài liệu buổi Live <span style="font-weight:400;color:var(--gray2)">(Google Drive — tài liệu chuẩn bị & bài tập áp dụng)</span></label>
                             <input id="f-pdf" placeholder="https://drive.google.com/file/d/...">
                         </div>
                         <div class="form-field">
@@ -3921,8 +3906,6 @@ function openNewForm(){
     document.getElementById('f-thoigian').value='';
     if(document.getElementById('f-live-time')) document.getElementById('f-live-time').value='';
     if(document.getElementById('f-live-link')) document.getElementById('f-live-link').value='';
-    if(document.getElementById('f-live-doc')) document.getElementById('f-live-doc').value='';
-    if(document.getElementById('f-live-record')) document.getElementById('f-live-record').value='';
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value='published';
     initBaiNenTangUI([], '');
     document.getElementById('f-ngaydang').valueAsDate=new Date();
@@ -3978,10 +3961,10 @@ async function openEditForm(key){
     fillKhoaSelect(sc_row.courseName || '');
     fillChuongSelect(row.Chuong||row.chuong||row.chapter||'');
     document.getElementById('f-tenbai').value=row.TenBai||row.tenbai||row.title||row.ten||'';
-    document.getElementById('f-video').value=row.Video||row.video||row.link||'';
+    document.getElementById('f-video').value=row.Video||row.video||row.link||row.VideoGhiLai||row.videoghilai||'';
     document.getElementById('f-videogiai').value=row.VideoGiai||row.videogiai||row.videochua||'';
     document.getElementById('f-motabai').value=row.MoTaBai||row.motabai||row.desc||'';
-    document.getElementById('f-pdf').value=row.PDF||row.pdf||'';
+    document.getElementById('f-pdf').value=row.PDF||row.pdf||row.TaiLieuLive||row.tailieulive||'';
     document.getElementById('f-pdflt').value=row.PDFLyThuyet||row.pdflythuyet||row.pdflt||'';
     document.getElementById('f-pdfluyentap').value=row.PDFLuyenTap||row.pdfluyentap||'';
     document.getElementById('f-thoigian').value=row.ThoiGianLamBai||row.thoigianlambai||row.thoigian||'';
@@ -3998,8 +3981,6 @@ async function openEditForm(key){
     }
     if(document.getElementById('f-live-time')) document.getElementById('f-live-time').value = ltFormatted;
     if(document.getElementById('f-live-link')) document.getElementById('f-live-link').value = row.LinkLive || row.linklive || '';
-    if(document.getElementById('f-live-doc')) document.getElementById('f-live-doc').value = row.TaiLieuLive || row.tailieulive || '';
-    if(document.getElementById('f-live-record')) document.getElementById('f-live-record').value = row.VideoGhiLai || row.videoghilai || '';
     const rawSt = (row.TrangThai||row.trangthai||row.status||'published').toString().trim().toLowerCase();
     if(document.getElementById('f-trangthai')) document.getElementById('f-trangthai').value = (rawSt==='draft'||rawSt==='archived') ? rawSt : 'published';
     initBaiNenTangUI(row.BaiNenTang || row.bainentang || '', maBai);
@@ -4868,8 +4849,8 @@ async function saveLessonForm(){
         KhoaHoc:khoa, Chuong:chuong, TenBai:tenbai,
         NgayGioLive:(document.getElementById('f-live-time')?.value||'').trim(),
         LinkLive:(document.getElementById('f-live-link')?.value||'').trim(),
-        TaiLieuLive:(document.getElementById('f-live-doc')?.value||'').trim(),
-        VideoGhiLai:(document.getElementById('f-live-record')?.value||'').trim(),
+        TaiLieuLive:document.getElementById('f-pdf').value.trim(),
+        VideoGhiLai:document.getElementById('f-video').value.trim(),
         Video:document.getElementById('f-video').value.trim(),
         VideoGiai:document.getElementById('f-videogiai').value.trim(),
         MoTaBai:document.getElementById('f-motabai').value.trim(),
