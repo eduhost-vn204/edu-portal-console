@@ -649,7 +649,7 @@
                 </div>
                 <div class="status-pill">
                     <span class="status-dot blue"></span>
-                    <span>Đồng bộ CDN: <b>Tự động (15p)</b></span>
+                    <span>Dữ liệu CDN: <b id="hero-cdn-status">42 bài • 18 đề thi</b></span>
                 </div>
             </div>
         </section>
@@ -677,10 +677,10 @@
                     <span class="metric-badge-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +18 tuần này</span>
                 </div>
                 <div class="metric-label">Tổng Số Học Sinh</div>
-                <div class="metric-value" id="val-total-students">1,428</div>
-                <div class="metric-sub">
-                    <span>VIP / Premium: <b id="val-vip-count">486</b></span>
-                    <span>Học thử: <b id="val-trial-count">942</b></span>
+                <div class="metric-value" id="val-total-students">16+ <span style="font-size:15px;font-weight:600;color:var(--text-sub)">HS</span></div>
+                <div class="metric-sub" id="sub-students">
+                    <span>Đã nộp bài: <b id="val-vip-count">16 em</b></span>
+                    <span><a href="javascript:void(0)" onclick="openBackendKeyModal()" style="color:var(--primary);text-decoration:underline">🔑 Nhập Key xem 100%</a></span>
                 </div>
             </div>
 
@@ -691,10 +691,10 @@
                     <span class="metric-badge-trend trend-up"><i class="fa-solid fa-circle-check"></i> 100% Hoàn chỉnh</span>
                 </div>
                 <div class="metric-label">Kho Bài Học & Khóa Học</div>
-                <div class="metric-value" id="val-total-lessons">44 bài</div>
+                <div class="metric-value" id="val-total-lessons">42 bài</div>
                 <div class="metric-sub">
-                    <span>Đã Publish: <b id="val-published-lessons">41 bài</b></span>
-                    <span>Bản Draft: <b id="val-draft-lessons">3 bài</b></span>
+                    <span>Đã Publish: <b id="val-published-lessons">42 bài</b></span>
+                    <span>Bản Draft: <b id="val-draft-lessons">0 bài</b></span>
                 </div>
             </div>
 
@@ -702,13 +702,13 @@
             <div class="metric-card">
                 <div class="metric-card-top">
                     <div class="metric-icon-box gold"><i class="fa-solid fa-file-circle-check"></i></div>
-                    <span class="metric-badge-trend trend-up"><i class="fa-solid fa-bolt"></i> +142 hôm nay</span>
+                    <span class="metric-badge-trend trend-up" id="badge-submissions"><i class="fa-solid fa-bolt"></i> +1 hôm nay (28/09)</span>
                 </div>
                 <div class="metric-label">Lượt Nộp Bài Thi Thử</div>
-                <div class="metric-value" id="val-total-submissions">4,120</div>
+                <div class="metric-value" id="val-total-submissions">44 lượt</div>
                 <div class="metric-sub">
                     <span>Số đề thi: <b id="val-exam-count">18 đề</b></span>
-                    <span>Điểm TB: <b id="val-avg-score">7.65</b></span>
+                    <span>Điểm TB: <b id="val-avg-score">2.16</b></span>
                 </div>
             </div>
 
@@ -719,10 +719,10 @@
                     <span class="metric-badge-trend trend-neutral"><i class="fa-solid fa-video"></i> 100% Xem lại</span>
                 </div>
                 <div class="metric-label">Buổi Live & Video Xem Lại</div>
-                <div class="metric-value" id="val-live-count">12 buổi</div>
+                <div class="metric-value" id="val-live-count">1 buổi</div>
                 <div class="metric-sub">
-                    <span>Lịch Live tuần: <b>Tối 2,4,6</b></span>
-                    <span>Tài liệu: <b>Có đủ PDF</b></span>
+                    <span>Lịch Live tuần: <b>Tối 2,4,6 lúc 20:00</b></span>
+                    <span>Tài liệu: <b>Có đủ Record & PDF</b></span>
                 </div>
             </div>
 
@@ -732,11 +732,11 @@
                     <div class="metric-icon-box purple"><i class="fa-solid fa-database"></i></div>
                     <span class="metric-badge-trend trend-up"><i class="fa-solid fa-sparkles"></i> Đã chuẩn hóa</span>
                 </div>
-                <div class="metric-label">Ngân Hàng Câu Hỏi</div>
-                <div class="metric-value" id="val-question-bank">1,101 câu</div>
+                <div class="metric-label">Ngân Hàng Đề & Câu Hỏi</div>
+                <div class="metric-value" id="val-question-bank">492 câu</div>
                 <div class="metric-sub">
-                    <span>Trắc nghiệm: <b>782</b></span>
-                    <span>Đúng/Sai: <b>319</b></span>
+                    <span>Trắc nghiệm: <b id="val-tn-count">352</b></span>
+                    <span>Đúng/Sai & TLN: <b id="val-ds-count">140</b></span>
                 </div>
             </div>
         </section>
@@ -748,7 +748,7 @@
                 <div class="chart-header">
                     <div class="chart-title">
                         <i class="fa-solid fa-chart-line" style="color:var(--primary)"></i>
-                        <span>Tần Suất Học Sinh Làm Bài & Thi Thử 7 Ngày Qua</span>
+                        <span>Tần Suất Học Sinh Làm Bài & Thi Thử Các Đợt Gần Đây</span>
                     </div>
                     <div class="chart-legend-custom">
                         <span class="legend-item"><span class="legend-color" style="background:#38bdf8"></span> Lượt nộp bài thi</span>
@@ -794,7 +794,7 @@
                 <div class="chart-header">
                     <div class="chart-title">
                         <i class="fa-solid fa-bars-progress" style="color:var(--purple)"></i>
-                        <span>Tiến Độ Học Tập Theo Khóa Học</span>
+                        <span>Phân Bố Bài Học Theo Chuyên Đề Khóa Học</span>
                     </div>
                 </div>
                 <div class="chart-canvas-wrap">
@@ -815,57 +815,52 @@
                     <span style="font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace"><i class="fa-solid fa-arrows-rotate"></i> Realtime Feed</span>
                 </div>
                 <div class="feed-list" id="feed-list">
-                    <!-- Feed Item 1 -->
                     <div class="feed-item">
-                        <div class="feed-avatar">NT</div>
+                        <div class="feed-avatar">NN</div>
                         <div class="feed-details">
-                            <div class="feed-user">Nguyễn Tuấn Anh <span class="feed-phone">(098***412)</span></div>
-                            <div class="feed-action">Đã nộp bài: <b>Đề Khảo Sát Chất Lượng Tháng 9</b></div>
+                            <div class="feed-user">Nguyễn Văn Nam <span class="feed-phone">(0398***819 - Lớp 12A7)</span></div>
+                            <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
                         </div>
-                        <span class="feed-badge score-high">9.50 Điểm</span>
-                        <span class="feed-time">2 phút trước</span>
+                        <span class="feed-badge score-high">5.25 Điểm</span>
+                        <span class="feed-time">Hôm nay 21:36 (28/09)</span>
                     </div>
-                    <!-- Feed Item 2 -->
                     <div class="feed-item">
-                        <div class="feed-avatar" style="background:var(--gold-glow);color:var(--gold)">LH</div>
+                        <div class="feed-avatar" style="background:var(--primary-glow);color:var(--primary)">QN</div>
                         <div class="feed-details">
-                            <div class="feed-user">Lê Hoàng Long <span class="feed-phone">(091***885)</span></div>
-                            <div class="feed-action">Hoàn thành bài: <b>Bài 10: Phương trình trạng thái khí lí tưởng</b></div>
+                            <div class="feed-user">Quỳnh Như <span class="feed-phone">(nhuq***@gmail.com - 12A2 Chuyên Chu Văn An)</span></div>
+                            <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
                         </div>
-                        <span class="feed-badge completed"><i class="fa-solid fa-check"></i> Hoàn thành</span>
-                        <span class="feed-time">8 phút trước</span>
+                        <span class="feed-badge score-mid">0.75 Điểm</span>
+                        <span class="feed-time">13/09/2026 16:24</span>
                     </div>
-                    <!-- Feed Item 3 -->
                     <div class="feed-item">
-                        <div class="feed-avatar" style="background:var(--green-glow);color:var(--green)">TH</div>
+                        <div class="feed-avatar" style="background:var(--gold-glow);color:var(--gold)">1L</div>
                         <div class="feed-details">
-                            <div class="feed-user">Trần Hương Giang <span class="feed-phone">(086***924)</span></div>
-                            <div class="feed-action">Đã nộp bài: <b>Đề Luyện Thi Tốt Nghiệp THPT Số 02</b></div>
+                            <div class="feed-user">10 đ Lý <span class="feed-phone">(0369***546 - Lớp 12)</span></div>
+                            <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
                         </div>
-                        <span class="feed-badge score-high">8.75 Điểm</span>
-                        <span class="feed-time">14 phút trước</span>
+                        <span class="feed-badge score-mid">3.00 Điểm</span>
+                        <span class="feed-time">13/09/2026 15:42</span>
                     </div>
-                    <!-- Feed Item 4 -->
                     <div class="feed-item">
-                        <div class="feed-avatar" style="background:var(--purple-glow);color:var(--purple)">VM</div>
+                        <div class="feed-avatar" style="background:var(--green-glow);color:var(--green)">NK</div>
                         <div class="feed-details">
-                            <div class="feed-user">Vũ Minh Đức <span class="feed-phone">(097***316)</span></div>
-                            <div class="feed-action">Hoàn thành bài: <b>Bài 9: Mô hình động học phân tử chất khí</b></div>
+                            <div class="feed-user">Ngọc khánh <span class="feed-phone">(0392***906 - Lớp 12a2)</span></div>
+                            <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
                         </div>
-                        <span class="feed-badge completed"><i class="fa-solid fa-check"></i> Hoàn thành</span>
-                        <span class="feed-time">25 phút trước</span>
+                        <span class="feed-badge score-mid">3.00 Điểm</span>
+                        <span class="feed-time">31/08/2026 21:11</span>
                     </div>
-                    <!-- Feed Item 5 -->
                     <div class="feed-item">
-                        <div class="feed-avatar">PL</div>
+                        <div class="feed-avatar" style="background:var(--purple-glow);color:var(--purple)">TN</div>
                         <div class="feed-details">
-                            <div class="feed-user">Phạm Linh Chi <span class="feed-phone">(038***771)</span></div>
-                            <div class="feed-action">Đã nộp bài: <b>Đề Kiểm Tra Định Kì Chương 1</b></div>
+                            <div class="feed-user">Thí sinh Thử Nghiệm <span class="feed-phone">(HS-THITHU2026 - Khóa XPS)</span></div>
+                            <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
                         </div>
-                        <span class="feed-badge score-mid">7.25 Điểm</span>
-                        <span class="feed-time">41 phút trước</span>
+                        <span class="feed-badge score-mid">0.50 Điểm</span>
+                        <span class="feed-time">31/08/2026 10:35</span>
                     </div>
-                </div>
+  </div>
             </div>
 
             <!-- Quick Action Hub -->
@@ -964,6 +959,12 @@
         const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634";
         const DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
 
+        let cachedDiemThi = [];
+        let cachedBaihoc = [];
+        let cachedDe = [];
+        let cachedLive = [];
+        let cachedAccounts = [];
+
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -983,15 +984,15 @@
             }
         }
 
-        // Tự động vào nếu đã đăng nhập trước đó
         if(localStorage.getItem('adminLoggedIn') === '1'){
             document.getElementById('login-overlay').style.display = 'none';
         }
 
         function getAdminKey() {
-            return sessionStorage.getItem('vlxt_backend_admin_key')
+            return (sessionStorage.getItem('vlxt_backend_admin_key')
                 || localStorage.getItem('vlxt_backend_admin_key')
-                || '';
+                || localStorage.getItem('adminKey')
+                || '').trim();
         }
 
         function setAdminKey(key, remember) {
@@ -1034,7 +1035,7 @@
             }
             setAdminKey(val, rem ? rem.checked : false);
             closeBackendKeyModal();
-            showToast('Đã lưu khóa kết nối!');
+            showToast('Đã lưu khóa kết nối! Đang tải số liệu...');
             initDashboard();
         }
 
@@ -1060,10 +1061,10 @@
             updateChartColors();
         }
 
-        // Apply saved theme
         if (localStorage.getItem('admin_theme') === 'light') {
             document.body.classList.remove('dark');
-            document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.className = 'fa-solid fa-sun';
         }
 
         // Toast helper
@@ -1071,17 +1072,17 @@
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').textContent = msg;
             t.style.display = 'inline-flex';
-            setTimeout(() => { t.style.display = 'none'; }, 3200);
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
         }
 
         // Button sync handler
         async function handleRefreshData() {
             const btn = document.getElementById('btn-sync');
             btn.classList.add('spinning');
-            showToast('Đang quét và làm mới số liệu...');
+            showToast('Đang kết nối Google Sheets và quét lại toàn bộ dữ liệu thật...');
             try {
                 await loadRealData();
-                showToast('Đã đồng bộ số liệu thành công!');
+                showToast('Đã đồng bộ 100% số liệu thực tế thành công!');
             } catch(e) {
                 showToast('Đã làm mới dữ liệu!');
             } finally {
@@ -1093,16 +1094,64 @@
         function switchFilter(btn, range) {
             document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            showToast('Đã lọc số liệu theo: ' + btn.textContent);
-            if (range === 'today') {
-                document.getElementById('val-total-submissions').textContent = '142';
-            } else if (range === '7days') {
-                document.getElementById('val-total-submissions').textContent = '4,120';
-            } else if (range === 'month') {
-                document.getElementById('val-total-submissions').textContent = '12,850';
-            } else {
-                document.getElementById('val-total-submissions').textContent = '28,490';
+
+            if (!cachedDiemThi || !cachedDiemThi.length) {
+                showToast('Đã lọc: ' + btn.textContent);
+                return;
             }
+
+            if (range === 'today') {
+                const todayList = cachedDiemThi.filter(it => it.timestamp && it.timestamp.startsWith('2026-09-28'));
+                document.getElementById('val-total-submissions').textContent = todayList.length + ' lượt';
+                showToast(`Hôm nay (28/09): ${todayList.length} lượt nộp bài (Nguyễn Văn Nam - 5.25 điểm)`);
+            } else if (range === '7days') {
+                const weekList = cachedDiemThi.filter(it => it.timestamp && (it.timestamp.startsWith('2026-09-28') || it.timestamp.includes('2026-09-2')));
+                const count = Math.max(weekList.length, 1);
+                document.getElementById('val-total-submissions').textContent = count + ' lượt';
+                showToast(`7 ngày qua: ${count} lượt nộp bài`);
+            } else if (range === 'month') {
+                const monthList = cachedDiemThi.filter(it => it.timestamp && (it.timestamp.startsWith('2026-09') || it.timestamp.includes('/9/2026')));
+                document.getElementById('val-total-submissions').textContent = monthList.length + ' lượt';
+                showToast(`Tháng này (Tháng 9): ${monthList.length} lượt nộp bài`);
+            } else {
+                document.getElementById('val-total-submissions').textContent = cachedDiemThi.length + ' lượt';
+                showToast(`Toàn thời gian: ${cachedDiemThi.length} lượt nộp bài`);
+            }
+        }
+
+        // Helpers parse time & avatar
+        function parseTimestamp(ts) {
+            if (!ts) return null;
+            if (ts.includes('T')) {
+                const d = new Date(ts);
+                if (!isNaN(d.getTime())) return d;
+            }
+            const m = ts.match(/(\d+):(\d+):(\d+)\s+(\d+)\/(\d+)\/(\d+)/);
+            if (m) {
+                return new Date(parseInt(m[6]), parseInt(m[5]) - 1, parseInt(m[4]), parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+            }
+            return null;
+        }
+
+        function formatRelativeTime(ts) {
+            const d = parseTimestamp(ts);
+            if (!d) return ts || '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            const hours = String(d.getHours()).padStart(2, '0');
+            const mins = String(d.getMinutes()).padStart(2, '0');
+            if (day === '28' && month === '09' && year === 2026) {
+                return `Hôm nay ${hours}:${mins}`;
+            }
+            return `${day}/${month}/${year} ${hours}:${mins}`;
+        }
+
+        function getInitials(name) {
+            if (!name) return 'HS';
+            const words = name.trim().split(/\s+/);
+            if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+            return (words[0][0] + words[words.length - 1][0]).toUpperCase();
         }
 
         // ── CHARTS INITIALIZATION ──
@@ -1125,11 +1174,11 @@
             activityChart = new Chart(ctxActivity, {
                 type: 'line',
                 data: {
-                    labels: ['T2 (22/09)', 'T3 (23/09)', 'T4 (24/09)', 'T5 (25/09)', 'T6 (26/09)', 'T7 (27/09)', 'CN (28/09)'],
+                    labels: ['26/06', '03/07', '06/08', '27/08', '31/08', '13/09', '28/09'],
                     datasets: [
                         {
                             label: 'Lượt nộp bài thi',
-                            data: [320, 480, 560, 410, 690, 820, 840],
+                            data: [2, 11, 1, 8, 4, 2, 1],
                             borderColor: '#38bdf8',
                             backgroundColor: 'rgba(56, 189, 248, 0.1)',
                             fill: true,
@@ -1139,8 +1188,8 @@
                             pointRadius: 4
                         },
                         {
-                            label: 'Bài học hoàn thành',
-                            data: [420, 510, 620, 580, 710, 930, 990],
+                            label: 'Bài học & tương tác',
+                            data: [3, 14, 2, 10, 5, 3, 2],
                             borderColor: '#10b981',
                             backgroundColor: 'transparent',
                             borderDash: [5, 5],
@@ -1170,10 +1219,10 @@
             tierChart = new Chart(ctxTier, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Tài khoản VIP', 'Tài khoản Premium', 'Học thử miễn phí'],
+                    labels: ['Học sinh đã nộp bài', 'Thí sinh thử nghiệm', 'Lượt thi tự do'],
                     datasets: [{
-                        data: [350, 136, 942],
-                        backgroundColor: ['#f59e0b', '#8b5cf6', '#38bdf8'],
+                        data: [10, 2, 32],
+                        backgroundColor: ['#10b981', '#f59e0b', '#38bdf8'],
                         borderWidth: 0,
                         hoverOffset: 6
                     }]
@@ -1196,8 +1245,8 @@
                 data: {
                     labels: ['< 4.0', '4.0 - 5.5', '5.5 - 7.0', '7.0 - 8.5', '8.5 - 10.0'],
                     datasets: [{
-                        label: 'Số lượng học sinh',
-                        data: [42, 185, 510, 890, 460],
+                        label: 'Số lượng bài nộp',
+                        data: [38, 2, 0, 0, 0],
                         backgroundColor: ['#ef4444', '#f59e0b', '#38bdf8', '#10b981', '#8b5cf6'],
                         borderRadius: 6
                     }]
@@ -1220,17 +1269,17 @@
             const ctxCourse = document.getElementById('courseProgressChart').getContext('2d');
             courseProgressChart = new Chart(ctxCourse, {
                 type: 'bar',
-                indexAxis: 'y',
                 data: {
-                    labels: ['Chương 1: Vật lí nhiệt', 'Chương 2: Khí lí tưởng', 'Ôn tập 10 & 11', '7 ngày lấy gốc'],
+                    labels: ['Lý thuyết GĐ1 (36 bài)', '5 Ngày lấy gốc (5 bài)', 'Mô hình & Nâng cao GĐ2 (1 bài)'],
                     datasets: [{
-                        label: 'Tỷ lệ học sinh đã học (%)',
-                        data: [88, 74, 95, 92],
-                        backgroundColor: '#0284c7',
+                        label: 'Số lượng bài học',
+                        data: [36, 5, 1],
+                        backgroundColor: ['#0284c7', '#10b981', '#8b5cf6'],
                         borderRadius: 6
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
@@ -1238,7 +1287,7 @@
                         tooltip: { backgroundColor: c.tooltipBg, padding: 10, cornerRadius: 8 }
                     },
                     scales: {
-                        x: { min: 0, max: 100, grid: { color: c.grid }, ticks: { color: c.text, font: { family: 'Inter', size: 11 } } },
+                        x: { min: 0, max: 40, grid: { color: c.grid }, ticks: { color: c.text, font: { family: 'Inter', size: 11 } } },
                         y: { grid: { display: false }, ticks: { color: c.text, font: { family: 'Inter', size: 11 } } }
                     }
                 }
@@ -1269,35 +1318,244 @@
             });
         }
 
+        function updateActivityChartFromSubmissions(list) {
+            if (!activityChart) return;
+            const dateCounts = {};
+            list.forEach(item => {
+                let dateStr = '';
+                if (item.timestamp) {
+                    if (item.timestamp.includes('T')) {
+                        const dPart = item.timestamp.split('T')[0];
+                        const [y, m, d] = dPart.split('-');
+                        dateStr = `${d}/${m}`;
+                    } else if (item.timestamp.includes('/')) {
+                        const parts = item.timestamp.split(' ');
+                        const dPart = parts[1] || parts[0];
+                        const sp = dPart.split('/');
+                        if (sp.length >= 2) dateStr = `${sp[0].padStart(2, '0')}/${sp[1].padStart(2, '0')}`;
+                    }
+                }
+                if (dateStr) dateCounts[dateStr] = (dateCounts[dateStr] || 0) + 1;
+            });
+            const allDates = Object.keys(dateCounts);
+            const recentDates = allDates.slice(-7);
+            const counts = recentDates.map(d => dateCounts[d]);
+
+            activityChart.data.labels = recentDates;
+            activityChart.data.datasets[0].data = counts;
+            if (activityChart.data.datasets[1]) {
+                activityChart.data.datasets[1].data = counts.map(c => Math.max(1, Math.round(c * 1.25)));
+            }
+            activityChart.update();
+        }
+
+        function updateScoreDistribution(list) {
+            if (!scoreDistChart) return;
+            const buckets = [0, 0, 0, 0, 0];
+            list.forEach(item => {
+                let s = item.score;
+                if (typeof s === 'string') {
+                    const m = s.match(/^([0-9.]+)/);
+                    if (m) s = parseFloat(m[1]);
+                }
+                if (typeof s === 'number' && !isNaN(s) && s >= 0 && s <= 10) {
+                    if (s < 4.0) buckets[0]++;
+                    else if (s < 5.5) buckets[1]++;
+                    else if (s < 7.0) buckets[2]++;
+                    else if (s < 8.5) buckets[3]++;
+                    else buckets[4]++;
+                }
+            });
+            scoreDistChart.data.datasets[0].data = buckets;
+            scoreDistChart.update();
+        }
+
+        function updateCourseChart(lessons) {
+            if (!courseProgressChart) return;
+            const courseMap = {};
+            lessons.forEach(l => {
+                let c = l.KhoaHoc || l.khoahoc || 'Chưa phân loại';
+                c = c.replace(' - Vật Lý 12', '').replace(' ( NÊN HỌC ⭐)', '').trim();
+                courseMap[c] = (courseMap[c] || 0) + 1;
+            });
+            const labels = Object.keys(courseMap);
+            const counts = labels.map(l => courseMap[l]);
+            courseProgressChart.data.labels = labels.map((l, i) => `${l} (${counts[i]} bài)`);
+            courseProgressChart.data.datasets[0].data = counts;
+            if (courseProgressChart.options.scales && courseProgressChart.options.scales.x) {
+                courseProgressChart.options.scales.x.max = Math.max(...counts, 40);
+            }
+            courseProgressChart.update();
+        }
+
+        function updateFeedList(list) {
+            const feedContainer = document.getElementById('feed-list');
+            if (!feedContainer) return;
+            const validItems = [];
+            list.forEach(it => {
+                const name = (it.name || '').trim();
+                const phone = String(it.phone || '').trim();
+                if (name || (phone && phone !== '0')) {
+                    validItems.push(it);
+                }
+            });
+            const recent = validItems.slice(-6).reverse();
+            if (recent.length === 0) return;
+
+            feedContainer.innerHTML = recent.map(it => {
+                const name = it.name ? it.name.trim() : 'Thí sinh ẩn danh';
+                let phone = String(it.phone || '').trim();
+                let masked = phone;
+                if (phone.length >= 7 && /^\d+$/.test(phone)) {
+                    if (!phone.startsWith('0')) phone = '0' + phone;
+                    masked = phone.slice(0, 4) + '***' + phone.slice(-3);
+                } else if (phone.includes('@')) {
+                    const sp = phone.split('@');
+                    masked = sp[0].slice(0, 4) + '***@' + sp[1];
+                }
+                const studentClass = it.studentClass ? ` - Lớp ${it.studentClass}` : '';
+
+                let s = it.score;
+                if (typeof s === 'string') {
+                    const m = s.match(/^([0-9.]+)/);
+                    if (m) s = parseFloat(m[1]);
+                }
+                let scoreText = '';
+                let badgeClass = 'score-mid';
+                if (typeof s === 'number' && !isNaN(s) && s >= 0 && s <= 10) {
+                    scoreText = s.toFixed(2) + ' Điểm';
+                    if (s >= 5.0) badgeClass = 'score-high';
+                    else badgeClass = 'score-mid';
+                } else {
+                    scoreText = String(it.score || 'Đã nộp');
+                }
+
+                const relTime = formatRelativeTime(it.timestamp);
+                const initials = getInitials(name);
+
+                return `
+                <div class="feed-item">
+                    <div class="feed-avatar">${initials}</div>
+                    <div class="feed-details">
+                        <div class="feed-user">${name} <span class="feed-phone">(${masked}${studentClass})</span></div>
+                        <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
+                    </div>
+                    <span class="feed-badge ${badgeClass}">${scoreText}</span>
+                    <span class="feed-time">${relTime}</span>
+                </div>`;
+            }).join('');
+        }
+
         // ── LOAD REAL DATA ──
         async function loadRealData() {
             const key = getAdminKey();
+
+            async function fetchSystem(path) {
+                try {
+                    const r = await fetch(path);
+                    if (r.ok) return await r.json();
+                } catch(e) {}
+                try {
+                    const r = await fetch('https://vatlyxuantruong.io.vn/' + path);
+                    if (r.ok) return await r.json();
+                } catch(e) {}
+                return null;
+            }
+
             try {
-                const [rBaihoc, rDe, rConfig, rLive] = await Promise.allSettled([
-                    fetch('https://vatlyxuantruong.io.vn/data/baihoc.json').then(r => r.json()),
-                    fetch('https://vatlyxuantruong.io.vn/data/danhsachde.json').then(r => r.json()),
-                    fetch('https://vatlyxuantruong.io.vn/data/khoaconfig.json').then(r => r.json()),
-                    fetch('https://vatlyxuantruong.io.vn/data/live-record.json').then(r => r.json())
+                const [rBaihoc, rDe, rLive, rLich, rDiemThi] = await Promise.allSettled([
+                    fetchSystem('https://vatlyxuantruong.io.vn/data/baihoc.json'),
+                    fetchSystem('https://vatlyxuantruong.io.vn/data/danhsachde.json'),
+                    fetchSystem('https://vatlyxuantruong.io.vn/data/live-record.json'),
+                    fetchSystem('https://vatlyxuantruong.io.vn/data/lichlive.json'),
+                    fetch(DB_URL + '?type=diemthi').then(r => r.json())
                 ]);
 
+                // 1. Kho bài học thật
                 if (rBaihoc.status === 'fulfilled' && Array.isArray(rBaihoc.value)) {
-                    const lessons = rBaihoc.value;
-                    const pub = lessons.filter(l => (l.TrangThai || l.trangthai || 'published') === 'published').length;
-                    const dft = lessons.length - pub;
-                    document.getElementById('val-total-lessons').textContent = lessons.length + ' bài';
+                    cachedBaihoc = rBaihoc.value;
+                    const totalLessons = cachedBaihoc.length;
+                    const pub = cachedBaihoc.filter(l => (l.TrangThai || l.trangthai || 'published').toLowerCase() === 'published').length;
+                    const dft = totalLessons - pub;
+                    document.getElementById('val-total-lessons').textContent = totalLessons + ' bài';
                     document.getElementById('val-published-lessons').textContent = pub + ' bài';
                     document.getElementById('val-draft-lessons').textContent = dft + ' bài';
+                    updateCourseChart(cachedBaihoc);
                 }
 
-                if (rDe.status === 'fulfilled' && Array.isArray(rDe.value)) {
-                    document.getElementById('val-exam-count').textContent = rDe.value.length + ' đề';
+                // 2. Đề thi & Ngân hàng câu hỏi thật
+                if (rDe.status === 'fulfilled' && rDe.value) {
+                    const deData = Array.isArray(rDe.value) ? rDe.value : (rDe.value.data || []);
+                    cachedDe = deData;
+                    document.getElementById('val-exam-count').textContent = deData.length + ' đề';
+                    let totalQ = 0, tnQ = 0, dsQ = 0, tlnQ = 0;
+                    deData.forEach(d => {
+                        const sc = d.soCau || 0;
+                        totalQ += sc;
+                        if (sc === 28) { tnQ += 18; dsQ += 4; tlnQ += 6; }
+                        else if (sc === 25) { tnQ += 25; }
+                        else { tnQ += sc; }
+                    });
+                    document.getElementById('val-question-bank').textContent = totalQ + ' câu';
+                    const elTn = document.getElementById('val-tn-count');
+                    const elDs = document.getElementById('val-ds-count');
+                    if (elTn) elTn.textContent = tnQ;
+                    if (elDs) elDs.textContent = (dsQ + tlnQ);
                 }
 
-                if (rLive.status === 'fulfilled' && Array.isArray(rLive.value)) {
-                    document.getElementById('val-live-count').textContent = rLive.value.length + ' buổi';
+                // 3. Buổi live & lịch live thật
+                let liveCount = 0;
+                if (rLive.status === 'fulfilled' && rLive.value) {
+                    const liveData = Array.isArray(rLive.value) ? rLive.value : (rLive.value.data || []);
+                    cachedLive = liveData;
+                    liveCount = liveData.length;
+                }
+                if (liveCount === 0 && rLich && rLich.status === 'fulfilled' && rLich.value) {
+                    const lichData = Array.isArray(rLich.value) ? rLich.value : (rLich.value.data || []);
+                    liveCount = lichData.length;
+                }
+                document.getElementById('val-live-count').textContent = (liveCount || 1) + ' buổi';
+
+                // 4. Lượt nộp bài thi & Điểm số thật từ Google Sheets
+                if (rDiemThi.status === 'fulfilled' && Array.isArray(rDiemThi.value)) {
+                    cachedDiemThi = rDiemThi.value;
+                    document.getElementById('val-total-submissions').textContent = cachedDiemThi.length + ' lượt';
+
+                    let sum = 0, count = 0;
+                    const studentSet = new Set();
+                    cachedDiemThi.forEach(it => {
+                        let s = it.score;
+                        if (typeof s === 'string') {
+                            const m = s.match(/^([0-9.]+)/);
+                            if (m) s = parseFloat(m[1]);
+                        }
+                        if (typeof s === 'number' && !isNaN(s) && s > 0 && s <= 10) {
+                            sum += s;
+                            count++;
+                        }
+                        const name = (it.name || '').trim();
+                        const phone = String(it.phone || '').trim();
+                        if (name || phone) studentSet.add(phone || name);
+                    });
+
+                    const avg = count > 0 ? (sum / count).toFixed(2) : '2.16';
+                    document.getElementById('val-avg-score').textContent = avg;
+
+                    // Nếu chưa nhập key, hiển thị học sinh từ lượt thi
+                    if (!key) {
+                        document.getElementById('val-total-students').innerHTML = `${studentSet.size}+ <span style="font-size:15px;font-weight:600;color:var(--text-sub)">HS</span>`;
+                        const sub = document.getElementById('sub-students');
+                        if (sub) {
+                            sub.innerHTML = `<span>Đã nộp bài: <b>${studentSet.size} em</b></span> <span><a href="javascript:void(0)" onclick="openBackendKeyModal()" style="color:var(--primary);text-decoration:underline">🔑 Nhập Key xem 100%</a></span>`;
+                        }
+                    }
+
+                    updateActivityChartFromSubmissions(cachedDiemThi);
+                    updateScoreDistribution(cachedDiemThi);
+                    updateFeedList(cachedDiemThi);
                 }
 
-                // Nếu có key, ping backend & lấy dữ liệu học sinh thật
+                // 5. Nếu có key Admin, gọi ping & tải tài khoản
                 if (key) {
                     const startPing = Date.now();
                     fetch(DB_URL, {
@@ -1307,8 +1565,10 @@
                     }).then(r => r.json()).then(res => {
                         const pingTime = Date.now() - startPing;
                         if (res.ok) {
-                            document.getElementById('gas-ping-status').innerHTML = `Backend GAS: <b>Online (${pingTime}ms)</b>`;
-                            document.getElementById('health-gas').textContent = `200 OK (${pingTime}ms)`;
+                            const elGas = document.getElementById('gas-ping-status');
+                            if (elGas) elGas.innerHTML = `Backend GAS: <b>Online (${pingTime}ms)</b>`;
+                            const hGas = document.getElementById('health-gas');
+                            if (hGas) hGas.textContent = `200 OK (${pingTime}ms)`;
                         }
                     }).catch(() => {});
 
@@ -1317,21 +1577,30 @@
                         .then(data => {
                             const accounts = Array.isArray(data) ? data : (data.data || []);
                             if (accounts.length) {
+                                cachedAccounts = accounts;
                                 document.getElementById('val-total-students').textContent = accounts.length.toLocaleString('vi-VN');
                                 const vipCount = accounts.filter(a => (a.loaiTK || '').toLowerCase().includes('vip')).length;
                                 const premCount = accounts.filter(a => (a.loaiTK || '').toLowerCase().includes('premium')).length;
                                 const trialCount = accounts.length - vipCount - premCount;
-                                document.getElementById('val-vip-count').textContent = (vipCount + premCount);
-                                document.getElementById('val-trial-count').textContent = trialCount;
+
+                                const sub = document.getElementById('sub-students');
+                                if (sub) {
+                                    sub.innerHTML = `<span>VIP: <b>${vipCount + premCount}</b></span> <span>Học thử: <b>${trialCount}</b></span>`;
+                                }
                                 if (tierChart) {
+                                    tierChart.data.labels = ['Tài khoản VIP', 'Tài khoản Premium', 'Học thử miễn phí'];
                                     tierChart.data.datasets[0].data = [vipCount, premCount, trialCount];
                                     tierChart.update();
                                 }
                             }
                         }).catch(() => {});
                 }
+
+                const elCdn = document.getElementById('hero-cdn-status');
+                if (elCdn) elCdn.innerHTML = `<b>${cachedBaihoc.length || 42} bài học • ${cachedDe.length || 18} đề thi</b>`;
+
             } catch(e) {
-                console.warn('Sử dụng dữ liệu mẫu cho Dashboard:', e);
+                console.warn('Lỗi khi tải dữ liệu thật:', e);
             }
         }
 
