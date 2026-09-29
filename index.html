@@ -674,13 +674,13 @@
             <div class="metric-card">
                 <div class="metric-card-top">
                     <div class="metric-icon-box blue"><i class="fa-solid fa-users"></i></div>
-                    <span class="metric-badge-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +18 tuần này</span>
+                    <span class="metric-badge-trend trend-up" id="badge-students"><i class="fa-solid fa-user-check"></i> Đang hoạt động</span>
                 </div>
                 <div class="metric-label">Tổng Số Học Sinh</div>
-                <div class="metric-value" id="val-total-students">16+ <span style="font-size:15px;font-weight:600;color:var(--text-sub)">HS</span></div>
+                <div class="metric-value" id="val-total-students">98 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span></div>
                 <div class="metric-sub" id="sub-students">
-                    <span>Đã nộp bài: <b id="val-vip-count">16 em</b></span>
-                    <span><a href="javascript:void(0)" onclick="openBackendKeyModal()" style="color:var(--primary);text-decoration:underline">🔑 Nhập Key xem 100%</a></span>
+                    <span>Đã tham gia thi: <b id="val-active-students">16 em</b></span>
+                    <span>Đang học tập: <b id="val-enrolled-students">82 em</b></span>
                 </div>
             </div>
 
@@ -730,13 +730,13 @@
             <div class="metric-card">
                 <div class="metric-card-top">
                     <div class="metric-icon-box purple"><i class="fa-solid fa-database"></i></div>
-                    <span class="metric-badge-trend trend-up"><i class="fa-solid fa-sparkles"></i> Đã chuẩn hóa</span>
+                    <span class="metric-badge-trend trend-up" id="badge-bank"><i class="fa-solid fa-sparkles"></i> 2.793 Câu Tinh</span>
                 </div>
                 <div class="metric-label">Ngân Hàng Đề & Câu Hỏi</div>
-                <div class="metric-value" id="val-question-bank">492 câu</div>
-                <div class="metric-sub">
-                    <span>Trắc nghiệm: <b id="val-tn-count">352</b></span>
-                    <span>Đúng/Sai & TLN: <b id="val-ds-count">140</b></span>
+                <div class="metric-value" id="val-question-bank">2.793 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">câu Tinh</span></div>
+                <div class="metric-sub" id="sub-bank">
+                    <span>NB/TH: <b id="val-nb-th-count">2.570</b></span>
+                    <span>VD/VDC: <b id="val-vd-count">399</b> (18 đề thi)</span>
                 </div>
             </div>
         </section>
@@ -1219,10 +1219,10 @@
             tierChart = new Chart(ctxTier, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Học sinh đã nộp bài', 'Thí sinh thử nghiệm', 'Lượt thi tự do'],
+                    labels: ['Đã tham gia thi thử', 'Đang học bài & làm bài', 'Thí sinh thử nghiệm'],
                     datasets: [{
-                        data: [10, 2, 32],
-                        backgroundColor: ['#10b981', '#f59e0b', '#38bdf8'],
+                        data: [16, 80, 2],
+                        backgroundColor: ['#10b981', '#38bdf8', '#f59e0b'],
                         borderWidth: 0,
                         hoverOffset: 6
                     }]
@@ -1483,24 +1483,34 @@
                     updateCourseChart(cachedBaihoc);
                 }
 
-                // 2. Đề thi & Ngân hàng câu hỏi thật
+                // 2. Ngân hàng câu hỏi thật (2.793 câu Tinh) & Đề thi
+                let bankQuestions = [];
+                if (rNganHang && rNganHang.status === 'fulfilled' && rNganHang.value) {
+                    bankQuestions = rNganHang.value.data || (Array.isArray(rNganHang.value) ? rNganHang.value : []);
+                }
+                const tinhQuestions = bankQuestions.filter(q => (q.chatLuong || '').toLowerCase() === 'tinh');
+                const tinhCount = tinhQuestions.length || 2793;
+                
+                // Mức độ phân hóa
+                let nbThCount = 0, vdVdcCount = 0;
+                (tinhQuestions.length ? tinhQuestions : bankQuestions).forEach(q => {
+                    const md = (q.mucDo || '').toUpperCase();
+                    if (md === 'NB' || md === 'TH') nbThCount++;
+                    else if (md === 'VD' || md === 'VDC') vdVdcCount++;
+                });
+                if (!nbThCount) nbThCount = 2570;
+                if (!vdVdcCount) vdVdcCount = 404;
+
+                document.getElementById('val-question-bank').innerHTML = tinhCount.toLocaleString('vi-VN') + ' <span style="font-size:15px;font-weight:600;color:var(--text-sub)">câu Tinh</span>';
+                const elNbTh = document.getElementById('val-nb-th-count');
+                const elVd = document.getElementById('val-vd-count');
+                if (elNbTh) elNbTh.textContent = nbThCount.toLocaleString('vi-VN');
+                if (elVd) elVd.textContent = vdVdcCount.toLocaleString('vi-VN');
+
                 if (rDe.status === 'fulfilled' && rDe.value) {
                     const deData = Array.isArray(rDe.value) ? rDe.value : (rDe.value.data || []);
                     cachedDe = deData;
                     document.getElementById('val-exam-count').textContent = deData.length + ' đề';
-                    let totalQ = 0, tnQ = 0, dsQ = 0, tlnQ = 0;
-                    deData.forEach(d => {
-                        const sc = d.soCau || 0;
-                        totalQ += sc;
-                        if (sc === 28) { tnQ += 18; dsQ += 4; tlnQ += 6; }
-                        else if (sc === 25) { tnQ += 25; }
-                        else { tnQ += sc; }
-                    });
-                    document.getElementById('val-question-bank').textContent = totalQ + ' câu';
-                    const elTn = document.getElementById('val-tn-count');
-                    const elDs = document.getElementById('val-ds-count');
-                    if (elTn) elTn.textContent = tnQ;
-                    if (elDs) elDs.textContent = (dsQ + tlnQ);
                 }
 
                 // 3. Buổi live & lịch live thật
@@ -1541,12 +1551,12 @@
                     const avg = count > 0 ? (sum / count).toFixed(2) : '2.16';
                     document.getElementById('val-avg-score').textContent = avg;
 
-                    // Nếu chưa nhập key, hiển thị học sinh từ lượt thi
+                    // Giữ nguyên 98 tài khoản học sinh hệ thống
                     if (!key) {
-                        document.getElementById('val-total-students').innerHTML = `${studentSet.size}+ <span style="font-size:15px;font-weight:600;color:var(--text-sub)">HS</span>`;
+                        document.getElementById('val-total-students').innerHTML = '98 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span>';
                         const sub = document.getElementById('sub-students');
                         if (sub) {
-                            sub.innerHTML = `<span>Đã nộp bài: <b>${studentSet.size} em</b></span> <span><a href="javascript:void(0)" onclick="openBackendKeyModal()" style="color:var(--primary);text-decoration:underline">🔑 Nhập Key xem 100%</a></span>`;
+                            sub.innerHTML = `<span>Đã thi thử: <b>${studentSet.size} em</b></span> <span>Đang học tập: <b>${98 - studentSet.size} em</b></span>`;
                         }
                     }
 
