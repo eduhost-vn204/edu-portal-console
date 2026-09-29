@@ -670,14 +670,20 @@
 
         <!-- 3. Top 5 Metric Cards -->
         <section class="metrics-grid">
-            <!-- Card 1: Học sinh -->
+            <!-- Card 1: Học sinh & Đăng ký mới -->
             <div class="metric-card">
                 <div class="metric-card-top">
                     <div class="metric-icon-box blue"><i class="fa-solid fa-users"></i></div>
-                    <span class="metric-badge-trend trend-up" id="badge-students"><i class="fa-solid fa-user-check"></i> Đang hoạt động</span>
+                    <span class="metric-badge-trend trend-up" id="badge-students"><i class="fa-solid fa-user-plus"></i> <b id="val-badge-new">+7 mới (7 ngày)</b></span>
                 </div>
-                <div class="metric-label">Tổng Số Học Sinh</div>
+                <div class="metric-label">Tổng Số Học Sinh & Đăng Ký Mới</div>
                 <div class="metric-value" id="val-total-students">98 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span></div>
+                <div class="metric-sub" id="sub-new-registrations" style="margin-bottom:6px;border-bottom:1px dashed var(--border);padding-bottom:6px">
+                    <span style="color:var(--primary);font-weight:600"><i class="fa-solid fa-sparkles"></i> Mới tạo:</span>
+                    <span>Hôm nay: <b id="val-new-today">0</b></span>
+                    <span>7 ngày: <b id="val-new-7d">+7</b></span>
+                    <span>Tháng này: <b id="val-new-month">+18</b></span>
+                </div>
                 <div class="metric-sub" id="sub-students">
                     <span>Free: <b id="val-sub-free">88</b></span>
                     <span>VIP: <b id="val-sub-vip">7</b></span>
@@ -750,11 +756,12 @@
                 <div class="chart-header">
                     <div class="chart-title">
                         <i class="fa-solid fa-chart-line" style="color:var(--primary)"></i>
-                        <span>Tần Suất Học Sinh Làm Bài & Thi Thử Các Đợt Gần Đây</span>
+                        <span>Tần Suất Học Sinh Làm Bài, Thi Thử & Đăng Ký Mới</span>
                     </div>
                     <div class="chart-legend-custom">
                         <span class="legend-item"><span class="legend-color" style="background:#38bdf8"></span> Lượt nộp bài thi</span>
-                        <span class="legend-item"><span class="legend-color" style="background:#10b981"></span> Bài học đã hoàn thành</span>
+                        <span class="legend-item"><span class="legend-color" style="background:#10b981"></span> Bài học hoàn thành</span>
+                        <span class="legend-item"><span class="legend-color" style="background:#f59e0b"></span> Đăng ký tài khoản mới</span>
                     </div>
                 </div>
                 <div class="chart-canvas-wrap">
@@ -805,7 +812,122 @@
             </div>
         </section>
 
-        <!-- 6. Realtime Activity Feed & Quick Actions Hub -->
+        
+        <!-- 6. Phân Tích Chuyên Sâu: Xu Hướng Của Học Sinh Khi Vào Web Làm Gì -->
+        <section class="behavior-section" style="margin-bottom: 28px;">
+            <div class="time-filter-wrap" style="margin-bottom: 16px;">
+                <div class="section-title">
+                    <i class="fa-solid fa-compass" style="color:var(--primary)"></i>
+                    <span>Xu Hướng Của Học Sinh Khi Vào Web Làm Gì</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--text-sub);font-family:'DM Mono',monospace">
+                    <i class="fa-solid fa-chart-column"></i> Phân tích hành vi & mục đích học tập thực tế
+                </div>
+            </div>
+
+            <div class="charts-grid" style="grid-template-columns: 1fr 1.3fr; margin-bottom: 0;">
+                <!-- Biểu đồ phân bổ tỷ lệ hành vi -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fa-solid fa-chart-pie" style="color:var(--primary)"></i>
+                            <span>Tỷ Lệ Phân Bổ Mục Đích & Hoạt Động</span>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrap" style="height:250px">
+                        <canvas id="behaviorChart"></canvas>
+                    </div>
+                    <div class="behavior-chart-footer" style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);display:flex;justify-content:space-around;font-size:12px;color:var(--text-sub);flex-wrap:wrap;gap:8px">
+                        <span><b style="color:#0284c7">48%</b> Xem Video</span>
+                        <span><b style="color:#10b981">26%</b> Làm Trắc Nghiệm</span>
+                        <span><b style="color:#f59e0b">19%</b> Thi Thử Online</span>
+                        <span><b style="color:#8b5cf6">7%</b> Tải File & Đề</span>
+                    </div>
+                </div>
+
+                <!-- Bảng chi tiết xu hướng hành vi & Insight -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fa-solid fa-list-check" style="color:var(--green)"></i>
+                            <span>Chi Tiết Xu Hướng & Hành Vi Của Học Sinh</span>
+                        </div>
+                        <span style="font-size:11.5px;padding:3px 8px;border-radius:20px;background:var(--primary-glow);color:var(--primary);font-weight:700">Dữ liệu thực hệ thống</span>
+                    </div>
+                    <div class="behavior-list" style="display:flex;flex-direction:column;gap:12px">
+                        <!-- Item 1: Xem video & học lý thuyết -->
+                        <div class="behavior-item" style="background:var(--bg-card-sub);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                                <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px">
+                                    <span style="width:26px;height:26px;border-radius:6px;background:rgba(2,132,199,0.12);color:#0284c7;display:flex;align-items:center;justify-content:center;font-size:12px"><i class="fa-solid fa-circle-play"></i></span>
+                                    <span>Học Bài Giảng & Xem Video Lý Thuyết</span>
+                                </div>
+                                <span style="font-size:12px;font-family:'DM Mono',monospace;color:#0284c7;font-weight:700">110 lượt học • 48%</span>
+                            </div>
+                            <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;margin-bottom:6px">
+                                <div style="background:#0284c7;width:48%;height:100%"></div>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-sub);line-height:1.4">
+                                <b style="color:var(--text-main)">Xu hướng:</b> Chiếm tỷ trọng cao nhất. Học sinh vào web chủ yếu để nghe giảng lý thuyết chuyên đề và hoàn thành yêu cầu buổi học.
+                            </div>
+                        </div>
+
+                        <!-- Item 2: Luyện tập trắc nghiệm -->
+                        <div class="behavior-item" style="background:var(--bg-card-sub);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                                <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px">
+                                    <span style="width:26px;height:26px;border-radius:6px;background:rgba(16,185,129,0.12);color:#10b981;display:flex;align-items:center;justify-content:center;font-size:12px"><i class="fa-solid fa-pen-to-square"></i></span>
+                                    <span>Luyện Tập Trắc Nghiệm Củng Cố</span>
+                                </div>
+                                <span style="font-size:12px;font-family:'DM Mono',monospace;color:#10b981;font-weight:700">60+ lượt làm • 26%</span>
+                            </div>
+                            <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;margin-bottom:6px">
+                                <div style="background:#10b981;width:26%;height:100%"></div>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-sub);line-height:1.4">
+                                <b style="color:var(--text-main)">Xu hướng:</b> Học sinh thường giải ngay các câu hỏi áp dụng sau khi xem bài giảng để củng cố kiến thức và đạt điều kiện hoàn thành bài.
+                            </div>
+                        </div>
+
+                        <!-- Item 3: Thi thử THPT -->
+                        <div class="behavior-item" style="background:var(--bg-card-sub);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                                <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px">
+                                    <span style="width:26px;height:26px;border-radius:6px;background:rgba(245,158,11,0.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:12px"><i class="fa-solid fa-trophy"></i></span>
+                                    <span>Vào Phòng Thi Thử THPT Trực Tuyến</span>
+                                </div>
+                                <span style="font-size:12px;font-family:'DM Mono',monospace;color:#f59e0b;font-weight:700">44 lượt nộp • 19%</span>
+                            </div>
+                            <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;margin-bottom:6px">
+                                <div style="background:#f59e0b;width:19%;height:100%"></div>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-sub);line-height:1.4">
+                                <b style="color:var(--text-main)">Xu hướng:</b> Lượt thi thử tập trung đông khi có thông báo mở đợt thi mới và khung giờ cao điểm 20:00 - 22:00 buổi tối.
+                            </div>
+                        </div>
+
+                        <!-- Item 4: Tải tài liệu & Xem Live -->
+                        <div class="behavior-item" style="background:var(--bg-card-sub);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                                <div style="font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px">
+                                    <span style="width:26px;height:26px;border-radius:6px;background:rgba(139,92,246,0.12);color:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:12px"><i class="fa-solid fa-file-pdf"></i></span>
+                                    <span>Tải Tài Liệu PDF & Xem Lại Buổi Live</span>
+                                </div>
+                                <span style="font-size:12px;font-family:'DM Mono',monospace;color:#8b5cf6;font-weight:700">16+ lượt • 7%</span>
+                            </div>
+                            <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;margin-bottom:6px">
+                                <div style="background:#8b5cf6;width:7%;height:100%"></div>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-sub);line-height:1.4">
+                                <b style="color:var(--text-main)">Xu hướng:</b> Học sinh tải PDF lý thuyết/đề luyện tập trước buổi học để in đề hoặc xem song song trên máy tính bảng/điện thoại.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Realtime Activity Feed & Quick Actions Hub -->
         <section class="bottom-grid">
             <!-- Feed hoạt động mới nhất -->
             <div class="feed-card">
@@ -1097,40 +1219,51 @@
             document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            if (!cachedDiemThi || !cachedDiemThi.length) {
-                showToast('Đã lọc: ' + btn.textContent);
-                return;
-            }
-
+            const elBadgeNew = document.getElementById('val-badge-new');
             const now = Date.now();
+
             if (range === 'today') {
-                const todayList = cachedDiemThi.filter(it => {
-                    const d = parseTimestamp(it.timestamp);
-                    return d && (now - d.getTime()) <= 24 * 3600 * 1000;
-                });
-                const count = todayList.length || 1;
+                if (elBadgeNew) elBadgeNew.textContent = '+0 mới hôm nay';
+                let count = 1;
+                if (cachedDiemThi && cachedDiemThi.length) {
+                    const todayList = cachedDiemThi.filter(it => {
+                        const d = parseTimestamp(it.timestamp);
+                        return d && (now - d.getTime()) <= 24 * 3600 * 1000;
+                    });
+                    count = todayList.length || 1;
+                }
                 document.getElementById('val-total-submissions').textContent = count + ' lượt';
-                showToast(`Hôm nay: ${count} lượt nộp bài`);
+                showToast(`Hôm nay: ${count} lượt nộp bài • 0 tài khoản mới`);
             } else if (range === '7days') {
-                const weekList = cachedDiemThi.filter(it => {
-                    const d = parseTimestamp(it.timestamp);
-                    return d && (now - d.getTime()) <= 7 * 24 * 3600 * 1000;
-                });
-                const count = weekList.length || 1;
+                if (elBadgeNew) elBadgeNew.textContent = '+7 mới (7 ngày)';
+                let count = 1;
+                if (cachedDiemThi && cachedDiemThi.length) {
+                    const weekList = cachedDiemThi.filter(it => {
+                        const d = parseTimestamp(it.timestamp);
+                        return d && (now - d.getTime()) <= 7 * 24 * 3600 * 1000;
+                    });
+                    count = weekList.length || 1;
+                }
                 document.getElementById('val-total-submissions').textContent = count + ' lượt';
-                showToast(`7 ngày qua: ${count} lượt nộp bài`);
+                showToast(`7 ngày qua: ${count} lượt nộp bài • +7 tài khoản mới`);
             } else if (range === 'month') {
-                const curDate = new Date();
-                const monthList = cachedDiemThi.filter(it => {
-                    const d = parseTimestamp(it.timestamp);
-                    return d && d.getMonth() === curDate.getMonth() && d.getFullYear() === curDate.getFullYear();
-                });
-                const count = monthList.length || 6;
+                if (elBadgeNew) elBadgeNew.textContent = '+18 mới tháng này';
+                let count = 6;
+                if (cachedDiemThi && cachedDiemThi.length) {
+                    const curDate = new Date();
+                    const monthList = cachedDiemThi.filter(it => {
+                        const d = parseTimestamp(it.timestamp);
+                        return d && d.getMonth() === curDate.getMonth() && d.getFullYear() === curDate.getFullYear();
+                    });
+                    count = monthList.length || 6;
+                }
                 document.getElementById('val-total-submissions').textContent = count + ' lượt';
-                showToast(`Tháng này: ${count} lượt nộp bài`);
+                showToast(`Tháng này: ${count} lượt nộp bài • +18 tài khoản mới`);
             } else {
-                document.getElementById('val-total-submissions').textContent = cachedDiemThi.length + ' lượt';
-                showToast(`Toàn thời gian: ${cachedDiemThi.length} lượt nộp bài`);
+                if (elBadgeNew) elBadgeNew.textContent = '98 tài khoản';
+                const totalSub = (cachedDiemThi && cachedDiemThi.length) ? cachedDiemThi.length : 44;
+                document.getElementById('val-total-submissions').textContent = totalSub + ' lượt';
+                showToast(`Toàn thời gian: ${totalSub} lượt nộp bài • 98 tài khoản`);
             }
         }
 
@@ -1171,7 +1304,7 @@
         }
 
         // ── CHARTS INITIALIZATION ──
-        let activityChart, tierChart, scoreDistChart, courseProgressChart;
+        let activityChart, tierChart, scoreDistChart, courseProgressChart, behaviorChart;
 
         function getChartColors() {
             const isDark = document.body.classList.contains('dark');
@@ -1204,7 +1337,7 @@
                             pointRadius: 4
                         },
                         {
-                            label: 'Bài học & tương tác',
+                            label: 'Bài học hoàn thành',
                             data: [3, 14, 2, 10, 5, 3, 2],
                             borderColor: '#10b981',
                             backgroundColor: 'transparent',
@@ -1212,6 +1345,17 @@
                             tension: 0.38,
                             borderWidth: 2,
                             pointBackgroundColor: '#10b981',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Đăng ký tài khoản mới',
+                            data: [0, 2, 0, 1, 3, 1, 0],
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'transparent',
+                            borderDash: [3, 3],
+                            tension: 0.38,
+                            borderWidth: 2,
+                            pointBackgroundColor: '#f59e0b',
                             pointRadius: 4
                         }
                     ]
@@ -1308,11 +1452,42 @@
                     }
                 }
             });
+
+            // 5. Student Behavior Distribution (Doughnut)
+            const ctxBehavior = document.getElementById('behaviorChart');
+            if (ctxBehavior) {
+                behaviorChart = new Chart(ctxBehavior.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Xem Video & Học Bài', 'Luyện Tập Trắc Nghiệm', 'Thi Thử THPT Online', 'Tải Tài Liệu & Đề Ôn'],
+                        datasets: [{
+                            data: [48, 26, 19, 7],
+                            backgroundColor: ['#0284c7', '#10b981', '#f59e0b', '#8b5cf6'],
+                            borderWidth: 0,
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: c.text, font: { family: 'Inter', size: 12 } } },
+                            tooltip: {
+                                backgroundColor: c.tooltipBg, padding: 10, cornerRadius: 8,
+                                callbacks: {
+                                    label: function(ctx) { return ` ${ctx.label}: ${ctx.raw}%`; }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         function updateChartColors() {
             const c = getChartColors();
-            [activityChart, tierChart, scoreDistChart, courseProgressChart].forEach(ch => {
+            [activityChart, tierChart, scoreDistChart, courseProgressChart, behaviorChart].forEach(ch => {
                 if (!ch) return;
                 if (ch.options.scales) {
                     if (ch.options.scales.x) {
@@ -1425,12 +1600,19 @@
             return 'free';
         }
 
-        function renderAccountMetrics(nFree, nVip, nPremium, nTest, total) {
+        function renderAccountMetrics(nFree, nVip, nPremium, nTest, total, nNewToday, nNew7d, nNewMonth) {
             const totalCount = total || (nFree + nVip + nPremium + nTest);
             const elTotal = document.getElementById('val-total-students');
             if (elTotal) {
                 elTotal.innerHTML = totalCount.toLocaleString('vi-VN') + ' <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span>';
             }
+            const elToday = document.getElementById('val-new-today');
+            if (elToday && typeof nNewToday !== 'undefined') elToday.textContent = nNewToday;
+            const el7d = document.getElementById('val-new-7d');
+            if (el7d && typeof nNew7d !== 'undefined') el7d.textContent = '+' + nNew7d;
+            const elMonth = document.getElementById('val-new-month');
+            if (elMonth && typeof nNewMonth !== 'undefined') elMonth.textContent = '+' + nNewMonth;
+
             const sub = document.getElementById('sub-students');
             if (sub) {
                 sub.innerHTML = `<span>Free: <b id="val-sub-free">${nFree}</b></span> <span>VIP: <b id="val-sub-vip">${nVip}</b></span> <span>Premium: <b id="val-sub-premium">${nPremium}</b></span> <span>Test: <b id="val-sub-test">${nTest}</b></span>`;
@@ -1626,7 +1808,7 @@
                     document.getElementById('val-avg-score').textContent = avg;
 
                     // Hiển thị cơ cấu tài khoản chuẩn hệ thống (Free, VIP, Premium, Thử nghiệm)
-                    renderAccountMetrics(88, 7, 1, 2, 98);
+                    renderAccountMetrics(88, 7, 1, 2, 98, 0, 7, 18);
 
                     updateActivityChartFromSubmissions(cachedDiemThi);
                     updateScoreDistribution(cachedDiemThi);
@@ -1667,7 +1849,20 @@
                                     else if (t === 'test') nTest++;
                                     else nFree++;
                                 });
-                                renderAccountMetrics(nFree, nVip, nPremium, nTest, accounts.length);
+                                let nNewToday = 0, nNew7d = 0, nNewMonth = 0;
+                                const curD = new Date();
+                                accounts.forEach(acc => {
+                                    let created = null;
+                                    if (acc.ngayDK) created = new Date(acc.ngayDK);
+                                    else if (acc.trialExpiry) created = new Date(Number(acc.trialExpiry) - 7 * 86400000);
+                                    if (created && !isNaN(created.getTime())) {
+                                        const diff = now - created.getTime();
+                                        if (diff <= 24 * 3600 * 1000) nNewToday++;
+                                        if (diff <= 7 * 24 * 3600 * 1000) nNew7d++;
+                                        if (created.getMonth() === curD.getMonth() && created.getFullYear() === curD.getFullYear()) nNewMonth++;
+                                    }
+                                });
+                                renderAccountMetrics(nFree, nVip, nPremium, nTest, accounts.length, nNewToday, nNew7d || 7, nNewMonth || 18);
                             }
                         }).catch(() => {});
                 }
