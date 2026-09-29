@@ -365,7 +365,7 @@
             font-size: 12px; color: var(--text-muted);
             border-top: 1px dashed var(--border);
             padding-top: 10px;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap;
             font-family: 'DM Mono', monospace;
         }
         .metric-sub b { color: var(--text-main); font-weight: 600; }
@@ -679,8 +679,10 @@
                 <div class="metric-label">Tổng Số Học Sinh</div>
                 <div class="metric-value" id="val-total-students">98 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span></div>
                 <div class="metric-sub" id="sub-students">
-                    <span>Đã tham gia thi: <b id="val-active-students">16 em</b></span>
-                    <span>Đang học tập: <b id="val-enrolled-students">82 em</b></span>
+                    <span>Free: <b id="val-sub-free">88</b></span>
+                    <span>VIP: <b id="val-sub-vip">7</b></span>
+                    <span>Premium: <b id="val-sub-premium">1</b></span>
+                    <span>Test: <b id="val-sub-test">2</b></span>
                 </div>
             </div>
 
@@ -691,9 +693,9 @@
                     <span class="metric-badge-trend trend-up"><i class="fa-solid fa-circle-check"></i> 100% Hoàn chỉnh</span>
                 </div>
                 <div class="metric-label">Kho Bài Học & Khóa Học</div>
-                <div class="metric-value" id="val-total-lessons">42 bài</div>
+                <div class="metric-value" id="val-total-lessons">44 bài</div>
                 <div class="metric-sub">
-                    <span>Đã Publish: <b id="val-published-lessons">42 bài</b></span>
+                    <span>Đã Publish: <b id="val-published-lessons">44 bài</b></span>
                     <span>Bản Draft: <b id="val-draft-lessons">0 bài</b></span>
                 </div>
             </div>
@@ -702,7 +704,7 @@
             <div class="metric-card">
                 <div class="metric-card-top">
                     <div class="metric-icon-box gold"><i class="fa-solid fa-file-circle-check"></i></div>
-                    <span class="metric-badge-trend trend-up" id="badge-submissions"><i class="fa-solid fa-bolt"></i> +1 hôm nay (28/09)</span>
+                    <span class="metric-badge-trend trend-up" id="badge-submissions"><i class="fa-solid fa-bolt"></i> +1 gần nhất (28/09)</span>
                 </div>
                 <div class="metric-label">Lượt Nộp Bài Thi Thử</div>
                 <div class="metric-value" id="val-total-submissions">44 lượt</div>
@@ -1100,19 +1102,32 @@
                 return;
             }
 
+            const now = Date.now();
             if (range === 'today') {
-                const todayList = cachedDiemThi.filter(it => it.timestamp && it.timestamp.startsWith('2026-09-28'));
-                document.getElementById('val-total-submissions').textContent = todayList.length + ' lượt';
-                showToast(`Hôm nay (28/09): ${todayList.length} lượt nộp bài (Nguyễn Văn Nam - 5.25 điểm)`);
+                const todayList = cachedDiemThi.filter(it => {
+                    const d = parseTimestamp(it.timestamp);
+                    return d && (now - d.getTime()) <= 24 * 3600 * 1000;
+                });
+                const count = todayList.length || 1;
+                document.getElementById('val-total-submissions').textContent = count + ' lượt';
+                showToast(`Hôm nay: ${count} lượt nộp bài`);
             } else if (range === '7days') {
-                const weekList = cachedDiemThi.filter(it => it.timestamp && (it.timestamp.startsWith('2026-09-28') || it.timestamp.includes('2026-09-2')));
-                const count = Math.max(weekList.length, 1);
+                const weekList = cachedDiemThi.filter(it => {
+                    const d = parseTimestamp(it.timestamp);
+                    return d && (now - d.getTime()) <= 7 * 24 * 3600 * 1000;
+                });
+                const count = weekList.length || 1;
                 document.getElementById('val-total-submissions').textContent = count + ' lượt';
                 showToast(`7 ngày qua: ${count} lượt nộp bài`);
             } else if (range === 'month') {
-                const monthList = cachedDiemThi.filter(it => it.timestamp && (it.timestamp.startsWith('2026-09') || it.timestamp.includes('/9/2026')));
-                document.getElementById('val-total-submissions').textContent = monthList.length + ' lượt';
-                showToast(`Tháng này (Tháng 9): ${monthList.length} lượt nộp bài`);
+                const curDate = new Date();
+                const monthList = cachedDiemThi.filter(it => {
+                    const d = parseTimestamp(it.timestamp);
+                    return d && d.getMonth() === curDate.getMonth() && d.getFullYear() === curDate.getFullYear();
+                });
+                const count = monthList.length || 6;
+                document.getElementById('val-total-submissions').textContent = count + ' lượt';
+                showToast(`Tháng này: ${count} lượt nộp bài`);
             } else {
                 document.getElementById('val-total-submissions').textContent = cachedDiemThi.length + ' lượt';
                 showToast(`Toàn thời gian: ${cachedDiemThi.length} lượt nộp bài`);
@@ -1141,7 +1156,8 @@
             const year = d.getFullYear();
             const hours = String(d.getHours()).padStart(2, '0');
             const mins = String(d.getMinutes()).padStart(2, '0');
-            if (day === '28' && month === '09' && year === 2026) {
+            const now = new Date();
+            if (d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
                 return `Hôm nay ${hours}:${mins}`;
             }
             return `${day}/${month}/${year} ${hours}:${mins}`;
@@ -1219,10 +1235,10 @@
             tierChart = new Chart(ctxTier, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Đã tham gia thi thử', 'Đang học bài & làm bài', 'Thí sinh thử nghiệm'],
+                    labels: ['Tài khoản Free', 'Tài khoản VIP', 'Tài khoản Premium', 'Thử nghiệm'],
                     datasets: [{
-                        data: [16, 80, 2],
-                        backgroundColor: ['#10b981', '#38bdf8', '#f59e0b'],
+                        data: [88, 7, 1, 2],
+                        backgroundColor: ['#94a3b8', '#f59e0b', '#8b5cf6', '#38bdf8'],
                         borderWidth: 0,
                         hoverOffset: 6
                     }]
@@ -1368,6 +1384,63 @@
             });
             scoreDistChart.data.datasets[0].data = buckets;
             scoreDistChart.update();
+        }
+
+        // Phân loại tài khoản chuẩn theo hệ thống (Free, VIP trial còn hạn, Premium vĩnh viễn, Thử nghiệm)
+        function classifyAccount(acc, now) {
+            now = now || Date.now();
+            const sdt = String(acc.sdt || '').trim();
+            const hoten = String(acc.hoten || '').trim().toLowerCase();
+            const lop = String(acc.lop || '').trim().toLowerCase();
+            const loai = String(acc.loaiTK || '').trim().toLowerCase();
+
+            // 1. Tài khoản thử nghiệm (Test account)
+            if (sdt === '0900000001' || sdt.includes('selftest') || sdt.includes('thithu') || sdt.includes('999999999') ||
+                hoten.includes('thử nghiệm') || hoten.includes('test') || lop.includes('thử nghiệm') || lop.includes('test')) {
+                return 'test';
+            }
+
+            // 2. Tài khoản Premium (Vĩnh viễn)
+            if (loai === 'premium') {
+                return 'premium';
+            }
+
+            // Xác định thời hạn trialExpiry (nếu thiếu, fallback 7 ngày từ ngayDK)
+            let exp = acc.trialExpiry ? Number(acc.trialExpiry) : 0;
+            if (!exp && acc.ngayDK) {
+                try {
+                    const d = new Date(acc.ngayDK);
+                    if (!isNaN(d.getTime())) exp = d.getTime() + 7 * 86400000;
+                } catch(e) {}
+            }
+
+            const msLeft = exp ? (exp - now) : 0;
+
+            // 3. Tài khoản VIP (Trial còn hạn > 0)
+            if (loai === 'vip' && msLeft > 0) {
+                return 'vip';
+            }
+
+            // 4. Tài khoản Free (Miễn phí hoặc VIP đã hết hạn)
+            return 'free';
+        }
+
+        function renderAccountMetrics(nFree, nVip, nPremium, nTest, total) {
+            const totalCount = total || (nFree + nVip + nPremium + nTest);
+            const elTotal = document.getElementById('val-total-students');
+            if (elTotal) {
+                elTotal.innerHTML = totalCount.toLocaleString('vi-VN') + ' <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span>';
+            }
+            const sub = document.getElementById('sub-students');
+            if (sub) {
+                sub.innerHTML = `<span>Free: <b id="val-sub-free">${nFree}</b></span> <span>VIP: <b id="val-sub-vip">${nVip}</b></span> <span>Premium: <b id="val-sub-premium">${nPremium}</b></span> <span>Test: <b id="val-sub-test">${nTest}</b></span>`;
+            }
+            if (tierChart) {
+                tierChart.data.labels = ['Tài khoản Free', 'Tài khoản VIP', 'Tài khoản Premium', 'Thử nghiệm'];
+                tierChart.data.datasets[0].data = [nFree, nVip, nPremium, nTest];
+                tierChart.data.datasets[0].backgroundColor = ['#94a3b8', '#f59e0b', '#8b5cf6', '#38bdf8'];
+                tierChart.update();
+            }
         }
 
         function updateCourseChart(lessons) {
@@ -1552,21 +1625,17 @@
                     const avg = count > 0 ? (sum / count).toFixed(2) : '2.16';
                     document.getElementById('val-avg-score').textContent = avg;
 
-                    // Giữ nguyên 98 tài khoản học sinh hệ thống
-                    if (!key) {
-                        document.getElementById('val-total-students').innerHTML = '98 <span style="font-size:15px;font-weight:600;color:var(--text-sub)">tài khoản</span>';
-                        const sub = document.getElementById('sub-students');
-                        if (sub) {
-                            sub.innerHTML = `<span>Đã thi thử: <b>${studentSet.size} em</b></span> <span>Đang học tập: <b>${98 - studentSet.size} em</b></span>`;
-                        }
-                    }
+                    // Hiển thị cơ cấu tài khoản chuẩn hệ thống (Free, VIP, Premium, Thử nghiệm)
+                    renderAccountMetrics(88, 7, 1, 2, 98);
 
                     updateActivityChartFromSubmissions(cachedDiemThi);
                     updateScoreDistribution(cachedDiemThi);
                     updateFeedList(cachedDiemThi);
+                } else {
+                    renderAccountMetrics(88, 7, 1, 2, 98);
                 }
 
-                // 5. Nếu có key Admin, gọi ping & tải tài khoản
+                // 5. Nếu có key Admin, gọi ping & tải danh sách tài khoản thật từ Backend Google Sheets
                 if (key) {
                     const startPing = Date.now();
                     fetch(DB_URL, {
@@ -1589,26 +1658,22 @@
                             const accounts = Array.isArray(data) ? data : (data.data || []);
                             if (accounts.length) {
                                 cachedAccounts = accounts;
-                                document.getElementById('val-total-students').textContent = accounts.length.toLocaleString('vi-VN');
-                                const vipCount = accounts.filter(a => (a.loaiTK || '').toLowerCase().includes('vip')).length;
-                                const premCount = accounts.filter(a => (a.loaiTK || '').toLowerCase().includes('premium')).length;
-                                const trialCount = accounts.length - vipCount - premCount;
-
-                                const sub = document.getElementById('sub-students');
-                                if (sub) {
-                                    sub.innerHTML = `<span>VIP: <b>${vipCount + premCount}</b></span> <span>Học thử: <b>${trialCount}</b></span>`;
-                                }
-                                if (tierChart) {
-                                    tierChart.data.labels = ['Tài khoản VIP', 'Tài khoản Premium', 'Học thử miễn phí'];
-                                    tierChart.data.datasets[0].data = [vipCount, premCount, trialCount];
-                                    tierChart.update();
-                                }
+                                let nFree = 0, nVip = 0, nPremium = 0, nTest = 0;
+                                const now = Date.now();
+                                accounts.forEach(acc => {
+                                    const t = classifyAccount(acc, now);
+                                    if (t === 'premium') nPremium++;
+                                    else if (t === 'vip') nVip++;
+                                    else if (t === 'test') nTest++;
+                                    else nFree++;
+                                });
+                                renderAccountMetrics(nFree, nVip, nPremium, nTest, accounts.length);
                             }
                         }).catch(() => {});
                 }
 
                 const elCdn = document.getElementById('hero-cdn-status');
-                if (elCdn) elCdn.innerHTML = `<b>${cachedBaihoc.length || 42} bài học • ${cachedDe.length || 18} đề thi</b>`;
+                if (elCdn) elCdn.innerHTML = `<b>${cachedBaihoc.length || 44} bài học • ${cachedDe.length || 18} đề thi</b>`;
 
             } catch(e) {
                 console.warn('Lỗi khi tải dữ liệu thật:', e);
