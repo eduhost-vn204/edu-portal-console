@@ -1463,12 +1463,13 @@
             }
 
             try {
-                const [rBaihoc, rDe, rLive, rLich, rDiemThi] = await Promise.allSettled([
+                const [rBaihoc, rDe, rLive, rLich, rDiemThi, rNganHang] = await Promise.allSettled([
                     fetchSystem('https://vatlyxuantruong.io.vn/data/baihoc.json'),
                     fetchSystem('https://vatlyxuantruong.io.vn/data/danhsachde.json'),
                     fetchSystem('https://vatlyxuantruong.io.vn/data/live-record.json'),
                     fetchSystem('https://vatlyxuantruong.io.vn/data/lichlive.json'),
-                    fetch(DB_URL + '?type=diemthi').then(r => r.json())
+                    fetch(DB_URL + '?type=diemthi').then(r => r.json()),
+                    fetch(DB_URL + '?type=nganhang').then(r => r.json())
                 ]);
 
                 // 1. Kho bài học thật
@@ -1485,7 +1486,7 @@
 
                 // 2. Ngân hàng câu hỏi thật (2.793 câu Tinh) & Đề thi
                 let bankQuestions = [];
-                if (rNganHang && rNganHang.status === 'fulfilled' && rNganHang.value) {
+                if (typeof rNganHang !== 'undefined' && rNganHang && rNganHang.status === 'fulfilled' && rNganHang.value) {
                     bankQuestions = rNganHang.value.data || (Array.isArray(rNganHang.value) ? rNganHang.value : []);
                 }
                 const tinhQuestions = bankQuestions.filter(q => (q.chatLuong || '').toLowerCase() === 'tinh');
