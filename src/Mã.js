@@ -5493,12 +5493,15 @@ const VIETQR_TEACHER_BANK = {
 
 function extractStudentPhoneFromMemo_(content) {
   const raw = String(content || '').toUpperCase();
-  // Ưu tiên tìm SĐT đi ngay sau từ khóa VLXT hoặc VL12
-  const m1 = raw.match(/(?:VLXT|VL12)[_\s-]*([0-9]{9,11})/);
+  // 1. Ưu tiên tìm dãy số/chữ đi ngay sau từ khóa VLXT hoặc VL12 (ví dụ: VLXT 123456789 THANG50K hoặc VLXT 0964885924)
+  const m1 = raw.match(/(?:VLXT|VL12)[_\s-]*([0-9]{6,15})/);
   if (m1 && m1[1]) return normSdt(m1[1]);
-  // Fallback: tìm số điện thoại di động Việt Nam 10 số (03, 05, 07, 08, 09) hoặc 9 số (bỏ số 0 đầu)
+  // 2. Fallback: tìm số điện thoại di động Việt Nam 10 số (03, 05, 07, 08, 09) hoặc 9 số (bỏ số 0 đầu)
   const m2 = raw.match(/\b(0[35789][0-9]{8}|[35789][0-9]{8})\b/);
   if (m2 && m2[1]) return normSdt(m2[1]);
+  // 3. Fallback cho số điện thoại test bất kỳ 8-12 chữ số trong nội dung
+  const m3 = raw.match(/\b([0-9]{8,12})\b/);
+  if (m3 && m3[1]) return normSdt(m3[1]);
   return '';
 }
 
@@ -5511,7 +5514,8 @@ function resolvePlanFromAmountAndMemo_(amount, content) {
   if (amt >= 350000 || raw.indexOf('NAM399K') >= 0) {
     return { planCode: 'NAM399K', loaiTK: 'premium', days: 365 };
   }
-  if (amt >= 45000) {
+  // Nếu nội dung có mã VLXT / VL12 / THANG50K (kể cả khi Thầy chuyển thử 2.000đ - 10.000đ) hoặc số tiền >= 45.000đ
+  if (amt >= 45000 || ((raw.indexOf('VLXT') >= 0 || raw.indexOf('VL12') >= 0 || raw.indexOf('THANG50K') >= 0) && amt >= 1000)) {
     return { planCode: 'THANG50K', loaiTK: 'vip', days: 30 };
   }
   return null;
@@ -5555,7 +5559,7 @@ function handleBankWebhookGAS(payload) {
     let processedCount = 0;
 
     txList.forEach(function(tx) {
-      if (tx.transferType !== 'in' || tx.amount < 45000) return;
+      if (tx.transferType !== 'in' || tx.amount < 1000) return;
 
       // Chống xử lý trùng mã giao dịch ngân hàng
       const isDup = existingRows.some(function(r) {
@@ -5655,11 +5659,13 @@ function checkPaymentStatusGAS(data) {
   }
 
   // 1. Kiểm tra trong bảng GiaoDichVietQR xem có giao dịch thành công của SĐT này chưa
+  let txCount = 0;
   try {
     const txSheet = getOrCreate('GiaoDichVietQR', [
       'maGD','sdt','hoten','goiHoc','loaiTK','soTien','noiDung','nganHang','stkNhan','thoiGianGD','ngayKichHoat','trangThai'
     ]);
     const txRows = sheetToJson(txSheet);
+    txCount = txRows.length;
     for (let i = txRows.length - 1; i >= 0; i--) {
       if (normSdt(txRows[i].sdt) === sdt && String(txRows[i].trangThai) === 'DA_KICH_HOAT_TU_DONG') {
         const isYear = String(txRows[i].loaiTK) === 'premium';
@@ -5697,5 +5703,5 @@ function checkPaymentStatusGAS(data) {
     }
   } catch (e) {}
 
-  return jsonOut({ ok: true, paid: false });
+  return jsonOut({ ok: true, paid: false, txCount: txCount });
 }
