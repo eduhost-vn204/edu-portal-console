@@ -1548,9 +1548,9 @@
                 <p style="font-size:12.5px;color:var(--gray);margin-bottom:10px">Nhập trực tiếp các gói câu đã được Thầy thẩm định và duyệt Tinh từ Content Pipeline.</p>
 
                 <div style="display:flex;flex-direction:column;gap:8px">
-                    <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;border:1px dashed #16a34a;border-radius:8px;background:#fff;cursor:pointer">
+                    <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;border:1px dashed #16a34a;border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer">
 
-                    <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border)">
+                    <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:var(--bg2);padding:10px;border-radius:8px;border:1px solid var(--border)">
                         <div><b>Tệp:</b> <span id="nh-bi-filename"></span></div>
                         <div><b>Số câu:</b> <span id="nh-bi-count" style="font-weight:700;color:#16a34a">0</span> câu</div>
                         <div><b>Mã đợt:</b> <span id="nh-bi-batchid"></span></div>
@@ -9613,14 +9613,36 @@ async function runBatchDryRun(){
 async function openCommitConfirmModal(){
     if(!_currentBatchQuestions.length) return;
     const count = _currentBatchQuestions.length;
+    const batchLabel = (_currentBatchId || 'BATCH_001').trim();
+
+    if(typeof confirmAsync === 'function'){
+        const ok = await confirmAsync(
+            `Bạn đang chuẩn bị nạp thật ${count} câu Tinh (Mã đợt: ${batchLabel}) vào Google Sheet NgânHangCauHoi.\n\nDry-Run đã kiểm tra hợp lệ 100%. Bấm "Nạp thật lên Sheet" để ghi ngay.`,
+            {
+                title: '<i class="fa-solid fa-cloud-arrow-up" style="color:#16a34a"></i> Xác nhận nạp thật câu Tinh',
+                okLabel: 'Nạp thật lên Sheet',
+                danger: false
+            }
+        );
+        if(!ok){
+            toast('Đã hủy thao tác ghi thật.', 'err');
+            return;
+        }
+        await commitBatchImport();
+        return;
+    }
+
     const requiredPhrase = `NẠP ${count} CÂU TINH BATCH 001`;
-    const input = prompt(`⚠️ XÁC NHẬN GHI DỮ LIỆU PRODUCTION THẬT\n\nBạn đang chuẩn bị nạp thật ${count} câu Tinh vào Ngân hàng dữ liệu.\nThao tác này sẽ ghi vĩnh viễn vào Google Sheet.\n\nVui lòng nhập chính xác cụm từ sau để xác nhận:\n\n${requiredPhrase}`);
-
-    const cleanIn = String(input || '').trim().replace(/\s+/g, ' ').toUpperCase();
-    const cleanReq = requiredPhrase.replace(/\s+/g, ' ').toUpperCase();
-    const cleanAlt = `NẠP ${count} CÂU TINH CÒN LẠI BATCH 001`.replace(/\s+/g, ' ').toUpperCase();
-
-    if(cleanIn !== cleanReq && cleanIn !== cleanAlt){
+    const input = prompt(`⚠️ XÁC NHẬN GHI DỮ LIỆU PRODUCTION THẬT\n\nBạn đang chuẩn bị nạp thật ${count} câu Tinh vào Ngân hàng dữ liệu.\nThao tác này sẽ ghi vĩnh viễn vào Google Sheet.\n\nVui lòng nhập OK hoặc chính xác cụm từ sau:\n\n${requiredPhrase}`, requiredPhrase);
+    const fold = s => String(s || '').normalize('NFC').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd').trim().replace(/\s+/g, ' ').toUpperCase();
+    const cleanIn = fold(input);
+    const accepted = new Set([
+        fold(requiredPhrase),
+        fold(`NẠP ${count} CÂU TINH CÒN LẠI BATCH 001`),
+        fold(`NAP ${count} CAU TINH`),
+        'OK', 'XAC NHAN'
+    ]);
+    if(!accepted.has(cleanIn)){
         toast('Cụm từ xác nhận không khớp. Đã hủy thao tác ghi thật.', 'err');
         return;
     }
