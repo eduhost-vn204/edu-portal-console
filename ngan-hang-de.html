@@ -7008,6 +7008,101 @@ function exportManualSubtopicOverrides() {
     toast(`<i class="fa-solid fa-file-export"></i> Đã xuất ${count} câu chỉnh tay ra file vlxt_manual_subtopic_overrides.json!`, 'ok');
 }
 
+/* ── Hàng đợi đồng bộ nền Google Sheets (lưu UI tức thì 0ms, đẩy server tuần tự ở nền) ── */
+const _bgBankSyncQueue = [];
+const _bgBankSyncFailed = [];
+let _bgBankSyncRunning = false;
+let _bgBankSyncDoneCount = 0;
+
+function getBankSyncStatusHtml() {
+    const pending = _bgBankSyncQueue.length + (_bgBankSyncRunning ? 1 : 0);
+    const failed = _bgBankSyncFailed.length;
+    if (pending > 0) {
+        return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;border:1px solid rgba(56,189,248,0.4);background:rgba(14,116,144,0.16);color:#38bdf8;font-size:11.5px;font-weight:700;margin-left:8px"><i class="fa-solid fa-spinner fa-spin"></i> Đang lưu ngầm ${pending} thao tác lên Sheets...</span>`;
+    }
+    if (failed > 0) {
+        return `<button type="button" onclick="retryFailedBankSync()" style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;border:1px solid #f59e0b;background:rgba(245,158,11,0.16);color:#fbbf24;font-size:11.5px;font-weight:700;cursor:pointer;margin-left:8px" title="Đã lưu trên trình duyệt. Bấm để thử đẩy lại lên Google Sheets (kiểm tra mạng &amp; Khóa Admin)."><i class="fa-solid fa-rotate-right"></i> ${failed} thao tác chưa lên Sheets · Thử lại</button>`;
+    }
+    if (_bgBankSyncDoneCount > 0) {
+        return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;border:1px solid rgba(34,197,94,0.4);background:rgba(22,163,74,0.14);color:#4ade80;font-size:11.5px;font-weight:700;margin-left:8px"><i class="fa-solid fa-cloud-arrow-up"></i> Đã đồng bộ Sheets (${_bgBankSyncDoneCount})</span>`;
+    }
+    return '';
+}
+
+function renderBankSyncStatusPill() {
+    const el = document.getElementById('nh-sync-status-pill');
+    if (el) el.innerHTML = getBankSyncStatusHtml();
+}
+
+function enqueueBankSyncTask(task) {
+    if (!task || !task.payload) return;
+    if (task.id) {
+        const dupIdx = _bgBankSyncQueue.findIndex(t => t.id === task.id);
+        if (dupIdx > -1) _bgBankSyncQueue.splice(dupIdx, 1);
+        const failIdx = _bgBankSyncFailed.findIndex(t => t.id === task.id);
+        if (failIdx > -1) _bgBankSyncFailed.splice(failIdx, 1);
+    }
+    _bgBankSyncQueue.push(task);
+    renderBankSyncStatusPill();
+    if (!_bgBankSyncRunning) {
+        processBankSyncQueue();
+    }
+}
+
+async function processBankSyncQueue() {
+    if (_bgBankSyncRunning) return;
+    _bgBankSyncRunning = true;
+    renderBankSyncStatusPill();
+    try {
+        while (_bgBankSyncQueue.length > 0) {
+            const task = _bgBankSyncQueue.shift();
+            let ok = false;
+            try {
+                if (typeof getAdminKey === 'function' && !getAdminKey()) {
+                    ok = false;
+                } else {
+                    ok = await postAdminWriteWithRetry(task.payload, 1);
+                }
+            } catch (e) {
+                ok = false;
+            }
+            if (ok) {
+                _bgBankSyncDoneCount++;
+            } else {
+                _bgBankSyncFailed.push(task);
+            }
+            renderBankSyncStatusPill();
+            if (_bgBankSyncQueue.length > 0 && typeof sleep === 'function') {
+                await sleep(120);
+            }
+        }
+    } finally {
+        _bgBankSyncRunning = false;
+        renderBankSyncStatusPill();
+    }
+}
+
+function retryFailedBankSync() {
+    if (!_bgBankSyncFailed.length) return;
+    if (typeof getAdminKey === 'function' && !getAdminKey()) {
+        toast('Vui lòng bấm biểu tượng chìa khóa trên thanh công cụ để nhập Khóa quản trị trước khi đẩy lên Sheets.', 'err');
+        return;
+    }
+    while (_bgBankSyncFailed.length > 0) {
+        _bgBankSyncQueue.push(_bgBankSyncFailed.shift());
+    }
+    processBankSyncQueue();
+}
+
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('beforeunload', function (e) {
+        if (_bgBankSyncQueue.length > 0 || _bgBankSyncRunning) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+}
+
 function resolveCanonicalSubtopicOne(rawSub, canonicalBai) {
     const s = String(rawSub || '').trim();
     if (!s) return '';
@@ -7850,9 +7945,10 @@ function renderSubtopicSummaryBar(){
     const exportBtnHtml = customEditCount > 0
         ? ` <button type="button" onclick="exportManualSubtopicOverrides()" style="padding:3px 9px;border-radius:6px;border:1px solid rgba(56,189,248,0.45);background:rgba(14,116,144,0.18);color:#38bdf8;font-size:11.5px;font-weight:700;cursor:pointer;margin-left:8px" title="Xuất danh sách các câu Thầy vừa chỉnh tay ra file JSON để lưu vĩnh viễn vào mã nguồn"><i class="fa-solid fa-file-export"></i> Xuất ${customEditCount} câu chỉnh tay (.json)</button>`
         : '';
+    const syncPillHtml = `<span id="nh-sync-status-pill">${typeof getBankSyncStatusHtml==='function'?getBankSyncStatusHtml():''}</span>`;
     let html = `<div class="nh-subtopic-bar-head">
         <span><i class="fa-solid fa-sitemap" style="color:#0f766e"></i> ${nhEsc(scopeTitle)} (bấm chip để lọc · mốc ≥ 50 câu cho 50 đề):</span>
-        <span style="font-size:11.5px;color:var(--gray)">📘 ${ltRows.length} câu Lý thuyết · 🧮 ${btRows.length} câu Tính toán chưa chia${exportBtnHtml}</span>
+        <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📘 ${ltRows.length} câu Lý thuyết · 🧮 ${btRows.length} câu Tính toán chưa chia${exportBtnHtml}${syncPillHtml}</span>
     </div><div class="nh-subtopic-chips">`;
     html += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' ? 'active' : ''}" onclick="selectSubtopicChip('')">
         <span>${nhEsc(resetLabel)}</span>
@@ -7906,70 +8002,81 @@ function fillBankFilters(){
     updateBankSubtopicOptions(sb ? sb.value : '', vsub);
 }
 
+function getBankFilterState(){
+    const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    return {
+        fm: gv('nh-f-mon'),
+        fc: gv('nh-f-chuong'),
+        fd: gv('nh-f-mucdo'),
+        fl: gv('nh-f-loai'),
+        ftn: gv('nh-f-tntype'),
+        fp: gv('nh-f-phanloai'),
+        fb: gv('nh-f-bai'),
+        fsub: gv('nh-f-subtopic'),
+        fcamp: gv('nh-f-campaign'),
+        fcl: gv('nh-f-chatluong'),
+        fs: gv('nh-f-search').toLowerCase()
+    };
+}
+
+function doesQuestionMatchBankFilter(q, st){
+    if (!q) return false;
+    const f = st || getBankFilterState();
+    const clNorm = String(q.chatLuong || '').trim().toLowerCase();
+    let matchCl = true;
+    if (f.fcl === 'chua_duyet') matchCl = (clNorm === '');
+    else if (f.fcl === 'tinh') matchCl = (clNorm === 'tinh');
+    else if (f.fcl === 'tho') matchCl = (clNorm === 'tho');
+
+    let matchTnType = true;
+    if (f.ftn === 'TN_LT') matchTnType = (q.loai === 'TN' && q.tnType === 'LT');
+    else if (f.ftn === 'TN_BT') matchTnType = (q.loai === 'TN' && q.tnType === 'BT');
+    else if (f.ftn === 'DS') matchTnType = (q.loai === 'DS');
+    else if (f.ftn === 'TLN') matchTnType = (q.loai === 'TLN');
+
+    const matchChuong = !f.fc || q.chuong === f.fc || (Array.isArray(q.chuongList) && q.chuongList.includes(f.fc));
+    const matchBai = !f.fb || (f.fb === '__EMPTY__'
+        ? !(q.baiHoc || '').trim()
+        : (q.baiHoc || '').split(',').map(s => s.trim()).includes(f.fb));
+
+    let matchSub = true;
+    if (f.fsub) {
+        if (q.loai !== 'TN' || q.tnType !== 'LT') {
+            matchSub = false;
+        } else {
+            const effectiveSub = f.fb ? getQuestionSubTopicForLesson(q, f.fb) : q.subTopic;
+            matchSub = (effectiveSub === f.fsub || q.subTopic === f.fsub);
+        }
+    }
+
+    let matchCamp = true;
+    if (f.fcamp) {
+        if (f.fcamp === 'unused_THITHU') matchCamp = !isQuestionUsedInCampaign(q, 'THITHU');
+        else if (f.fcamp === 'unused_DGNL') matchCamp = !isQuestionUsedInCampaign(q, 'DGNL');
+        else if (f.fcamp === 'unused_KIEMTRA') matchCamp = !isQuestionUsedInCampaign(q, 'KIEMTRA');
+        else if (f.fcamp === 'unused_ALL') matchCamp = (getQuestionCampaignUsages(q).length === 0);
+        else if (f.fcamp === 'used_THITHU') matchCamp = isQuestionUsedInCampaign(q, 'THITHU');
+        else if (f.fcamp === 'used_DGNL') matchCamp = isQuestionUsedInCampaign(q, 'DGNL');
+        else if (f.fcamp === 'used_KIEMTRA') matchCamp = isQuestionUsedInCampaign(q, 'KIEMTRA');
+        else if (f.fcamp === 'used_ANY') matchCamp = (getQuestionCampaignUsages(q).length > 0);
+    }
+
+    return (!f.fm || q.mon === f.fm) &&
+        matchChuong &&
+        (!f.fd || (q.mucDo || '').toUpperCase() === f.fd) &&
+        (!f.fl || q.loai === f.fl) &&
+        matchTnType &&
+        (!f.fp || q.phanLoai === f.fp) &&
+        matchBai &&
+        matchSub &&
+        matchCamp &&
+        matchCl &&
+        (!f.fs || ((q.id || '') + ' ' + (q.question || '') + ' ' + (q.deBaiChung || '') + ' ' + (q.subTopic || '')).toLowerCase().includes(f.fs));
+}
+
 function bankFiltered(){
-    const fm=document.getElementById('nh-f-mon').value,
-          fc=document.getElementById('nh-f-chuong').value,
-          fd=document.getElementById('nh-f-mucdo').value,
-          fl=document.getElementById('nh-f-loai').value,
-          ftn=(document.getElementById('nh-f-tntype')?document.getElementById('nh-f-tntype').value:''),
-          fp=document.getElementById('nh-f-phanloai').value,
-          fb=document.getElementById('nh-f-bai').value,
-          fsub=(document.getElementById('nh-f-subtopic')?document.getElementById('nh-f-subtopic').value:''),
-          fcamp=(document.getElementById('nh-f-campaign')?document.getElementById('nh-f-campaign').value:''),
-          fcl=document.getElementById('nh-f-chatluong').value,
-          fs=(document.getElementById('nh-f-search').value||'').toLowerCase();
-    return bankData.filter(q=>{
-        const clNorm = String(q.chatLuong || '').trim().toLowerCase();
-        let matchCl = true;
-        if(fcl === 'chua_duyet') matchCl = (clNorm === '');
-        else if(fcl === 'tinh') matchCl = (clNorm === 'tinh');
-        else if(fcl === 'tho') matchCl = (clNorm === 'tho');
-
-        let matchTnType = true;
-        if (ftn === 'TN_LT') matchTnType = (q.loai === 'TN' && q.tnType === 'LT');
-        else if (ftn === 'TN_BT') matchTnType = (q.loai === 'TN' && q.tnType === 'BT');
-        else if (ftn === 'DS') matchTnType = (q.loai === 'DS');
-        else if (ftn === 'TLN') matchTnType = (q.loai === 'TLN');
-
-        const matchChuong = !fc || q.chuong === fc || (Array.isArray(q.chuongList) && q.chuongList.includes(fc));
-        const matchBai = !fb || (fb === '__EMPTY__'
-            ? !(q.baiHoc || '').trim()
-            : (q.baiHoc || '').split(',').map(s => s.trim()).includes(fb));
-
-        let matchSub = true;
-        if (fsub) {
-            if (q.loai !== 'TN' || q.tnType !== 'LT') {
-                matchSub = false;
-            } else {
-                const effectiveSub = fb ? getQuestionSubTopicForLesson(q, fb) : q.subTopic;
-                matchSub = (effectiveSub === fsub || q.subTopic === fsub);
-            }
-        }
-
-        let matchCamp = true;
-        if (fcamp) {
-            if (fcamp === 'unused_THITHU') matchCamp = !isQuestionUsedInCampaign(q, 'THITHU');
-            else if (fcamp === 'unused_DGNL') matchCamp = !isQuestionUsedInCampaign(q, 'DGNL');
-            else if (fcamp === 'unused_KIEMTRA') matchCamp = !isQuestionUsedInCampaign(q, 'KIEMTRA');
-            else if (fcamp === 'unused_ALL') matchCamp = (getQuestionCampaignUsages(q).length === 0);
-            else if (fcamp === 'used_THITHU') matchCamp = isQuestionUsedInCampaign(q, 'THITHU');
-            else if (fcamp === 'used_DGNL') matchCamp = isQuestionUsedInCampaign(q, 'DGNL');
-            else if (fcamp === 'used_KIEMTRA') matchCamp = isQuestionUsedInCampaign(q, 'KIEMTRA');
-            else if (fcamp === 'used_ANY') matchCamp = (getQuestionCampaignUsages(q).length > 0);
-        }
-
-        return (!fm || q.mon === fm) &&
-            matchChuong &&
-            (!fd || (q.mucDo || '').toUpperCase() === fd) &&
-            (!fl || q.loai === fl) &&
-            matchTnType &&
-            (!fp || q.phanLoai === fp) &&
-            matchBai &&
-            matchSub &&
-            matchCamp &&
-            matchCl &&
-            (!fs || ((q.id || '') + ' ' + (q.question || '') + ' ' + (q.deBaiChung || '') + ' ' + (q.subTopic || '')).toLowerCase().includes(fs));
-    });
+    const st = getBankFilterState();
+    return bankData.filter(q => doesQuestionMatchBankFilter(q, st));
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
 const NH_PAGE_SIZE=30;
@@ -8157,8 +8264,9 @@ function bankEditClose(){
     document.getElementById('nh-edit-overlay').classList.remove('show');
     _nheCurrentId=null;
 }
-async function bankEditSave(){
+function bankEditSave(){
     if(!_nheCurrentId) return;
+    const editedId=_nheCurrentId;
     const loai=document.getElementById('nhe-loai').value;
     const question=document.getElementById('nhe-question').value.trim();
     if(!question){ toast('Câu hỏi không được để trống','err'); return; }
@@ -8192,30 +8300,62 @@ async function bankEditSave(){
         ? (chosenSub || (typeof guessSubTopic==='function' ? guessSubTopic({...q,loai:'TN',tnType:'LT'}, primaryBai) : ''))
         : '';
     q.subTopic=resolvedSub;
-    const btn=document.getElementById('nhe-save-btn');
-    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-    document.getElementById('nhe-status').textContent='';
+
     try{
-        saveCustomSubtopicOverride(_nheCurrentId, resolvedSub, chosenTnType, q.baiHoc, q.chuong);
-        let okWrite=false;
-        try{
-            okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q,chatLuong});
-        }catch(errWrite){ okWrite=false; }
-        const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
+        const savedScrollY=(typeof window!=='undefined' && typeof window.scrollY==='number')?window.scrollY:0;
+        saveCustomSubtopicOverride(editedId, resolvedSub, chosenTnType, q.baiHoc, q.chuong);
+        const idx=bankData.findIndex(x=>x.id===editedId);
+        let updatedQ=null;
         if(idx>-1){
             bankData[idx]=normalizeQuestionTaxonomy({...bankData[idx],...q});
             bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
-        }
-        renderBankStats(); fillBankFilters(); renderBankList();
-        if(okWrite){
-            toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId+' (Server + Trình duyệt)','ok');
-        }else{
-            toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã lưu trên Trình duyệt cho '+_nheCurrentId+' (chưa ghi được lên Google Sheets — kiểm tra Khóa Admin)','err');
+            updatedQ=bankData[idx];
         }
         bankEditClose();
+        renderBankStats();
+        fillBankFilters();
+
+        const rowEl=document.getElementById('nh-row-'+editedId);
+        const listEl=document.getElementById('nh-list');
+        if(rowEl && listEl && updatedQ && typeof rowEl.outerHTML==='string' && typeof bankRowHtml==='function'){
+            renderSubtopicSummaryBar();
+            const fState=getBankFilterState();
+            const stillMatches=doesQuestionMatchBankFilter(updatedQ, fState);
+            if(stillMatches){
+                rowEl.outerHTML=bankRowHtml(updatedQ,true);
+                const freshRow=document.getElementById('nh-row-'+editedId);
+                if(freshRow && typeof nhKatex==='function') nhKatex(freshRow);
+            }else if(typeof rowEl.remove==='function'){
+                rowEl.remove();
+            }
+            const totalMatched=bankFiltered().length;
+            const domRows=listEl.querySelectorAll ? listEl.querySelectorAll('.nh-row').length : 0;
+            if(domRows===0 && totalMatched>=0){
+                renderBankList();
+            }else{
+                const cntEl=document.getElementById('nh-list-count');
+                if(cntEl) cntEl.textContent='Đang hiện '+domRows+' / '+totalMatched+' câu (tổng '+bankData.length+')';
+            }
+        }else{
+            renderBankList();
+        }
+        if(typeof window!=='undefined' && typeof window.scrollTo==='function'){
+            window.scrollTo(0, savedScrollY);
+        }
+
+        if(typeof enqueueBankSyncTask==='function'){
+            enqueueBankSyncTask({
+                id: editedId,
+                label: editedId,
+                payload: {action:'updatenganhang', id:editedId, q, chatLuong}
+            });
+        }
+        toast('<i class="fa-solid fa-bolt"></i> Đã lưu tức thì '+editedId+' (đang đồng bộ ngầm lên Sheets)','ok');
     }catch(e){
-        document.getElementById('nhe-status').textContent='Lỗi: '+e.message;
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
+        const stEl=document.getElementById('nhe-status');
+        if(stEl) stEl.textContent='Lỗi: '+e.message;
+        const btn=document.getElementById('nhe-save-btn');
+        if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi'; }
     }
 }
 
@@ -8447,19 +8587,14 @@ function bankAssignSubtopicFillOptions(){
     }
     subSel.innerHTML=html;
 }
-async function bankAssignBaiApply(){
+function bankAssignBaiApply(){
     const ids=[...bankSel];
     if(!ids.length) return;
     const baiHoc=normalizeCanonicalBaiHoc(document.getElementById('nh-bf-bai').value||'');
     const chosenTnMode=(document.getElementById('nh-bf-tntype')?document.getElementById('nh-bf-tntype').value:'')||'';
     const chosenSub=chosenTnMode==='BT'?'':((document.getElementById('nh-bf-subtopic')?document.getElementById('nh-bf-subtopic').value:'')||'');
-    const btn=document.getElementById('nh-bf-apply-btn');
-    btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang gán...';
     try{
-        let okWrite=false;
-        try{
-            okWrite = await postAdminWriteWithRetry({action:'bulksetbainganhang',ids,baiHoc,tnType:chosenTnMode,subTopic:chosenSub});
-        }catch(writeErr){ okWrite=false; }
+        const savedScrollY=(typeof window!=='undefined' && typeof window.scrollY==='number')?window.scrollY:0;
         ids.forEach(id=>{
             const idx=bankData.findIndex(x=>x.id===id);
             const prev=idx>-1?bankData[idx]:{};
@@ -8472,17 +8607,19 @@ async function bankAssignBaiApply(){
             if(idx>-1) bankData[idx]=normalizeQuestionTaxonomy({...prev, chuong: finalCh, baiHoc, tnType: finalTn, subTopic: finalSub});
             bankSel.delete(id);
         });
-        renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
         document.getElementById('nh-bai-form').style.display='none';
-        if(okWrite){
-            toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài & phân loại cho '+ids.length+' câu (Server + Trình duyệt)','ok');
-        }else{
-            toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã gán phân loại cho '+ids.length+' câu trên Trình duyệt (chưa ghi lên Google Sheets — kiểm tra Khóa Admin).','err');
+        renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+        if(typeof window!=='undefined' && typeof window.scrollTo==='function') window.scrollTo(0, savedScrollY);
+        if(typeof enqueueBankSyncTask==='function'){
+            enqueueBankSyncTask({
+                id: 'BULK_' + Date.now() + '_' + ids.length,
+                label: ids.length + ' câu',
+                payload: {action:'bulksetbainganhang',ids,baiHoc,tnType:chosenTnMode,subTopic:chosenSub}
+            });
         }
+        toast('<i class="fa-solid fa-bolt"></i> Đã gán tức thì '+ids.length+' câu (đang đồng bộ ngầm lên Sheets)','ok');
     }catch(e){
         toast('Lỗi: '+e.message,'err');
-    }finally{
-        btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Gán cho câu đã chọn';
     }
 }
 
