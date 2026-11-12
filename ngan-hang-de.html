@@ -348,22 +348,30 @@
         /* Edit question modal */
         #nh-edit-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2100; align-items:center; justify-content:center; }
         #nh-edit-overlay.show { display:flex; }
-        #nh-edit-modal { background:var(--card); border-radius:16px; width:min(720px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.4); border:1px solid var(--line); }
-        .nhe-head { padding:18px 20px 12px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
-        .nhe-head h3 { margin:0; font-size:16px; flex:1; }
-        .nhe-body { overflow-y:auto; flex:1; padding:16px 20px; display:flex; flex-direction:column; gap:14px; }
+        #nh-edit-modal { background:var(--bg); color:var(--black); border-radius:16px; width:min(740px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.45); border:1.5px solid var(--border); overflow:hidden; }
+        .nhe-head { padding:16px 20px 12px; border-bottom:1px solid var(--border); background:var(--bg2); display:flex; align-items:center; gap:10px; }
+        .nhe-head h3 { margin:0; font-size:16px; flex:1; color:var(--black); }
+        .nhe-body { overflow-y:auto; flex:1; padding:16px 20px; display:flex; flex-direction:column; gap:14px; background:var(--bg); }
         .nhe-row { display:flex; gap:10px; flex-wrap:wrap; }
         .nhe-field { flex:1; min-width:140px; display:flex; flex-direction:column; gap:5px; }
         .nhe-field label { font-size:11.5px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.3px; }
-        .nhe-field textarea,.nhe-field input,.nhe-field select { padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text); font-size:13.5px; font-family:inherit; resize:vertical; }
+        .nhe-field textarea,.nhe-field input,.nhe-field select { padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--black); font-size:13.5px; font-family:inherit; resize:vertical; }
         .nhe-field textarea { min-height:60px; }
+        .nhe-bai-chips { display:flex; flex-wrap:wrap; gap:6px; padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); min-height:40px; align-items:center; }
+        .nhe-bai-chip { display:inline-flex; align-items:center; gap:7px; padding:4px 8px 4px 10px; border-radius:6px; border:1px solid #0284c7; background:rgba(11,132,243,0.14); color:var(--black); font-size:12.5px; font-weight:600; line-height:1.35; }
+        .nhe-bai-chip-del { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:4px; border:none; background:rgba(220,38,38,0.16); color:#f87171; font-size:13px; font-weight:800; cursor:pointer; line-height:1; flex-shrink:0; }
+        .nhe-bai-chip-del:hover { background:#dc2626; color:#fff; }
+        .nhe-bai-picker-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .nhe-bai-picker-row select { flex:1; min-width:220px; }
+        .nhe-bai-mini-btn { padding:7px 11px; border-radius:7px; border:1px solid var(--border); background:var(--bg2); color:var(--black); font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+        .nhe-bai-mini-btn:hover { border-color:var(--blue); color:var(--blue); }
         .nhe-opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .nhe-foot { padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:10px; justify-content:flex-end; }
+        .nhe-foot { padding:14px 20px; border-top:1px solid var(--border); background:var(--bg2); display:flex; align-items:center; gap:10px; justify-content:flex-end; }
         .nh-edit-btn { background:none; border:none; color:#94a3b8; cursor:pointer; font-size:14px; padding:6px 8px; border-radius:6px; transition:all .15s; }
         .nh-edit-btn:hover { color:#38bdf8; background:rgba(56,189,248,0.12); }
         #nh-scan-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2100; align-items:center; justify-content:center; }
         #nh-scan-overlay.show { display:flex; }
-        #nh-scan-modal { background:var(--card); border-radius:16px; width:min(820px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.4); border:1px solid var(--line); }
+        #nh-scan-modal { background:var(--bg); color:var(--black); border-radius:16px; width:min(820px,95vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 60px rgba(0,0,0,.45); border:1.5px solid var(--border); overflow:hidden; }
         .scan-section h4 { font-size:14px; font-weight:800; margin:0 0 10px; display:flex; align-items:center; gap:8px; }
         .scan-item { border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-bottom:8px; background:var(--bg2); }
         .scan-item-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
@@ -6179,15 +6187,89 @@ function baiOptionsForChuong(chuong){
     }
     return [];
 }
+function bankEditGetSelectedBais(){
+    const inp=document.getElementById('nhe-bai');
+    const raw=inp?(inp.value||''):'';
+    const parts=raw.split(',').map(s=>s.trim()).filter(Boolean);
+    return [...new Set(parts)];
+}
+function bankEditRenderBaiChips(selectedList){
+    const list=Array.isArray(selectedList)?selectedList:bankEditGetSelectedBais();
+    const wrap=document.getElementById('nhe-bai-chips');
+    const clearBtn=document.getElementById('nhe-bai-clear-btn');
+    const addSel=document.getElementById('nhe-bai-add');
+    if(wrap){
+        if(!list.length){
+            wrap.innerHTML='<span style="font-size:12.5px;color:#b45309">⚠️ Chưa gán bài học nào — chọn bài bên dưới để gán</span>';
+        }else{
+            wrap.innerHTML=list.map((b,idx)=>`<span class="nhe-bai-chip"><i class="fa-solid fa-book" style="color:var(--blue)"></i> <span>${nhEsc(b)}</span><button type="button" class="nhe-bai-chip-del" onclick="bankEditRemoveBai(${idx})" title="Bỏ thẻ bài này khỏi câu hỏi">&times;</button></span>`).join('');
+        }
+    }
+    if(clearBtn){
+        clearBtn.style.display=list.length>1?'inline-flex':'none';
+    }
+    if(addSel){
+        const chuong=(document.getElementById('nhe-chuong')?document.getElementById('nhe-chuong').value:'')||'';
+        const curOpts=baiOptionsForChuong(chuong).filter(b=>!list.includes(b));
+        const otherOpts=(typeof ALL_CANONICAL_LESSONS!=='undefined'?ALL_CANONICAL_LESSONS:[])
+            .filter(b=>!curOpts.includes(b) && !list.includes(b));
+        let html=`<option value="">-- + Thêm bài học${list.length?' khác':''} --</option>`
+            + curOpts.map(b=>`<option value="${nhEsc(b)}">${nhEsc(b)}</option>`).join('');
+        if(otherOpts.length){
+            html+=`<optgroup label="Bài học ở các Chương khác">`
+                + otherOpts.map(b=>`<option value="${nhEsc(b)}">${nhEsc(b)}</option>`).join('')
+                + `</optgroup>`;
+        }
+        addSel.innerHTML=html;
+        addSel.value='';
+    }
+}
+function bankEditRemoveBai(idx){
+    const list=bankEditGetSelectedBais();
+    if(idx<0 || idx>=list.length) return;
+    list.splice(idx,1);
+    const inp=document.getElementById('nhe-bai');
+    if(inp) inp.value=list.join(', ');
+    if(list.length && typeof LESSON_TO_CANONICAL_CHAPTER!=='undefined'){
+        const firstCh=LESSON_TO_CANONICAL_CHAPTER[list[0]];
+        const chSel=document.getElementById('nhe-chuong');
+        if(firstCh && chSel && chSel.value!==firstCh) chSel.value=firstCh;
+    }
+    bankEditRenderBaiChips(list);
+    bankEditFillSubtopic();
+}
+function bankEditAddBai(val){
+    const cleanVal=(typeof normalizeCanonicalBaiHoc==='function')?normalizeCanonicalBaiHoc(val):String(val||'').trim();
+    if(!cleanVal) return;
+    const list=bankEditGetSelectedBais();
+    if(!list.includes(cleanVal)) list.push(cleanVal);
+    const inp=document.getElementById('nhe-bai');
+    if(inp) inp.value=list.join(', ');
+    if(list.length===1 && typeof LESSON_TO_CANONICAL_CHAPTER!=='undefined'){
+        const targetCh=LESSON_TO_CANONICAL_CHAPTER[list[0]];
+        const chSel=document.getElementById('nhe-chuong');
+        if(targetCh && chSel && chSel.value!==targetCh) chSel.value=targetCh;
+    }
+    bankEditRenderBaiChips(list);
+    bankEditFillSubtopic();
+}
+function bankEditClearExtraBais(){
+    const list=bankEditGetSelectedBais();
+    if(list.length<=1) return;
+    const kept=[list[0]];
+    const inp=document.getElementById('nhe-bai');
+    if(inp) inp.value=kept.join(', ');
+    bankEditRenderBaiChips(kept);
+    bankEditFillSubtopic();
+}
 function bankEditFillBai(presetValue, presetSubtopic){
-    const chuong=document.getElementById('nhe-chuong').value;
-    const sel=document.getElementById('nhe-bai');
-    const rawCur=presetValue!==undefined?presetValue:sel.value;
-    const cur=(typeof normalizeCanonicalBaiHoc==='function')?normalizeCanonicalBaiHoc(rawCur):rawCur;
-    let opts=baiOptionsForChuong(chuong);
-    if(cur && !opts.includes(cur)) opts=[cur,...opts];
-    sel.innerHTML='<option value="">-- Không gán bài --</option>'+opts.map(b=>`<option value="${nhEsc(b)}" ${b===cur?'selected':''}>${nhEsc(b)}</option>`).join('');
-    sel.value=cur||'';
+    const inp=document.getElementById('nhe-bai');
+    if(!inp) return;
+    if(presetValue!==undefined){
+        const norm=(typeof normalizeCanonicalBaiHoc==='function')?normalizeCanonicalBaiHoc(presetValue):String(presetValue||'').trim();
+        inp.value=norm;
+    }
+    bankEditRenderBaiChips();
     bankEditFillSubtopic(presetSubtopic);
 }
 function bankEditFillSubtopic(presetSub){
@@ -6211,18 +6293,47 @@ function bankEditFillSubtopic(presetSub){
     const chapterTopics=(chuongRaw && typeof CANONICAL_16_TOPICS_BY_CHAPTER!=='undefined' && CANONICAL_16_TOPICS_BY_CHAPTER[chuongRaw])
         ? CANONICAL_16_TOPICS_BY_CHAPTER[chuongRaw]
         : [];
-    const subList=[...new Set([...lessonTopics, ...chapterTopics])];
-    const cur=presetSub!==undefined ? presetSub : subSel.value;
-    if(cur && typeof ALL_16_TOPICS!=='undefined' && ALL_16_TOPICS.includes(cur) && !subList.includes(cur)){
-        subList.unshift(cur);
+    const primaryList=[...new Set([...lessonTopics, ...chapterTopics])];
+    let cur=presetSub!==undefined ? presetSub : subSel.value;
+    if(!cur && typeof guessSubTopic==='function' && typeof _nheCurrentId!=='undefined'){
+        const curQ=(typeof bankData!=='undefined' && bankData.find(x=>x.id===_nheCurrentId)) || {
+            question: document.getElementById('nhe-question') ? document.getElementById('nhe-question').value : '',
+            optA: document.getElementById('nhe-optA') ? document.getElementById('nhe-optA').value : '',
+            optB: document.getElementById('nhe-optB') ? document.getElementById('nhe-optB').value : '',
+            optC: document.getElementById('nhe-optC') ? document.getElementById('nhe-optC').value : '',
+            optD: document.getElementById('nhe-optD') ? document.getElementById('nhe-optD').value : '',
+            giaiThich: document.getElementById('nhe-giaithich') ? document.getElementById('nhe-giaithich').value : ''
+        };
+        cur=guessSubTopic({...curQ, loai:'TN', tnType:'LT', baiHoc:primaryBai}, primaryBai) || '';
     }
-    subSel.innerHTML='<option value="">-- Tự động xếp vào 16 Chủ đề Lý thuyết --</option>'
-        + subList.map(s=>`<option value="${nhEsc(s)}" ${s===cur?'selected':''}>${nhEsc(s)}</option>`).join('');
-    if(cur && subList.includes(cur)) subSel.value=cur;
+    const allTopics=(typeof ALL_16_TOPICS!=='undefined')?ALL_16_TOPICS:primaryList;
+    const otherTopics=allTopics.filter(s=>!primaryList.includes(s));
+    let optsHtml='<option value="">-- Tự động xếp vào 16 Chủ đề Lý thuyết --</option>'
+        + primaryList.map(s=>`<option value="${nhEsc(s)}" ${s===cur?'selected':''}>${nhEsc(s)}</option>`).join('');
+    if(otherTopics.length){
+        optsHtml+=`<optgroup label="Các Chủ đề ở chương khác (sẽ tự đồng bộ Chương)">`
+            + otherTopics.map(s=>`<option value="${nhEsc(s)}" ${s===cur?'selected':''}>${nhEsc(s)}</option>`).join('')
+            + `</optgroup>`;
+    }
+    subSel.innerHTML=optsHtml;
+    if(cur && allTopics.includes(cur)) subSel.value=cur;
     else subSel.value='';
 }
 function bankEditTnTypeChanged(){
     bankEditFillSubtopic();
+}
+function bankEditSubtopicChanged(){
+    const subSel=document.getElementById('nhe-subtopic');
+    const chSel=document.getElementById('nhe-chuong');
+    if(!subSel || !chSel || typeof TOPIC_16_TO_CHAPTER==='undefined') return;
+    const targetCh=TOPIC_16_TO_CHAPTER[subSel.value];
+    if(targetCh && chSel.value!==targetCh && typeof CANONICAL_CHAPTERS!=='undefined' && CANONICAL_CHAPTERS.includes(targetCh)){
+        const curSub=subSel.value;
+        chSel.value=targetCh;
+        const matchingBais=(typeof CANONICAL_LESSONS_BY_CHAPTER!=='undefined' ? (CANONICAL_LESSONS_BY_CHAPTER[targetCh]||[]) : [])
+            .filter(b => typeof LESSON_TO_16_TOPICS!=='undefined' && (LESSON_TO_16_TOPICS[b]||[]).includes(curSub));
+        bankEditFillBai(matchingBais[0]||'', curSub);
+    }
 }
 
 /* Chuyển link Google Drive bất kỳ thành link ảnh hiển thị được */
@@ -6850,17 +6961,51 @@ function getCustomSubtopicOverrides() {
         return raw ? JSON.parse(raw) : {};
     } catch (e) { return {}; }
 }
-function saveCustomSubtopicOverride(qid, subTopic, tnType) {
+function saveCustomSubtopicOverride(qid, subTopicOrObj, tnType, baiHoc, chuong) {
     if (!qid) return;
     try {
         const map = getCustomSubtopicOverrides();
-        if (subTopic || tnType) {
-            map[qid] = { subTopic: subTopic || '', tnType: tnType || '' };
+        const cfg = (subTopicOrObj && typeof subTopicOrObj === 'object')
+            ? subTopicOrObj
+            : { subTopic: subTopicOrObj || '', tnType: tnType || '', baiHoc: baiHoc || '', chuong: chuong || '' };
+        const entry = {
+            subTopic: String(cfg.subTopic || '').trim(),
+            tnType: String(cfg.tnType || '').trim(),
+            baiHoc: String(cfg.baiHoc || '').trim(),
+            chuong: String(cfg.chuong || '').trim(),
+            updatedAt: new Date().toISOString()
+        };
+        if (entry.subTopic || entry.tnType || entry.baiHoc || entry.chuong) {
+            map[qid] = entry;
         } else {
             delete map[qid];
         }
         localStorage.setItem(CUSTOM_SUBTOPIC_STORAGE_KEY, JSON.stringify(map));
     } catch (e) {}
+}
+function exportManualSubtopicOverrides() {
+    const map = getCustomSubtopicOverrides();
+    const count = Object.keys(map).length;
+    if (!count) {
+        toast('Chưa có câu nào được Thầy chỉnh sửa phân loại thủ công trên trình duyệt.', 'err');
+        return;
+    }
+    const payload = {
+        exportedAt: new Date().toISOString(),
+        schemaVersion: 'V3_16_TOPICS_2025_2026',
+        count: count,
+        overrides: map
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vlxt_manual_subtopic_overrides.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(`<i class="fa-solid fa-file-export"></i> Đã xuất ${count} câu chỉnh tay ra file vlxt_manual_subtopic_overrides.json!`, 'ok');
 }
 
 function resolveCanonicalSubtopicOne(rawSub, canonicalBai) {
@@ -7085,8 +7230,12 @@ function guessSubTopic(q, canonicalBai) {
         case 'B13': return TOPIC_16_BY_CODE.CD08;
         case 'B10':
         case 'B14':
-        case 'B16':
         case 'B17': return TOPIC_16_BY_CODE.CD09;
+        case 'B16': {
+            if (/đẳng nhiệt|boyle/.test(stemOpts) && !/đẳng áp|đẳng tích|charles|gay-?lussac/.test(stemOpts)) return TOPIC_16_BY_CODE.CD07;
+            if (/đẳng áp|đẳng tích|charles|gay-?lussac/.test(stemOpts) && !/đẳng nhiệt|boyle/.test(stemOpts)) return TOPIC_16_BY_CODE.CD08;
+            return TOPIC_16_BY_CODE.CD09;
+        }
         case 'B21': return TOPIC_16_BY_CODE.CD10;
         case 'B22': return TOPIC_16_BY_CODE.CD11;
         case 'B23':
@@ -7137,20 +7286,32 @@ function normalizeQuestionTaxonomy(q) {
         if (ov.sub && (!rawSub || !/^CD\d{2}\b/i.test(rawSub))) rawSub = ov.sub;
     }
     const customSubs = getCustomSubtopicOverrides();
+    let hasExplicitCustomCh = false;
+    let hasExplicitCustomSub = false;
     if (customSubs[qid]) {
         const cs = customSubs[qid];
         if (typeof cs === 'string') {
             rawSub = cs;
+            if (cs) hasExplicitCustomSub = true;
         } else if (typeof cs === 'object') {
+            if (cs.chuong) { rawCh = cs.chuong; hasExplicitCustomCh = true; }
+            if (cs.baiHoc) rawBai = cs.baiHoc;
             if (cs.tnType) rawTn = cs.tnType;
-            if (cs.subTopic !== undefined) rawSub = cs.subTopic;
+            if (cs.subTopic !== undefined) {
+                rawSub = cs.subTopic;
+                if (cs.subTopic) hasExplicitCustomSub = true;
+            }
         }
     }
     let canonicalBai = normalizeCanonicalBaiHoc(rawBai, q.taxonomy);
     if (!canonicalBai) {
         canonicalBai = guessBaiHocFromQuestion(q);
     }
-    const canonicalCh = normalizeCanonicalChuong(rawCh, canonicalBai, q);
+    let canonicalCh = normalizeCanonicalChuong(rawCh, canonicalBai, q);
+    if (hasExplicitCustomCh) {
+        const forcedCh = resolveCanonicalChapterOne(rawCh);
+        if (forcedCh) canonicalCh = forcedCh;
+    }
     const chuongList = getQuestionCanonicalChapterList(canonicalCh, canonicalBai);
 
     let canonicalTnType = '';
@@ -7162,7 +7323,9 @@ function normalizeQuestionTaxonomy(q) {
     if (loai === 'TN' && canonicalTnType === 'LT') {
         canonicalSub = resolveCanonicalSubtopicOne(rawSub, canonicalBai);
         const primaryBai = canonicalBai.split(',')[0].trim();
-        if (!canonicalSub || !TOPIC_16_TO_CHAPTER[canonicalSub] || (!chuongList.includes(TOPIC_16_TO_CHAPTER[canonicalSub]) && TOPIC_16_TO_CHAPTER[canonicalSub] !== canonicalCh)) {
+        const subChapter = TOPIC_16_TO_CHAPTER[canonicalSub] || '';
+        const validForChapter = !!subChapter && (chuongList.includes(subChapter) || subChapter === canonicalCh);
+        if (!canonicalSub || (!hasExplicitCustomSub && !validForChapter)) {
             canonicalSub = guessSubTopic({ ...q, loai, tnType: 'LT' }, primaryBai);
         }
     }
@@ -7683,9 +7846,13 @@ function renderSubtopicSummaryBar(){
         ? `Tất cả ${selectedBai.split('.')[0] || 'Bài'}`
         : (selectedChuong ? `Tất cả ${selectedChuong.split('–')[0].trim()}` : 'Tất cả 16 Chủ đề');
 
+    const customEditCount = Object.keys(getCustomSubtopicOverrides()).length;
+    const exportBtnHtml = customEditCount > 0
+        ? ` <button type="button" onclick="exportManualSubtopicOverrides()" style="padding:3px 9px;border-radius:6px;border:1px solid rgba(56,189,248,0.45);background:rgba(14,116,144,0.18);color:#38bdf8;font-size:11.5px;font-weight:700;cursor:pointer;margin-left:8px" title="Xuất danh sách các câu Thầy vừa chỉnh tay ra file JSON để lưu vĩnh viễn vào mã nguồn"><i class="fa-solid fa-file-export"></i> Xuất ${customEditCount} câu chỉnh tay (.json)</button>`
+        : '';
     let html = `<div class="nh-subtopic-bar-head">
         <span><i class="fa-solid fa-sitemap" style="color:#0f766e"></i> ${nhEsc(scopeTitle)} (bấm chip để lọc · mốc ≥ 50 câu cho 50 đề):</span>
-        <span style="font-size:11.5px;color:var(--gray)">📘 ${ltRows.length} câu Lý thuyết · 🧮 ${btRows.length} câu Tính toán chưa chia</span>
+        <span style="font-size:11.5px;color:var(--gray)">📘 ${ltRows.length} câu Lý thuyết · 🧮 ${btRows.length} câu Tính toán chưa chia${exportBtnHtml}</span>
     </div><div class="nh-subtopic-chips">`;
     html += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' ? 'active' : ''}" onclick="selectSubtopicChip('')">
         <span>${nhEsc(resetLabel)}</span>
@@ -7998,9 +8165,11 @@ async function bankEditSave(){
     const chatLuong=document.getElementById('nhe-chatluong').value;
     const chosenTnType=(loai==='TN')?((document.getElementById('nhe-tntype')?document.getElementById('nhe-tntype').value:'LT')||'LT'):'';
     const chosenSub=(loai==='TN' && chosenTnType==='LT')?((document.getElementById('nhe-subtopic')?document.getElementById('nhe-subtopic').value:'')||''):'';
+    const rawBai=document.getElementById('nhe-bai').value||'';
+    const normBai=(typeof normalizeCanonicalBaiHoc==='function')?normalizeCanonicalBaiHoc(rawBai):rawBai;
     const q={
         loai, mucDo:document.getElementById('nhe-mucdo').value, chuong:document.getElementById('nhe-chuong').value,
-        baiHoc:document.getElementById('nhe-bai').value,
+        baiHoc:normBai,
         tnType:chosenTnType,
         subTopic:chosenSub,
         deBaiChung:document.getElementById('nhe-debai').value.trim(),
@@ -8018,25 +8187,32 @@ async function bankEditSave(){
         q.correct=(document.getElementById('nhe-correct-tln').value||'').trim();
         q.optA=q.optB=q.optC=q.optD='';
     }
+    const primaryBai=(q.baiHoc||'').split(',')[0].trim();
+    const resolvedSub=(loai==='TN' && chosenTnType==='LT')
+        ? (chosenSub || (typeof guessSubTopic==='function' ? guessSubTopic({...q,loai:'TN',tnType:'LT'}, primaryBai) : ''))
+        : '';
+    q.subTopic=resolvedSub;
     const btn=document.getElementById('nhe-save-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
     document.getElementById('nhe-status').textContent='';
     try{
-        saveCustomSubtopicOverride(_nheCurrentId, chosenSub, chosenTnType);
-        const okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q,chatLuong});
-        if(okWrite){
-            const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
-            if(idx>-1){
-                bankData[idx]=normalizeQuestionTaxonomy({...bankData[idx],...q});
-                bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
-            }
-            renderBankStats(); fillBankFilters(); renderBankList();
-            toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId,'ok');
-            bankEditClose();
-        }else{
-            document.getElementById('nhe-status').textContent='Lỗi: Không thể lưu câu hỏi lên server.';
-            btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
+        saveCustomSubtopicOverride(_nheCurrentId, resolvedSub, chosenTnType, q.baiHoc, q.chuong);
+        let okWrite=false;
+        try{
+            okWrite = await postAdminWriteWithRetry({action:'updatenganhang',id:_nheCurrentId,q,chatLuong});
+        }catch(errWrite){ okWrite=false; }
+        const idx=bankData.findIndex(x=>x.id===_nheCurrentId);
+        if(idx>-1){
+            bankData[idx]=normalizeQuestionTaxonomy({...bankData[idx],...q});
+            bankData[idx].phanLoai=classifyTaxonomy(bankData[idx]);
         }
+        renderBankStats(); fillBankFilters(); renderBankList();
+        if(okWrite){
+            toast('<i class="fa-solid fa-circle-check"></i> Đã lưu thay đổi câu '+_nheCurrentId+' (Server + Trình duyệt)','ok');
+        }else{
+            toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã lưu trên Trình duyệt cho '+_nheCurrentId+' (chưa ghi được lên Google Sheets — kiểm tra Khóa Admin)','err');
+        }
+        bankEditClose();
     }catch(e){
         document.getElementById('nhe-status').textContent='Lỗi: '+e.message;
         btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-check"></i> Lưu thay đổi';
@@ -8257,12 +8433,19 @@ function bankAssignSubtopicFillOptions(){
     }
     subSel.disabled=false;
     const baiRaw=(document.getElementById('nh-bf-bai')?document.getElementById('nh-bf-bai').value:'')||'';
-    const chuongRaw=(document.getElementById('nh-bf-chuong')?document.getElementById('nh-bf-chuong').value:'')||'';
+    const chuongRaw=(document.getElementById('nh-bf-chuong')?document.getElementById('nh-bf-chuong').value:'') || (typeof LESSON_TO_CANONICAL_CHAPTER!=='undefined' ? (LESSON_TO_CANONICAL_CHAPTER[baiRaw]||'') : '');
     const lessonSubs=getTopics16ForBai(baiRaw, chuongRaw);
     const chSubs=(chuongRaw && CANONICAL_16_TOPICS_BY_CHAPTER[chuongRaw])?CANONICAL_16_TOPICS_BY_CHAPTER[chuongRaw]:[];
-    const subs=[...new Set([...lessonSubs, ...chSubs])];
-    subSel.innerHTML='<option value="">-- Tự động xếp vào 16 Chủ đề Lý thuyết --</option>'
-        + subs.map(s=>`<option value="${nhEsc(s)}">${nhEsc(s)}</option>`).join('');
+    const primarySubs=[...new Set([...lessonSubs, ...chSubs])];
+    const otherSubs=ALL_16_TOPICS.filter(s=>!primarySubs.includes(s));
+    let html='<option value="">-- Tự động xếp vào 16 Chủ đề Lý thuyết --</option>'
+        + primarySubs.map(s=>`<option value="${nhEsc(s)}">${nhEsc(s)}</option>`).join('');
+    if(otherSubs.length){
+        html+='<optgroup label="Chủ đề ở chương khác">'
+            + otherSubs.map(s=>`<option value="${nhEsc(s)}">${nhEsc(s)}</option>`).join('')
+            + '</optgroup>';
+    }
+    subSel.innerHTML=html;
 }
 async function bankAssignBaiApply(){
     const ids=[...bankSel];
@@ -8273,22 +8456,28 @@ async function bankAssignBaiApply(){
     const btn=document.getElementById('nh-bf-apply-btn');
     btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Đang gán...';
     try{
-        const okWrite = await postAdminWriteWithRetry({action:'bulksetbainganhang',ids,baiHoc,tnType:chosenTnMode,subTopic:chosenSub});
+        let okWrite=false;
+        try{
+            okWrite = await postAdminWriteWithRetry({action:'bulksetbainganhang',ids,baiHoc,tnType:chosenTnMode,subTopic:chosenSub});
+        }catch(writeErr){ okWrite=false; }
+        ids.forEach(id=>{
+            const idx=bankData.findIndex(x=>x.id===id);
+            const prev=idx>-1?bankData[idx]:{};
+            const finalTn=(prev.loai==='TN')?(chosenTnMode||prev.tnType||guessTnType(prev)):'';
+            const finalSub=(prev.loai==='TN'&&finalTn==='LT')
+                ? (chosenSub || (typeof guessSubTopic==='function' ? guessSubTopic({...prev,baiHoc,loai:'TN',tnType:'LT'}, baiHoc.split(',')[0].trim()) : ''))
+                : '';
+            const finalCh=(finalSub && TOPIC_16_TO_CHAPTER[finalSub]) ? TOPIC_16_TO_CHAPTER[finalSub] : ((typeof LESSON_TO_CANONICAL_CHAPTER!=='undefined' && LESSON_TO_CANONICAL_CHAPTER[baiHoc.split(',')[0].trim()]) || prev.chuong || '');
+            saveCustomSubtopicOverride(id, finalSub, finalTn, baiHoc, finalCh);
+            if(idx>-1) bankData[idx]=normalizeQuestionTaxonomy({...prev, chuong: finalCh, baiHoc, tnType: finalTn, subTopic: finalSub});
+            bankSel.delete(id);
+        });
+        renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
+        document.getElementById('nh-bai-form').style.display='none';
         if(okWrite){
-            ids.forEach(id=>{
-                const idx=bankData.findIndex(x=>x.id===id);
-                const prev=idx>-1?bankData[idx]:{};
-                const finalTn=(prev.loai==='TN')?(chosenTnMode||prev.tnType||guessTnType(prev)):'';
-                const finalSub=(prev.loai==='TN'&&finalTn==='LT')?chosenSub:'';
-                saveCustomSubtopicOverride(id, finalSub, finalTn);
-                if(idx>-1) bankData[idx]=normalizeQuestionTaxonomy({...prev, baiHoc, tnType: finalTn, subTopic: finalSub});
-                bankSel.delete(id);
-            });
-            renderBankStats(); fillBankFilters(); renderBankList(); updateSelBar();
-            toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài & phân loại cho '+ids.length+' câu','ok');
-            document.getElementById('nh-bai-form').style.display='none';
-        } else {
-            toast('Không thể gán bài học trên server. Vui lòng thử lại.','err');
+            toast('<i class="fa-solid fa-circle-check"></i> Đã gán bài & phân loại cho '+ids.length+' câu (Server + Trình duyệt)','ok');
+        }else{
+            toast('<i class="fa-solid fa-triangle-exclamation"></i> Đã gán phân loại cho '+ids.length+' câu trên Trình duyệt (chưa ghi lên Google Sheets — kiểm tra Khóa Admin).','err');
         }
     }catch(e){
         toast('Lỗi: '+e.message,'err');
@@ -11729,8 +11918,18 @@ async function htResetDevice(deviceId) {
                     </select>
                 </div>
             </div>
-            <div class="nhe-field"><label>Bài học liên quan (khóa Chuyên Đề Lí Thuyết GĐ1)</label><select id="nhe-bai" onchange="bankEditFillSubtopic()"></select></div>
-            <div class="nhe-field"><label>Chủ đề lớn Lý thuyết (16 Chủ đề chuẩn Bộ — chỉ dùng cho TN Lý thuyết)</label><select id="nhe-subtopic"></select></div>
+            <div class="nhe-field">
+                <label>Bài học liên quan (bấm &times; để gỡ từng bài không phù hợp, hoặc thêm bài bên dưới)</label>
+                <input type="hidden" id="nhe-bai">
+                <div id="nhe-bai-chips" class="nhe-bai-chips"></div>
+                <div class="nhe-bai-picker-row">
+                    <select id="nhe-bai-add" onchange="bankEditAddBai(this.value)">
+                        <option value="">-- + Thêm bài học khác... --</option>
+                    </select>
+                    <button type="button" id="nhe-bai-clear-btn" class="nhe-bai-mini-btn" onclick="bankEditClearExtraBais()" style="display:none" title="Chỉ giữ lại bài chính đầu tiên, gỡ các bài đính kèm phía sau"><i class="fa-solid fa-scissors"></i> Chỉ giữ bài đầu</button>
+                </div>
+            </div>
+            <div class="nhe-field"><label>Chủ đề lớn Lý thuyết (16 Chủ đề chuẩn Bộ — chỉ dùng cho TN Lý thuyết)</label><select id="nhe-subtopic" onchange="bankEditSubtopicChanged()"></select></div>
             <div class="nhe-field"><label>Đề bài chung (chỉ dùng cho câu chùm)</label><textarea id="nhe-debai" style="min-height:44px"></textarea></div>
             <div class="nhe-field"><label>Nội dung câu hỏi</label><textarea id="nhe-question" style="min-height:80px"></textarea></div>
             <div id="nhe-opts-wrap"></div>
