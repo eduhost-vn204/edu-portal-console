@@ -42,7 +42,7 @@
             '.vlxt-model-error{padding:12px 14px;border-radius:8px;border:1px dashed #64748b;background:#0f172a;color:#cbd5e1;font-size:13px;}',
 
             /* Bang so lieu thuc nghiem thich ung nen sang (CBT thithu, modal admin, baihoc light) */
-            '.vstep-data-panel{margin:14px 0 16px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 14px;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;color:#0f172a;box-sizing:border-box;}',
+            '.vstep-data-panel{margin:14px auto 16px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:12px 14px;max-width:920px;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;color:#0f172a;box-sizing:border-box;}',
             '.vstep-data-title{font-size:13px;font-weight:800;color:#0369a1;margin-bottom:9px;display:flex;align-items:center;gap:6px;letter-spacing:0.2px;flex-wrap:wrap;}',
             '.vstep-data-table{width:100%;border-collapse:collapse;font-size:13.5px;color:#0f172a;text-align:center;background:#ffffff;}',
             '.vstep-data-table th,.vstep-data-table td{border:1px solid #cbd5e1;padding:7px 10px;}',
