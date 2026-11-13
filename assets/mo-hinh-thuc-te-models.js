@@ -1588,14 +1588,18 @@
             }
         },
 
-'MH-C2-23': {
+  'MH-C2-23': {
     id: 'MH-C2-23',
     title: 'Bóng thám không khảo sát khí quyển',
     topic: 'DS-C2.2',
     layout: 'single',
     caption: 'Sơ đồ hoạt động của bóng thám không từ mặt đất lên độ cao 40 km',
-    alt: 'Sơ đồ bóng thám không mang hộp cảm biến khí tượng và GPS bay lên độ cao 40 km khi áp suất giảm và bóng giãn nở',
+    alt: 'Sơ đồ bóng thám không mang hộp cảm biến khí tượng bay lên độ cao 40 km, bóng giãn nở do chênh lệch áp suất',
     build: function (u) {
+      // TUÂN THỦ QUY TẮC CỦA THẦY:
+      // - Tuyệt đối KHÔNG ghi các thông số trạng thái (V1, p1, T1, V2, p2, T2) làm lộ đáp án câu hỏi.
+      // - Hộp cảm biến ở mặt đất và trên cao GIỮ NGUYÊN kích thước (bóng nở to chứ cảm biến không nở to).
+      // - Thể hiện các mũi tên áp suất từ tâm đẩy ép vào thành vỏ bóng làm bóng giãn nở.
       var svg =
         '<svg viewBox="0 0 700 360" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<defs>' +
@@ -1607,9 +1611,11 @@
         '</radialGradient>' +
         '<marker id="' + u + 'up" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
         '<path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/></marker>' +
+        '<marker id="' + u + 'pArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto">' +
+        '<path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/></marker>' +
         '</defs>' +
         '<rect x="16" y="16" width="668" height="328" rx="12" fill="url(#' + u + 'sky)" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Altitude ruler on left
+        // Thang đo độ cao bên trái
         '<line x1="78" y1="42" x2="78" y2="320" stroke="#475569" stroke-width="2"/>' +
         '<line x1="70" y1="54" x2="86" y2="54" stroke="#f59e0b" stroke-width="2"/>' +
         '<text x="64" y="59" fill="#fbbf24" font-size="13" font-weight="800" text-anchor="end">40 km</text>' +
@@ -1617,54 +1623,69 @@
         '<text x="64" y="191" fill="#94a3b8" font-size="12.5" font-weight="700" text-anchor="end">20 km</text>' +
         '<line x1="70" y1="316" x2="86" y2="316" stroke="#10b981" stroke-width="2"/>' +
         '<text x="64" y="320" fill="#6ee7b7" font-size="13" font-weight="800" text-anchor="end">0 km</text>' +
-        // Ground & Radar/Ground Station
+        // Mặt đất & Đài quan sát khí tượng
         '<rect x="92" y="302" width="582" height="30" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1.2"/>' +
-        '<rect x="140" y="274" width="62" height="28" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>' +
-        '<path d="M 163 274 L 171 254 L 179 274" fill="none" stroke="#94a3b8" stroke-width="2"/>' +
-        '<path d="M 158 250 Q 171 240 184 250" fill="none" stroke="#38bdf8" stroke-width="2" class="ambient-heat-arrow"/>' +
-        '<text x="200" y="321" fill="#cbd5e1" font-size="13" font-weight="700" text-anchor="middle">Đài quan sát (0h &amp; 12h UTC)</text>' +
-        // Small ground-level reference balloon
-        '<circle cx="242" cy="242" r="22" fill="url(#' + u + 'bal)" opacity="0.82"/>' +
-        '<path d="M 242 264 L 242 280" stroke="#94a3b8" stroke-width="1.5"/>' +
-        '<rect x="234" y="280" width="16" height="12" rx="2" fill="#0f172a" stroke="#38bdf8" stroke-width="1.4"/>' +
-        '<text x="274" y="238" fill="#cbd5e1" font-size="13" font-weight="700">Lúc thả: V₁ = 15,8 m³</text>' +
-        '<text x="274" y="257" fill="#94a3b8" font-size="13">p₁ = 105 kPa · t₁ = 27°C</text>' +
-        // Ascending path dashed arrow
-        '<path d="M 258 214 Q 302 162 344 122" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#' + u + 'up)"/>' +
-        // High altitude expanded balloon (ambient bob)
+        '<rect x="135" y="274" width="66" height="28" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="1.6"/>' +
+        '<path d="M 160 274 L 168 254 L 176 274" fill="none" stroke="#94a3b8" stroke-width="2"/>' +
+        '<path d="M 155 250 Q 168 240 181 250" fill="none" stroke="#38bdf8" stroke-width="2" class="ambient-heat-arrow"/>' +
+        '<text x="210" y="321" fill="#cbd5e1" font-size="13" font-weight="700" text-anchor="middle">Đài quan sát khí tượng (Mặt đất)</text>' +
+        // Quả bóng lúc thả ở mặt đất (bóng nhỏ, r = 22)
+        '<circle cx="242" cy="242" r="22" fill="url(#' + u + 'bal)" stroke="#e2e8f0" stroke-width="1.5"/>' +
+        // Dây treo cảm biến (dài 14px)
+        '<line x1="242" y1="264" x2="242" y2="278" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        // Hộp cảm biến ở mặt đất (kích thước chuẩn 18 x 13)
+        '<rect x="233" y="278" width="18" height="13" rx="2.5" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>' +
+        '<circle cx="242" cy="284.5" r="2" fill="#10b981"/>' +
+        '<text x="274" y="248" fill="#e2e8f0" font-size="13.5" font-weight="800">Lúc thả (Mặt đất)</text>' +
+        '<text x="274" y="268" fill="#94a3b8" font-size="12">Thể tích ban đầu</text>' +
+        // Đường bay lượn sóng lên cao
+        '<path d="M 258 214 Q 306 160 348 118" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#' + u + 'up)"/>' +
+        // Quả bóng giãn nở ở độ cao lớn (~40 km, r = 58)
         '<g class="ambient-balloon">' +
-        '<circle cx="408" cy="112" r="56" fill="url(#' + u + 'bal)" stroke="#f8fafc" stroke-width="1.5"/>' +
-        '<g class="ambient-gas-a"><circle cx="390" cy="95" r="3.5" fill="#0284c7"/><circle cx="426" cy="122" r="3.5" fill="#0284c7"/></g>' +
-        '<g class="ambient-gas-b"><circle cx="423" cy="92" r="3.5" fill="#0369a1"/><circle cx="394" cy="128" r="3.5" fill="#0369a1"/></g>' +
-        '<line x1="408" y1="168" x2="408" y2="196" stroke="#cbd5e1" stroke-width="2"/>' +
-        '<rect x="390" y="196" width="36" height="26" rx="4" fill="#1e293b" stroke="#fbbf24" stroke-width="1.8"/>' +
-        '<circle cx="408" cy="209" r="4" fill="#10b981"/>' +
-        '<path d="M 376 205 Q 366 210 376 216" fill="none" stroke="#38bdf8" stroke-width="1.8" class="ambient-heat-arrow"/>' +
-        '<path d="M 440 205 Q 450 210 440 216" fill="none" stroke="#38bdf8" stroke-width="1.8" class="ambient-heat-arrow"/>' +
+        '<circle cx="415" cy="110" r="58" fill="url(#' + u + 'bal)" stroke="#38bdf8" stroke-width="2"/>' +
+        // Mũi tên áp suất từ tâm đẩy ép ra thành vỏ bóng
+        '<line x1="415" y1="110" x2="415" y2="60" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="415" y2="160" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="368" y2="110" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="462" y2="110" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="380" y2="76" stroke="#38bdf8" stroke-width="1.6" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="450" y2="76" stroke="#38bdf8" stroke-width="1.6" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="380" y2="144" stroke="#38bdf8" stroke-width="1.6" marker-end="url(#' + u + 'pArrow)"/>' +
+        '<line x1="415" y1="110" x2="450" y2="144" stroke="#38bdf8" stroke-width="1.6" marker-end="url(#' + u + 'pArrow)"/>' +
+        // Dây treo cảm biến lên cao
+        '<line x1="415" y1="168" x2="415" y2="188" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        // HỘP CẢM BIẾN LÚC SAU GIỮ NGUYÊN KÍCH THƯỚC (18 x 13) KHÔNG ĐƯỢC TO LÊN!
+        '<rect x="406" y="188" width="18" height="13" rx="2.5" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>' +
+        '<circle cx="415" cy="194.5" r="2" fill="#10b981"/>' +
+        '<path d="M 395 194 Q 387 197 395 200" fill="none" stroke="#38bdf8" stroke-width="1.5" class="ambient-heat-arrow"/>' +
+        '<path d="M 435 194 Q 443 197 435 200" fill="none" stroke="#38bdf8" stroke-width="1.5" class="ambient-heat-arrow"/>' +
         '</g>' +
-        // Leader callouts on right
-        '<polyline points="464,90 494,70 658,70" fill="none" stroke="#f59e0b" stroke-width="1.8"/>' +
-        '<circle cx="464" cy="90" r="3.5" fill="#f59e0b"/>' +
-        '<text x="496" y="63" fill="#fbbf24" font-size="13.5" font-weight="800">Giãn nở cực đại (~40 km)</text>' +
-        '<text x="496" y="88" fill="#e2e8f0" font-size="13">p₂ = 27 640 Pa · V₂ = 39,5 m³</text>' +
-        '<polyline points="426,209 494,209 658,209" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-dasharray="3 3"/>' +
-        '<circle cx="426" cy="209" r="3.5" fill="#38bdf8"/>' +
-        '<text x="496" y="198" fill="#7dd3fc" font-size="13.5" font-weight="800">Cảm biến &amp; GPS/Radar</text>' +
-        '<text x="496" y="226" fill="#cbd5e1" font-size="13">Đo p, T, ẩm, gió gửi về đài</text>' +
+        // Chú thích bên phải
+        '<polyline points="473,88 505,70 664,70" fill="none" stroke="#f59e0b" stroke-width="1.8"/>' +
+        '<circle cx="473" cy="88" r="3.5" fill="#f59e0b"/>' +
+        '<text x="508" y="63" fill="#fbbf24" font-size="13.5" font-weight="800">Bóng giãn nở ở độ cao lớn (~40 km)</text>' +
+        '<text x="508" y="88" fill="#e2e8f0" font-size="12.5">Áp suất ngoài giảm → Khí nở ép vỏ bóng</text>' +
+        '<polyline points="424,194 505,194 664,194" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-dasharray="3 3"/>' +
+        '<circle cx="424" cy="194" r="3.5" fill="#38bdf8"/>' +
+        '<text x="508" y="186" fill="#7dd3fc" font-size="13.5" font-weight="800">Hộp cảm biến &amp; GPS/Radar</text>' +
+        '<text x="508" y="212" fill="#cbd5e1" font-size="12.5">Kích thước không đổi · Đo p, T, ẩm, gió</text>' +
         '</svg>';
       return '<div class="vlxt-visual-container centered"><div class="vlxt-stage-wrap">' +
         captionHtml('fa-solid fa-cloud-arrow-up', this.caption) + svg + '</div></div>';
     }
   },
 
-  'MH-C2-24': {
+    'MH-C2-24': {
     id: 'MH-C2-24',
     title: 'Bóng thám không chứa khí Hydrogen',
     topic: 'DS-C2.2',
     layout: 'single',
     caption: 'Các trạng thái biến đổi của bóng thám không chứa khí Hydrogen khi bay lên cao',
-    alt: 'Sơ đồ so sánh ba trạng thái thể tích và áp suất của bóng thám không chứa khí H2 từ mặt đất lên độ cao lớn',
+    alt: 'Sơ đồ so sánh trạng thái của bóng thám không chứa khí H2 từ điều kiện chuẩn, lúc thả đến giới hạn nổ',
     build: function (u) {
+      // TUÂN THỦ QUY TẮC CỦA THẦY:
+      // - Chỉ thể hiện thông tin của đề bài, KHÔNG lấy số liệu tính toán ở ý hỏi c) (7°C, 67 000 Pa).
+      // - Cảm biến kích thước không đổi.
       var svg =
         '<svg viewBox="0 0 700 350" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<defs><radialGradient id="' + u + 'hb" cx="38%" cy="32%" r="65%">' +
@@ -1673,54 +1694,59 @@
         '<marker id="' + u + 'ar" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
         '<path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/></marker></defs>' +
         '<rect x="16" y="16" width="668" height="318" rx="12" fill="#070d1c" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Column 1: ĐKTC reference
+        // Cột 1: Điều kiện chuẩn (ĐKTC)
         '<rect x="32" y="34" width="194" height="282" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>' +
         '<text x="129" y="58" fill="#94a3b8" font-size="13.5" font-weight="800" text-anchor="middle">Điều kiện chuẩn (ĐKTC)</text>' +
-        '<circle cx="129" cy="148" r="34" fill="url(#' + u + 'hb)" opacity="0.88"/>' +
-        '<text x="129" y="153" fill="#0f172a" font-size="14" font-weight="800" text-anchor="middle">H₂</text>' +
-        '<text x="129" y="218" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">t₀ = 0°C · p₀ = 101,3 kPa</text>' +
-        '<text x="129" y="242" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">ρ₀ = 0,09 kg/m³</text>' +
-        '<text x="129" y="266" fill="#cbd5e1" font-size="13" text-anchor="middle">1 mol khí = 22,4 lít</text>' +
-        // Column 2: Launch state
+        '<circle cx="129" cy="142" r="32" fill="url(#' + u + 'hb)" opacity="0.88"/>' +
+        '<text x="129" y="147" fill="#0f172a" font-size="14" font-weight="800" text-anchor="middle">H₂</text>' +
+        '<text x="129" y="214" fill="#e2e8f0" font-size="12.5" font-weight="700" text-anchor="middle">t₀ = 0°C · p₀ = 101,3 kPa</text>' +
+        '<text x="129" y="238" fill="#7dd3fc" font-size="12.5" font-weight="700" text-anchor="middle">ρ₀ = 0,09 kg/m³</text>' +
+        '<text x="129" y="262" fill="#cbd5e1" font-size="12.5" text-anchor="middle">1 mol khí = 22,4 lít</text>' +
+        // Cột 2: Trạng thái thả bóng (mặt đất)
         '<rect x="252" y="34" width="194" height="282" rx="10" fill="#0f172a" stroke="#0284c7" stroke-width="1.6"/>' +
         '<text x="349" y="58" fill="#38bdf8" font-size="13.5" font-weight="800" text-anchor="middle">Trạng thái thả bóng (1)</text>' +
         '<g class="ambient-balloon">' +
-        '<circle cx="349" cy="146" r="40" fill="url(#' + u + 'hb)" stroke="#38bdf8" stroke-width="1.5"/>' +
-        '<g class="ambient-gas-a"><circle cx="337" cy="136" r="3" fill="#0284c7"/><circle cx="362" cy="154" r="3" fill="#0284c7"/></g>' +
-        '<line x1="349" y1="186" x2="349" y2="202" stroke="#94a3b8" stroke-width="1.8"/>' +
-        '<rect x="339" y="202" width="20" height="12" rx="2" fill="#1e293b" stroke="#38bdf8" stroke-width="1.4"/>' +
+        '<circle cx="349" cy="138" r="40" fill="url(#' + u + 'hb)" stroke="#38bdf8" stroke-width="1.5"/>' +
+        '<g class="ambient-gas-a"><circle cx="337" cy="128" r="3" fill="#0284c7"/><circle cx="362" cy="146" r="3" fill="#0284c7"/></g>' +
+        '<line x1="349" y1="178" x2="349" y2="192" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        '<rect x="340" y="192" width="18" height="12" rx="2" fill="#1e293b" stroke="#38bdf8" stroke-width="1.4"/>' +
         '</g>' +
-        '<text x="349" y="242" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">V₁ = 15,8 m³</text>' +
-        '<text x="349" y="265" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">p₁ = 105 000 Pa</text>' +
-        '<text x="349" y="288" fill="#cbd5e1" font-size="13" font-weight="700" text-anchor="middle">t₁ = 27°C</text>' +
-        // Column 3: Burst state
+        '<text x="349" y="238" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">V₁ = 15,8 m³</text>' +
+        '<text x="349" y="262" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">p₁ = 105 000 Pa</text>' +
+        '<text x="349" y="286" fill="#cbd5e1" font-size="13" font-weight="700" text-anchor="middle">t₁ = 27°C</text>' +
+        // Cột 3: Giới hạn nổ (lên cao khí giãn nở tới hạn)
         '<rect x="472" y="34" width="196" height="282" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.6"/>' +
-        '<text x="570" y="58" fill="#fbbf24" font-size="13.5" font-weight="800" text-anchor="middle">Trên cao & Lúc nổ</text>' +
+        '<text x="570" y="58" fill="#fbbf24" font-size="13.5" font-weight="800" text-anchor="middle">Giới hạn giãn nở &amp; Nổ</text>' +
         '<g class="ambient-balloon">' +
-        '<circle cx="570" cy="144" r="52" fill="url(#' + u + 'hb)" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="6 3"/>' +
-        '<g class="ambient-gas-b"><circle cx="552" cy="130" r="3.2" fill="#d97706"/><circle cx="585" cy="156" r="3.2" fill="#d97706"/></g>' +
+        '<circle cx="570" cy="136" r="54" fill="url(#' + u + 'hb)" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="6 3"/>' +
+        '<g class="ambient-gas-b"><circle cx="552" cy="122" r="3.2" fill="#d97706"/><circle cx="585" cy="148" r="3.2" fill="#d97706"/></g>' +
+        '<line x1="570" y1="190" x2="570" y2="204" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        '<rect x="561" y="204" width="18" height="12" rx="2" fill="#1e293b" stroke="#fbbf24" stroke-width="1.4"/>' +
         '</g>' +
-        '<text x="570" y="226" fill="#fde68a" font-size="13" font-weight="700" text-anchor="middle">Ở 7°C: p₃ = 67 000 Pa</text>' +
-        '<text x="570" y="254" fill="#fca5a5" font-size="13" font-weight="800" text-anchor="middle">Lúc nổ: V₄ = 39,5 m³</text>' +
-        '<text x="570" y="278" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">p₄ = 27 640 Pa</text>' +
-        // Arrow 2 -> 3
-        '<line x1="448" y1="146" x2="470" y2="146" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#' + u + 'ar)"/>' +
+        '<text x="570" y="246" fill="#fca5a5" font-size="13" font-weight="800" text-anchor="middle">Bóng sẽ vỡ khi đạt tới:</text>' +
+        '<text x="570" y="270" fill="#fbbf24" font-size="13" font-weight="700" text-anchor="middle">V_nổ = 39,5 m³</text>' +
+        '<text x="570" y="292" fill="#e2e8f0" font-size="13" font-weight="700" text-anchor="middle">p_nổ = 27 640 Pa</text>' +
+        // Mũi tên chuyển trạng thái 2 -> 3
+        '<line x1="448" y1="140" x2="470" y2="140" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#' + u + 'ar)"/>' +
         '</svg>';
       return '<div class="vlxt-visual-container centered"><div class="vlxt-stage-wrap">' +
         captionHtml('fa-solid fa-up-right-and-down-left-from-center', this.caption) + svg + '</div></div>';
     }
   },
 
-  'MH-C2-25': {
+    'MH-C2-25': {
     id: 'MH-C2-25',
     title: 'Khinh khí cầu có lỗ hở & Bịt kín bay lên độ cao cực đại',
     topic: 'DS-C2.2',
     layout: 'single',
     caption: 'Cấu tạo khinh khí cầu có lỗ hở dưới đáy và phân tích các lực tác dụng khi bay lên',
-    alt: 'Mô hình khinh khí cầu thể tích không đổi V = 1,15 m3 có lỗ hở đáy trao đổi khí với khí quyển và cân bằng lực F_A với trọng lực',
+    alt: 'Mô hình khinh khí cầu thể tích không đổi V = 1,15 m3 và các vectơ lực F_A, P_khí, P_vỏ đặt trực tiếp trên khí cầu',
     build: function (u) {
+      // TUÂN THỦ QUY TẮC CỦA THẦY:
+      // - Lực tác động F_A, P_khí và P_vỏ phải thể hiện TRỰC TIẾP lên trên hình khí cầu.
+      // - Chỉ số dưới phải chuẩn hóa (F_A, P_khí, P_vỏ, m_vỏ), tuyệt đối không để chữ gạch dưới thô xấu.
       var svg =
-        '<svg viewBox="0 0 700 360" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
+        '<svg viewBox="0 0 700 370" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<defs>' +
         '<linearGradient id="' + u + 'shell" x1="0%" y1="0%" x2="100%" y2="0%">' +
         '<stop offset="0%" stop-color="#0284c7"/><stop offset="50%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0369a1"/>' +
@@ -1728,44 +1754,50 @@
         '<marker id="' + u + 'fa" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
         '<path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981"/></marker>' +
         '<marker id="' + u + 'fg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+        '<path d="M 0 1 L 9 5 L 0 9 z" fill="#f97316"/></marker>' +
+        '<marker id="' + u + 'fv" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
         '<path d="M 0 1 L 9 5 L 0 9 z" fill="#ef4444"/></marker>' +
         '</defs>' +
-        '<rect x="16" y="16" width="668" height="328" rx="12" fill="#081020" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Balloon body (ambient float)
+        '<rect x="16" y="16" width="668" height="338" rx="12" fill="#081020" stroke="#1e293b" stroke-width="1.5"/>' +
+        // Thân khinh khí cầu (tâm hình học tại x = 180, y = 135)
         '<g class="ambient-balloon">' +
-        '<path d="M 190 120 C 190 52 290 52 290 120 C 290 164 264 198 258 220 L 222 220 C 216 198 190 164 190 120 Z" fill="rgba(56,189,248,0.18)" stroke="url(#' + u + 'shell)" stroke-width="3"/>' +
-        '<g class="ambient-gas-a"><circle cx="222" cy="112" r="3.5" fill="#fbbf24"/><circle cx="256" cy="134" r="3.5" fill="#fbbf24"/></g>' +
-        '<g class="ambient-gas-b"><circle cx="246" cy="100" r="3.5" fill="#f97316"/><circle cx="230" cy="150" r="3.5" fill="#f97316"/></g>' +
-        // Burner & open vent
-        '<ellipse cx="240" cy="210" rx="8" ry="13" fill="#f59e0b" class="ambient-heat-arrow"/>' +
-        '<line x1="224" y1="224" x2="228" y2="246" stroke="#94a3b8" stroke-width="2"/>' +
-        '<line x1="256" y1="224" x2="252" y2="246" stroke="#94a3b8" stroke-width="2"/>' +
-        '<rect x="224" y="246" width="32" height="22" rx="4" fill="#92400e" stroke="#d97706" stroke-width="1.5"/>' +
-        // Buoyancy arrow Up & Weight arrow Down
-        '<line x1="158" y1="180" x2="158" y2="95" stroke="#10b981" stroke-width="3" marker-end="url(#' + u + 'fa)"/>' +
-        '<text x="148" y="138" fill="#6ee7b7" font-size="14" font-weight="800" text-anchor="end">F_A</text>' +
-        '<line x1="158" y1="188" x2="158" y2="262" stroke="#ef4444" stroke-width="3" marker-end="url(#' + u + 'fg)"/>' +
-        '<text x="148" y="232" fill="#fca5a5" font-size="14" font-weight="800" text-anchor="end">P + P_khí</text>' +
+        '<path d="M 130 120 C 130 50 230 50 230 120 C 230 165 204 200 198 222 L 162 222 C 156 200 130 165 130 120 Z" fill="rgba(56,189,248,0.16)" stroke="url(#' + u + 'shell)" stroke-width="3"/>' +
+        '<g class="ambient-gas-a"><circle cx="162" cy="112" r="3.5" fill="#fbbf24"/><circle cx="196" cy="134" r="3.5" fill="#fbbf24"/></g>' +
+        '<g class="ambient-gas-b"><circle cx="186" cy="100" r="3.5" fill="#f97316"/><circle cx="170" cy="150" r="3.5" fill="#f97316"/></g>' +
+        // Đầu đốt lửa tại lỗ hở đáy
+        '<ellipse cx="180" cy="214" rx="8" ry="12" fill="#f59e0b" class="ambient-heat-arrow"/>' +
+        // Dây treo giỏ
+        '<line x1="164" y1="222" x2="168" y2="246" stroke="#94a3b8" stroke-width="1.8"/>' +
+        '<line x1="196" y1="222" x2="192" y2="246" stroke="#94a3b8" stroke-width="1.8"/>' +
+        '<rect x="164" y="246" width="32" height="22" rx="4" fill="#92400e" stroke="#d97706" stroke-width="1.5"/>' +
+        // ═══ CÁC VECTƠ LỰC ĐẶT TRỰC TIẾP LÊN HÌNH KHÍ CẦU ═══
+        // 1. Lực đẩy Ác-si-mét F_A (điểm đặt tại tâm khí cầu x=180, y=135, hướng thẳng đứng LÊN)
+        '<circle cx="180" cy="135" r="4.5" fill="#10b981"/>' +
+        '<line x1="180" y1="135" x2="180" y2="52" stroke="#10b981" stroke-width="3.2" marker-end="url(#' + u + 'fa)"/>' +
+        '<text x="194" y="66" fill="#6ee7b7" font-size="14.5" font-weight="800">F<tspan font-size="11" dy="3">A</tspan></text>' +
+        // 2. Trọng lực khối khí P_khí (điểm đặt tại tâm khí cầu x=180, y=135, hướng thẳng đứng XUỐNG)
+        '<line x1="180" y1="135" x2="180" y2="198" stroke="#f97316" stroke-width="3" marker-end="url(#' + u + 'fg)"/>' +
+        '<text x="194" y="190" fill="#fdba74" font-size="14" font-weight="800">P<tspan font-size="10.5" dy="3">khí</tspan></text>' +
+        // 3. Trọng lực vỏ khí cầu & giỏ P_vỏ (điểm đặt tại giỏ treo x=180, y=257, hướng thẳng đứng XUỐNG)
+        '<circle cx="180" cy="257" r="4" fill="#ef4444"/>' +
+        '<line x1="180" y1="257" x2="180" y2="325" stroke="#ef4444" stroke-width="3" marker-end="url(#' + u + 'fv)"/>' +
+        '<text x="194" y="315" fill="#fca5a5" font-size="14" font-weight="800">P<tspan font-size="10.5" dy="3">vỏ</tspan></text>' +
         '</g>' +
-        // Callouts on right side
-        '<polyline points="292,102 324,78 340,78" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
-        '<circle cx="292" cy="102" r="3.5" fill="#38bdf8"/>' +
-        '<rect x="340" y="44" width="332" height="72" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
-        '<text x="356" y="68" fill="#7dd3fc" font-size="13.5" font-weight="800">Thông số khí cầu &amp; Mặt đất</text>' +
-        '<text x="356" y="90" fill="#e2e8f0" font-size="13">V = 1,15 m³ · m_vỏ = 0,2 kg · g = 10 m/s²</text>' +
-        '<text x="356" y="109" fill="#cbd5e1" font-size="13">t₁ = 20°C · p₁ = 1,013·10⁵ Pa · ρ₀ = 1,2 kg/m³</text>' +
+        // Bảng chú thích thông số chuẩn hóa KaTeX chỉ số dưới bên phải
+        '<rect x="290" y="38" width="382" height="76" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
+        '<text x="306" y="62" fill="#7dd3fc" font-size="13.5" font-weight="800">Thông số khí cầu &amp; Mặt đất</text>' +
+        '<text x="306" y="84" fill="#e2e8f0" font-size="13">V = 1,15 m³ · m<tspan font-size="10" dy="2">vỏ</tspan><tspan dy="-2"> = 0,2 kg · g = 10 m/s²</tspan></text>' +
+        '<text x="306" y="103" fill="#cbd5e1" font-size="13">t₁ = 20°C · p₁ = 1,013·10⁵ Pa · ρ₀ = 1,2 kg/m³</text>' +
 
-        '<polyline points="260,218 324,175 340,175" fill="none" stroke="#fbbf24" stroke-width="1.6"/>' +
-        '<circle cx="260" cy="218" r="3.5" fill="#fbbf24"/>' +
-        '<rect x="340" y="136" width="332" height="74" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
-        '<text x="356" y="160" fill="#fbbf24" font-size="13.5" font-weight="800">1. Lỗ hở trao đổi khí (đẳng áp)</text>' +
-        '<text x="356" y="182" fill="#e2e8f0" font-size="13">Áp suất trong cầu luôn bằng áp suất khí quyển.</text>' +
-        '<text x="356" y="201" fill="#cbd5e1" font-size="13">Khí nóng thoát bớt ra ngoài khi tăng nhiệt độ.</text>' +
+        '<rect x="290" y="126" width="382" height="78" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
+        '<text x="306" y="150" fill="#fbbf24" font-size="13.5" font-weight="800">1. Lỗ hở trao đổi khí đáy (Đẳng áp)</text>' +
+        '<text x="306" y="172" fill="#e2e8f0" font-size="13">Áp suất trong cầu luôn bằng áp suất khí quyển.</text>' +
+        '<text x="306" y="191" fill="#cbd5e1" font-size="13">Nung nóng → Khí nở ra và thoát bớt qua lỗ hở.</text>' +
 
-        '<rect x="340" y="226" width="332" height="86" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
-        '<text x="356" y="250" fill="#6ee7b7" font-size="13.5" font-weight="800">2. Bịt kín lỗ hở ở t₂ = 110°C</text>' +
-        '<text x="356" y="272" fill="#e2e8f0" font-size="13">Lên cao ρ_khí quyển giảm theo độ cao h:</text>' +
-        '<text x="356" y="294" fill="#cbd5e1" font-size="12.5">ρ(h) = ρ₀·e^(-ρ₀gh/p₁) · Cực đại khi F_A = P_tổng</text>' +
+        '<rect x="290" y="216" width="382" height="88" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.4"/>' +
+        '<text x="306" y="240" fill="#6ee7b7" font-size="13.5" font-weight="800">2. Bịt kín lỗ hở ở t₂ = 110°C &amp; Bay lên</text>' +
+        '<text x="306" y="262" fill="#e2e8f0" font-size="13">Mật độ không khí giảm theo độ cao: ρ(h) = ρ₀·e<tspan font-size="9" dy="-4">-ρ₀gh/p₁</tspan></text>' +
+        '<text x="306" y="286" fill="#cbd5e1" font-size="13">Điều kiện lơ lửng cực đại: F<tspan font-size="10" dy="2">A</tspan><tspan dy="-2"> = P</tspan><tspan font-size="10" dy="2">vỏ</tspan><tspan dy="-2"> + P</tspan><tspan font-size="10" dy="2">khí</tspan></text>' +
         '</svg>';
       return '<div class="vlxt-visual-container centered"><div class="vlxt-stage-wrap">' +
         captionHtml('fa-solid fa-fire-flame-curved', this.caption) + svg + '</div></div>';
@@ -1815,55 +1847,62 @@
     }
   },
 
-  'MH-C2-27': {
+    'MH-C2-27': {
     id: 'MH-C2-27',
     title: 'Thí nghiệm kiểm chứng Định luật Boyle (V - p)',
     topic: 'DS-C2.1',
     layout: 'single',
     caption: 'Sơ đồ bộ thí nghiệm khảo sát mối liên hệ giữa áp suất và thể tích ở nhiệt độ không đổi',
-    alt: 'Bộ thí nghiệm gồm áp kế, cảm biến nhiệt độ 23,5°C, xilanh chia vạch, pít-tông và tay quay điều chỉnh thể tích khí',
+    alt: 'Bộ thí nghiệm gồm áp kế nối thông xilanh, cảm biến nhiệt độ cắm đầu dò vào lòng khí, pít-tông và tay quay',
     build: function (u) {
+      // TUÂN THỦ QUY TẮC CỦA THẦY:
+      // - Đường ống từ xilanh lên áp kế PHẢI THÔNG NHAU LIỀN MẠCH đúng như trong tài liệu Word.
+      // - Cảm biến nhiệt độ phải có đầu dò que đo (probe) cắm rõ ràng vào lòng khí xilanh.
       var svg =
         '<svg viewBox="0 0 700 340" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<defs><linearGradient id="' + u + 'gas" x1="0%" y1="0%" x2="100%" y2="0%">' +
         '<stop offset="0%" stop-color="rgba(56,189,248,0.28)"/><stop offset="100%" stop-color="rgba(14,165,233,0.12)"/>' +
         '</linearGradient></defs>' +
         '<rect x="16" y="16" width="668" height="308" rx="12" fill="#070d1c" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Pressure gauge top left
-        '<g transform="translate(105,82)">' +
+        // Áp kế đo áp suất (trên bên trái)
+        '<g transform="translate(110,82)">' +
         '<circle cx="0" cy="0" r="38" fill="#f8fafc" stroke="#38bdf8" stroke-width="3"/>' +
         '<circle cx="0" cy="0" r="30" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>' +
-        '<line x1="0" y1="0" x2="17" y2="-16" stroke="#ef4444" stroke-width="2.6" stroke-linecap="round" class="ambient-needle"/>' +
+        '<line x1="0" y1="0" x2="18" y2="-15" stroke="#ef4444" stroke-width="2.6" stroke-linecap="round" class="ambient-needle"/>' +
         '<circle cx="0" cy="0" r="4" fill="#e2e8f0"/>' +
         '<text x="0" y="21" fill="#94a3b8" font-size="11" font-weight="700" text-anchor="middle">bar</text>' +
         '</g>' +
-        '<polyline points="144,68 180,46 250,46" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
-        '<text x="184" y="40" fill="#7dd3fc" font-size="13.5" font-weight="800">Áp kế</text>' +
-        // Connecting pipe from gauge to cylinder
-        '<path d="M 105 120 L 105 215 L 165 215" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>' +
-        '<path d="M 105 120 L 105 215 L 165 215" fill="none" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>' +
-        // Temperature sensor
-        '<path d="M 109 162 L 170 162 Q 190 162 200 132" fill="none" stroke="#fbbf24" stroke-width="2"/>' +
-        '<circle cx="105" cy="162" r="4" fill="#fbbf24"/>' +
-        '<rect x="200" y="96" width="114" height="44" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>' +
-        '<text x="257" y="125" fill="#6ee7b7" font-size="18" font-weight="800" font-family="DM Mono,monospace" text-anchor="middle">23.5°C</text>' +
-        '<polyline points="257,96 276,72 426,72" fill="none" stroke="#6ee7b7" stroke-width="1.6"/>' +
-        '<text x="282" y="65" fill="#6ee7b7" font-size="13.5" font-weight="800">Cảm biến nhiệt độ</text>' +
-        // Base rail
+        '<polyline points="150,68 184,46 250,46" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
+        '<text x="188" y="40" fill="#7dd3fc" font-size="13.5" font-weight="800">Áp kế</text>' +
+        // ═══ ĐƯỜNG ỐNG NỐI THÔNG KHÍ TỪ XILANH LÊN ĐẾ ÁP KẾ (LIỀN MẠCH, THÔNG NHAU) ═══
+        // Lớp ngoài (thành ống)
+        '<path d="M 110 120 L 110 216 L 165 216" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>' +
+        // Lớp trong (lòng khí thông suốt từ xilanh lên áp kế)
+        '<path d="M 110 120 L 110 216 L 168 216" fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="4.5" stroke-linejoin="round"/>' +
+        // ═══ CẢM BIẾN NHIỆT ĐỘ CÓ QUE DÒ (PROBE) CẮM XUYÊN VÀO LÒNG KHÍ XILANH ═══
+        // Hộp điện tử hiển thị 23.5°C
+        '<rect x="220" y="80" width="112" height="42" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.8"/>' +
+        '<text x="276" y="108" fill="#6ee7b7" font-size="17" font-weight="800" font-family="DM Mono,monospace" text-anchor="middle">23.5°C</text>' +
+        // Dây dẫn và Que dò (probe) cắm xuyên vào đỉnh xilanh
+        '<path d="M 276 122 L 276 168 L 276 195" fill="none" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/>' +
+        '<circle cx="276" cy="195" r="3.5" fill="#10b981"/>' +
+        '<polyline points="276,80 295,54 445,54" fill="none" stroke="#6ee7b7" stroke-width="1.6"/>' +
+        '<text x="300" y="47" fill="#6ee7b7" font-size="13.5" font-weight="800">Cảm biến nhiệt độ (Que dò cắm vào khí)</text>' +
+        // Khung giá đỡ đế xilanh
         '<rect x="145" y="280" width="380" height="16" rx="4" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>' +
-        // Cylinder
+        // Thân xilanh thủy tinh chia vạch
         '<rect x="165" y="168" width="320" height="106" rx="10" fill="rgba(15,23,42,0.8)" stroke="#94a3b8" stroke-width="3"/>' +
         '<rect x="167" y="170" width="180" height="102" rx="8" fill="url(#' + u + 'gas)"/>' +
         '<g class="ambient-gas-a"><circle cx="205" cy="204" r="3.5" fill="#38bdf8"/><circle cx="285" cy="238" r="3.5" fill="#38bdf8"/><circle cx="242" cy="245" r="3.5" fill="#7dd3fc"/></g>' +
         '<g class="ambient-gas-b"><circle cx="232" cy="196" r="3.5" fill="#38bdf8"/><circle cx="312" cy="208" r="3.5" fill="#7dd3fc"/><circle cx="195" cy="242" r="3.5" fill="#38bdf8"/></g>' +
-        // Scale marks on cylinder
+        // Vạch chia thể tích trên xilanh
         '<line x1="205" y1="258" x2="205" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
         '<line x1="245" y1="258" x2="245" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
         '<line x1="285" y1="258" x2="285" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
         '<line x1="325" y1="258" x2="325" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
         '<line x1="365" y1="258" x2="365" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
         '<line x1="405" y1="258" x2="405" y2="274" stroke="#cbd5e1" stroke-width="2"/>' +
-        // Moving Piston & Crank
+        // Pít-tông và Tay quay điều chỉnh
         '<g class="ambient-piston-x">' +
         '<rect x="342" y="170" width="18" height="102" rx="3" fill="#475569" stroke="#e2e8f0" stroke-width="1.6"/>' +
         '<line x1="360" y1="221" x2="578" y2="221" stroke="#cbd5e1" stroke-width="5"/>' +
@@ -1871,124 +1910,155 @@
         '<path d="M 578 221 L 578 148 L 606 148" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round"/>' +
         '<rect x="598" y="136" width="22" height="24" rx="4" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>' +
         '</g>' +
-        // Labels
-        '<polyline points="425,168 446,136 520,136" fill="none" stroke="#cbd5e1" stroke-width="1.6"/>' +
-        '<text x="450" y="129" fill="#e2e8f0" font-size="13.5" font-weight="800">Xilanh</text>' +
-        '<polyline points="351,170 370,138 370,115" fill="none" stroke="#f59e0b" stroke-width="1.6"/>' +
-        '<text x="370" y="108" fill="#fbbf24" font-size="13.5" font-weight="800" text-anchor="middle">Pít-tông</text>' +
-        '<polyline points="578,162 556,108 656,108" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
-        '<text x="606" y="100" fill="#7dd3fc" font-size="13.5" font-weight="800" text-anchor="middle">Tay quay</text>' +
+        // Nhãn Pít-tông, Xilanh, Tay quay
+        '<polyline points="351,170 376,140 435,140" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        '<text x="378" y="134" fill="#cbd5e1" font-size="13" font-weight="700">Pít-tông</text>' +
+        '<polyline points="425,168 446,140 520,140" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>' +
+        '<text x="450" y="134" fill="#cbd5e1" font-size="13" font-weight="700">Xilanh</text>' +
+        '<polyline points="606,160 626,160 626,188 560,188" fill="none" stroke="#38bdf8" stroke-width="1.5"/>' +
+        '<text x="560" y="206" fill="#7dd3fc" font-size="13" font-weight="800">Tay quay</text>' +
         '</svg>';
       return '<div class="vlxt-visual-container centered"><div class="vlxt-stage-wrap">' +
-        captionHtml('fa-solid fa-gauge', this.caption) + svg + '</div></div>';
+        captionHtml('fa-solid fa-gauge-high', this.caption) + svg + '</div></div>';
     }
   },
 
-  'MH-C2-28': {
+    'MH-C2-28': {
     id: 'MH-C2-28',
     title: 'Thí nghiệm khảo sát áp suất p theo nhiệt độ tuyệt đối T',
     topic: 'DS-C2.1',
     layout: 'single',
     caption: 'Thí nghiệm đẳng tích: Bình thủy tinh chứa 1 lít khí nối với áp kế và nhiệt kế',
-    alt: 'Bình cầu thủy tinh chứa 1 lít khí nhúng trong chậu nước đun nóng, cắm nhiệt kế và nối ống dẫn sang áp kế',
+    alt: 'Bình cầu thủy tinh liền khối chứa 1 lít khí nhúng ngập trong cốc nước đun nóng, ống xuyên qua nút cao su nối kín vào áp kế',
     build: function (u) {
+      // TUÂN THỦ QUY TẮC CỦA THẦY:
+      // - Bình cầu và cổ bình phải THÔNG NHAU LIỀN MỘT KHỐI (không tách hình tròn với hình chữ nhật có vách ngăn).
+      // - Nước trong cốc phải ngập sát 2 thành cốc (không để khoảng trắng hở 2 bên).
+      // - Ống thủy tinh phải ĐÂM XUYÊN QUA nút cao su để lấy khí bên trong, và nối THÔNG TRỰC TIẾP vào đế áp kế.
       var svg =
         '<svg viewBox="0 0 680 350" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<defs><linearGradient id="' + u + 'wb" x1="0%" y1="0%" x2="0%" y2="100%">' +
-        '<stop offset="0%" stop-color="rgba(56,189,248,0.28)"/><stop offset="100%" stop-color="rgba(14,116,144,0.55)"/>' +
+        '<stop offset="0%" stop-color="rgba(56,189,248,0.32)"/><stop offset="100%" stop-color="rgba(14,116,144,0.6)"/>' +
         '</linearGradient></defs>' +
         '<rect x="16" y="16" width="648" height="318" rx="12" fill="#070d1c" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Tripod + Burner
+        // Kiềng đun & Đèn cồn
         '<line x1="118" y1="264" x2="366" y2="264" stroke="#64748b" stroke-width="5"/>' +
         '<line x1="142" y1="266" x2="120" y2="318" stroke="#64748b" stroke-width="5"/>' +
         '<line x1="342" y1="266" x2="364" y2="318" stroke="#64748b" stroke-width="5"/>' +
         '<rect x="226" y="286" width="32" height="32" rx="3" fill="#475569"/>' +
         '<path d="M 242 264 C 230 278 232 288 242 288 C 252 288 254 278 242 264 Z" fill="#38bdf8" class="ambient-heat-arrow"/>' +
         '<path d="M 242 271 C 236 280 237 286 242 286 C 247 286 248 280 242 271 Z" fill="#f59e0b" class="ambient-heat-arrow"/>' +
-        // Water beaker
-        '<path d="M 136 122 L 146 260 L 338 260 L 348 122" fill="none" stroke="#94a3b8" stroke-width="3"/>' +
-        '<rect x="147" y="138" width="190" height="121" rx="4" fill="url(#' + u + 'wb)" class="ambient-water-wave"/>' +
-        // Glass sphere flask (V = 1 lít)
-        '<rect x="234" y="88" width="28" height="38" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>' +
-        '<rect x="236" y="86" width="24" height="14" rx="2" fill="#d97706"/>' +
-        '<circle cx="248" cy="186" r="58" fill="rgba(15,23,42,0.72)" stroke="#7dd3fc" stroke-width="2.5"/>' +
-        '<g class="ambient-gas-a"><circle cx="230" cy="176" r="3.5" fill="#fbbf24"/><circle cx="268" cy="198" r="3.5" fill="#fbbf24"/></g>' +
-        '<g class="ambient-gas-b"><circle cx="262" cy="168" r="3.5" fill="#38bdf8"/><circle cx="234" cy="204" r="3.5" fill="#38bdf8"/></g>' +
-        '<text x="248" y="191" fill="#e2e8f0" font-size="13.5" font-weight="800" text-anchor="middle">Khí (1 lít)</text>' +
-        // Thermometer inside water
-        '<rect x="164" y="54" width="12" height="175" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>' +
-        '<rect x="167" y="92" width="6" height="130" fill="#ef4444"/>' +
-        '<circle cx="170" cy="226" r="8" fill="#ef4444"/>' +
-        // Pipe to Pressure Gauge
-        '<path d="M 248 86 L 248 56 L 444 56 L 444 214 L 510 214" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linejoin="round"/>' +
-        '<path d="M 248 86 L 248 56 L 444 56 L 444 214 L 510 214" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>' +
-        // Gauge stand & dial
-        '<rect x="492" y="250" width="76" height="14" rx="3" fill="#475569"/>' +
-        '<rect x="523" y="194" width="14" height="56" fill="#64748b"/>' +
+        // Cốc đựng nước (khối nước NGẬP SÁT 2 THÀNH CỐC, không để khoảng trắng)
+        '<path d="M 136 122 L 136 260 L 348 260 L 348 122" fill="none" stroke="#94a3b8" stroke-width="3"/>' +
+        '<rect x="138" y="136" width="208" height="122" fill="url(#' + u + 'wb)" class="ambient-water-wave"/>' +
+        // ═══ BÌNH CẦU THỦY TINH LIỀN KHỐI (Cổ bình thông mượt vào thân cầu) ═══
+        // Đường bao liền mạch: Cổ bình rộng 26px (x: 235..261) lượn cong xuống thân cầu r=58 tâm (248, 186)
+        '<path d="M 235 96 L 235 136 C 235 142 216 150 200 168 C 182 188 184 218 204 236 C 224 254 272 254 292 236 C 312 218 314 188 296 168 C 280 150 261 142 261 136 L 261 96 Z" fill="rgba(15,23,42,0.78)" stroke="#7dd3fc" stroke-width="2.5"/>' +
+        '<g class="ambient-gas-a"><circle cx="230" cy="186" r="3.5" fill="#fbbf24"/><circle cx="268" cy="204" r="3.5" fill="#fbbf24"/></g>' +
+        '<g class="ambient-gas-b"><circle cx="262" cy="176" r="3.5" fill="#38bdf8"/><circle cx="234" cy="214" r="3.5" fill="#38bdf8"/></g>' +
+        '<text x="248" y="194" fill="#e2e8f0" font-size="13.5" font-weight="800" text-anchor="middle">Khí (1 lít)</text>' +
+        // Nút cao su màu cam đậy kín miệng cổ bình
+        '<rect x="233" y="86" width="30" height="16" rx="2" fill="#d97706" stroke="#b45309" stroke-width="1.5"/>' +
+        // ═══ ỐNG DẪN ĐÂM XUYÊN NÚT CAO SU & NỐI THẲNG VÀO CUỐNG ÁP KẾ ═══
+        // Lớp ngoài ống thủy tinh
+        '<path d="M 248 120 L 248 54 L 444 54 L 444 214 L 524 214" fill="none" stroke="#94a3b8" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>' +
+        // Lòng ống thông khí
+        '<path d="M 248 120 L 248 54 L 444 54 L 444 214 L 526 214" fill="none" stroke="rgba(56,189,248,0.4)" stroke-width="3.5" stroke-linejoin="round"/>' +
+        // Nhiệt kế cắm ngập sâu trong nước
+        '<rect x="156" y="54" width="12" height="175" rx="6" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>' +
+        '<rect x="159" y="92" width="6" height="130" fill="#ef4444"/>' +
+        '<circle cx="162" cy="226" r="8" fill="#ef4444"/>' +
+        // Áp kế đo áp suất (cuống nối trực tiếp với ống dẫn ở y=214)
+        '<rect x="492" y="260" width="76" height="14" rx="3" fill="#475569"/>' +
+        '<rect x="523" y="200" width="14" height="60" fill="#64748b" stroke="#334155" stroke-width="1.2"/>' +
         '<circle cx="530" cy="150" r="44" fill="#f8fafc" stroke="#38bdf8" stroke-width="3"/>' +
         '<circle cx="530" cy="150" r="35" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>' +
         '<line x1="530" y1="150" x2="508" y2="128" stroke="#f59e0b" stroke-width="2.8" stroke-linecap="round" class="ambient-needle"/>' +
         '<circle cx="530" cy="150" r="4.5" fill="#e2e8f0"/>' +
-        // Clean labels & leaders
-        '<polyline points="164,66 132,48 92,48" fill="none" stroke="#fca5a5" stroke-width="1.6"/>' +
-        '<text x="86" y="52" fill="#fca5a5" font-size="13.5" font-weight="800" text-anchor="end">Nhiệt kế</text>' +
-        '<polyline points="145,178 96,178" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
-        '<text x="88" y="182" fill="#7dd3fc" font-size="13.5" font-weight="800" text-anchor="end">Nước</text>' +
+        // Nhãn chỉ dẫn
+        '<polyline points="156,66 128,48 88,48" fill="none" stroke="#fca5a5" stroke-width="1.6"/>' +
+        '<text x="82" y="52" fill="#fca5a5" font-size="13.5" font-weight="800" text-anchor="end">Nhiệt kế</text>' +
+        '<polyline points="138,178 92,178" fill="none" stroke="#38bdf8" stroke-width="1.6"/>' +
+        '<text x="86" y="182" fill="#7dd3fc" font-size="13.5" font-weight="800" text-anchor="end">Nước</text>' +
+        '<polyline points="292,216 320,240 375,240" fill="none" stroke="#7dd3fc" stroke-width="1.5"/>' +
+        '<text x="378" y="244" fill="#7dd3fc" font-size="13" font-weight="700">Bình cầu khí</text>' +
         '<text x="530" y="92" fill="#fbbf24" font-size="14" font-weight="800" text-anchor="middle">Áp kế</text>' +
-        '<text x="530" y="294" fill="#94a3b8" font-size="13" text-anchor="middle">Nút cao su bịt kín (V = const)</text>' +
+        '<text x="530" y="296" fill="#94a3b8" font-size="12.5" text-anchor="middle">Nút cao su bịt kín (V = const)</text>' +
         '</svg>';
       return '<div class="vlxt-visual-container centered"><div class="vlxt-stage-wrap">' +
         captionHtml('fa-solid fa-temperature-high', this.caption) + svg + '</div></div>';
     }
   },
 
-  'MH-C2-29': {
+    'MH-C2-29': {
     id: 'MH-C2-29',
     title: 'Thí nghiệm kiểm chứng phương trình trạng thái khí lý tưởng',
     topic: 'DS-C2.1',
     layout: 'single',
     caption: 'Bộ thí nghiệm đo đồng thời áp suất, thể tích và nhiệt độ (Chú ý nhận diện thiết bị (1) và (2))',
-    alt: 'Bình tam giác chứa khí ngâm trong nước đun nóng nối với áp kế, phía trên cắm thiết bị (1) và trong nước cắm thiết bị (2)',
+    alt: 'Bình tam giác có nút cao su cắm ống tiêm (1) đo V, ống nối sang áp kế đo p, và nhiệt kế (2) đo T trong nước',
     build: function (u) {
-      // IMPORTANT: Do NOT write "xilanh" on (1) or "nhiệt kế" on (2) because Statement d tests this!
+      // TUÂN THỦ QUY TẮC CỦA THẦY VÀ HÌNH ẢNH WORD ĐỐI CHIẾU:
+      // - Ống dẫn sang áp kế PHẢI NỐI THÔNG TRỰC TIẾP với cổ bình tam giác (dưới nút cao su).
+      // - Ống tiêm (1) cắm xuyên qua nút cao su, có cần pít-tông và vạch chia thể tích.
+      // - Nhãn nhận diện thiết bị (1) và (2) rõ ràng.
       var svg =
         '<svg viewBox="0 0 680 360" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">' +
         '<rect x="16" y="16" width="648" height="328" rx="12" fill="#070d1c" stroke="#1e293b" stroke-width="1.5"/>' +
-        // Water tank
+        // Chậu nước đun nóng
         '<path d="M 150 202 L 150 318 L 530 318 L 530 202" fill="none" stroke="#94a3b8" stroke-width="3"/>' +
         '<rect x="153" y="220" width="374" height="95" fill="rgba(14,165,233,0.3)" class="ambient-water-wave"/>' +
-        '<text x="340" y="298" fill="#fca5a5" font-size="14.5" font-weight="800" text-anchor="middle">Nước đun nóng</text>' +
-        // Erlenmeyer flask
-        '<path d="M 318 164 L 318 206 L 268 274 Q 262 284 276 284 L 404 284 Q 418 284 412 274 L 362 206 L 362 164" fill="rgba(15,23,42,0.7)" stroke="#e2e8f0" stroke-width="2.5"/>' +
-        '<rect x="314" y="150" width="52" height="18" rx="3" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>' +
+        '<text x="340" y="302" fill="#fca5a5" font-size="14.5" font-weight="800" text-anchor="middle">Nước đun nóng</text>' +
+        // ═══ BÌNH TAM GIÁC (ERLENMEYER FLASK) CHỨA KHÍ ═══
+        '<path d="M 318 164 L 318 206 L 268 274 Q 262 284 276 284 L 404 284 Q 418 284 412 274 L 362 206 L 362 164" fill="rgba(15,23,42,0.75)" stroke="#e2e8f0" stroke-width="2.5"/>' +
         '<g class="ambient-gas-a"><circle cx="322" cy="245" r="3.5" fill="#fbbf24"/><circle cx="356" cy="260" r="3.5" fill="#38bdf8"/></g>' +
         '<g class="ambient-gas-b"><circle cx="352" cy="236" r="3.5" fill="#fbbf24"/><circle cx="315" cy="264" r="3.5" fill="#38bdf8"/></g>' +
-        // Part (1) mounted on stopper (syringe with plunger)
-        '<rect x="330" y="58" width="20" height="92" rx="2" fill="rgba(248,250,252,0.12)" stroke="#e2e8f0" stroke-width="2"/>' +
-        '<rect x="323" y="54" width="34" height="5" rx="2" fill="#cbd5e1"/>' +
-        '<rect x="331" y="102" width="18" height="10" fill="#ef4444"/>' +
-        '<line x1="340" y1="34" x2="340" y2="102" stroke="#cbd5e1" stroke-width="3"/>' +
-        '<rect x="326" y="30" width="28" height="6" rx="2" fill="#94a3b8"/>' +
-        // Badge (1)
-        '<polyline points="350,82 396,50 420,50" fill="none" stroke="#10b981" stroke-width="2"/>' +
-        '<circle cx="436" cy="50" r="16" fill="#064e3b" stroke="#10b981" stroke-width="2.2"/>' +
-        '<text x="436" y="55" fill="#6ee7b7" font-size="15" font-weight="800" text-anchor="middle">1</text>' +
-        // Part (2) dipped in water tank (thermometer)
-        '<rect x="466" y="128" width="14" height="145" rx="7" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>' +
-        '<rect x="470" y="162" width="6" height="104" fill="#ef4444"/>' +
-        '<circle cx="473" cy="268" r="7" fill="#ef4444"/>' +
-        '<polyline points="480,154 522,126 544,126" fill="none" stroke="#10b981" stroke-width="2"/>' +
-        '<circle cx="560" cy="126" r="16" fill="#064e3b" stroke="#10b981" stroke-width="2.2"/>' +
-        '<text x="560" y="131" fill="#6ee7b7" font-size="15" font-weight="800" text-anchor="middle">2</text>' +
-        // Pressure gauge on left
-        '<path d="M 304 196 L 210 196 L 210 156" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linejoin="round"/>' +
+        // Nút cao su đen bịt kín cổ bình
+        '<rect x="314" y="152" width="52" height="18" rx="3" fill="#1e293b" stroke="#64748b" stroke-width="1.6"/>' +
+        // ═══ ĐƯỜNG ỐNG NỐI TỪ CỔ BÌNH TAM GIÁC SANG ÁP KẾ (THÔNG SUỐT) ═══
+        // Lớp ngoài ống
+        '<path d="M 318 186 L 210 186 L 210 156" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linejoin="round"/>' +
+        // Lòng ống thông khí
+        '<path d="M 318 186 L 210 186 L 210 156" fill="none" stroke="rgba(56,189,248,0.4)" stroke-width="3" stroke-linejoin="round"/>' +
+        // Áp kế tròn bên trái
         '<circle cx="210" cy="120" r="36" fill="#f8fafc" stroke="#38bdf8" stroke-width="2.6"/>' +
         '<circle cx="210" cy="120" r="28" fill="#0f172a" stroke="#475569" stroke-width="1.4"/>' +
         '<line x1="210" y1="120" x2="225" y2="104" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" class="ambient-needle"/>' +
         '<circle cx="210" cy="120" r="4" fill="#e2e8f0"/>' +
         '<polyline points="184,96 154,72 86,72" fill="none" stroke="#fbbf24" stroke-width="1.8"/>' +
         '<text x="80" y="76" fill="#fbbf24" font-size="14" font-weight="800" text-anchor="end">Áp kế</text>' +
-        // Callout to Binh chua khi
+        // ═══ THIẾT BỊ (1): ỐNG TIÊM Y TẾ CẮM XUYÊN QUA NÚT CAO SU ═══
+        // Thân ống tiêm trong suốt
+        '<rect x="330" y="58" width="20" height="94" rx="2" fill="rgba(248,250,252,0.15)" stroke="#e2e8f0" stroke-width="1.8"/>' +
+        // Miệng trên ống tiêm (vành tai cầm)
+        '<rect x="323" y="54" width="34" height="5" rx="2" fill="#cbd5e1"/>' +
+        // Pít-tông cao su đen bên trong
+        '<rect x="331" y="98" width="18" height="12" fill="#ef4444" rx="1"/>' +
+        // Cần đẩy pít-tông kim loại nhô lên trên
+        '<line x1="340" y1="28" x2="340" y2="98" stroke="#cbd5e1" stroke-width="3.5"/>' +
+        // Tay cầm đẩy pít-tông
+        '<rect x="326" y="24" width="28" height="6" rx="2" fill="#94a3b8"/>' +
+        // Cuống kim ống tiêm đâm xuyên qua nút cao su vào bình
+        '<rect x="338" y="152" width="4" height="24" fill="#94a3b8"/>' +
+        // Vạch chia độ trên thân ống tiêm
+        '<line x1="330" y1="75" x2="336" y2="75" stroke="#94a3b8" stroke-width="1"/>' +
+        '<line x1="330" y1="88" x2="338" y2="88" stroke="#94a3b8" stroke-width="1.2"/>' +
+        '<line x1="330" y1="102" x2="336" y2="102" stroke="#94a3b8" stroke-width="1"/>' +
+        '<line x1="330" y1="116" x2="338" y2="116" stroke="#94a3b8" stroke-width="1.2"/>' +
+        '<line x1="330" y1="130" x2="336" y2="130" stroke="#94a3b8" stroke-width="1"/>' +
+        // Huy hiệu nhận diện Thiết bị (1)
+        '<polyline points="350,82 396,50 420,50" fill="none" stroke="#10b981" stroke-width="2"/>' +
+        '<circle cx="436" cy="50" r="16" fill="#064e3b" stroke="#10b981" stroke-width="2.2"/>' +
+        '<text x="436" y="55" fill="#6ee7b7" font-size="15" font-weight="800" text-anchor="middle">1</text>' +
+        // ═══ THIẾT BỊ (2): NHIỆT KẾ THỦY NGÂN CẮM TRONG NƯỚC ═══
+        '<rect x="466" y="128" width="14" height="145" rx="7" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>' +
+        '<rect x="470" y="162" width="6" height="104" fill="#ef4444"/>' +
+        '<circle cx="473" cy="268" r="7" fill="#ef4444"/>' +
+        // Huy hiệu nhận diện Thiết bị (2)
+        '<polyline points="480,154 522,126 544,126" fill="none" stroke="#10b981" stroke-width="2"/>' +
+        '<circle cx="560" cy="126" r="16" fill="#064e3b" stroke="#10b981" stroke-width="2.2"/>' +
+        '<text x="560" y="131" fill="#6ee7b7" font-size="15" font-weight="800" text-anchor="middle">2</text>' +
+        // Nhãn Bình chứa khí
         '<polyline points="354,228 456,88 648,88" fill="none" stroke="#fbbf24" stroke-width="1.6"/>' +
         '<circle cx="354" cy="228" r="3.5" fill="#fbbf24"/>' +
         '<text x="646" y="81" fill="#fbbf24" font-size="14" font-weight="800" text-anchor="end">Bình chứa khí</text>' +
