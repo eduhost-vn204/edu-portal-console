@@ -8292,14 +8292,31 @@ function applyBankRows(rows){
             };
         }
     });
-    // Tự động hợp nhất 12 câu Trả lời ngắn Đề 2025 & 2026 nếu chưa có trong ngân hàng
+    // Bổ sung metadata (modelId, subTopic, deBaiChung, nhomId) từ gói chuẩn hóa vào các câu TLN từ server
     if (typeof window.DE_CHINHTHUC_TLN_2025_2026 !== 'undefined' && Array.isArray(window.DE_CHINHTHUC_TLN_2025_2026.questions)) {
-        const existingIds = new Set(filteredRaw.map(q => String(q.id || '').trim()));
+        const tlnMetaMap = new Map();
         window.DE_CHINHTHUC_TLN_2025_2026.questions.forEach(tlnQ => {
-            if (!existingIds.has(tlnQ.id)) {
-                filteredRaw.push({ ...tlnQ });
+            if (tlnQ.id) tlnMetaMap.set(String(tlnQ.id).trim(), tlnQ);
+        });
+        filteredRaw.forEach(q => {
+            const meta = tlnMetaMap.get(String(q.id || '').trim());
+            if (meta) {
+                if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
+                if (!q.subTopic && meta.subTopic) q.subTopic = meta.subTopic;
+                if (!q.deBaiChung && meta.deBaiChung) q.deBaiChung = meta.deBaiChung;
+                if (!q.nhomId && meta.nhomId) q.nhomId = meta.nhomId;
             }
         });
+        // Chỉ nạp dự phòng khi server hoàn toàn chưa có câu Trả lời ngắn nào
+        const hasTlnOnServer = filteredRaw.some(q => (q.loai === 'TLN' || q.type === 'SHORT_ANSWER'));
+        if (!hasTlnOnServer) {
+            const existingIds = new Set(filteredRaw.map(q => String(q.id || '').trim()));
+            window.DE_CHINHTHUC_TLN_2025_2026.questions.forEach(tlnQ => {
+                if (!existingIds.has(tlnQ.id)) {
+                    filteredRaw.push({ ...tlnQ });
+                }
+            });
+        }
     }
     bankData = filteredRaw.map(q => normalizeQuestionTaxonomy(q));
     if (getAdminKey() && !localStorage.getItem(SYNC_STORAGE_KEY)) {
@@ -8999,6 +9016,12 @@ function bankRowHtml(q,withCheck){
         </div>`;
     }
 
+    let tlnModelStage = '';
+    const mIdVal = String(q.modelId || ((String(q.question || '').match(/data-model-id=["']([^"']+)["']/i) || [])[1]) || '').trim();
+    if (mIdVal && window.VLXT_TLN_MODELS && window.VLXT_TLN_MODELS[mIdVal]) {
+        tlnModelStage = '<div class="nh-tln-model-stage" style="margin:14px auto;max-width:680px;background:#050b14;border:1px solid #1e293b;border-radius:10px;padding:12px;text-align:center">' + window.VLXT_TLN_MODELS[mIdVal].svg + '</div>';
+    }
+
     let visualStage='';
     if(q.hinhAnh){
         const imgs=q.hinhAnh.split(',').map(u=>u.trim()).filter(Boolean);
@@ -9062,7 +9085,7 @@ function bankRowHtml(q,withCheck){
                 ${q.nhomId?`<span class="nh-badge b-nhom"><i class="fa-solid fa-link"></i> ${nhEsc(q.nhomId)}</span>`:''}
                 <span style="font-size:11px;color:#94a3b8;font-family:'DM Mono',monospace;margin-left:auto">${nhEsc(q.id||'')}</span>
             </div>
-            ${ctx}<div class="nh-q-text">${nhSafe(q.question)}</div>${visualStage}
+            ${ctx}${tlnModelStage}<div class="nh-q-text">${nhSafe(q.question)}</div>${visualStage}
             <div class="nh-opts">${opts}</div>
             ${q.giaiThich?`<details class="nh-giai"><summary><i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết của Thầy</summary><div class="nh-giai-body">${nhSafe(q.giaiThich)}</div></details>`:''}
         </div>
