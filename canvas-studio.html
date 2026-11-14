@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLXT Canvas Motion Studio — Tinh Chỉnh Mô Hình Vật Lý</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
+    <script src="assets/canvas-core-helpers.js"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261114-canvas-v2"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: #080e1e;
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding-top: 76px; /* An toàn chống khuất navbar */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Fixed Top Navbar */
+        .studio-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(11, 19, 38, 0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo-badge {
+            background: #0284c7;
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+        .nav-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .nav-title span {
+            color: #38bdf8;
+            font-weight: 800;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #94a3b8;
+            background: #0f172a;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+        .btn-link:hover {
+            color: #f8fafc;
+            border-color: #38bdf8;
+            background: #1e293b;
+        }
+
+        /* Main Container */
+        .studio-main {
+            flex: 1;
+            max-width: 1680px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Controls Ribbon */
+        .controls-ribbon {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        select.studio-select {
+            background: #090d16;
+            color: #f1f5f9;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        select.studio-select:focus {
+            border-color: #38bdf8;
+        }
+        .nav-btn {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #334155;
+            border-color: #475569;
+        }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .playback-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .playback-btn {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .playback-btn:hover {
+            background: #0369a1;
+        }
+        .speed-pill {
+            display: inline-flex;
+            background: #090d16;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .speed-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .speed-btn.active {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        /* Two-Column Studio Workspace */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+        @media (max-width: 1200px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Column: Visual Canvas Stage */
+        .stage-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+        .stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .model-id-badge {
+            font-family: 'DM Mono', monospace;
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid #334155;
+        }
+        .caption-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e2e8f0;
+            line-height: 1.4;
+        }
+
+        /* Canvas Screen Box */
+        .canvas-screen-box {
+            background: #050811;
+            border: 1.5px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        canvas#studio-canvas {
+            width: 100%;
+            max-width: 780px;
+            height: auto;
+            aspect-ratio: 780 / 305;
+            background: #060b19;
+            border-radius: 6px;
+            display: block;
+            border: 1px solid #1e293b;
+        }
+
+        /* Stage Metrics Bar */
+        .metrics-bar {
+            width: 100%;
+            max-width: 780px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'DM Mono', monospace;
+        }
+        .metric-item span {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        /* Stage Rules Card */
+        .rules-card {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 12.5px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        .rules-card b {
+            color: #f1f5f9;
+        }
+
+        /* Right Column: Code & Gemini Assistant */
+        .editor-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .ai-action-btn {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s;
+        }
+        .ai-action-btn:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            transform: translateY(-1px);
+        }
+        .btn-apply {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-apply:hover {
+            background: #15803d;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            color: #f8fafc;
+            border-color: #475569;
+        }
+
+        /* Status Toast / Banner */
+        .status-badge {
+            font-size: 12.5px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .status-badge.ok {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .status-badge.hot {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+
+        /* Textarea Editor */
+        .code-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        textarea#code-editor {
+            width: 100%;
+            height: 480px;
+            background: #060a14;
+            color: #e2e8f0;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            line-height: 1.55;
+            outline: none;
+            resize: vertical;
+            white-space: pre;
+            overflow-x: auto;
+            tab-size: 4;
+            transition: border-color 0.2s;
+        }
+        textarea#code-editor:focus {
+            border-color: #0284c7;
+        }
+
+        /* Toast notification */
+        #studio-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #38bdf8;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            font-size: 13.5px;
+            font-weight: 600;
+            display: none;
+            z-index: 9999;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Top Navbar -->
+    <header class="studio-nav">
+        <div class="nav-brand">
+            <span class="nav-logo-badge">VLXT 2.0</span>
+            <div class="nav-title">Canvas Motion Studio — <span>Tinh Chỉnh Mô Hình</span></div>
+        </div>
+        <div class="nav-actions">
+            <a href="ngan-hang-de.html" class="btn-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Về Ngân Hàng Đề
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="studio-main">
+        
+        <!-- Controls Ribbon -->
+        <section class="controls-ribbon">
+            <div class="selector-group">
+                <select id="sel-chapter" class="studio-select" onchange="onChapterFilterChange()">
+                    <option value="ALL">Tất cả các chương (94 câu)</option>
+                    <option value="C1">Chương 1 — Vật lý nhiệt (Câu 1 - 21)</option>
+                    <option value="C2">Chương 2 — Khí lí tưởng (Câu 23 - 52)</option>
+                    <option value="C3">Chương 3 — Từ trường (Câu 53 - 84)</option>
+                    <option value="C4">Chương 4 — Vật lý hạt nhân (Câu 85 - 100)</option>
+                </select>
+
+                <select id="sel-model" class="studio-select" onchange="onModelSelect(this.value)" style="min-width: 320px; max-width: 500px;">
+                    <!-- Populated dynamically -->
+                </select>
+
+                <button class="nav-btn" id="btn-prev" onclick="navigateModel(-1)">◀ Câu trước</button>
+                <button class="nav-btn" id="btn-next" onclick="navigateModel(1)">Câu sau ▶</button>
+            </div>
+
+            <div class="playback-group">
+                <button class="playback-btn" id="btn-play-pause" onclick="togglePlayback()">
+                    <span id="play-icon">⏸</span> <span id="play-text">Tạm dừng</span>
+                </button>
+
+                <div class="speed-pill">
+                    <button class="speed-btn" onclick="setSpeed(0.25, this)">0.25x</button>
+                    <button class="speed-btn" onclick="setSpeed(0.5, this)">0.5x</button>
+                    <button class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x</button>
+                    <button class="speed-btn" onclick="setSpeed(2.0, this)">2.0x</button>
+                </div>
+
+                <button class="nav-btn" onclick="captureCanvasPNG()" title="Tải ảnh Canvas tại frame này">📸 Ảnh PNG</button>
+            </div>
+        </section>
+
+        <!-- Two-Column Grid -->
+        <div class="workspace-grid">
+            
+            <!-- Left Column: Visual Canvas Stage -->
+            <div class="stage-card">
+                <div class="stage-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="model-id-badge" id="disp-model-id">MH-C1-01</span>
+                        <div class="caption-text" id="disp-caption">Đang nạp mô hình...</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Screen -->
+                <div class="canvas-screen-box">
+                    <canvas id="studio-canvas" width="1560" height="610"></canvas>
+                    <div class="metrics-bar">
+                        <div class="metric-item">Khung: <span>780 x 305</span> (DPR 2x)</div>
+                        <div class="metric-item">FPS: <span id="disp-fps">60</span></div>
+                        <div class="metric-item">Thời gian t: <span id="disp-time">0.00s</span></div>
+                        <div class="metric-item" style="cursor: pointer; color: #38bdf8;" onclick="resetTime()">↺ Reset t=0</div>
+                    </div>
+                </div>
+
+                <!-- Standard Notice -->
+                <div class="rules-card">
+                    <b>💡 10 Quy Tắc Vàng VLXT:</b> Zero Data Leakage (không hiện số liệu ẩn của câu hỏi trên hình) • Khung logic cố định 780x305 • Tỉ lệ sắc nét 100% không mờ nhòe • Thiết kế phẳng EdTech không hào quang nhòe.
+                </div>
+            </div>
+
+            <!-- Right Column: Code Editor & Gemini Assistant -->
+            <div class="editor-card">
+                <div class="editor-toolbar">
+                    <button class="ai-action-btn" onclick="copyPromptForGemini()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        1-Click: Sao chép Prompt + Code gửi Gemini Web
+                    </button>
+
+                    <button class="btn-apply" onclick="applyHotReloadCode()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Áp dụng & Chạy thử ngay
+                    </button>
+
+                    <button class="btn-secondary" onclick="copyCleanCodeForAntigravity()" title="Sao chép code hoàn chỉnh để gửi Antigravity cập nhật vào GitHub">
+                        📋 Copy gửi Antigravity
+                    </button>
+
+                    <button class="btn-secondary" onclick="restoreOriginalCode()" title="Khôi phục code gốc của mô hình này">
+                        ↺ Hoàn tác code gốc
+                    </button>
+                </div>
+
+                <!-- Status Toast -->
+                <div id="editor-status" class="status-badge ok">
+                    <span>🟢 Đang chạy code gốc từ thư viện chính thức</span>
+                </div>
+
+                <!-- Textarea Editor -->
+                <div class="code-editor-container">
+                    <textarea id="code-editor" spellcheck="false" placeholder="Dán mã nguồn hàm vẽ Canvas từ Gemini vào đây để chạy thử..."></textarea>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Global Toast -->
+    <div id="studio-toast"></div>
+
+    <script>
+    const MODEL_CAPTIONS = {
+            // Ca 1 (Câu 1 -> Câu 9)
+            'MH-C1-01': 'Mô hình đối chứng 2 thí nghiệm truyền nhiệt (Cốc nhôm đặt trong cốc thủy tinh & 2 nhiệt kế)',
+            'MH-C1-02': 'Bộ thiết bị thí nghiệm đo nhiệt dung riêng của nước (5 dụng cụ nối thông mạch điện)',
+            'MH-C1-03': 'Thí nghiệm đo nhiệt nóng chảy riêng của nước đá & đồ thị ngoại suy điểm gãy pha',
+            'MH-C1-04': 'Sơ đồ mạch đo nhiệt dung riêng chất lỏng (U = 1,6 V; I = 2,5 A; m = 150,0 g)',
+            'MH-C1-05': 'Bộ dụng cụ đo nhiệt nóng chảy riêng của nước đá bằng phương pháp trộn lẫn',
+            'MH-C1-06': 'Nguyên lý bình nước nóng năng lượng mặt trời (S = 2 m²; V = 200 lít; H = 60%)',
+            'MH-C1-07': 'Sơ đồ nguyên lý bình làm nóng nước gián tiếp (20 lít; 2500 W; rơ-le ngắt tại 70°C)',
+            'MH-C1-09': 'Hệ thống tắm nóng lạnh gián tiếp & van hòa trộn nước nóng – nước lạnh ra vòi hoa sen',
+            // Ca 2 (Câu 10 -> Câu 21)
+            'MH-C1-10': 'Mô hình sục điện đun nước sinh viên (Dây điện trở xoắn lò xo & bọt khí sôi đối lưu)',
+            'MH-C1-11': 'Hệ thống tản nhiệt nước AIO cho CPU (Bơm tuần hoàn, Block đồng & Két tản nhiệt Radiator)',
+            'MH-C1-12': 'Hệ thống làm mát tuần hoàn động cơ ô tô (Áo nước xilanh, Van hằng nhiệt & Két tản nhiệt)',
+            'MH-C1-13': 'Sơ đồ nguyên lý máy hút ẩm dạng ngưng tụ (Quạt hút, Dàn lạnh ngưng tụ & Dàn nóng sấy khí)',
+            'MH-C1-14': 'Ống phát tia X Cu-lít-giơ làm mát bằng dòng nước tuần hoàn (Coolidge Tube & Đối lưu nhiệt)',
+            'MH-C1-15': 'Nguyên lý quạt điều hòa hơi nước (Tấm làm mát Cooling Pad dạng tổ ong & Bơm tuần hoàn)',
+            'MH-C1-18': 'Quy trình đúc chuông đồng truyền thống (Lò nung chảy hợp kim đồng - thiếc & Rót khuôn đúc)',
+            'MH-C1-19': 'Mô hình ướp lạnh các lon bia trong thùng xốp đá lạnh (Quá trình cân bằng nhiệt hệ 3 vật)',
+            'MH-C1-21': 'Sơ đồ nguyên lý động cơ xăng 4 kỳ (Chu trình tuần hoàn: Nạp - Nén - Nổ - Thải)',
+            // Ca 3 (Chương 2: Câu 23 -> Câu 37)
+            'MH-C2-23': 'Mô hình quả bóng thời tiết (bóng thám không) bay lên cao giãn nở theo áp suất khí quyển',
+            'MH-C2-24': 'Bóng thám không chứa khí Hydrogen (V = 15,8 m³; t = 27°C; p = 105000 Pa → giới hạn nổ 39,5 m³)',
+            'MH-C2-25': 'Khinh khí cầu có lỗ hở phía dưới (V = 1,15 m³; m = 0,2 kg) cùng các vectơ lực F_A, P và P_khí',
+            'MH-C2-26': 'Khinh khí cầu lễ hội Huế (V = 336 m³; m = 84 kg; 27°C; 1 atm) đang đốt nóng không khí bên trong',
+            'MH-C2-27': 'Bộ thí nghiệm kiểm chứng định luật Boyle (Xilanh, pít-tông, tay quay, áp kế & cảm biến 23,5°C)',
+            'MH-C2-28': 'Thí nghiệm khảo sát áp suất theo nhiệt độ đẳng tích (Bình cầu 1 lít trong chậu nước đun nóng & áp kế)',
+            'MH-C2-29': 'Bộ thí nghiệm kiểm chứng phương trình trạng thái khí lí tưởng (Bình tam giác, áp kế, xilanh (1) & nhiệt kế (2))',
+            'MH-C2-30': 'Thí nghiệm đẳng tích với bình cầu A (3,5 lít) trong bình nước B và áp kế thủy ngân chữ U',
+            'MH-C2-31': 'Hệ thống túi khí an toàn ô tô (Cảm biến va chạm → Bộ kích nổ → Túi khí N₂ 60 lít ở 25°C)',
+            'MH-C2-32': 'Cấu tạo bóng đèn sợi đốt Wolfram chứa khí trơ ở áp suất thấp trong vỏ thủy tinh chịu nhiệt',
+            'MH-C2-33': 'Sơ đồ nguyên lý súng phun nước theo nguyên lý truyền áp suất Pascal (S₁ = 2,1 cm²; S₂ = 0,09 cm²)',
+            'MH-C2-34': 'Bình tích áp máy lọc nước 12 lít (Bóng chứa nước phía trên, bóng chứa khí p₀ = 120 kPa phía dưới)',
+            'MH-C2-35': 'Nguyên lý hoạt động của bơm tay xe đạp 2 trạng thái (Kéo tay bơm lên hút khí & đẩy xuống nén khí)',
+            'MH-C2-36': 'Bình nén khí Helium (6 lít; 5,00·10⁵ Pa) bơm các quả bóng bay sự kiện (2,0 lít; 1,25·10⁵ Pa)',
+            'MH-C2-37': 'Thí nghiệm bơm khí kiểm chứng áp suất tỉ lệ lượng khí (Bơm V₁ = 0,6 lít qua van k₁, k₂ vào bình V₂ = 5,0 lít)',
+            // Ca 4 (Chương 2: Câu 38 -> Câu 52, trừ Câu 47)
+            'MH-C2-38': 'Mô hình phong vũ biểu thủy ngân Torricelli (Ống thủy tinh dài 80–90 cm úp ngược trong chậu Hg)',
+            'MH-C2-39': 'Thí nghiệm nhúng ống thủy tinh một đầu kín vào chậu nước ở 2 trạng thái đối chứng hình (a) và hình (b)',
+            'MH-C2-40': 'Sơ đồ nguyên lý máy đo huyết áp điện tử và vòng bít trên cánh tay (p₀ = 760 mmHg; 27°C; 30 cm³/s)',
+            'MH-C2-41': 'Bình chứa khí Oxygen (O₂) nén dùng trong y tế (Tổng khối lượng 18 kg; áp suất 15 MPa; 27°C)',
+            'MH-C2-42': 'Mô hình thợ lặn ở độ sâu 30 m nổi lên mặt nước & bọt khí Nitrogen (N₂) nở to dần theo định luật Boyle',
+            'MH-C2-43': 'Mô hình người nhái mang bình khí nén 150 atm lặn sửa thân tàu hỏng ở độ sâu 5 m',
+            'MH-C2-44': 'Cylinder thẳng đứng cao 152 cm đậy bằng pít-tông nhẹ (76 cm khí ở 600 K & 76 cm thủy ngân Hg)',
+            'MH-C2-45': 'Cylinder thẳng đứng chứa khí Hydrogen đậy bằng pít-tông nhẹ dưới cột chất lỏng gây áp suất phụ p₀/9',
+            'MH-C2-46': 'Lọ giác hơi y học cổ truyền hơ nóng đến 353°C úp trên bề mặt da lưng ở 27,0°C (S = 28,0 cm²)',
+            'MH-C2-48': 'Tàu ngầm ở độ sâu 120 m mở bình khí nén 60 lít (10 MPa; 27°C) đẩy nước biển khỏi thùng dằn',
+            'MH-C2-49': 'Mô hình phổi trong hệ hô hấp làm từ vỏ chai nhựa 1,0–1,5 lít, 2 bóng bay và màng cao su cơ hoành',
+            'MH-C2-50': 'Mô hình phân tử khí chuyển động nhiệt va chạm thành trong lốp ô tô vượt sa mạc (5,0°C; 1,2 m³; 2,5 bar)',
+            'MH-C2-51': 'Mô hình lốp xe bán tải chạy cao tốc mùa hè (27°C; 120 lít; 240 kPa) tăng áp suất đẳng tích',
+            'MH-C2-52': 'Súng bắn đinh khí nén nối với bình khí nén 10 lít (12 atm; 27°C) có gắn rơ-le áp suất tự động',
+            // Ca 5 (Chương 3: Câu 53 -> Câu 68)
+            'MH-C3-53': 'Thí nghiệm cân từ trường (Đoạn dây PQ nằm ngang trong lòng nam châm chữ U đặt trên cân điện tử)',
+            'MH-C3-54': 'Bộ thí nghiệm đo độ lớn cảm ứng từ giữa hai nhánh nam châm chữ U trên cân đồng hồ hiện số',
+            'MH-C3-55': 'Thí nghiệm khảo sát lực từ tác dụng lên đoạn dây dẫn AB treo bằng hai lực kế trong từ trường',
+            'MH-C3-56': 'Mô hình "cân dòng điện" Oersted cân bằng mô-men lực từ F_B và trọng lực kẹp giấy P',
+            'MH-C3-57': 'Sơ đồ nguyên lý máy phát điện xoay chiều một pha đơn giản (Khung dây quay đều trong từ trường B)',
+            'MH-C3-58': 'Cấu tạo máy phát điện xoay chiều một pha (Rôto 3 cặp cực N–S và Stato 6 cuộn dây lõi sắt)',
+            'MH-C3-59': 'Mô hình phanh tái sinh năng lượng ô tô điện (Khung dây vuông ABCD quay quanh trục OO\' giữa hai cực N–S)',
+            'MH-C3-60': 'Thanh kim loại MN rơi thẳng đứng trên hai ray song song nối điện trở R (H1) và đồ thị v–t (H2)',
+            'MH-C3-61': 'Thanh kim loại mn trượt thẳng đều trên hai thanh ray OA, OB hợp góc 45° trong từ trường đều B',
+            'MH-C3-62': 'Thanh dẫn MN trượt trên hai ray song song đặt trên mặt phẳng nghiêng 30° trong từ trường thẳng đứng',
+            'MH-C3-63': 'Bốn thanh vật dẫn thẳng dài tạo thành hình vuông MNPQ chuyển động ra xa nhau với tốc độ v₀',
+            'MH-C3-64': 'Khung dây hình vuông cạnh l bị kéo dãn tại hai đỉnh đối diện thành hình thoi góc θ = 120°',
+            'MH-C3-65': 'Khung dây dẫn hình vuông cạnh a ném ngang trong từ trường biến thiên theo độ cao B = B₀ + k·Z',
+            'MH-C3-66': 'Khung dây vuông ABCD chuyển động tịnh tiến đều qua vùng từ trường đều hình chữ nhật A\'B\'C\'D\'',
+            'MH-C3-67': 'Cấu tạo và nguyên lý hoạt động của công tắc điện từ (Rơ-le điện) đóng ngắt mạch thứ cấp',
+            'MH-C3-68': 'Sơ đồ rơ-le điện từ (Hình 1) và mạch báo cháy tự động dùng điện trở nhiệt X (Hình 2)',
+            // Ca 6 (Chương 3: Câu 69 -> Câu 84)
+            'MH-C3-69': 'Nguyên lý máy gia tốc hạt Cyclotron (Hai hộp chữ D: I & II nối nguồn xoay chiều tần số f_dd = 12 MHz)',
+            'MH-C3-70': 'Mô hình gia tốc hạt proton trong từ trường siêu dẫn B = 5 T của Máy Gia tốc Hạt Lớn LHC',
+            'MH-C3-71': 'Sơ đồ nguyên lý máy quang phổ khối đo khối lượng ion (Nguồn S, điện áp U, từ trường ⊙ B & cảm biến)',
+            'MH-C3-72': 'Máy quang phổ khối tách đồng vị Uranium U-235 và U-238 trong bể chân không (B = 0,25 T; v = 3·10⁵ m/s)',
+            'MH-C3-73': 'Cấu tạo và nguyên lý hoạt động của Micro điện động (Màng rung, cuộn dây 12 vòng & nam châm N–S)',
+            'MH-C3-74': 'Cấu tạo loa điện động: Mặt cắt dọc (Hình a) và bố trí cuộn dây – nam châm tròn (Hình b)',
+            'MH-C3-75': 'Dynamo xe đạp (Tì núm dẫn động vào vành lốp) và sơ đồ mặt cắt dọc cấu tạo bên trong',
+            'MH-C3-76': 'Sơ đồ nguyên lý bếp điện từ (Cuộn dây cao tần dưới mặt kính & dòng điện Foucault làm nóng đáy nồi)',
+            'MH-C3-77': 'Sơ đồ cấu tạo đèn lắc tay không cần pin (Thanh nam châm N–S dao động xuyên qua lòng cuộn dây cố định)',
+            'MH-C3-78': 'Thí nghiệm đo thành phần nằm ngang của từ trường Trái Đất bằng khung dây tròn N = 200 vòng và la bàn',
+            'MH-C3-79': 'Nguyên lý máy đo lưu lượng máu điện từ không xâm lấn (Từ trường B = 0,05 T & hai điện cực đo U = 0,22 mV)',
+            'MH-C3-80': 'Cấu tạo máy biến áp một pha (Lõi lá sắt non cách điện, cuộn sơ cấp N₁ và cuộn thứ cấp N₂)',
+            'MH-C3-81': 'Sơ đồ hệ thống truyền tải điện năng đi xa (Nhà máy 25 kV → Máy tăng áp 500 kV → Đường dây 248 km → Hạ áp)',
+            'MH-C3-82': 'Nguyên lý máy in phun mực Binary-Deflection (Giọt mực tích điện loại A lệch quỹ đạo & giọt loại C bay thẳng)',
+            'MH-C3-83': 'Thí nghiệm tương tác từ giữa hai dòng điện thẳng song song cùng chiều (Hình a) và ngược chiều (Hình b)',
+            'MH-C3-84': 'Ống tia điện tử khảo sát quỹ đạo chùm electron (U = 2,70 kV) trong điện trường E (Hình a) và từ trường B (Hình b)',
+            // Ca 7 (Chương 4: Câu 85 -> Câu 100)
+            'MH-C4-85': 'Thí nghiệm tán xạ hạt alpha của Ernest Rutherford (1911) bắn phá lá vàng mỏng trong chân không',
+            'MH-C4-86': 'Mô hình tán xạ hạt alpha qua lá vàng mỏng (Hình a) và tương tác vi mô với hạt nhân vàng (Hình b)',
+            'MH-C4-87': 'Chu trình xâm nhập bụi phóng xạ Strontium ⁹⁰₃₈Sr vào xương người và đường cong phân rã β⁻',
+            'MH-C4-88': 'Phân rã phóng xạ Iodine ¹³¹₅₃I trong sữa bò và đường cong suy giảm về ngưỡng an toàn 100 Bq/lít',
+            'MH-C4-89': 'Kỹ thuật chụp cắt lớp phát xạ Positron (PET) sử dụng đồng vị phóng xạ ¹⁸₉F trong chẩn đoán ung thư',
+            'MH-C4-90': 'Quy trình xạ trị ung thư tuyến giáp bằng dược chất phóng xạ Iodine ¹³¹₅₃I (9,2 μg; T = 8,0 ngày)',
+            'MH-C4-91': 'Đồ thị theo dõi độ phóng xạ xuất viện của bệnh nhân điều trị Iodine-131 (36,0 mCi → 30,0 mCi)',
+            'MH-C4-92': 'Mô hình đánh dấu tế bào ung thư nuôi cấy bằng đồng vị phóng xạ ¹³¹₅₃I phát tia gamma 364 keV',
+            'MH-C4-93': 'Sơ đồ nguyên lý cảm biến báo khói ion hóa sử dụng nguồn phóng xạ alpha Americium ²⁴¹₉₅Am',
+            'MH-C4-94': 'Phản ứng nhiệt hạch tổng hợp Deuterium ²₁D và Tritium ³₁T tạo thành ⁴₂He và neutron ¹₀n',
+            'MH-C4-95': 'Sơ đồ phản ứng phân hạch dây chuyền của ²³⁵₉₂U và ứng dụng trên tàu phá băng hạt nhân',
+            'MH-C4-96': 'Sơ đồ nguyên lý lò phản ứng hạt nhân và năng lượng liên kết riêng của ²³⁵₉₂U, ¹³⁹₅₄Xe, ⁹⁵₃₈Sr',
+            'MH-C4-97': 'Chuỗi chuyển hóa năng lượng trong nhà máy điện hạt nhân dùng nhiên liệu U-235 (1000 J → 323 J điện)',
+            'MH-C4-98': 'Ba đồng vị Potassium trong chuối (³⁹₁₉K, ⁴⁰₁₉K, ⁴¹₁₉K) và thông số phân rã phóng xạ ⁴⁰₁₉K',
+            'MH-C4-99': 'Con đường khí phóng xạ tự nhiên Radon ²²²₈₆Rn thấm từ đất đá tích tụ vào bên trong ngôi nhà',
+            'MH-C4-100': 'Cấu tạo Pin nguyên tử Plutonium-238 (2,5 Ci · T = 87,7 năm) chuyển nhiệt phân rã alpha thành điện năng'
+        };
+
+    // Model list metadata
+    let ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
+    let currentModelId = 'MH-C1-01';
+    let originalCodeCache = {};
+    let activeDrawFn = null;
+    let isPlaying = true;
+    let playSpeed = 1.0;
+    let simTime = 0.0;
+    let lastTimestamp = 0;
+    let frameCount = 0;
+    let lastFpsUpdate = 0;
+
+    const cv = document.getElementById('studio-canvas');
+    const ctx = cv.getContext('2d');
+    const dpr = 2.0; // Retina 2x chuẩn
+    cv.width = 780 * dpr;
+    cv.height = 305 * dpr;
+    ctx.scale(dpr, dpr);
+
+    // Khởi tạo Studio
+    window.addEventListener('DOMContentLoaded', () => {
+        populateModelDropdown();
+        loadModel(currentModelId);
+        requestAnimationFrame(renderLoop);
+    });
+
+    function populateModelDropdown() {
+        const filter = document.getElementById('sel-chapter').value;
+        const sel = document.getElementById('sel-model');
+        sel.innerHTML = '';
+
+        ALL_MODEL_IDS.forEach(id => {
+            const ch = id.slice(3, 5); // C1, C2, C3, C4
+            if (filter === 'ALL' || filter === ch) {
+                const opt = document.createElement('option');
+                opt.value = id;
+                const cap = MODEL_CAPTIONS[id] || id;
+                opt.textContent = `${id} — ${cap.slice(0, 48)}${cap.length > 48 ? '...' : ''}`;
+                sel.appendChild(opt);
+            }
+        });
+
+        if (sel.querySelector(`option[value="${currentModelId}"]`)) {
+            sel.value = currentModelId;
+        } else if (sel.options.length > 0) {
+            sel.selectedIndex = 0;
+            currentModelId = sel.value;
+        }
+        updateNavButtons();
+    }
+
+    function onChapterFilterChange() {
+        populateModelDropdown();
+        const sel = document.getElementById('sel-model');
+        if (sel.value) {
+            loadModel(sel.value);
+        }
+    }
+
+    function onModelSelect(id) {
+        if (!id) return;
+        loadModel(id);
+    }
+
+    function navigateModel(delta) {
+        const sel = document.getElementById('sel-model');
+        const nextIdx = sel.selectedIndex + delta;
+        if (nextIdx >= 0 && nextIdx < sel.options.length) {
+            sel.selectedIndex = nextIdx;
+            loadModel(sel.value);
+        }
+    }
+
+    function updateNavButtons() {
+        const sel = document.getElementById('sel-model');
+        document.getElementById('btn-prev').disabled = (sel.selectedIndex <= 0);
+        document.getElementById('btn-next').disabled = (sel.selectedIndex >= sel.options.length - 1);
+    }
+
+    function loadModel(id) {
+        currentModelId = id;
+        document.getElementById('disp-model-id').textContent = id;
+        document.getElementById('disp-caption').textContent = MODEL_CAPTIONS[id] || id;
+        document.getElementById('sel-model').value = id;
+        updateNavButtons();
+
+        // Lấy hàm vẽ từ VLXTModels._canvasRegistry
+        let fn = null;
+        if (window.VLXTModels && window.VLXTModels._canvasRegistry) {
+            fn = window.VLXTModels._canvasRegistry[id];
+        }
+
+        if (fn) {
+            activeDrawFn = fn;
+            const fnCode = fn.toString();
+            const fullSnippet = `// Mã nguồn vẽ mô hình ${id}\n// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)\nVLXTModels.register('${id}', ${fnCode});`;
+            originalCodeCache[id] = fullSnippet;
+            document.getElementById('code-editor').value = fullSnippet;
+            setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
+        } else {
+            document.getElementById('code-editor').value = `// Chưa tìm thấy hàm vẽ Canvas cho ${id}`;
+            setEditorStatus('error', '🔴 Chưa có hàm vẽ Canvas cho mô hình này');
+        }
+    }
+
+    // Animation Loop
+    function renderLoop(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const delta = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
+        lastTimestamp = timestamp;
+
+        if (isPlaying) {
+            simTime += delta * playSpeed;
+        }
+
+        // FPS calculation
+        frameCount++;
+        if (timestamp - lastFpsUpdate > 500) {
+            const fps = Math.round((frameCount * 1000) / (timestamp - lastFpsUpdate));
+            document.getElementById('disp-fps').textContent = fps;
+            frameCount = 0;
+            lastFpsUpdate = timestamp;
+        }
+        document.getElementById('disp-time').textContent = simTime.toFixed(2) + 's';
+
+        // Vẽ frame
+        if (typeof activeDrawFn === 'function') {
+            try {
+                ctx.save();
+                activeDrawFn(ctx, 780, 305, simTime);
+                ctx.restore();
+            } catch (err) {
+                console.error("Lỗi khi vẽ frame:", err);
+                // Vẽ thông báo lỗi lên canvas
+                ctx.fillStyle = '#ef4444';
+                ctx.font = '14px "DM Mono", monospace';
+                ctx.fillText(`Lỗi render: ${err.message}`, 20, 30);
+            }
+        }
+
+        requestAnimationFrame(renderLoop);
+    }
+
+    function togglePlayback() {
+        isPlaying = !isPlaying;
+        document.getElementById('play-icon').textContent = isPlaying ? '⏸' : '▶';
+        document.getElementById('play-text').textContent = isPlaying ? 'Tạm dừng' : 'Tiếp tục';
+    }
+
+    function setSpeed(speed, btn) {
+        playSpeed = speed;
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    }
+
+    function resetTime() {
+        simTime = 0.0;
+        showToast('↺ Đã đặt lại thời gian t = 0s');
+    }
+
+    function captureCanvasPNG() {
+        const link = document.createElement('a');
+        link.download = `${currentModelId}-frame-${simTime.toFixed(1)}s.png`;
+        link.href = cv.toDataURL('image/png');
+        link.click();
+        showToast(`📸 Đã tải ảnh PNG của ${currentModelId}`);
+    }
+
+    // 1-Click Copy Prompt for Gemini Web
+    function copyPromptForGemini() {
+        const code = document.getElementById('code-editor').value;
+        const cap = MODEL_CAPTIONS[currentModelId] || currentModelId;
+
+        const promptText = `Đây là mã nguồn HTML5 Canvas 2D của mô hình vật lý "${currentModelId}: ${cap}" (khung logic chuẩn 780 x 305, biến t là thời gian giây tạo chuyển động).
+
+Mã nguồn hiện tại:
+\`\`\`javascript
+${code}
+\`\`\`
+
+YÊU CẦU CHỈNH SỬA:
+1. [Thầy hãy nhập yêu cầu cần sửa vào đây: ví dụ: làm bình nước màu xanh đậm hơn, điều chỉnh bọt khí bay chậm lại 50%, làm rõ các thông số...]
+2. Giữ nguyên kích thước chuẩn logic: w = 780, h = 305.
+3. Thiết kế phẳng sắc nét theo chuẩn EdTech quốc tế, TUYỆT ĐỐI KHÔNG dùng hiệu ứng mờ nhòe neon/glow (không dùng shadowBlur lớn hay drop-shadow nhòe).
+4. TUYỆT ĐỐI TUÂN THỦ "Zero Data Leakage": Chỉ vẽ sơ đồ thí nghiệm/thiết bị đề dẫn, KHÔNG vẽ đáp án hoặc lời giải của câu hỏi lên hình.
+5. Trả về đúng duy nhất khối lệnh hoàn chỉnh:
+\`\`\`javascript
+VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
+    // mã vẽ mới
+});
+\`\`\``;
+
+        navigator.clipboard.writeText(promptText).then(() => {
+            showToast(`🌟 Đã sao chép Prompt + Code của ${currentModelId}! Hãy dán vào Gemini web (Ctrl + V).`);
+        }).catch(err => {
+            alert('Không thể sao chép tự động: ' + err);
+        });
+    }
+
+    // Apply Hot-Reload Code from Editor
+    function applyHotReloadCode() {
+        const userCode = document.getElementById('code-editor').value;
+        
+        let compiledFn = null;
+        let registeredId = null;
+
+        const fakeVLXT = {
+            register: function(id, fn) {
+                registeredId = id;
+                compiledFn = fn;
+            }
+        };
+
+        try {
+            // Thực thi an toàn với sandbox hứng hàm
+            const runFn = new Function('VLXTModels', 'clearCanvas', 'drawRoundRect', 'drawArrow', 'drawOpenCup', 'drawOpenCupU', 'drawNuclide', 'drawTitleBadge', 'drawThermometer', 'drawPressureGauge', 'drawSpring', 'drawCallout', 'drawCircleNum', 'drawDotB', 'drawCrossB', 'drawSubText', 'drawSetup', 'drawAlphaCluster', 'drawGammaRay', userCode);
+            
+            runFn(
+                fakeVLXT,
+                window.clearCanvas,
+                window.drawRoundRect,
+                window.drawArrow,
+                window.drawOpenCup,
+                window.drawOpenCupU,
+                window.drawNuclide,
+                window.drawTitleBadge,
+                window.drawThermometer,
+                window.drawPressureGauge,
+                window.drawSpring,
+                window.drawCallout,
+                window.drawCircleNum,
+                window.drawDotB,
+                window.drawCrossB,
+                window.drawSubText,
+                window.drawSetup,
+                window.drawAlphaCluster,
+                window.drawGammaRay
+            );
+
+            if (typeof compiledFn === 'function') {
+                activeDrawFn = compiledFn;
+                setEditorStatus('hot', '✨ Đang chạy code Hot-Reload vừa áp dụng!');
+                showToast(`🚀 Đã áp dụng thành công mã vẽ mới cho ${currentModelId}!`);
+            } else {
+                throw new Error("Không tìm thấy lệnh VLXTModels.register('" + currentModelId + "', ...)");
+            }
+        } catch (err) {
+            console.error("Lỗi biên dịch code:", err);
+            setEditorStatus('error', `🔴 Lỗi cú pháp: ${err.message}`);
+            alert(`Lỗi khi chạy code: ${err.message}\n\nVui lòng kiểm tra lại cú pháp JavaScript!`);
+        }
+    }
+
+    function copyCleanCodeForAntigravity() {
+        const code = document.getElementById('code-editor').value;
+        navigator.clipboard.writeText(code).then(() => {
+            showToast(`📋 Đã chép code của ${currentModelId}! Thầy chỉ cần gửi vào chat để Antigravity cập nhật.`);
+        });
+    }
+
+    function restoreOriginalCode() {
+        if (originalCodeCache[currentModelId]) {
+            document.getElementById('code-editor').value = originalCodeCache[currentModelId];
+            applyHotReloadCode();
+            setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
+            showToast(`↺ Đã khôi phục code ban đầu của ${currentModelId}`);
+        }
+    }
+
+    function setEditorStatus(type, msg) {
+        const el = document.getElementById('editor-status');
+        el.className = `status-badge ${type}`;
+        el.innerHTML = `<span>${msg}</span>`;
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('studio-toast');
+        toast.textContent = msg;
+        toast.style.display = 'flex';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3500);
+    }
+    </script>
+</body>
+</html>
