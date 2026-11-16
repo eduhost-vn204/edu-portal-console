@@ -5845,7 +5845,8 @@
                             ctx: ctx,
                             drawFn: drawFn,
                             w: logicalW,
-                            h: logicalH
+                            h: logicalH,
+                            mid: mid
                         });
                     }
                 }
@@ -16431,6 +16432,128 @@
     })();
 
 
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // HỆ THỐNG ĐỒNG BỘ MÔ HÌNH THỜI GIAN THỰC (REALTIME & CLOUD OVERRIDES)
+    // Cho phép Thầy tinh chỉnh trên Studio và tự động cập nhật Ngân Hàng Đề / Cloud
+    // ══════════════════════════════════════════════════════════════════════════
+    var CLOUD_SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec?type=settings';
+
+    function compileCanvasFn(codeStr) {
+        if (!codeStr || typeof codeStr !== 'string') return null;
+        try {
+            var trimmed = codeStr.trim();
+            var regMatch = trimmed.match(/register\s*\(\s*['"][^'"]+['"]\s*,\s*([\s\S]+)\)\s*;?\s*$/);
+            var fnExpr = regMatch ? regMatch[1] : trimmed;
+            if (!fnExpr.startsWith('function') && !fnExpr.startsWith('(')) {
+                fnExpr = 'function(ctx, w, h, t) { ' + fnExpr + ' }';
+            }
+            var factory = new Function(
+                'clearCanvas', 'drawRoundRect', 'drawArrow', 'drawOpenCup', 'drawOpenCupU',
+                'drawNuclide', 'drawTitleBadge', 'drawThermometer', 'drawPressureGauge',
+                'drawSpring', 'drawCallout', 'drawCircleNum', 'drawDotB', 'drawCrossB',
+                'drawSubText', 'drawSetup', 'drawAlphaCluster', 'drawGammaRay',
+                'return (' + fnExpr + ');'
+            );
+            var g = typeof window !== 'undefined' ? window : globalThis;
+            return factory(
+                g.clearCanvas, g.drawRoundRect, g.drawArrow, g.drawOpenCup, g.drawOpenCupU,
+                g.drawNuclide, g.drawTitleBadge, g.drawThermometer, g.drawPressureGauge,
+                g.drawSpring, g.drawCallout, g.drawCircleNum, g.drawDotB, g.drawCrossB,
+                g.drawSubText, g.drawSetup, g.drawAlphaCluster, g.drawGammaRay
+            );
+        } catch (e) {
+            if (typeof console !== 'undefined') console.warn('Lỗi biên dịch hàm Canvas override:', e);
+            return null;
+        }
+    }
+
+    function applyOverrideFn(mid, fn) {
+        if (typeof fn !== 'function') return;
+        canvasRegistry[mid] = fn;
+        for (var i = 0; i < activeCanvases.length; i++) {
+            if (activeCanvases[i].mid === mid) {
+                activeCanvases[i].drawFn = fn;
+            }
+        }
+    }
+
+    function loadAllOverrides() {
+        try {
+            if (typeof localStorage === 'undefined') return;
+            var raw = localStorage.getItem('VLXT_CANVAS_OVERRIDES');
+            if (!raw) return;
+            var map = JSON.parse(raw);
+            for (var mid in map) {
+                if (map.hasOwnProperty(mid) && map[mid]) {
+                    var fn = compileCanvasFn(map[mid]);
+                    if (fn) applyOverrideFn(mid, fn);
+                }
+            }
+        } catch(e) {}
+    }
+
+    function fetchCloudOverrides(callback) {
+        if (typeof fetch === 'undefined') return;
+        fetch(CLOUD_SETTINGS_URL)
+            .then(function(res) { return res.json(); })
+            .then(function(json) {
+                if (json && json.ok && json.data && json.data.VLXT_CANVAS_OVERRIDES) {
+                    try {
+                        var cloudMap = JSON.parse(json.data.VLXT_CANVAS_OVERRIDES);
+                        var localRaw = (typeof localStorage !== 'undefined') ? localStorage.getItem('VLXT_CANVAS_OVERRIDES') : null;
+                        var localMap = localRaw ? JSON.parse(localRaw) : {};
+                        var merged = Object.assign({}, localMap, cloudMap);
+                        if (typeof localStorage !== 'undefined') {
+                            localStorage.setItem('VLXT_CANVAS_OVERRIDES', JSON.stringify(merged));
+                        }
+                        for (var mid in merged) {
+                            if (merged.hasOwnProperty(mid) && merged[mid]) {
+                                var fn = compileCanvasFn(merged[mid]);
+                                if (fn) applyOverrideFn(mid, fn);
+                            }
+                        }
+                        if (typeof callback === 'function') callback(true, merged);
+                    } catch(e) {}
+                }
+            })
+            .catch(function(err) {
+                if (typeof callback === 'function') callback(false, err);
+            });
+    }
+
+    // Lắng nghe Realtime BroadcastChannel & Storage Event
+    if (typeof BroadcastChannel !== 'undefined') {
+        try {
+            var bc = new BroadcastChannel('vlxt_canvas_sync');
+            bc.onmessage = function(ev) {
+                if (ev && ev.data && ev.data.type === 'SYNC_OVERRIDE') {
+                    if (ev.data.modelId && ev.data.code) {
+                        var fn = compileCanvasFn(ev.data.code);
+                        if (fn) applyOverrideFn(ev.data.modelId, fn);
+                    } else {
+                        loadAllOverrides();
+                    }
+                }
+            };
+        } catch(e) {}
+    }
+
+    if (typeof window !== 'undefined' && window.addEventListener) {
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'VLXT_CANVAS_OVERRIDES') {
+                loadAllOverrides();
+            }
+        });
+    }
+
+    // Tự động tải overrides từ local storage và cloud ngay khi nạp file
+    loadAllOverrides();
+    if (typeof setTimeout !== 'undefined') {
+        setTimeout(fetchCloudOverrides, 1200);
+    }
+
+
     var api = {
         version: VERSION,
         has: has,
@@ -16439,8 +16562,11 @@
         render: render,
         getSvgString: getSvgString,
         mountAll: mountAll,
-        ensureStyles: ensureStyles
-    ,
+        ensureStyles: ensureStyles,
+        applyOverrideFn: applyOverrideFn,
+        compileCanvasFn: compileCanvasFn,
+        loadAllOverrides: loadAllOverrides,
+        fetchCloudOverrides: fetchCloudOverrides,
         register: registerCanvas,
         _canvasRegistry: canvasRegistry
     };

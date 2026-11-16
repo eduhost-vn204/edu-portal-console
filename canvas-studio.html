@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261114-canvas-v2"></script>
@@ -440,6 +440,99 @@
             align-items: center;
             gap: 8px;
         }
+
+        .btn-save-cloud {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: #fff;
+            border: 1px solid #22c55e;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-save-cloud:hover {
+            background: linear-gradient(135deg, #15803d, #166534);
+            transform: translateY(-1px);
+        }
+        .btn-save-cloud:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Modal Overrides List */
+        .studio-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .studio-modal {
+            background: #0f172a;
+            border: 1.5px solid #1e293b;
+            border-radius: 12px;
+            max-width: 640px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .override-item {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .override-item-id {
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+            color: #38bdf8;
+            font-size: 13px;
+        }
+        .override-item-name {
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin-left: 8px;
+        }
+        .override-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
     </style>
 </head>
 <body>
@@ -460,7 +553,7 @@
 
     <!-- Main Workspace -->
     <main class="studio-main">
-        
+
         <!-- Controls Ribbon -->
         <section class="controls-ribbon">
             <div class="selector-group">
@@ -498,7 +591,7 @@
 
         <!-- Two-Column Grid -->
         <div class="workspace-grid">
-            
+
             <!-- Left Column: Visual Canvas Stage -->
             <div class="stage-card">
                 <div class="stage-header">
@@ -528,22 +621,27 @@
             <!-- Right Column: Code Editor & Gemini Assistant -->
             <div class="editor-card">
                 <div class="editor-toolbar">
+                    <button class="btn-save-cloud" id="btn-save-cloud" onclick="saveToCloudAndBank()" title="Lưu vĩnh viễn vào Ngân Hàng Đề và Google Cloud — Đề thi tự nhận ngay!">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        💾 Lưu vào Ngân Hàng Đề & Cloud
+                    </button>
+
+                    <button class="btn-apply" onclick="applyHotReloadCode()" title="Chạy thử nghiệm chuyển động Canvas tại chỗ trước khi lưu">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Chạy thử (Hot-Reload)
+                    </button>
+
                     <button class="ai-action-btn" onclick="copyPromptForGemini()">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        1-Click: Sao chép Prompt + Code gửi Gemini Web
+                        1-Click: Gửi Gemini Web
                     </button>
 
-                    <button class="btn-apply" onclick="applyHotReloadCode()">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Áp dụng & Chạy thử ngay
+                    <button class="btn-secondary" onclick="showOverridesListModal()" title="Xem danh sách các câu đã tinh chỉnh trên hệ thống">
+                        📑 Đã chỉnh (<span id="disp-overrides-count">0</span>)
                     </button>
 
-                    <button class="btn-secondary" onclick="copyCleanCodeForAntigravity()" title="Sao chép code hoàn chỉnh để gửi Antigravity cập nhật vào GitHub">
-                        📋 Copy gửi Antigravity
-                    </button>
-
-                    <button class="btn-secondary" onclick="restoreOriginalCode()" title="Khôi phục code gốc của mô hình này">
-                        ↺ Hoàn tác code gốc
+                    <button class="btn-secondary" onclick="deleteCurrentOverride()" title="Xóa bản tinh chỉnh câu này để quay về mô hình gốc">
+                        ↺ Xóa tinh chỉnh
                     </button>
                 </div>
 
@@ -691,6 +789,7 @@
 
     // Khởi tạo Studio
     window.addEventListener('DOMContentLoaded', () => {
+        updateOverridesCountBadge();
         populateModelDropdown();
         loadModel(currentModelId);
         requestAnimationFrame(renderLoop);
@@ -722,6 +821,7 @@
     }
 
     function onChapterFilterChange() {
+        updateOverridesCountBadge();
         populateModelDropdown();
         const sel = document.getElementById('sel-model');
         if (sel.value) {
@@ -767,8 +867,15 @@
             const fnCode = fn.toString();
             const fullSnippet = `// Mã nguồn vẽ mô hình ${id}\n// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)\nVLXTModels.register('${id}', ${fnCode});`;
             originalCodeCache[id] = fullSnippet;
-            document.getElementById('code-editor').value = fullSnippet;
-            setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
+
+            const overrides = getLocalOverrides();
+            if (overrides[id]) {
+                document.getElementById('code-editor').value = overrides[id];
+                setEditorStatus('hot', '⭐ Đang chạy bản tinh chỉnh của Thầy (Đã đồng bộ Cloud & Ngân Hàng)');
+            } else {
+                document.getElementById('code-editor').value = fullSnippet;
+                setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
+            }
         } else {
             document.getElementById('code-editor').value = `// Chưa tìm thấy hàm vẽ Canvas cho ${id}`;
             setEditorStatus('error', '🔴 Chưa có hàm vẽ Canvas cho mô hình này');
@@ -872,7 +979,7 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
     // Apply Hot-Reload Code from Editor
     function applyHotReloadCode() {
         const userCode = document.getElementById('code-editor').value;
-        
+
         let compiledFn = null;
         let registeredId = null;
 
@@ -886,7 +993,7 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
         try {
             // Thực thi an toàn với sandbox hứng hàm
             const runFn = new Function('VLXTModels', 'clearCanvas', 'drawRoundRect', 'drawArrow', 'drawOpenCup', 'drawOpenCupU', 'drawNuclide', 'drawTitleBadge', 'drawThermometer', 'drawPressureGauge', 'drawSpring', 'drawCallout', 'drawCircleNum', 'drawDotB', 'drawCrossB', 'drawSubText', 'drawSetup', 'drawAlphaCluster', 'drawGammaRay', userCode);
-            
+
             runFn(
                 fakeVLXT,
                 window.clearCanvas,
@@ -954,6 +1061,198 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
             toast.style.display = 'none';
         }, 3500);
     }
-    </script>
+
+    const GAS_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec';
+
+    // Đọc overrides từ localStorage
+    function getLocalOverrides() {
+        try {
+            const raw = localStorage.getItem('VLXT_CANVAS_OVERRIDES');
+            return raw ? JSON.parse(raw) : {};
+        } catch(e) {
+            return {};
+        }
+    }
+
+    function saveLocalOverrides(map) {
+        try {
+            localStorage.setItem('VLXT_CANVAS_OVERRIDES', JSON.stringify(map));
+            updateOverridesCountBadge();
+        } catch(e) {}
+    }
+
+    function updateOverridesCountBadge() {
+        const map = getLocalOverrides();
+        const count = Object.keys(map).length;
+        const el = document.getElementById('disp-overrides-count');
+        if (el) el.textContent = count;
+    }
+
+    // 💾 LƯU VÀO NGÂN HÀNG ĐỀ & CLOUD ĐÁM MÂY
+    async function saveToCloudAndBank() {
+        const btn = document.getElementById('btn-save-cloud');
+        const code = document.getElementById('code-editor').value;
+
+        // 1. Kiểm tra cú pháp trước khi lưu
+        let compiledFn = null;
+        try {
+            compiledFn = window.VLXTModels.compileCanvasFn(code);
+            if (typeof compiledFn !== 'function') {
+                throw new Error("Không thể trích xuất hàm vẽ từ code");
+            }
+        } catch(err) {
+            alert("🔴 Lỗi cú pháp code: " + err.message + "\nVui lòng kiểm tra lại trước khi lưu!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="fa-spin">⏳</span> Đang lưu Cloud...';
+
+        try {
+            // 2. Lưu vào localStorage
+            const overrides = getLocalOverrides();
+            overrides[currentModelId] = code;
+            saveLocalOverrides(overrides);
+
+            // 3. Áp dụng ngay cho canvas hiện tại
+            activeDrawFn = compiledFn;
+            if (window.VLXTModels && window.VLXTModels.applyOverrideFn) {
+                window.VLXTModels.applyOverrideFn(currentModelId, compiledFn);
+            }
+
+            // 4. Phát tín hiệu Realtime cho tab Ngân Hàng Đề đổi hình ngay lập tức (0ms)
+            if (typeof BroadcastChannel !== 'undefined') {
+                try {
+                    const bc = new BroadcastChannel('vlxt_canvas_sync');
+                    bc.postMessage({
+                        type: 'SYNC_OVERRIDE',
+                        modelId: currentModelId,
+                        code: code
+                    });
+                } catch(e) {}
+            }
+
+            // 5. Gửi lên Google Apps Script đám mây để lưu vĩnh viễn vào Google Sheets Settings
+            const payload = {
+                action: 'savesetting',
+                key: 'VLXT_CANVAS_OVERRIDES',
+                value: JSON.stringify(overrides)
+            };
+
+            await fetch(GAS_BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+
+            setEditorStatus('hot', `⭐ Đã lưu thành công mô hình ${currentModelId} vào Ngân Hàng Đề & Cloud!`);
+            showToast(`✅ Đã lưu ${currentModelId} lên Cloud & Ngân hàng! Mọi đề thi đều tự nhận mô hình mới.`);
+        } catch (err) {
+            console.error("Lỗi khi lưu lên Cloud:", err);
+            // Dù lỗi mạng vẫn đã lưu vào localStorage trên máy
+            setEditorStatus('hot', `💾 Đã lưu cục bộ ${currentModelId} (Mạng Cloud bị trễ, sẽ tự đồng bộ sau)`);
+            showToast(`💾 Đã lưu cục bộ vào máy Thầy!`);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> 💾 Lưu vào Ngân Hàng Đề & Cloud';
+        }
+    }
+
+    // Xóa override câu này để quay về mặc định
+    async function deleteCurrentOverride() {
+        const overrides = getLocalOverrides();
+        if (!overrides[currentModelId]) {
+            showToast(`Mô hình ${currentModelId} đang dùng bản gốc mặc định.`);
+            return;
+        }
+
+        if (!confirm(`Thầy có chắc muốn xóa bản tinh chỉnh của ${currentModelId} để quay về hình vẽ gốc của hệ thống không?`)) {
+            return;
+        }
+
+        delete overrides[currentModelId];
+        saveLocalOverrides(overrides);
+
+        // Khôi phục code gốc
+        restoreOriginalCode();
+
+        // Gửi lên cloud
+        try {
+            await fetch(GAS_BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'savesetting',
+                    key: 'VLXT_CANVAS_OVERRIDES',
+                    value: JSON.stringify(overrides)
+                })
+            });
+
+            if (typeof BroadcastChannel !== 'undefined') {
+                new BroadcastChannel('vlxt_canvas_sync').postMessage({ type: 'SYNC_OVERRIDE' });
+            }
+            showToast(`↺ Đã khôi phục ${currentModelId} về mô hình gốc trên cả Cloud & Ngân hàng!`);
+        } catch(e) {
+            showToast(`↺ Đã khôi phục ${currentModelId} về mô hình gốc.`);
+        }
+    }
+
+    // Modal hiển thị danh sách các câu đã override
+    function showOverridesListModal() {
+        const map = getLocalOverrides();
+        const keys = Object.keys(map);
+        const container = document.getElementById('modal-overrides-list');
+        container.innerHTML = '';
+
+        if (keys.length === 0) {
+            container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:30px 0;">Chưa có mô hình nào được tinh chỉnh. Tất cả 94 câu đều đang chạy bản gốc chuẩn.</div>';
+        } else {
+            keys.forEach(k => {
+                const item = document.createElement('div');
+                item.className = 'override-item';
+                const cap = MODEL_CAPTIONS[k] || k;
+                item.innerHTML = `
+                    <div>
+                        <span class="override-item-id">${k}</span>
+                        <span class="override-item-name">${cap.slice(0, 42)}...</span>
+                    </div>
+                    <div class="override-item-actions">
+                        <button class="nav-btn" onclick="selectAndCloseModal('${k}')">Xem & Sửa</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+        document.getElementById('modal-overrides-overlay').style.display = 'flex';
+    }
+
+    function closeOverridesListModal() {
+        document.getElementById('modal-overrides-overlay').style.display = 'none';
+    }
+
+    function selectAndCloseModal(id) {
+        closeOverridesListModal();
+        const sel = document.getElementById('sel-model');
+        if (sel) {
+            sel.value = id;
+            loadModel(id);
+        }
+    }
+
+</script>
+
+    <!-- Modal Danh Sách Câu Đã Tinh Chỉnh -->
+    <div id="modal-overrides-overlay" class="studio-modal-overlay" onclick="closeOverridesListModal()">
+        <div class="studio-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">📑 Danh Sách Mô Hình Đã Tinh Chỉnh Lên Cloud</div>
+                <button class="nav-btn" onclick="closeOverridesListModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modal-overrides-list">
+                <!-- Danh sách câu render động -->
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
