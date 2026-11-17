@@ -14,7 +14,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Nạp gói 50 câu hỏi Staging Chuẩn 5 Chủ đề thiếu Chương 2 & 3 -->
+    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.048 Câu & Các Gói Staging Chuyên Biệt -->
+    <script src="assets/ngan-hang-3048-questions.js?v=20261117-nh3048"></script>
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261117-staging50"></script>
@@ -878,7 +879,7 @@
                 <i class="fa-solid fa-cube"></i> Tinh Chỉnh Mô Hình (94 Câu)
             </button>
             <button type="button" class="mode-toggle-btn" id="btn-mode-staging" onclick="switchStudioMode('STAGING')">
-                <i class="fa-solid fa-list-check"></i> Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">50</span>)
+                <i class="fa-solid fa-list-check"></i> Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.048+ Câu</span>)
             </button>
         </div>
         <div class="nav-actions">
@@ -1046,12 +1047,15 @@
             <!-- Staging Ribbon: Kho dữ liệu, Bộ lọc & Điều hướng -->
             <section class="controls-ribbon">
                 <div class="selector-group">
-                    <!-- Chọn Kho Câu Hỏi -->
-                    <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:240px;">
-                        <option value="ALL">📂 Tất Cả Kho Chờ Duyệt (514 Câu)</option>
-                        <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu)</option>
-                        <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu)</option>
-                        <option value="TN">📘 Trắc Nghiệm ABCD (50 Câu Staging C2-C3)</option>
+                    <!-- Chọn Kho Câu Hỏi Đầy Đủ 3.048+ Câu -->
+                    <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
+                        <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.048 Câu)</option>
+                        <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
+                        <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.280 Câu)</option>
+                        <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu Mô Hình)</option>
+                        <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
+                        <option value="STAGING_50">⚡ 50 Câu Chờ Duyệt Mới (Chương 2 & Chương 3)</option>
+                        <option value="ALL">📂 Tất Cả Câu Hỏi Trong Hệ Thống (3.098 Câu)</option>
                     </select>
 
                     <!-- Lọc theo Chương -->
@@ -1083,8 +1087,9 @@
 
                 <div class="playback-group">
                     <span style="font-size:12.5px;color:#94a3b8;font-weight:600">
-                        Đang xem: <b id="st-progress-text" style="color:#10b981">Câu 1/514</b>
+                        Đang xem: <b id="st-progress-text" style="color:#10b981">Câu 1/3.048</b>
                     </span>
+                    <button class="nav-btn" onclick="syncBankDirectlyFromServer()" title="Tải nguồn dữ liệu thật mới nhất trực tiếp từ Google Apps Script Server" style="background:#0f766e;border-color:#0d9488;"><i class="fa-solid fa-rotate"></i> Tải Live Server</button>
                     <button class="nav-btn" onclick="addNewStagingQuestion()" title="Thêm một câu hỏi mới vào Staging"><i class="fa-solid fa-plus"></i> Thêm câu</button>
                     <button class="nav-btn" onclick="importStagingJson()" title="Nạp thêm câu hỏi từ file JSON"><i class="fa-solid fa-file-import"></i> Nhập JSON</button>
                     <button class="nav-btn" onclick="exportStagingJson()" title="Tải toàn bộ gói câu hỏi Staging dạng JSON"><i class="fa-solid fa-download"></i> Xuất JSON</button>
@@ -2180,7 +2185,6 @@ YÊU CẦU TINH CHỈNH:
     // ══════════════════════════════════════════════════════════════════
 
     let currentStudioMode = 'MODEL'; // 'MODEL' hoặc 'STAGING'
-    let currentPoolFilter = 'ALL';   // 'ALL', 'DS', 'TLN', 'TN'
     let currentChapterFilter = 'ALL';
     let currentLevelFilter = 'ALL';
 
@@ -2191,12 +2195,33 @@ YÊU CẦU TINH CHỈNH:
     let stSimTime = 0.0;
     let stLastTime = 0;
 
+    let currentPoolFilter = 'BANK_ALL';   // 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
+
     function initStagingSystem() {
+        // Nạp nguồn 3.048 câu Ngân Hàng Đề chính thức
+        const rawBank = window.VLXT_NGANHANG_3048 || [];
+        const poolBank = rawBank.map(q => Object.assign({}, q, { isFromBank: true }));
+
         const poolDS = (window.DS_94_QUESTIONS || []).map(q => Object.assign({ loai: 'DS' }, q));
         const poolTLN = (window.TLN_370_QUESTIONS || []).map(q => Object.assign({ loai: 'TLN' }, q));
-        const poolTN = (window.STAGING_QUESTIONS || []).map(q => Object.assign({ loai: 'TN' }, q));
+        const poolStaging50 = (window.VLXT_STAGING_QUESTIONS || window.STAGING_QUESTIONS || []).map(q => Object.assign({ loai: 'TN', isStaging50: true }, q));
 
-        stagingList = [ ...poolDS, ...poolTLN, ...poolTN ];
+        if (poolBank.length > 0) {
+            // Đảm bảo các câu DS trong ngân hàng có modelId nếu chưa gắn
+            poolBank.forEach(q => {
+                if (q.loai === 'DS' && !q.modelId && q.id && q.id.includes('MH-')) {
+                    const match = q.id.match(/MH-C\d-\d+/);
+                    if (match) q.modelId = match[0];
+                }
+            });
+            // Gộp 50 câu mới bóc tách (tránh trùng ID)
+            const bankIds = new Set(poolBank.map(q => q.id));
+            const newStaging = poolStaging50.filter(q => !bankIds.has(q.id));
+            stagingList = [ ...poolBank, ...newStaging ];
+        } else {
+            // Fallback khi chưa có file ngân hàng 3048
+            stagingList = [ ...poolDS, ...poolTLN, ...poolStaging50 ];
+        }
 
         try {
             const saved = JSON.parse(localStorage.getItem('VLXT_STAGING_QUESTIONS_SAVED') || '[]');
@@ -2209,8 +2234,32 @@ YÊU CẦU TINH CHỈNH:
             });
         } catch(e) {}
 
+        const dispBadge = document.getElementById('disp-staging-badge');
+        if (dispBadge) {
+            dispBadge.textContent = `${stagingList.length.toLocaleString()} Câu`;
+        }
+
         filterStagingQuestions();
         updateStagingBadgeCount();
+    }
+
+    async function syncBankDirectlyFromServer() {
+        showToast('Đang tải 3.048 câu nguồn thật từ Máy chủ Google Apps Script...', 'info');
+        try {
+            const res = await fetch('https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec?type=nganhang&_t=' + Date.now());
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const json = await res.json();
+            const rows = Array.isArray(json) ? json : (json.data || []);
+            if (rows && rows.length) {
+                window.VLXT_NGANHANG_3048 = rows;
+                initStagingSystem();
+                showToast(`Đã đồng bộ thành công ${rows.length.toLocaleString()} câu hỏi từ Live Server!`, 'success');
+            } else {
+                throw new Error('Máy chủ trả về dữ liệu rỗng');
+            }
+        } catch(e) {
+            showToast('Lỗi đồng bộ máy chủ: ' + e.message, 'error');
+        }
     }
 
     function switchStudioMode(mode) {
@@ -2267,9 +2316,19 @@ YÊU CẦU TINH CHỈNH:
     function filterStagingQuestions() {
         filteredStagingList = stagingList.filter(q => {
             if (currentPoolFilter !== 'ALL') {
-                if (currentPoolFilter === 'DS' && q.loai !== 'DS') return false;
-                if (currentPoolFilter === 'TLN' && q.loai !== 'TLN') return false;
-                if (currentPoolFilter === 'TN' && q.loai !== 'TN') return false;
+                if (currentPoolFilter === 'BANK_ALL') {
+                    if (!q.isFromBank && q.isStaging50) return false;
+                } else if (currentPoolFilter === 'TN_LT') {
+                    if (q.loai !== 'TN' || q.tnType !== 'LT') return false;
+                } else if (currentPoolFilter === 'TN_BT') {
+                    if (q.loai !== 'TN' || q.tnType !== 'BT') return false;
+                } else if (currentPoolFilter === 'DS') {
+                    if (q.loai !== 'DS') return false;
+                } else if (currentPoolFilter === 'TLN') {
+                    if (q.loai !== 'TLN') return false;
+                } else if (currentPoolFilter === 'STAGING_50') {
+                    if (!q.isStaging50 && !q.id.startsWith('VLXT-STAGE-')) return false;
+                }
             }
 
             if (currentChapterFilter !== 'ALL') {
@@ -2301,9 +2360,15 @@ YÊU CẦU TINH CHỈNH:
         filteredStagingList.forEach((q, idx) => {
             const opt = document.createElement('option');
             opt.value = idx;
-            const loaiTag = (q.loai === 'DS' ? '🧪 Đ/S' : (q.loai === 'TLN' ? '🔢 TLN' : '📘 TN'));
+            let loaiTag = '📘 TN';
+            if (q.loai === 'DS') loaiTag = '🧪 Đ/S';
+            else if (q.loai === 'TLN') loaiTag = '🔢 TLN';
+            else if (q.tnType === 'LT') loaiTag = '📖 TN-LT';
+            else if (q.tnType === 'BT') loaiTag = '📐 TN-BT';
+
             const statusIcon = (q.isApproved || q.chatLuong === 'tinh') ? '✓ ' : '';
-            opt.textContent = `${statusIcon}${idx + 1}. [${loaiTag}] ${q.id || ''} — ${q.subTopic || q.chuong || ''}`;
+            const previewSnippet = (q.question || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 55);
+            opt.textContent = `${statusIcon}${idx + 1}. [${loaiTag}] ${q.id || ''} — [${q.mucDo || 'TH'}] ${previewSnippet}...`;
             sel.appendChild(opt);
         });
 
@@ -2366,7 +2431,13 @@ YÊU CẦU TINH CHỈNH:
         }
 
         const loai = q.loai || 'TN';
-        if (typeBox) typeBox.textContent = (loai === 'DS' ? 'ĐÚNG / SAI 4 Ý' : (loai === 'TLN' ? 'TRẢ LỜI NGẮN' : 'TRẮC NGHIỆM ABCD'));
+        if (typeBox) {
+            if (loai === 'DS') typeBox.textContent = 'ĐÚNG / SAI 4 Ý (PHẦN II)';
+            else if (loai === 'TLN') typeBox.textContent = 'TRẢ LỜI NGẮN (PHẦN III)';
+            else if (q.tnType === 'LT') typeBox.textContent = 'TRẮC NGHIỆM LÝ THUYẾT (LT)';
+            else if (q.tnType === 'BT') typeBox.textContent = 'TRẮC NGHIỆM TÍNH TOÁN (BT)';
+            else typeBox.textContent = 'TRẮC NGHIỆM ABCD (PHẦN I)';
+        }
         if (levelBox) levelBox.textContent = (q.mucDo === 'VD' ? 'VẬN DỤNG (VD)' : (q.mucDo === 'VDC' ? 'VẬN DỤNG CAO (VDC)' : (q.mucDo === 'NB' ? 'NHẬN BIẾT (NB)' : 'THÔNG HIỂU (TH)')));
 
         // 2. Đề bài chung

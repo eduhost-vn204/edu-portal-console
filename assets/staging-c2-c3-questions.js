@@ -951,3 +951,5 @@ window.VLXT_STAGING_QUESTIONS = [
     "giaiThich": "Đáp án đúng là A. Theo lý thuyết chuẩn CD12 – Từ thông (Weber), Cảm ứng điện từ, Định luật Lenz & Faraday."
   }
 ];
+
+window.STAGING_QUESTIONS = window.VLXT_STAGING_QUESTIONS;
