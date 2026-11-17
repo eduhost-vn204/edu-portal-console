@@ -19,12 +19,12 @@
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261117-staging50"></script>
-    <script src="assets/staging-ds-106-questions.js?v=20261117-ds106"></script>
+    <script src="assets/staging-ds-106-questions.js?v=20261118-test2q"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
-    <script src="assets/staging-ds-models.js?v=20261117-models106"></script>
+    <script src="assets/staging-ds-models.js?v=20261118-test2q"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2255,9 +2255,32 @@
         });
     }
 
+    function ensureHighDPICanvas(canvasEl) {
+        if (!canvasEl) return 1;
+        const dpr = Math.max(2, Math.min(3, window.devicePixelRatio || 2));
+        const targetW = Math.round(780 * dpr);
+        const targetH = Math.round(305 * dpr);
+        if (canvasEl.width !== targetW || canvasEl.height !== targetH) {
+            canvasEl.width = targetW;
+            canvasEl.height = targetH;
+        }
+        return dpr;
+    }
+
+    function findEditableModelQuestion(id) {
+        const sources = [
+            window.STAGING_DS_106_QUESTIONS || [],
+            window.DS_94_QUESTIONS || []
+        ];
+        for (const list of sources) {
+            const found = list.find(item => item.modelId === id || item.id === id);
+            if (found) return found;
+        }
+        return null;
+    }
+
     function toggleModelQuestionTf(key) {
-        const dsList = window.DS_94_QUESTIONS || [];
-        const q = dsList.find(item => item.modelId === currentModelId || item.id === currentModelId);
+        const q = findEditableModelQuestion(currentModelId);
         if (!q) return;
 
         let cur = (q.correct || 'ĐĐĐĐ').split('');
@@ -2266,14 +2289,16 @@
         const idx = idxMap[key];
         cur[idx] = (cur[idx] === 'Đ') ? 'S' : 'Đ';
         q.correct = cur.join('');
+        if (Array.isArray(q.subItems) && q.subItems[idx]) {
+            q.subItems[idx].isCorrect = (cur[idx] === 'Đ');
+        }
 
         updateModelQuestionTfButtons(q.correct);
         renderModelQuestionDetails(currentModelId);
     }
 
     function onModelQuestionFieldChange() {
-        const dsList = window.DS_94_QUESTIONS || [];
-        const q = dsList.find(item => item.modelId === currentModelId || item.id === currentModelId);
+        const q = findEditableModelQuestion(currentModelId);
         if (!q) return;
 
         q.mucDo = document.getElementById('mq-inp-level').value;
@@ -2312,8 +2337,10 @@
         const timeEl = document.getElementById('time-val');
         if (timeEl) timeEl.textContent = simTime.toFixed(2) + 's';
 
-        // Vẽ Canvas Mode 1 (Chuẩn logic 780 x 305 vừa khít màn hình)
+        // Vẽ Canvas Mode 1 (Chuẩn logic 780 x 305 Retina High-DPI)
         if (ctx && cv) {
+            const dpr = ensureHighDPICanvas(cv);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, 780, 305);
             if (activeDrawFn) {
                 try {
@@ -3230,9 +3257,11 @@ function initStagingSystem() {
 
             const timeEl = document.getElementById('st-time-val');
             if (timeEl) timeEl.textContent = stSimTime.toFixed(2) + 's';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const dpr = ensureHighDPICanvas(canvas);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, 780, 305);
             try {
-                drawFn(ctx, canvas.width, canvas.height, stSimTime);
+                drawFn(ctx, 780, 305, stSimTime);
             } catch(e) {}
 
             stCanvasAnimId = requestAnimationFrame(loop);

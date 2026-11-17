@@ -705,26 +705,568 @@
     // ÁNH XẠ CHÍNH THỨC TOÀN BỘ 106 MODEL ID VÀO CÁC HÀM VẼ CHUẨN XÁC
     // ═════════════════════════════════════════════════════════════════════════════
 
-    (function() {
-    const fn = function(ctx, w, h, t) { simCalorimeterHeat(ctx, w, h, t, 'MH-STAGING-C1-01 · Mô hình Truyền nhiệt & Cân bằng nhiệt trong thực tế'); };
-    fn._rawSource = `// Mô hình vật lý chuẩn EdTech 60 FPS: MH-STAGING-C1-01
-// Hiện tượng: MH-STAGING-C1-01 · Mô hình Truyền nhiệt & Cân bằng nhiệt trong thực tế
-VLXTModels.register('MH-STAGING-C1-01', function(ctx, w, h, t) {
-    // Chạy engine mô phỏng chuyên sâu: simCalorimeterHeat
-    simCalorimeterHeat(ctx, w, h, t, 'MH-STAGING-C1-01 · Mô hình Truyền nhiệt & Cân bằng nhiệt trong thực tế');
-});`;
-    window.VLXTModels.register('MH-STAGING-C1-01', fn);
-})();
-    (function() {
-    const fn = function(ctx, w, h, t) { simHeatingCurve(ctx, w, h, t, 'MH-STAGING-C1-02 · Mô hình Thí nghiệm đo Nhiệt nóng chảy riêng & Nhiệt hóa hơi riêng'); };
-    fn._rawSource = `// Mô hình vật lý chuẩn EdTech 60 FPS: MH-STAGING-C1-02
-// Hiện tượng: MH-STAGING-C1-02 · Mô hình Thí nghiệm đo Nhiệt nóng chảy riêng & Nhiệt hóa hơi riêng
-VLXTModels.register('MH-STAGING-C1-02', function(ctx, w, h, t) {
-    // Chạy engine mô phỏng chuyên sâu: simHeatingCurve
-    simHeatingCurve(ctx, w, h, t, 'MH-STAGING-C1-02 · Mô hình Thí nghiệm đo Nhiệt nóng chảy riêng & Nhiệt hóa hơi riêng');
-});`;
-    window.VLXTModels.register('MH-STAGING-C1-02', fn);
-})();
+    // =========================================================================
+    // CÂU 1 (MH-STAGING-C1-01): THÍ NGHIỆM HƠ NÓNG ỐNG NGHIỆM ĐẨY BẬT NÚT BẤC
+    // Khớp 100% ảnh gốc (1) Ống nghiệm, (2) Nút bấc, (3) Đèn cồn, (4) Giá đỡ
+    // =========================================================================
+    window.VLXTModels.register('MH-STAGING-C1-01', function(ctx, w, h, t) {
+        // 1. Nền kỹ thuật phẳng EdTech & Lưới chuẩn
+        ctx.clearRect(0, 0, w, h);
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, '#060b19');
+        bgGrad.addColorStop(1, '#0a1226');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.045)';
+        ctx.lineWidth = 1;
+        for (let gx = 20; gx < w; gx += 26) {
+            ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+        }
+        for (let gy = 20; gy < h; gy += 26) {
+            ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+        }
+        ctx.restore();
+
+        function roundBox(x, y, bw, bh, r, fill, stroke, lw = 2.2) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(x, y, bw, bh, r);
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
+            ctx.restore();
+        }
+
+        function arrowLine(x1, y1, x2, y2, col, lw = 2.6, hl = 8) {
+            const ang = Math.atan2(y2 - y1, x2 - x1);
+            ctx.save();
+            ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - hl * Math.cos(ang - Math.PI / 6), y2 - hl * Math.sin(ang - Math.PI / 6));
+            ctx.lineTo(x2 - hl * Math.cos(ang + Math.PI / 6), y2 - hl * Math.sin(ang + Math.PI / 6));
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
+        }
+
+        function calloutTag(tx, ty, bx, by, label, col) {
+            ctx.save();
+            ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+            const padX = 12, boxH = 30;
+            const tw = ctx.measureText(label).width;
+            const boxW = tw + padX * 2;
+            const ax = (bx + boxW / 2 < tx) ? (bx + boxW) : bx;
+            const ay = by + boxH / 2;
+
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(ax, ay);
+            ctx.stroke();
+
+            ctx.fillStyle = col;
+            ctx.beginPath();
+            ctx.arc(tx, ty, 3.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            roundBox(bx, by, boxW, boxH, 7, '#0f172a', col, 2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, bx + boxW / 2, by + boxH / 2);
+            ctx.restore();
+        }
+
+        // Hộp tiêu đề góc trên trái (Cỡ chữ lớn, phẳng, sắc nét)
+        ctx.save();
+        const title = 'THÍ NGHIỆM HƠ NÓNG ỐNG NGHIỆM ĐẨY BẬT NÚT BẤC';
+        ctx.font = '800 14px "Plus Jakarta Sans", system-ui, sans-serif';
+        const titleW = ctx.measureText(title).width + 22;
+        roundBox(16, 12, titleW, 28, 7, '#0f172a', 'rgba(56, 189, 248, 0.55)', 1.8);
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(title, 27, 26);
+        ctx.restore();
+
+        // Chu kỳ thí nghiệm 1 chiều (Sawtooth): 0..0.72 hơ nóng tăng nhiệt/áp; 0.72..1.0 nút bấc bật ra
+        const cycle = (t * 0.16) % 1;
+        const heatRatio = Math.min(1, cycle / 0.72);
+        const popProgress = cycle >= 0.72 ? (cycle - 0.72) / 0.28 : 0;
+
+        // Mặt bàn thí nghiệm
+        const tableY = 282;
+        ctx.save();
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 3.2;
+        ctx.beginPath();
+        ctx.moveTo(70, tableY);
+        ctx.lineTo(710, tableY);
+        ctx.stroke();
+        ctx.restore();
+
+        // 2. (4) GIÁ ĐỠ THÍ NGHIỆM (Chân kiềng gang 3 chạc + trụ thép + khớp kẹp + vít)
+        const rodX = 414;
+        ctx.save();
+        // Chân kiềng 3 chạc vững chãi giống ảnh gốc
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(rodX - 18, 244);
+        ctx.lineTo(rodX + 18, 244);
+        ctx.lineTo(516, 274);
+        ctx.lineTo(516, 282);
+        ctx.lineTo(486, 282);
+        ctx.lineTo(426, 260);
+        ctx.lineTo(422, 282);
+        ctx.lineTo(398, 282);
+        ctx.lineTo(396, 262);
+        ctx.lineTo(354, 282);
+        ctx.lineTo(334, 282);
+        ctx.lineTo(334, 272);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Núm vít chỉnh cân bằng trên chân phải
+        roundBox(504, 262, 10, 12, 2, '#475569', '#94a3b8', 1.6);
+
+        // Cổ kẹp chân đế
+        roundBox(rodX - 14, 232, 28, 16, 4, '#334155', '#94a3b8', 2);
+
+        // Trụ thép thẳng đứng (dừng gọn sau khớp kẹp ống nghiệm, không đâm nhô lên mép trên ống)
+        ctx.fillStyle = '#94a3b8';
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1.6;
+        ctx.fillRect(rodX - 4, 98, 8, 134);
+        ctx.strokeRect(rodX - 4, 98, 8, 134);
+
+        // Tay đòn nối từ trụ đến ngàm kẹp ống nghiệm
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(rodX, 112);
+        ctx.lineTo(398, 112);
+        ctx.stroke();
+
+        // Khớp nối + vít vặn chữ T trên trụ
+        roundBox(rodX - 8, 103, 16, 18, 3, '#475569', '#e2e8f0', 1.8);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.moveTo(rodX + 8, 112); ctx.lineTo(rodX + 20, 112);
+        ctx.moveTo(rodX + 20, 104); ctx.lineTo(rodX + 20, 120);
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. (3) ĐÈN CỒN THỦY TINH (Bầu chứa, mức cồn, dây bấc, chụp sứ, ngọn lửa 2 lớp)
+        const bx = 276;
+        ctx.save();
+        // Bầu thủy tinh hình thang bo tròn
+        ctx.fillStyle = 'rgba(30, 41, 59, 0.72)';
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.moveTo(bx - 22, 224);
+        ctx.lineTo(bx + 22, 224);
+        ctx.quadraticCurveTo(bx + 44, 240, bx + 40, 274);
+        ctx.quadraticCurveTo(bx + 38, 282, bx + 28, 282);
+        ctx.lineTo(bx - 28, 282);
+        ctx.quadraticCurveTo(bx - 38, 282, bx - 40, 274);
+        ctx.quadraticCurveTo(bx - 44, 240, bx - 22, 224);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Chất lỏng cồn bên trong đèn
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.28)';
+        ctx.beginPath();
+        ctx.moveTo(bx - 35, 250);
+        ctx.lineTo(bx + 35, 250);
+        ctx.quadraticCurveTo(bx + 40, 278, bx + 28, 280);
+        ctx.lineTo(bx - 28, 280);
+        ctx.quadraticCurveTo(bx - 40, 278, bx - 35, 250);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#7dd3fc';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(bx - 35, 250); ctx.lineTo(bx + 35, 250);
+        ctx.stroke();
+
+        // Cổ đèn & chụp sứ trắng giữ bấc
+        roundBox(bx - 12, 206, 24, 18, 3, 'rgba(30, 41, 59, 0.8)', '#cbd5e1', 2.4);
+        roundBox(bx - 15, 199, 30, 9, 3, '#e2e8f0', '#94a3b8', 1.8);
+
+        // Dây bấc cotton
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 3.2;
+        ctx.beginPath();
+        ctx.moveTo(bx, 199);
+        ctx.quadraticCurveTo(bx - 4, 246, bx - 14, 273);
+        ctx.stroke();
+
+        // Ngọn lửa đèn cồn 2 lớp (sắc nét, không AI Glow)
+        const sway = Math.sin(t * 11) * 1.8;
+        const fh = 24 + Math.sin(t * 15) * 2.2;
+        // Lớp ngoài cam
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.moveTo(bx - 7, 199);
+        ctx.quadraticCurveTo(bx - 10, 184, bx + sway, 199 - fh);
+        ctx.quadraticCurveTo(bx + 10, 184, bx + 7, 199);
+        ctx.closePath();
+        ctx.fill();
+        // Lõi trong vàng sáng
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.moveTo(bx - 3.8, 199);
+        ctx.quadraticCurveTo(bx - 4.5, 188, bx + sway * 0.6, 199 - fh * 0.62);
+        ctx.quadraticCurveTo(bx + 4.5, 188, bx + 3.8, 199);
+        ctx.closePath();
+        ctx.fill();
+
+        // 2 mũi tên nhiệt nhẹ hướng lên đáy ống nghiệm khi đang hơ
+        const hAlpha = 0.55 + 0.45 * Math.sin(t * 5) ** 2;
+        arrowLine(bx - 16, 188, bx - 12, 173, `rgba(251, 146, 60, ${hAlpha.toFixed(2)})`, 2.2, 6);
+        arrowLine(bx + 16, 188, bx + 12, 173, `rgba(251, 146, 60, ${hAlpha.toFixed(2)})`, 2.2, 6);
+        ctx.restore();
+
+        // 4. (1) ỐNG NGHIỆM THỦY TINH NGHIÊNG CÓ VẠCH CHIA & (2) NÚT BẤC
+        const tubeX = 276, tubeY = 166;
+        const tubeAng = -0.42; // Nghiêng lên phải giống ảnh gốc
+        const tubeLen = 212;
+        const tubeR = 14;
+
+        ctx.save();
+        ctx.translate(tubeX, tubeY);
+        ctx.rotate(tubeAng);
+
+        // Lòng khí bên trong ống nghiệm (sắc ấm nhẹ tăng theo heatRatio)
+        const gasAlpha = 0.14 + heatRatio * 0.24;
+        const gGrad = ctx.createLinearGradient(0, 0, tubeLen, 0);
+        gGrad.addColorStop(0, `rgba(249, 115, 22, ${gasAlpha})`);
+        gGrad.addColorStop(0.55, `rgba(56, 189, 248, 0.18)`);
+        gGrad.addColorStop(1, `rgba(56, 189, 248, 0.22)`);
+        ctx.fillStyle = gGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, tubeR, Math.PI / 2, Math.PI * 1.5);
+        ctx.lineTo(tubeLen, -tubeR);
+        ctx.lineTo(tubeLen, tubeR);
+        ctx.closePath();
+        ctx.fill();
+
+        // 14 phân tử khí chuyển động nhiệt hỗn loạn bên trong ống
+        const speedAmp = 1 + heatRatio * 1.6;
+        ctx.fillStyle = '#7dd3fc';
+        for (let i = 0; i < 14; i++) {
+            const basePx = 12 + ((i * 37) % (tubeLen - 34));
+            const basePy = -8 + ((i * 19) % 17);
+            const mx = basePx + Math.sin(t * 3.4 * speedAmp + i * 1.7) * (4 * speedAmp);
+            const my = basePy + Math.cos(t * 4.1 * speedAmp + i * 2.3) * 3.5;
+            ctx.beginPath();
+            ctx.arc(Math.max(4, Math.min(tubeLen - 22, mx)), Math.max(-tubeR + 4, Math.min(tubeR - 4, my)), 2.8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Thành ống nghiệm thủy tinh (đáy tròn trái, hở miệng phải)
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tubeLen + 3, -tubeR - 2);
+        ctx.lineTo(tubeLen, -tubeR);
+        ctx.lineTo(0, -tubeR);
+        ctx.arc(0, 0, tubeR, -Math.PI / 2, Math.PI / 2, true);
+        ctx.lineTo(tubeLen, tubeR);
+        ctx.lineTo(tubeLen + 3, tubeR + 2);
+        ctx.stroke();
+
+        // Vạch chia thể tích màu cam dọc thân ống (khớp ảnh gốc)
+        ctx.strokeStyle = '#f59e0b';
+        for (let tickX = 24; tickX <= tubeLen - 26; tickX += 10) {
+            const major = ((tickX - 24) % 40 === 0);
+            ctx.lineWidth = major ? 2.2 : 1.4;
+            ctx.beginPath();
+            ctx.moveTo(tickX, tubeR - 1);
+            ctx.lineTo(tickX, tubeR - (major ? 9 : 5));
+            ctx.stroke();
+        }
+
+        // Ngàm kẹp kim loại ôm quanh thân ống (tại vị trí nối với giá đỡ x_local = 136)
+        roundBox(128, -tubeR - 5, 16, tubeR * 2 + 10, 4, '#475569', '#e2e8f0', 2);
+
+        // (2) NÚT BẤC tại miệng ống nghiệm
+        let corkX = tubeLen - 8;
+        let corkY = 0;
+        let corkRot = 0;
+        if (cycle > 0.52 && cycle < 0.72) {
+            // Rung nhẹ trước khi bật ra
+            corkX += Math.sin(t * 42) * 1.4;
+        } else if (popProgress > 0) {
+            // Bật văng ra khỏi miệng ống theo trục ống + rơi nhẹ theo trọng lực
+            corkX += popProgress * 82;
+            corkY += popProgress * popProgress * 26;
+            corkRot = popProgress * 0.45;
+            // Hạt khí phụt ra ở miệng ống
+            for (let k = 0; k < 5; k++) {
+                const kp = Math.min(1, popProgress * 1.6);
+                const px = tubeLen + 6 + kp * (18 + k * 8);
+                const py = (k - 2) * (4 + kp * 5);
+                ctx.fillStyle = `rgba(125, 211, 252, ${(1 - kp) * 0.85})`;
+                ctx.beginPath();
+                ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        ctx.save();
+        ctx.translate(corkX, corkY);
+        ctx.rotate(corkRot);
+        // Hình trụ cụt nút bấc (hơi loe ra bên ngoài)
+        ctx.fillStyle = '#78716c';
+        ctx.strokeStyle = '#e7e5e4';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(-10, -tubeR + 2);
+        ctx.lineTo(14, -tubeR - 2);
+        ctx.lineTo(14, tubeR + 2);
+        ctx.lineTo(-10, tubeR - 2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.restore(); // Kết thúc xoay theo ống nghiệm
+
+        // Tính tọa độ thực của nút bấc để đường chỉ dẫn (2) luôn bám chính xác theo nút bấc
+        const cwX = tubeX + corkX * Math.cos(tubeAng) - corkY * Math.sin(tubeAng);
+        const cwY = tubeY + corkX * Math.sin(tubeAng) + corkY * Math.cos(tubeAng);
+
+        // 5. 4 HỘP CHÚ THÍCH ĐÁNH SỐ (1), (2), (3), (4) TO RÕ, CHỐNG ĐÈ NÉT (ZERO DATA LEAKAGE)
+        calloutTag(346, 134, 22, 64, '(1) Ống nghiệm', '#38bdf8');
+        calloutTag(cwX + 4, cwY - 4, 594, 48, '(2) Nút bấc', '#fbbf24');
+        calloutTag(242, 246, 22, 198, '(3) Đèn cồn', '#f97316');
+        calloutTag(418, 194, 558, 198, '(4) Giá đỡ thí nghiệm', '#10b981');
+    });
+
+    // =========================================================================
+    // CÂU 2 (MH-STAGING-C1-02): ĐỒ THỊ NUNG NÓNG THỎI CHÌ 1 kg (t - τ)
+    // Khớp 100% ảnh gốc (27, 127, 227, 327 °C; 5, 10, 15 phút; A, B, C)
+    // =========================================================================
+    window.VLXTModels.register('MH-STAGING-C1-02', function(ctx, w, h, t) {
+        // 1. Nền kỹ thuật phẳng EdTech & Lưới chuẩn
+        ctx.clearRect(0, 0, w, h);
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, '#060b19');
+        bgGrad.addColorStop(1, '#0a1226');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.045)';
+        ctx.lineWidth = 1;
+        for (let gx = 20; gx < w; gx += 26) {
+            ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+        }
+        for (let gy = 20; gy < h; gy += 26) {
+            ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+        }
+        ctx.restore();
+
+        function roundBox(x, y, bw, bh, r, fill, stroke, lw = 2.2) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(x, y, bw, bh, r);
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
+            ctx.restore();
+        }
+
+        function arrowLine(x1, y1, x2, y2, col, lw = 2.8, hl = 9) {
+            const ang = Math.atan2(y2 - y1, x2 - x1);
+            ctx.save();
+            ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - hl * Math.cos(ang - Math.PI / 6), y2 - hl * Math.sin(ang - Math.PI / 6));
+            ctx.lineTo(x2 - hl * Math.cos(ang + Math.PI / 6), y2 - hl * Math.sin(ang + Math.PI / 6));
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
+        }
+
+        // Open-Top Crucible (Nồi/chén chịu nhiệt hở miệng trên - tuyệt đối không strokeRect kín miệng)
+        function drawOpenCrucible(x, y, cw, ch, col, lw = 3.2, flare = 6) {
+            ctx.save();
+            ctx.strokeStyle = col;
+            ctx.lineWidth = lw;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x - flare, y);
+            ctx.lineTo(x, y + 6);
+            ctx.lineTo(x, y + ch);
+            ctx.lineTo(x + cw, y + ch);
+            ctx.lineTo(x + cw, y + 6);
+            ctx.lineTo(x + cw + flare, y);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 2. CỘT TRÁI: ĐỒ THỊ t (°C) THEO τ (phút) TRÙNG KHỚP 100% HÌNH GỐC
+        const ox = 92, oy = 258;
+        const x5 = 162, x10 = 232, x15 = 302, xC = 398;
+        const y27 = 240, y127 = 188, y227 = 136, y327 = 84;
+
+        ctx.save();
+        // Hai trục tọa độ đậm rõ
+        arrowLine(ox, oy + 6, ox, 32, '#f1f5f9', 2.8, 9);
+        arrowLine(ox - 6, oy, 456, oy, '#f1f5f9', 2.8, 9);
+
+        // Nhãn hai trục & gốc O to rõ
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('t (°C)', ox - 10, 42);
+
+        ctx.textAlign = 'center';
+        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText('τ (phút)', 424, oy + 26);
+
+        ctx.font = '800 15px "DM Mono", monospace';
+        ctx.fillText('O', ox - 12, oy + 20);
+
+        // Các mốc giá trị trên trục hoành (5, 10, 15)
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '800 14.5px "DM Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('5', x5, oy + 21);
+        ctx.fillText('10', x10, oy + 21);
+        ctx.fillText('15', x15, oy + 21);
+
+        // Các mốc giá trị trên trục tung (27, 127, 227, 327)
+        ctx.textAlign = 'right';
+        ctx.fillText('27', ox - 10, y27);
+        ctx.fillText('127', ox - 10, y127);
+        ctx.fillText('227', ox - 10, y227);
+        ctx.fillText('327', ox - 10, y327);
+
+        // Các đường gióng nét đứt vuông góc khớp hình gốc
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(ox, y127); ctx.lineTo(x5, y127); ctx.lineTo(x5, oy);
+        ctx.moveTo(ox, y227); ctx.lineTo(x10, y227); ctx.lineTo(x10, oy);
+        ctx.moveTo(ox, y327); ctx.lineTo(x15, y327); ctx.lineTo(x15, oy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Đường đồ thị chính: từ (ox, y27) xiên qua A lên B(302, 84) -> ngang tới C(398, 84)
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 3.8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(ox, y27);
+        ctx.lineTo(x15, y327);
+        ctx.lineTo(xC, y327);
+        ctx.stroke();
+
+        // Điểm A (giữa mốc 5 và 10), B (tại 15 phút), C (cuối đoạn ngang)
+        const xA = ox + (7.2 / 15) * (x15 - ox);
+        const yA = y27 - (7.2 / 15) * (y27 - y327);
+        const markers = [
+            { x: xA, y: yA, label: 'A', lx: xA - 16, ly: yA - 13 },
+            { x: x15, y: y327, label: 'B', lx: x15, ly: y327 - 19 },
+            { x: xC, y: y327, label: 'C', lx: xC, ly: y327 - 19 }
+        ];
+        markers.forEach(m => {
+            ctx.fillStyle = '#fbbf24';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, 5.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = '800 17px "Plus Jakarta Sans", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(m.label, m.lx, m.ly);
+        });
+
+        // Điểm chạy động 1 chiều (sawtooth) dọc theo đoạn đồ thị từ τ=0 -> B -> C
+        const saw = (t * 0.18) % 1;
+        let dotX, dotY;
+        if (saw < 0.68) {
+            const r = saw / 0.68;
+            dotX = ox + (x15 - ox) * r;
+            dotY = y27 + (y327 - y27) * r;
+        } else {
+            const r = (saw - 0.68) / 0.32;
+            dotX = x15 + (xC - x15) * r;
+            dotY = y327;
+        }
+        ctx.fillStyle = '#f97316';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, 6.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. CỘT PHẢI: THÔNG SỐ ĐỀ BÀI & NUNG NÓNG THỎI CHÌ (ZERO DATA LEAKAGE)
+        ctx.save();
+        // Card 1: Thông số đề bài (không lộ 327°C là nhiệt độ nóng chảy, không lộ 20800 J)
+        roundBox(488, 22, 272, 112, 10, '#0f172a', '#38bdf8', 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('THÔNG SỐ ĐỀ BÀI', 506, 44);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '700 14px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText('• Vật nung: Thỏi chì (Pb)', 506, 70);
+        ctx.fillText('• Khối lượng: m = 1 kg', 506, 94);
+        ctx.fillStyle = '#7dd3fc';
+        ctx.fillText('• c = 130 J/(kg·K)', 506, 118);
+
+        // Card 2: Minh họa chén nung chịu nhiệt hở miệng trên + thỏi chì đang được nung
+        roundBox(488, 148, 272, 138, 10, '#0f172a', '#475569', 2);
+
+        const cupX = 564, cupY = 172, cupW = 120, cupH = 66;
+        // Khối chì bên trong chén chuyển sắc ấm dần theo chu kỳ
+        const warmR = Math.round(110 + saw * 135);
+        const warmG = Math.round(125 + saw * 25);
+        const warmB = Math.round(145 - saw * 95);
+        roundBox(cupX + 12, cupY + 26, cupW - 24, 34, 6, `rgb(${warmR}, ${warmG}, ${warmB})`, '#e2e8f0', 1.8);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '800 14px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Pb (1 kg)', cupX + cupW / 2, cupY + 43);
+
+        // Chén nung hở miệng trên (U-shape, không vẽ nét ngang đóng miệng trên)
+        drawOpenCrucible(cupX, cupY, cupW, cupH, '#cbd5e1', 3.2, 7);
+
+        // Đế gia nhiệt bên dưới chén nung
+        const burnerGlow = 0.55 + 0.45 * Math.sin(t * 5) ** 2;
+        roundBox(554, 240, 140, 10, 4, `rgba(249, 115, 22, ${(0.45 + 0.35 * burnerGlow).toFixed(2)})`, '#fb923c', 1.8);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '700 13.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText('Quá trình nung nóng chì', 624, 270);
+        ctx.restore();
+    });
     (function() {
     const fn = function(ctx, w, h, t) { simCalorimeterHeat(ctx, w, h, t, 'MH-STAGING-C1-03 · Mô hình Truyền nhiệt & Cân bằng nhiệt trong thực tế'); };
     fn._rawSource = `// Mô hình vật lý chuẩn EdTech 60 FPS: MH-STAGING-C1-03

@@ -5,12 +5,14 @@ window.STAGING_DS_106_QUESTIONS = [
     "qNum": 1,
     "mon": "Vật lý",
     "chuong": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
-    "baiHoc": "",
+    "baiHoc": "B2. NỘI NĂNG – ĐỊNH LUẬT I NHIỆT ĐỘNG LỰC HỌC",
     "taxonomy": {
       "chapterCode": "C1",
-      "chapterTitle": "CHƯƠNG 1 – VẬT LÝ NHIỆT"
+      "chapterTitle": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
+      "lessonCode": "G12_C1_B02",
+      "lessonTitle": "Bài 2. Nội năng – Định luật I Nhiệt động lực học"
     },
-    "subTopic": "DS-C1.1 – Truyền nhiệt & Cân bằng nhiệt trong thực tế",
+    "subTopic": "DS-C1.1 – Nội năng & Định luật I Nhiệt động lực học",
     "topicCode": "DS-C1.1",
     "tnType": "",
     "loai": "DS",
@@ -21,8 +23,8 @@ window.STAGING_DS_106_QUESTIONS = [
     "rawTier": "TINH",
     "modelId": "MH-STAGING-C1-01",
     "modelTag": "DS-VD28 · DS-C1.1",
-    "simType": "CALORIMETER_HEAT",
-    "caption": "Mô hình Truyền nhiệt & Cân bằng nhiệt trong thực tế",
+    "simType": "CORK_TEST_TUBE_EXP",
+    "caption": "Thí nghiệm hơ nóng ống nghiệm đậy nút bấc trên giá đỡ (4 dụng cụ)",
     "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (DETU_10. ĐỀ SỐ 10)",
     "deBaiChung": "",
     "nhomId": "",
@@ -55,19 +57,21 @@ window.STAGING_DS_106_QUESTIONS = [
         "isCorrect": true
       }
     ],
-    "giaiThich": "**Hướng dẫn giải chi tiết:**\n\n- **Ý a) [Đúng]:** Mệnh đề a) là Đúng theo phân tích khoa học của chủ đề DS-C1.1.\n\n- **Ý b) [Sai]:** (khí nhận nhiệt sinh công và tăng nội năng).\n\n- **Ý c) [Sai]:** Khi nút bấc chưa bật ra, nhiệt độ tăng và áp suất của khí cũng tăng (đẳng tích).\n\n- **Ý d) [Đúng]:** Khi hơ nóng ống nghiệm, nhiệt độ tăng, áp suất tăng dẫn đến động năng các phân tử tăng lên làm nút bấc bật ra.\n"
+    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">a — ĐÚNG</span> Khi hơ nóng mà nút bấc chưa bật ra ($A = 0$), không khí trong ống nghiệm nhận nhiệt lượng ($Q > 0$) nên theo định luật I nhiệt động lực học: $\\Delta U = Q > 0 \\implies$ nội năng của không khí trong ống nghiệm tăng.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">b — SAI</span> Theo định luật I nhiệt động lực học ($\\Delta U = A + Q \\implies Q = \\Delta U + |A|$), nhiệt lượng $Q$ mà khí nhận được từ ngọn lửa đèn cồn một phần làm <strong>tăng nội năng</strong> ($\\Delta U > 0$) của khí và một phần chuyển thành <strong>công</strong> ($|A| > 0$) đẩy nút bấc bật ra ngoài, không chuyển hoàn toàn thành công.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> Khi nút bấc chưa bật ra, thể tích khí trong ống nghiệm hầu như không đổi (quá trình đẳng tích); khi nhận nhiệt lượng từ đèn cồn thì cả <strong>nhiệt độ</strong> và <strong>áp suất</strong> của không khí trong ống nghiệm đều tăng lên.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">d — ĐÚNG</span> Khi được hơ nóng, nhiệt độ khối khí tăng làm động năng chuyển động nhiệt trung bình của các phân tử không khí tăng mạnh, va chạm mạnh và dồn dập hơn lên mặt trong nút bấc làm áp suất tăng đến mức đẩy bật nút bấc ra ngoài.</div>"
   },
   {
     "id": "VLXT-DS-VD28-002",
     "qNum": 2,
     "mon": "Vật lý",
     "chuong": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
-    "baiHoc": "",
+    "baiHoc": "B4. NHIỆT DUNG RIÊNG - NÓNG CHẢY RIÊNG - HOÁ HƠI RIÊNG",
     "taxonomy": {
       "chapterCode": "C1",
-      "chapterTitle": "CHƯƠNG 1 – VẬT LÝ NHIỆT"
+      "chapterTitle": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
+      "lessonCode": "G12_C1_B04",
+      "lessonTitle": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
     },
-    "subTopic": "DS-C1.3 – Thí nghiệm đo Nhiệt nóng chảy riêng & Nhiệt hóa hơi riêng",
+    "subTopic": "DS-C1.3 – Sự chuyển thể & Đồ thị nhiệt độ – thời gian",
     "topicCode": "DS-C1.3",
     "tnType": "",
     "loai": "DS",
@@ -78,41 +82,41 @@ window.STAGING_DS_106_QUESTIONS = [
     "rawTier": "TINH",
     "modelId": "MH-STAGING-C1-02",
     "modelTag": "DS-VD28 · DS-C1.3",
-    "simType": "HEATING_CURVE",
-    "caption": "Mô hình Thí nghiệm đo Nhiệt nóng chảy riêng & Nhiệt hóa hơi riêng",
+    "simType": "LEAD_MELTING_GRAPH",
+    "caption": "Đồ thị nhiệt độ t (°C) theo thời gian τ (phút) khi nung nóng thỏi chì 1 kg",
     "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (DETU_10. ĐỀ SỐ 10)",
     "deBaiChung": "",
     "nhomId": "",
     "hinhAnh": "assets/images/staging-ds/VLXT-DS-VD28-002.png",
-    "question": "<p>Hình vẽ bên cho thấy đồ thị biểu diễn sự biến thiên của nhiệt độ  theo thời gian  trong quá trình nung nóng một thỏi chì có khối lượng 1 kg. Biết nhiệt dung riêng của chì là 130 J/(kg.K).</p>",
-    "optA": "Khi chì chuyển từ trạng thái B sang trạng thái C, nội năng của chì không thay đổi.",
-    "optB": "Nội năng của chì tăng 20800 J trong 8 phút đầu nung nóng.",
-    "optC": "Nhiệt độ nóng chảy của chì là 270C .",
-    "optD": "Tại điểm B trên đồ thị chì ở trạng thái lỏng.",
+    "question": "<p>Hình vẽ bên cho thấy đồ thị biểu diễn sự biến thiên của nhiệt độ $t$ theo thời gian $\\tau$ trong quá trình nung nóng một thỏi chì có khối lượng $1\\text{ kg}$. Biết nhiệt dung riêng của chì là <span style=\"white-space:nowrap;\">$130\\text{ J/(kg.K)}$.</span></p>",
+    "optA": "Khi chì chuyển từ trạng thái $B$ sang trạng thái $C$, nội năng của chì không thay đổi.",
+    "optB": "Nội năng của chì tăng $20\\,800\\text{ J}$ trong $8\\text{ phút}$ đầu nung nóng.",
+    "optC": "Nhiệt độ nóng chảy của chì là $27^\\circ\\text{C}$.",
+    "optD": "Tại điểm $B$ trên đồ thị chì ở trạng thái lỏng.",
     "correct": "SĐSS",
     "subItems": [
       {
         "key": "a",
-        "statement": "Khi chì chuyển từ trạng thái B sang trạng thái C, nội năng của chì không thay đổi.",
+        "statement": "Khi chì chuyển từ trạng thái $B$ sang trạng thái $C$, nội năng của chì không thay đổi.",
         "isCorrect": false
       },
       {
         "key": "b",
-        "statement": "Nội năng của chì tăng 20800 J trong 8 phút đầu nung nóng.",
+        "statement": "Nội năng của chì tăng $20\\,800\\text{ J}$ trong $8\\text{ phút}$ đầu nung nóng.",
         "isCorrect": true
       },
       {
         "key": "c",
-        "statement": "Nhiệt độ nóng chảy của chì là 270C .",
+        "statement": "Nhiệt độ nóng chảy của chì là $27^\\circ\\text{C}$.",
         "isCorrect": false
       },
       {
         "key": "d",
-        "statement": "Tại điểm B trên đồ thị chì ở trạng thái lỏng.",
+        "statement": "Tại điểm $B$ trên đồ thị chì ở trạng thái lỏng.",
         "isCorrect": false
       }
     ],
-    "giaiThich": "**Hướng dẫn giải chi tiết:**\n\n- **Ý a) [Sai]:** Khi chì nóng nảy,  (nội năng tăng).\n\n- **Ý b) [Đúng]:** Mệnh đề b) là Đúng theo phân tích khoa học của chủ đề DS-C1.3.\n\n- **Ý c) [Sai]:** Nhiệt độ nóng chảy của chì là 3270C .\n\n- **Ý d) [Sai]:** Tại điểm B trên đồ thị chì ở trạng thái rắn và bắt đầu nóng chảy.\n"
+    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">a — SAI</span> Khi chuyển từ trạng thái $B$ sang trạng thái $C$ (đoạn nằm ngang ở $327^\\circ\\text{C}$), thỏi chì đang nóng chảy và liên tục thu nhiệt lượng ($Q > 0$) để phá vỡ liên kết mạng tinh thể nên <strong>nội năng của chì tăng</strong> ($\\Delta U > 0$).</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">b — ĐÚNG</span> Từ đồ thị, trong $\\tau_{15} = 15\\text{ phút}$ đầu, nhiệt độ của thỏi chì tăng đều từ $27^\\circ\\text{C}$ lên $327^\\circ\\text{C}$ ($\\Delta T_{15} = 327 - 27 = 300\\text{ K}$). Với công suất cấp nhiệt không đổi và bỏ qua công nở vì nhiệt của chất rắn, độ tăng nội năng trong $\\tau_8 = 8\\text{ phút}$ đầu là:<div class=\"vlxt-math-callout\">$$\\Delta U = m c \\Delta T_{15} \\cdot \\frac{\\tau_8}{\\tau_{15}} = 1 \\cdot 130 \\cdot (327 - 27) \\cdot \\frac{8}{15} = 20\\,800\\text{ J}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> Giá trị $27^\\circ\\text{C}$ tại $\\tau = 0$ là nhiệt độ ban đầu của thỏi chì. Đoạn nằm ngang $BC$ ứng với quá trình nóng chảy xảy ra ở nhiệt độ không đổi bằng <strong>$327^\\circ\\text{C}$</strong> (nhiệt độ nóng chảy của chì là $327^\\circ\\text{C}$).</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">d — SAI</span> Tại điểm $B$ ($\\tau = 15\\text{ phút}$, $t = 327^\\circ\\text{C}$), thỏi chì vừa đạt tới nhiệt độ nóng chảy và <strong>bắt đầu nóng chảy</strong>, nên tại $B$ chì vẫn đang ở <strong>trạng thái rắn</strong>.</div>"
   },
   {
     "id": "VLXT-DS-VD28-003",
