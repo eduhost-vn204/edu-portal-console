@@ -1,3 +1,23 @@
+## Bàn giao gần nhất (18/11/2026 06:33)
+- **Xây Dựng Chuẩn Mực 2 Mô Hình Đúng/Sai Đầu Tiên (`MH-STAGING-C1-01` & `MH-STAGING-C1-02`) Theo Đúng Quy Chuẩn 94 Mô Hình Đã Duyệt & Nâng Cấp Retina 2x DPI Trên Studio**:
+- **Mục tiêu**: Thực hiện chỉ đạo của Thầy Nguyễn Xuân Trường: đọc lại toàn bộ `VLXT_MOTION_SPEC.md`, `assets/canvas-core-helpers.js`, `assets/mo-hinh-thuc-te-models.js` và đề Word gốc `10. ĐỀ SỐ 10.docx` để hiểu nguyên lý thiết kế 94 mô hình đã duyệt, từ đó làm chuẩn xác và test trước **2 câu đầu** trong gói 106 câu Đúng/Sai mới (`VLXT-DS-VD28-001` & `VLXT-DS-VD28-002`).
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`)**:
+  - Commit mã: `69118fb` (`feat(studio): build bespoke gold-standard canvas models MH-STAGING-C1-01 & C1-02 with Retina 2x DPI`).
+  - `assets/staging-ds-models.js`: Thay thế 2 wrapper chung bằng 2 hàm vẽ độc bản tự chủ hoàn toàn (`MH-STAGING-C1-01` & `MH-STAGING-C1-02`).
+  - `assets/staging-ds-106-questions.json` & `assets/staging-ds-106-questions.js`: Chuẩn hóa `baiHoc`, `subTopic`, `caption`, `simType`, khôi phục ký hiệu KaTeX bị rớt từ Word (`t`, `\tau`, `27^\circ\text{C}`, `20\,800\text{ J}`) và nâng cấp `giaiThich` theo chuẩn HTML `.exp-stmt-item` + `.exp-key-badge`.
+  - `canvas-studio.html`: Nâng cấp Canvas lên **Retina 2x High-DPI** (`ensureHighDPICanvas`, `1560×610` px vật lý cho khung logic `780×305`), sửa `findEditableModelQuestion` để Tab 2 sửa/lưu đáp án Đ/S được cho cả `STAGING_DS_106_QUESTIONS` lẫn `DS_94_QUESTIONS`, cập nhật `?v=20261118-test2q`.
+- **Hành vi mới**:
+  1. **`MH-STAGING-C1-01` (Câu 1 — Hơ nóng ống nghiệm nút bấc)**: Vẽ chuẩn xác 4 dụng cụ theo ảnh gốc `VLXT-DS-VD28-001.png` gồm `(1) Ống nghiệm` nghiêng có vạch chia và phân tử khí dao động nhiệt, `(2) Nút bấc` đậy khít rồi rung và bật văng ra khỏi miệng ống theo quỹ đạo tự nhiên ở cuối chu kỳ sawtooth, `(3) Đèn cồn` có bầu cồn, bấc, chụp sứ và ngọn lửa 2 lớp sắc nét không AI Glow, `(4) Giá đỡ thí nghiệm` chân kiềng 3 chạc + trụ thép + ngàm kẹp. Hộp chú thích chữ to `14.5px ExtraBold`, đường chỉ dẫn bám động theo nút bấc, Zero Data Leakage.
+  2. **`MH-STAGING-C1-02` (Câu 2 — Đồ thị nung nóng thỏi chì 1 kg)**: Cột trái tái hiện chính xác 100% đồ thị `t (°C)` theo `τ (phút)` trong `VLXT-DS-VD28-002.png` với gốc `O`, mốc `27, 127, 227, 327 °C`, `5, 10, 15 phút`, đường gióng nét đứt vuông góc, 3 điểm `A, B, C` và điểm chạy thực nghiệm sawtooth; cột phải hiển thị hộp `THÔNG SỐ ĐỀ BÀI` (`Pb`, `m = 1 kg`, `c = 130 J/(kg·K)`) và chén nung hở miệng trên (U-shape) đặt trên bếp gia nhiệt, hoàn toàn không lộ nhiệt độ nóng chảy hay đáp án.
+- **Kiểm tra đã chạy**:
+  - `node -c assets/staging-ds-models.js`, `node -c assets/staging-ds-106-questions.js` và kiểm tra inline `<script>` của `canvas-studio.html` đều đạt exit code 0; thẻ đóng `</html>` còn nguyên; `git diff --check` đạt exit code 0.
+  - Playwright (`viewport 1440×920, deviceScaleFactor: 2`) tại `http://127.0.0.1:<port>/canvas-studio.html`: 0 console errors, 0 page errors; `#studio-canvas` và `#st-canvas` đạt `1560×610`; KaTeX & ảnh Word gốc tải đủ (`naturalWidth: 364` và `245`); Hot-Reload trên `MH-STAGING-C1-01` và vẽ mô hình gốc `MH-C1-01` hoạt động bình thường; đã mở xem trực tiếp 5 ảnh PNG chụp thực tế để đối chiếu pixel với ảnh gốc.
+- **Điều phải giữ nguyên**:
+  - Tuyệt đối không dùng AI Glow (`shadowBlur`, `text-shadow`), không bịt kín miệng cốc/chén nung (`drawOpenCup`), không dùng `Math.sin` cho diễn biến tăng 1 chiều của thí nghiệm nhiệt kế/nung nóng, và không lộ dữ kiện đáp án lên Canvas.
+  - Không thay đổi cấu trúc 94 mô hình gốc (`MH-C1-01..MH-C4-100`).
+- **Việc còn lại**:
+  - Chờ Thầy duyệt kết quả thí điểm **2 câu đầu** (`MH-STAGING-C1-01` & `MH-STAGING-C1-02`); **104/106 mô hình còn lại** (`MH-STAGING-C1-03` .. `MH-STAGING-C4-34`) hiện vẫn đang dùng wrapper tạm và sẽ được nâng cấp theo đúng chuẩn mực này sau khi Thầy chốt 2 mẫu đầu.
+
 ## Bàn giao gần nhất (17/11/2026 23:05)
 - **Triệt Tiêu Mô Hình Fallback Chung, Tích Hợp 11 Engine Mô Phỏng 60 FPS Chuyên Biệt, Trích Xuất 257 Ảnh Đề Word & Phân Loại Chuẩn 4 Chương Cho 106 Mô Hình Đúng/Sai**:
 - **Mục tiêu**: Thực hiện đúng 100% chỉ đạo trực tiếp của Thầy Nguyễn Xuân Trường: Khắc phục triệt để lỗi "tất cả mô hình đang dùng cùng 1 mô hình sóng sine tượng trưng, mô hình không liên quan đến bài", đọc lại các file Word gốc để lấy đúng mô hình, trích xuất biểu đồ/hình vẽ gốc và phân loại chuẩn xác theo từng bài học.
