@@ -19,6 +19,7 @@
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261117-staging50"></script>
+    <script src="assets/staging-ds-106-questions.js?v=20261117-ds106"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
@@ -1329,7 +1330,8 @@
                     <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
                         <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
-                            <option value="STAGING_50" selected>⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 & 3)</option>
+                            <option value="STAGING_DS_106" selected>🧪 106 Câu Đúng/Sai 50 Đề (Mới Bóc Tách Chờ Duyệt)</option>
+                            <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 & 3)</option>
                         </optgroup>
                         <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.048 CÂU)">
                             <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.048 Câu)</option>
@@ -1339,7 +1341,7 @@
                             <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
                         </optgroup>
                         <optgroup label="📂 TẤT CẢ TRONG HỆ THỐNG">
-                            <option value="ALL">📂 Toàn Bộ 3.098 Câu Hỏi</option>
+                            <option value="ALL">📂 Toàn Bộ Hệ Thống (3.204 Câu Hỏi)</option>
                         </optgroup>
                     </select>
 
@@ -2490,7 +2492,7 @@ YÊU CẦU TINH CHỈNH:
     let stSimTime = 0.0;
     let stLastTime = 0;
 
-    let currentPoolFilter = 'STAGING_50';   // 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
+    let currentPoolFilter = 'STAGING_DS_106';   // 'STAGING_DS_106', 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
 
     
     window._userOptLayout = null;
@@ -2507,6 +2509,14 @@ function initStagingSystem() {
         const poolDS = (window.DS_94_QUESTIONS || []).map(q => Object.assign({ loai: 'DS' }, q));
         const poolTLN = (window.TLN_370_QUESTIONS || []).map(q => Object.assign({ loai: 'TLN' }, q));
         const poolStaging50 = (window.VLXT_STAGING_QUESTIONS || window.STAGING_QUESTIONS || []).map(q => Object.assign({ loai: 'TN', isStaging50: true }, q));
+        const poolStagingDS106 = (window.STAGING_DS_106_QUESTIONS || []).map(q => Object.assign({ loai: 'DS', isStagingDS106: true }, q));
+
+        // Tự động gán nhãn mô hình cho Canvas Studio nếu có
+        poolStagingDS106.forEach(q => {
+            if (q.modelId && typeof MODEL_CAPTIONS !== 'undefined' && !MODEL_CAPTIONS[q.modelId]) {
+                MODEL_CAPTIONS[q.modelId] = q.subTopic || q.topicCode || q.id;
+            }
+        });
 
         if (poolBank.length > 0) {
             // Đảm bảo các câu DS trong ngân hàng có modelId nếu chưa gắn
@@ -2516,13 +2526,14 @@ function initStagingSystem() {
                     if (match) q.modelId = match[0];
                 }
             });
-            // Gộp 50 câu mới bóc tách (tránh trùng ID)
+            // Gộp câu mới bóc tách (tránh trùng ID)
             const bankIds = new Set(poolBank.map(q => q.id));
             const newStaging = poolStaging50.filter(q => !bankIds.has(q.id));
-            stagingList = [ ...poolBank, ...newStaging ];
+            const newStagingDS106 = poolStagingDS106.filter(q => !bankIds.has(q.id));
+            stagingList = [ ...poolBank, ...newStaging, ...newStagingDS106 ];
         } else {
             // Fallback khi chưa có file ngân hàng 3048
-            stagingList = [ ...poolDS, ...poolTLN, ...poolStaging50 ];
+            stagingList = [ ...poolDS, ...poolTLN, ...poolStaging50, ...poolStagingDS106 ];
         }
 
         try {
@@ -2619,7 +2630,7 @@ function initStagingSystem() {
         filteredStagingList = stagingList.filter(q => {
             if (currentPoolFilter !== 'ALL') {
                 if (currentPoolFilter === 'BANK_ALL') {
-                    if (!q.isFromBank && q.isStaging50) return false;
+                    if (!q.isFromBank && (q.isStaging50 || q.isStagingDS106)) return false;
                 } else if (currentPoolFilter === 'TN_LT') {
                     if (q.loai !== 'TN' || q.tnType !== 'LT') return false;
                 } else if (currentPoolFilter === 'TN_BT') {
@@ -2630,6 +2641,8 @@ function initStagingSystem() {
                     if (q.loai !== 'TLN') return false;
                 } else if (currentPoolFilter === 'STAGING_50') {
                     if (!q.isStaging50 && !q.id.startsWith('VLXT-STAGE-')) return false;
+                } else if (currentPoolFilter === 'STAGING_DS_106') {
+                    if (!q.isStagingDS106 && !q.id.startsWith('VLXT-DS-VD28-')) return false;
                 }
             }
 
