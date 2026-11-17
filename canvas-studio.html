@@ -932,7 +932,7 @@
 
                 <!-- Canvas Screen -->
                 <div class="canvas-screen-box">
-                    <canvas id="studio-canvas" width="1560" height="610"></canvas>
+                    <canvas id="studio-canvas" width="780" height="305"></canvas>
                     <div class="metrics-bar">
                         <div class="metric-item">Khung: <span>780 x 305</span> (DPR 2x)</div>
                         <div class="metric-item">FPS: <span id="disp-fps">60</span></div>
@@ -1090,7 +1090,7 @@
                             <canvas id="st-canvas" width="780" height="305"></canvas>
                         </div>
                         <div class="metrics-bar">
-                            <div class="metric-item">Khung: <b>780 × 305</b> (DPR 2x)</div>
+                            <div class="metric-item">Khung: <b>780 × 305</b> (Chuẩn tỷ lệ)</div>
                             <div class="metric-item">FPS: <b id="st-fps-val" style="color:#10b981">60</b></div>
                             <div class="metric-item">Thời gian t: <b id="st-time-val">0.00s</b></div>
                             <button class="nav-btn" onclick="resetStagingTime()" style="padding:2px 8px;font-size:11px">↺ Reset t=0</button>
@@ -1901,12 +1901,12 @@
         const timeEl = document.getElementById('time-val');
         if (timeEl) timeEl.textContent = simTime.toFixed(2) + 's';
 
-        // Vẽ Canvas Mode 1
+        // Vẽ Canvas Mode 1 (Chuẩn logic 780 x 305 vừa khít màn hình)
         if (ctx && cv) {
-            ctx.clearRect(0, 0, cv.width, cv.height);
+            ctx.clearRect(0, 0, 780, 305);
             if (activeDrawFn) {
                 try {
-                    activeDrawFn(ctx, cv.width, cv.height, simTime);
+                    activeDrawFn(ctx, 780, 305, simTime);
                 } catch (err) {
                     ctx.fillStyle = '#ef4444';
                     ctx.font = '14px sans-serif';
