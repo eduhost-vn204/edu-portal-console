@@ -6265,20 +6265,60 @@ function drawAlphaCluster(ctx, cx, cy, r = 4.5) {
         canvasRegistry[id] = fn;
     }
 
+    var viewportObserver = null;
+    function getViewportObserver() {
+        if (viewportObserver) return viewportObserver;
+        if (typeof IntersectionObserver !== 'undefined') {
+            viewportObserver = new IntersectionObserver(function(entries) {
+                for (var j = 0; j < entries.length; j++) {
+                    var entry = entries[j];
+                    var cv = entry.target;
+                    for (var i = 0; i < activeCanvases.length; i++) {
+                        if (activeCanvases[i].cv === cv) {
+                            activeCanvases[i].isVisible = entry.isIntersecting;
+                            if (entry.isIntersecting) {
+                                ensureAnimLoop();
+                                try {
+                                    activeCanvases[i].drawFn(
+                                        activeCanvases[i].ctx,
+                                        activeCanvases[i].w,
+                                        activeCanvases[i].h,
+                                        (typeof performance !== 'undefined' ? performance.now() : Date.now()) * 0.001
+                                    );
+                                } catch(e) {}
+                            }
+                            break;
+                        }
+                    }
+                }
+            }, { rootMargin: '150px 0px 150px 0px' });
+        }
+        return viewportObserver;
+    }
+
     function canvasAnimLoop(now) {
         var t = now * 0.001;
+        var hasVisible = false;
         for (var i = activeCanvases.length - 1; i >= 0; i--) {
             var item = activeCanvases[i];
             if (typeof document !== 'undefined' && document.body && !document.body.contains(item.cv)) {
+                if (viewportObserver && item.cv) {
+                    try { viewportObserver.unobserve(item.cv); } catch(e) {}
+                }
                 activeCanvases.splice(i, 1);
                 continue;
             }
+            // ⚡ SIÊU TỐI ƯU: Chỉ chạy animation cho Canvas đang lọt trong tầm nhìn (Viewport)
+            if (!item.isVisible) continue;
+            hasVisible = true;
             try {
                 item.drawFn(item.ctx, item.w, item.h, t);
             } catch (e) {}
         }
-        if (typeof requestAnimationFrame !== 'undefined') {
+        if (hasVisible && typeof requestAnimationFrame !== 'undefined') {
             requestAnimationFrame(canvasAnimLoop);
+        } else {
+            isAnimRunning = false; // Ngủ đông khi không có canvas nào hiển thị -> 0% CPU!
         }
     }
 
@@ -6321,7 +6361,7 @@ function drawAlphaCluster(ctx, cx, cy, r = 4.5) {
 
                 var cv = slot.querySelector('canvas');
                 if (cv) {
-                    var dpr = Math.max(2, (typeof window !== 'undefined' && window.devicePixelRatio) || 1);
+                    var dpr = (opts && opts.compact) ? Math.min(1.25, (typeof window !== 'undefined' && window.devicePixelRatio) || 1) : Math.max(2, (typeof window !== 'undefined' && window.devicePixelRatio) || 1);
                     var logicalW = 780;
                     var logicalH = 305;
                     cv.width = logicalW * dpr;
@@ -6329,14 +6369,23 @@ function drawAlphaCluster(ctx, cx, cy, r = 4.5) {
                     var ctx = cv.getContext('2d');
                     if (ctx) {
                         ctx.scale(dpr, dpr);
-                        activeCanvases.push({
+                        var item = {
                             cv: cv,
                             ctx: ctx,
                             drawFn: drawFn,
                             w: logicalW,
                             h: logicalH,
-                            mid: mid
-                        });
+                            mid: mid,
+                            isVisible: (typeof IntersectionObserver === 'undefined')
+                        };
+                        activeCanvases.push(item);
+
+                        var obs = getViewportObserver();
+                        if (obs) {
+                            obs.observe(cv);
+                        } else {
+                            try { drawFn(ctx, logicalW, logicalH, 0); } catch(e) {}
+                        }
                     }
                 }
                 mounted += 1;
@@ -34744,7 +34793,7 @@ VLXTModels.register('MH-C4-91', function(ctx, w, h, t) {
                         var fn = compileCanvasFn(ev.data.code);
                         if (fn) applyOverrideFn(ev.data.modelId, fn);
                     } else {
-                        loadAllOverrides();
+                        if (typeof setTimeout !== "undefined") { setTimeout(loadAllOverrides, 800); }
                     }
                 }
             };
@@ -34780,7 +34829,8 @@ VLXTModels.register('MH-C4-91', function(ctx, w, h, t) {
         loadAllOverrides: loadAllOverrides,
         fetchCloudOverrides: fetchCloudOverrides,
         register: registerCanvas,
-        _canvasRegistry: canvasRegistry
+        _canvasRegistry: canvasRegistry,
+        _activeCanvases: activeCanvases
     };
 
     if (typeof module !== 'undefined' && module.exports) {
