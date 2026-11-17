@@ -13568,6 +13568,40 @@ document.addEventListener('DOMContentLoaded', function() {
         switchTab('nganhang');
     }
 });
+
+// Lắng nghe sự kiện lưu/duyệt câu hỏi từ Canvas Motion Studio
+if (window.BroadcastChannel) {
+    try {
+        const bc = new BroadcastChannel('vlxt_bank_sync');
+        bc.onmessage = function(ev) {
+            if (ev.data && ev.data.type === 'NEW_QUESTION_SAVED' && ev.data.question) {
+                const newQ = ev.data.question;
+                const qId = newQ.id || newQ.ma || 'Chưa đặt mã';
+                console.log('[BankSync] Nhận câu hỏi mới từ Canvas Studio:', qId);
+                if (typeof bankData !== 'undefined' && Array.isArray(bankData)) {
+                    const idx = bankData.findIndex(function(item) {
+                        return (item.id && item.id === qId) || (item.ma && item.ma === qId);
+                    });
+                    if (idx >= 0) {
+                        bankData[idx] = Object.assign({}, bankData[idx], newQ);
+                    } else {
+                        bankData.unshift(newQ);
+                    }
+                    if (typeof bankFiltersChanged === 'function') {
+                        bankFiltersChanged();
+                    } else if (typeof renderBankList === 'function') {
+                        renderBankList();
+                    }
+                    if (typeof showToast === 'function') {
+                        showToast('Đã nhận câu hỏi mới từ Canvas Studio: ' + qId, 'success');
+                    }
+                }
+            }
+        };
+    } catch(e) {
+        console.warn('[BankSync] BroadcastChannel init error:', e);
+    }
+}
 </script>
 
 </body>
