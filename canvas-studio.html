@@ -24,6 +24,7 @@
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
+    <script src="assets/staging-ds-models.js?v=20261117-models106"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1258,6 +1259,7 @@
                     <div id="mq-question-text" class="staging-qtext" style="font-size: 14px; line-height: 1.7; color: var(--text-light);">
                         <!-- Đề bài và bảng số liệu thực nghiệm -->
                     </div>
+                    <div id="mq-image-container" style="display:none; margin: 12px 0; text-align: center;"></div>
                     <div id="mq-statements-container" class="ds-statements-list">
                         <!-- 4 mệnh đề a, b, c, d có badge Đúng/Sai -->
                     </div>
@@ -1444,6 +1446,7 @@
                         <div id="st-preview-question" class="nh-q-text">
                             <!-- Đề bài câu hỏi KaTeX -->
                         </div>
+                        <div id="st-preview-image-container" style="display:none; margin: 14px 0; text-align: center;"></div>
 
                         <!-- 1. Vùng Phương Án Trắc Nghiệm ABCD (Bố cục 1 Dòng/Đáp án hoặc 2 Cột - Tránh bẻ dòng liên tục) -->
                         <div id="st-preview-options-container" style="display:none; margin-top:12px;">
@@ -1794,9 +1797,55 @@
     // KHỞI TẠO & ĐIỀU KHIỂN CHẾ ĐỘ 1: TINH CHỈNH MÔ HÌNH (PHẦN 1, 2, 3)
     // ══════════════════════════════════════════════════════════════════
 
+    function updateChapterFilterOptions() {
+        const selPart = document.getElementById('sel-part');
+        const selChapter = document.getElementById('sel-chapter');
+        if (!selPart || !selChapter) return;
+        const p = selPart.value;
+        const cur = selChapter.value;
+
+        if (p === 'P2_STAGING_106') {
+            selChapter.innerHTML = `
+                <option value="ALL">Tất cả 4 chương (106 mô hình mới)</option>
+                <option value="C1">Chương 1 — Vật lý nhiệt (33 mô hình)</option>
+                <option value="C2">Chương 2 — Khí lí tưởng (21 mô hình)</option>
+                <option value="C3">Chương 3 — Từ trường (18 mô hình)</option>
+                <option value="C4">Chương 4 — Vật lý hạt nhân (34 mô hình)</option>
+            `;
+        } else if (p === 'P2_ORIGINAL_94') {
+            selChapter.innerHTML = `
+                <option value="ALL">Tất cả các chương (94 mô hình gốc)</option>
+                <option value="C1">Chương 1 — Vật lý nhiệt (17 mô hình)</option>
+                <option value="C2">Chương 2 — Khí lí tưởng (29 mô hình)</option>
+                <option value="C3">Chương 3 — Từ trường (32 mô hình)</option>
+                <option value="C4">Chương 4 — Vật lý hạt nhân (16 mô hình)</option>
+            `;
+        } else if (p === 'P2_ALL') {
+            selChapter.innerHTML = `
+                <option value="ALL">Toàn bộ 200 mô hình Đúng / Sai</option>
+                <option value="C1">Chương 1 — Vật lý nhiệt (50 mô hình)</option>
+                <option value="C2">Chương 2 — Khí lí tưởng (50 mô hình)</option>
+                <option value="C3">Chương 3 — Từ trường (50 mô hình)</option>
+                <option value="C4">Chương 4 — Vật lý hạt nhân (50 mô hình)</option>
+            `;
+        } else {
+            selChapter.innerHTML = `
+                <option value="ALL">Tất cả các chương</option>
+                <option value="C1">Chương 1 — Vật lý nhiệt</option>
+                <option value="C2">Chương 2 — Khí lí tưởng</option>
+                <option value="C3">Chương 3 — Từ trường</option>
+                <option value="C4">Chương 4 — Vật lý hạt nhân</option>
+            `;
+        }
+        if (['ALL', 'C1', 'C2', 'C3', 'C4'].includes(cur)) {
+            selChapter.value = cur;
+        }
+    }
+
     function onPartFilterChange() {
         const selPart = document.getElementById('sel-part');
         if (selPart) currentPartFilter = selPart.value;
+        updateChapterFilterOptions();
         populateModelDropdown();
     }
 
@@ -1975,7 +2024,7 @@
 
         activeDrawFn = fn;
         const fnCode = fn.toString();
-        const fullSnippet = `// Mã nguồn vẽ mô hình ${id}\n// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)\nVLXTModels.register('${id}', ${fnCode});`;
+        const fullSnippet = (fn && fn._rawSource) ? fn._rawSource : `// Mã nguồn vẽ mô hình ${id}\n// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)\nVLXTModels.register('${id}', ${fnCode});`;
         originalCodeCache[id] = fullSnippet;
 
         const overrides = getLocalOverrides();
@@ -2076,6 +2125,25 @@
         // Đề bài & Bảng số liệu
         const elQText = document.getElementById('mq-question-text');
         if (elQText) elQText.innerHTML = renderMathTextToHtml(q.question || '');
+
+        // Hiển thị hình ảnh gốc từ đề Word nếu có
+        const mqImgBox = document.getElementById('mq-image-container');
+        if (mqImgBox) {
+            if (q.hinhAnh) {
+                mqImgBox.style.display = 'block';
+                mqImgBox.innerHTML = `
+                    <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 12px; display: inline-block; max-width: 100%;">
+                        <div style="font-size: 11px; color: #38bdf8; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fa-solid fa-image"></i> Hình vẽ / Đồ thị gốc từ đề thi Word
+                        </div>
+                        <img src="${q.hinhAnh}" alt="${q.id}" style="max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); background: #ffffff; padding: 4px;">
+                    </div>
+                `;
+            } else {
+                mqImgBox.style.display = 'none';
+                mqImgBox.innerHTML = '';
+            }
+        }
 
         // Các mệnh đề / phương án
         const stmtContainer = document.getElementById('mq-statements-container');
@@ -2839,6 +2907,25 @@ function initStagingSystem() {
         // 3. Đề bài chính
         const qBox = document.getElementById('st-preview-question');
         if (qBox) qBox.innerHTML = renderMathTextToHtml(q.question || '');
+
+        // Hiển thị hình ảnh gốc từ đề Word nếu có
+        const stImgBox = document.getElementById('st-preview-image-container');
+        if (stImgBox) {
+            if (q.hinhAnh) {
+                stImgBox.style.display = 'block';
+                stImgBox.innerHTML = `
+                    <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 12px; display: inline-block; max-width: 100%;">
+                        <div style="font-size: 11px; color: #38bdf8; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fa-solid fa-image"></i> Hình vẽ / Đồ thị gốc từ đề thi Word
+                        </div>
+                        <img src="${q.hinhAnh}" alt="${q.id}" style="max-width: 100%; max-height: 320px; object-fit: contain; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); background: #ffffff; padding: 4px;">
+                    </div>
+                `;
+            } else {
+                stImgBox.style.display = 'none';
+                stImgBox.innerHTML = '';
+            }
+        }
 
         // 4. Các phương án / mệnh đề theo loại câu
         const tnContainer = document.getElementById('st-preview-options-container');
