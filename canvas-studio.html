@@ -1090,6 +1090,57 @@
             word-break: break-word;
         }
 
+
+        /* BỐ CỤC PHƯƠNG ÁN TRẮC NGHIỆM THÔNG MINH (1 DÒNG HOẶC 2 CỘT - KHÔNG BAO GIỜ 4 CỘT HẸP) */
+        .opt-layout-toggle-group {
+            display: inline-flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.04);
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .opt-layout-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .opt-layout-btn:hover {
+            color: #f1f5f9;
+            background: rgba(255,255,255,0.06);
+        }
+        .opt-layout-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        .nh-opts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-top: 6px;
+        }
+        .nh-opts-grid.layout-2col {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+        }
+        .nh-opts-grid.layout-1col {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+
 </style>
 </head>
 <body>
@@ -1335,7 +1386,7 @@
 
                 <!-- CỘT TRÁI: LIVE PREVIEW CÂU HỎI & MÔ HÌNH (CẤU TRÚC ĐỒNG NHẤT 100% VỚI MODE 1) -->
                 <div class="stage-card">
-                    <div class="stage-header" style="min-height: 38px;">
+                    <div class="stage-header" id="st-stage-header" style="min-height: 38px; display: none;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="model-id-badge" id="st-disp-model-id" style="background:#0f766e;border-color:#0d9488;color:#5eead4;">PREVIEW</span>
                             <div class="caption-text" id="st-disp-caption">Bản Xem Trước Câu Hỏi Chuẩn EdTech</div>
@@ -1390,9 +1441,22 @@
                             <!-- Đề bài câu hỏi KaTeX -->
                         </div>
 
-                        <!-- 1. Phương án Trắc Nghiệm Grid 2 Cột Chuẩn Ngân Hàng Đề (Ảnh 3) -->
-                        <div id="st-preview-options" class="nh-opts-grid" style="display:none;">
-                            <!-- 4 Box A, B, C, D có highlight đáp án đúng màu xanh ngọc -->
+                        <!-- 1. Vùng Phương Án Trắc Nghiệm ABCD (Bố cục 1 Dòng/Đáp án hoặc 2 Cột - Tránh bẻ dòng liên tục) -->
+                        <div id="st-preview-options-container" style="display:none; margin-top:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-size:12px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Phương án trả lời (A, B, C, D):</span>
+                                <div class="opt-layout-toggle-group">
+                                    <button type="button" class="opt-layout-btn" id="btn-layout-1col" onclick="setOptLayout('1col')" title="Mỗi dòng 1 đáp án (Đọc dạng dòng dài mạch lạc)">
+                                        <i class="fa-solid fa-bars"></i> 1 Dòng / Đáp án
+                                    </button>
+                                    <button type="button" class="opt-layout-btn" id="btn-layout-2col" onclick="setOptLayout('2col')" title="Mỗi dòng 2 đáp án (Lưới 2x2 gọn gàng)">
+                                        <i class="fa-solid fa-table-cells-large"></i> 2 Cột (2×2)
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="st-preview-options" class="nh-opts-grid">
+                                <!-- 4 Box A, B, C, D -->
+                            </div>
                         </div>
 
                         <!-- 2. Phương án Đúng / Sai 4 Hàng Chuẩn Ngân Hàng Đề -->
@@ -2428,7 +2492,14 @@ YÊU CẦU TINH CHỈNH:
 
     let currentPoolFilter = 'STAGING_50';   // 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
 
-    function initStagingSystem() {
+    
+    window._userOptLayout = null;
+    function setOptLayout(layout) {
+        window._userOptLayout = layout;
+        loadStagingQuestion(currentStagingIdx);
+    }
+
+function initStagingSystem() {
         // Nạp nguồn 3.048 câu Ngân Hàng Đề chính thức
         const rawBank = window.VLXT_NGANHANG_3048 || [];
         const poolBank = rawBank.map(q => Object.assign({}, q, { isFromBank: true }));
@@ -2725,6 +2796,7 @@ YÊU CẦU TINH CHỈNH:
         if (qBox) qBox.innerHTML = renderMathTextToHtml(q.question || '');
 
         // 4. Các phương án / mệnh đề theo loại câu
+        const tnContainer = document.getElementById('st-preview-options-container');
         const tnBox = document.getElementById('st-preview-options');
         const dsBox = document.getElementById('st-preview-ds');
         const tlnBox = document.getElementById('st-preview-tln');
@@ -2734,7 +2806,7 @@ YÊU CẦU TINH CHỈNH:
         const editorTln = document.getElementById('st-editor-tln-section');
 
         if (loai === 'DS') {
-            if (tnBox) tnBox.style.display = 'none';
+            if (tnContainer) tnContainer.style.display = 'none';
             if (editorTn) editorTn.style.display = 'none';
             if (tlnBox) tlnBox.style.display = 'none';
             if (editorTln) editorTln.style.display = 'none';
@@ -2774,7 +2846,7 @@ YÊU CẦU TINH CHỈNH:
             updateStagingDsTfButtons(correctStr);
 
         } else if (loai === 'TLN') {
-            if (tnBox) tnBox.style.display = 'none';
+            if (tnContainer) tnContainer.style.display = 'none';
             if (editorTn) editorTn.style.display = 'none';
             if (dsBox) dsBox.style.display = 'none';
             if (editorDs) editorDs.style.display = 'none';
@@ -2800,7 +2872,7 @@ YÊU CẦU TINH CHỈNH:
             if (tlnBox) tlnBox.style.display = 'none';
             if (editorTln) editorTln.style.display = 'none';
 
-            if (tnBox) tnBox.style.display = 'flex';
+            if (tnContainer) tnContainer.style.display = 'block';
             if (editorTn) editorTn.style.display = 'block';
 
             const opts = [
@@ -2810,7 +2882,30 @@ YÊU CẦU TINH CHỈNH:
                 { key: 'D', text: q.optD || '' }
             ];
 
+            // Tự động quyết định bố cục: 1 Dòng / Đáp án hay 2 Cột (2x2)
+            const maxOptLen = Math.max(
+                (q.optA || '').length,
+                (q.optB || '').length,
+                (q.optC || '').length,
+                (q.optD || '').length
+            );
+
+            // Mặc định: Nếu đáp án dài (> 24 ký tự) -> Tự động dùng 1 Cột full-width để chữ trải dài cả dòng đọc cực rõ
+            // Nếu đáp án ngắn (<= 24 ký tự) -> Dùng 2 Cột (2x2)
+            const currentLayout = window._userOptLayout || (maxOptLen > 24 ? '1col' : '2col');
             if (tnBox) {
+                if (currentLayout === '1col') {
+                    tnBox.className = 'nh-opts-grid layout-1col';
+                } else {
+                    tnBox.className = 'nh-opts-grid layout-2col';
+                }
+
+                // Cập nhật trạng thái nút bấm
+                const btn1 = document.getElementById('btn-layout-1col');
+                const btn2 = document.getElementById('btn-layout-2col');
+                if (btn1) btn1.className = 'opt-layout-btn' + (currentLayout === '1col' ? ' active' : '');
+                if (btn2) btn2.className = 'opt-layout-btn' + (currentLayout === '2col' ? ' active' : '');
+
                 tnBox.innerHTML = opts.map(o => {
                     const isCorrect = (q.correct && q.correct.toUpperCase() === o.key);
                     return `
@@ -2950,21 +3045,25 @@ YÊU CẦU TINH CHỈNH:
     function mountStagingCanvas(modelId) {
         const container = document.getElementById('st-canvas-container');
         const noCanvasBox = document.getElementById('st-no-canvas-box');
+        const stageHeader = document.getElementById('st-stage-header');
 
         if (stCanvasAnimId) {
             cancelAnimationFrame(stCanvasAnimId);
             stCanvasAnimId = null;
         }
 
-        if (!modelId) {
+        // Nếu câu hỏi KHÔNG có mã mô hình Canvas (câu lý thuyết / tính toán / không có mô hình)
+        // -> Ẩn hoàn toàn khung Canvas và header mô hình để thẻ câu hỏi hiển thị trọn vẹn, không bị mô hình đè lên
+        if (!modelId || !String(modelId).trim()) {
             if (container) container.style.display = 'none';
-            if (noCanvasBox) noCanvasBox.style.display = 'flex';
-            const elId = document.getElementById('st-disp-model-id');
-            const elCap = document.getElementById('st-disp-caption');
-            if (elId) elId.textContent = 'LÝ THUYẾT / TÍNH TOÁN';
-            if (elCap) elCap.textContent = 'Câu hỏi không sử dụng đồ họa chuyển động Canvas';
+            if (stageHeader) stageHeader.style.display = 'none';
+            if (noCanvasBox) noCanvasBox.style.display = 'none';
             return;
         }
+
+        // Nếu câu hỏi CÓ gắn mã mô hình Canvas thực sự (ví dụ 94 câu Đúng/Sai thực nghiệm)
+        if (stageHeader) stageHeader.style.display = 'flex';
+        if (noCanvasBox) noCanvasBox.style.display = 'none';
 
         // Lấy hoặc tạo hàm vẽ cho modelId
         let drawFn = null;
