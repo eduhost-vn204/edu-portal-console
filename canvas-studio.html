@@ -862,6 +862,234 @@
         .model-tab-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .model-tab-btn.active { background: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); color: #38bdf8; }
         .model-tab-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.04); color: var(--text-light); }
+
+        /* ══════════════════════════════════════════════════════════════════
+           GIAO DIỆN CHUẨN 100% NGÂN HÀNG ĐỀ (VLXT BANK PREVIEW STANDARD)
+           ══════════════════════════════════════════════════════════════════ */
+        .nh-card-preview {
+            background: #0f172a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .nh-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            align-items: center;
+        }
+        .nh-badge {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            line-height: 1.4;
+        }
+        .nh-badge.b-tn { background: rgba(56,189,248,0.12); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+        .nh-badge.b-ds { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .nh-badge.b-tln { background: rgba(16,185,129,0.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+        .nh-badge.b-tn-lt { background: rgba(14,165,233,0.16); color: #38bdf8; border: 1px solid rgba(14,165,233,0.38); }
+        .nh-badge.b-tn-bt { background: rgba(139,92,246,0.16); color: #c084fc; border: 1px solid rgba(139,92,246,0.35); }
+        .nh-badge.b-tinh { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .nh-badge.b-pending { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .nh-badge.b-nb { background: #334155; color: #f1f5f9; }
+        .nh-badge.b-th { background: rgba(56,189,248,0.15); color: #38bdf8; }
+        .nh-badge.b-vd { background: rgba(245,158,11,0.15); color: #fbbf24; }
+        .nh-badge.b-vdc { background: rgba(239,68,68,0.15); color: #fca5a5; }
+        .nh-badge.b-ch { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); }
+        .nh-badge.b-bai { background: rgba(56,189,248,0.12); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+        .nh-badge.b-subtopic { background: rgba(20,184,166,0.14); color: #2dd4bf; border: 1px solid rgba(20,184,166,0.38); font-weight: 700; }
+        .nh-badge.b-camp-unused { background: rgba(16,185,129,0.11); color: #34d399; border: 1px solid rgba(16,185,129,0.3); font-weight: 600; }
+        .nh-badge.b-id { font-family: 'DM Mono', monospace; font-size: 12px; color: #94a3b8; font-weight: 700; margin-left: auto; }
+
+        .nh-q-text {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.7;
+            color: #f1f5f9;
+            margin: 6px 0 10px;
+            word-break: break-word;
+        }
+        .nh-context {
+            background: rgba(56,189,248,0.06);
+            border-left: 3.5px solid #0b84f3;
+            padding: 10px 14px;
+            font-size: 13.5px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            color: #e0f2fe;
+            line-height: 1.6;
+        }
+
+        /* Phương án Trắc nghiệm Grid 2 cột Chuẩn Ngân Hàng Đề */
+        .nh-opts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .nh-opt-box {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.025);
+            color: #cbd5e1;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14.5px;
+            line-height: 1.55;
+            transition: all 0.15s ease;
+        }
+        .nh-opt-box.ok-correct {
+            background: rgba(16,185,129,0.12) !important;
+            border-color: rgba(16,185,129,0.55) !important;
+            color: #ecfdf5 !important;
+            font-weight: 600;
+        }
+        .nh-opt-letter {
+            font-family: 'DM Mono', monospace;
+            font-weight: 800;
+            font-size: 14px;
+            color: #38bdf8;
+            flex-shrink: 0;
+            min-width: 22px;
+        }
+        .nh-opt-box.ok-correct .nh-opt-letter {
+            color: #10b981;
+        }
+        .nh-opt-content {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+        .nh-opt-tag.ok {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(16,185,129,0.2);
+            color: #6ee7b7;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Phương án Đúng / Sai 4 hàng Chuẩn Ngân Hàng Đề */
+        .nh-tf-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .nh-tf-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            font-size: 14px;
+        }
+        .nh-tf-letter {
+            color: #38bdf8;
+            font-family: 'DM Mono', monospace;
+            font-weight: 800;
+            flex-shrink: 0;
+            min-width: 24px;
+        }
+        .nh-tf-content {
+            flex: 1;
+            color: #e2e8f0;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+        .nh-tf-badge.dung {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 6px;
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.35);
+            color: #6ee7b7;
+            white-space: nowrap;
+        }
+        .nh-tf-badge.sai {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 6px;
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.35);
+            color: #fca5a5;
+            white-space: nowrap;
+        }
+
+        /* Hộp Trả lời ngắn Chuẩn Ngân Hàng Đề */
+        .nh-short-ans-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 8px;
+            background: rgba(16,185,129,0.08);
+            font-size: 14.5px;
+            color: #f1f5f9;
+            margin-top: 10px;
+        }
+        .nh-short-val {
+            font-family: 'DM Mono', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            color: #6ee7b7;
+            padding: 2px 10px;
+            background: rgba(16,185,129,0.15);
+            border-radius: 5px;
+        }
+
+        /* Lời giải chi tiết Chuẩn Ngân Hàng Đề */
+        .nh-giai {
+            margin-top: 14px;
+            border-radius: 8px;
+            background: rgba(16,185,129,0.06);
+            border: 1px solid rgba(16,185,129,0.25);
+            border-left: 3.5px solid #10b981;
+        }
+        .nh-giai summary {
+            cursor: pointer;
+            padding: 9px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #10b981;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nh-giai summary::-webkit-details-marker { display: none; }
+        .nh-giai-body {
+            padding: 4px 14px 14px;
+            font-size: 14px;
+            line-height: 1.68;
+            color: #cbd5e1;
+            word-break: break-word;
+        }
+
 </style>
 </head>
 <body>
@@ -873,13 +1101,13 @@
             <div class="nav-title">Canvas Motion Studio — <span>Tinh Chỉnh & Duyệt Đề</span></div>
         </div>
 
-        <!-- Mode Toggle Switcher -->
+        <!-- Mode Toggle Switcher (Phòng Duyệt & Soạn Câu Hỏi là Phòng Chính) -->
         <div class="mode-toggle-group">
-            <button type="button" class="mode-toggle-btn active" id="btn-mode-model" onclick="switchStudioMode('MODEL')">
-                <i class="fa-solid fa-cube"></i> Tinh Chỉnh Mô Hình (94 Câu)
+            <button type="button" class="mode-toggle-btn active" id="btn-mode-staging" onclick="switchStudioMode('STAGING')">
+                <i class="fa-solid fa-list-check"></i> 📋 Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.048+ Câu</span>)
             </button>
-            <button type="button" class="mode-toggle-btn" id="btn-mode-staging" onclick="switchStudioMode('STAGING')">
-                <i class="fa-solid fa-list-check"></i> Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.048+ Câu</span>)
+            <button type="button" class="mode-toggle-btn" id="btn-mode-model" onclick="switchStudioMode('MODEL')">
+                <i class="fa-solid fa-cube"></i> 🎬 Tinh Chỉnh Mô Hình (Canvas)
             </button>
         </div>
         <div class="nav-actions">
@@ -893,8 +1121,8 @@
     <!-- Main Workspace -->
     <main class="studio-main">
 
-        <!-- CHẾ ĐỘ 1: TINH CHỈNH MÔ HÌNH CANVAS (GIỮ NGUYÊN 100%) -->
-        <div id="view-model-mode">
+        <!-- CHẾ ĐỘ 1: TINH CHỈNH MÔ HÌNH CANVAS -->
+        <div id="view-model-mode" style="display: none;">
         <!-- Controls Ribbon -->
         <section class="controls-ribbon">
             <div class="selector-group">
@@ -1041,21 +1269,27 @@
         </div>
         <!-- HẾT CHẾ ĐỘ 1: MODEL MODE -->
 
-        <!-- CHẾ ĐỘ 2: PHÒNG DUYỆT & SOẠN CÂU HỎI STAGING (MỞ RỘNG PHẦN 1, 2, 3) -->
-        <div id="view-staging-mode" style="display: none;">
+        <!-- CHẾ ĐỘ 2: PHÒNG DUYỆT & SOẠN CÂU HỎI (PHÒNG CHÍNH) -->
+        <div id="view-staging-mode" style="display: flex;">
             
             <!-- Staging Ribbon: Kho dữ liệu, Bộ lọc & Điều hướng -->
             <section class="controls-ribbon">
                 <div class="selector-group">
-                    <!-- Chọn Kho Câu Hỏi Đầy Đủ 3.048+ Câu -->
-                    <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
-                        <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.048 Câu)</option>
-                        <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
-                        <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.280 Câu)</option>
-                        <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu Mô Hình)</option>
-                        <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
-                        <option value="STAGING_50">⚡ 50 Câu Chờ Duyệt Mới (Chương 2 & Chương 3)</option>
-                        <option value="ALL">📂 Tất Cả Câu Hỏi Trong Hệ Thống (3.098 Câu)</option>
+                    <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
+                    <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
+                        <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
+                            <option value="STAGING_50" selected>⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 & 3)</option>
+                        </optgroup>
+                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.048 CÂU)">
+                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.048 Câu)</option>
+                            <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
+                            <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.280 Câu)</option>
+                            <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu Mô Hình Canvas)</option>
+                            <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
+                        </optgroup>
+                        <optgroup label="📂 TẤT CẢ TRONG HỆ THỐNG">
+                            <option value="ALL">📂 Toàn Bộ 3.098 Câu Hỏi</option>
+                        </optgroup>
                     </select>
 
                     <!-- Lọc theo Chương -->
@@ -1127,63 +1361,60 @@
                         <span>Câu hỏi lý thuyết / tính toán không yêu cầu đồ họa chuyển động Canvas (hoặc chưa gắn Model ID).</span>
                     </div>
 
-                    <!-- Thẻ Câu Hỏi Live Preview Hoàn Chỉnh -->
-                    <div class="staging-qcard" id="st-qcard">
-                        <div class="staging-qcard-header">
-                            <div class="staging-badges">
-                                <span id="st-preview-id" class="badge-stage-id">VLXT-STAGE-001</span>
-                                <span id="st-preview-type" class="badge-stage-type">TRẮC NGHIỆM</span>
-                                <span id="st-preview-level" class="badge-stage-level">THÔNG HIỂU (TH)</span>
-                                <span id="st-preview-status" class="badge-stage-status pending"><i class="fa-regular fa-clock"></i> CHƯA DUYỆT</span>
-                            </div>
-                            <div id="st-preview-counts-text" style="font-size: 12px; color: var(--text-dim); font-weight: 600;">Câu 1 / 514</div>
+                    <!-- THẺ CÂU HỎI LIVE PREVIEW CHUẨN 100% GIAO DIỆN NGÂN HÀNG ĐỀ (NH-ROW VSTEP) -->
+                    <div class="nh-card-preview" id="st-qcard">
+                        
+                        <!-- Hàng Meta 1: Phân loại, Mức độ, Chương, Bài, Mã câu (Góc phải) -->
+                        <div class="nh-meta">
+                            <span id="st-nh-badge-type" class="nh-badge b-tn">Trắc nghiệm</span>
+                            <span id="st-nh-badge-subtype" class="nh-badge b-tn-lt">TN Lý thuyết (THPTQG)</span>
+                            <span id="st-nh-badge-status" class="nh-badge b-tinh"><i class="fa-solid fa-check"></i> Tinh</span>
+                            <span id="st-nh-badge-level" class="nh-badge b-nb">NB</span>
+                            <span id="st-nh-badge-chuong" class="nh-badge b-ch">CHƯƠNG 1 – VẬT LÝ NHIỆT</span>
+                            <span id="st-nh-badge-baihoc" class="nh-badge b-bai">B1. CẤU TRÚC CỦA CHẤT & MÔ HÌNH ĐỘNG HỌC PHÂN TỬ</span>
+                            <span id="st-nh-badge-id" class="nh-badge b-id">VLXT-PT-P011-Q01</span>
                         </div>
 
-                        <!-- Đề bài chung (dành cho nhóm câu hoặc TLN nếu có) -->
-                        <div id="st-preview-debaichung" style="display:none; padding:10px 14px; margin-bottom:12px; border-radius:6px; background:rgba(14, 165, 233, 0.08); border-left:3px solid #0284c7; font-size:13.5px; line-height:1.6; color:#e0f2fe;">
+                        <!-- Hàng Meta 2: Chủ đề con & Trạng thái chiến dịch/đề thi -->
+                        <div class="nh-meta" style="margin-top:-6px; border-bottom:none; padding-bottom:0;">
+                            <span id="st-nh-badge-subtopic" class="nh-badge b-subtopic"><i class="fa-solid fa-tag"></i> CD01 – Cấu trúc chất, Lực tương tác phân tử & 3 thể Rắn–Lỏng–Khí</span>
+                            <span id="st-nh-badge-campaign" class="nh-badge b-camp-unused"><i class="fa-solid fa-circle-dot"></i> Chưa vào đề nào</span>
+                            <span id="st-preview-counts-text" style="margin-left:auto; font-size:12px; color:#94a3b8; font-weight:600;">Câu 1 / 50</span>
                         </div>
 
-                        <!-- Nội dung Đề bài chính & Bảng số liệu thực nghiệm -->
-                        <div id="st-preview-question" class="staging-qtext" style="font-size: 14px; line-height: 1.7; color: var(--text-light);">
+                        <!-- Đề bài chung (dành cho câu chùm hoặc TLN nếu có) -->
+                        <div id="st-preview-debaichung" class="nh-context" style="display:none;"></div>
+
+                        <!-- Đề bài chính & Bảng số liệu thực nghiệm chuẩn Ngân Hàng Đề -->
+                        <div id="st-preview-question" class="nh-q-text">
                             <!-- Đề bài câu hỏi KaTeX -->
                         </div>
 
-                        <!-- 1. Vùng Trắc Nghiệm ABCD (Hiển thị khi loai == 'TN') -->
-                        <div id="st-preview-options" class="staging-options-list" style="display:none;">
-                            <!-- 4 Phương án A, B, C, D có highlight đáp án đúng -->
+                        <!-- 1. Phương án Trắc Nghiệm Grid 2 Cột Chuẩn Ngân Hàng Đề (Ảnh 3) -->
+                        <div id="st-preview-options" class="nh-opts-grid" style="display:none;">
+                            <!-- 4 Box A, B, C, D có highlight đáp án đúng màu xanh ngọc -->
                         </div>
 
-                        <!-- 2. Vùng Đúng / Sai 4 Ý (Hiển thị khi loai == 'DS') -->
-                        <div id="st-preview-ds" class="ds-statements-list" style="display:none;">
-                            <!-- 4 mệnh đề a, b, c, d kèm badge Đúng/Sai -->
+                        <!-- 2. Phương án Đúng / Sai 4 Hàng Chuẩn Ngân Hàng Đề -->
+                        <div id="st-preview-ds" class="nh-tf-rows" style="display:none;">
+                            <!-- 4 Hàng a, b, c, d kèm badge Đúng/Sai -->
                         </div>
 
-                        <!-- 3. Vùng Trả Lời Ngắn (Hiển thị khi loai == 'TLN') -->
-                        <div id="st-preview-tln" class="tln-input-preview-box" style="display:none;">
-                            <div class="tln-input-group">
-                                <span style="font-weight:700; color:#94a3b8; font-size:13px;">Đáp án học sinh điền:</span>
-                                <div class="tln-input-box">
-                                    <input type="text" id="st-tln-mock-input" placeholder="?" readonly>
-                                </div>
-                                <span id="st-tln-mock-unit" class="tln-input-unit">đơn vị</span>
-                            </div>
-                            <div class="tln-correct-info">
-                                <span style="color:#94a3b8; font-size:12px;">Đáp án chuẩn của Thầy:</span>
-                                <span id="st-tln-correct-val" class="tln-correct-badge">
-                                    <i class="fa-solid fa-check"></i> <span id="st-tln-correct-text">--</span>
-                                </span>
-                            </div>
+                        <!-- 3. Hộp Trả Lời Ngắn Chuẩn Ngân Hàng Đề -->
+                        <div id="st-preview-tln" class="nh-short-ans-box" style="display:none;">
+                            <span>Đáp án chuẩn:</span>
+                            <span id="st-tln-correct-val" class="nh-short-val">0,12 kJ</span>
+                            <span id="st-tln-tolerance-text" style="color:#94a3b8;font-size:12.5px;">(Dung sai: ±0.01)</span>
                         </div>
 
-                        <!-- Hộp Lời Giải Chi Tiết Của Thầy -->
-                        <div id="st-preview-explain-box" class="staging-explain-box" style="margin-top:16px;">
-                            <div class="staging-explain-title" style="color:#38bdf8; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-                                <i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết của Thầy
-                            </div>
-                            <div id="st-preview-explain" class="staging-explain-text">
+                        <!-- Lời Giải Chi Tiết Của Thầy Dạng Collapsible Chuẩn Ngân Hàng Đề -->
+                        <details class="nh-giai" id="st-preview-explain-details" open>
+                            <summary><i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết của Thầy</summary>
+                            <div id="st-preview-explain" class="nh-giai-body">
                                 <!-- Lời giải KaTeX -->
                             </div>
-                        </div>
+                        </details>
+
                     </div>
                 </div>
 
@@ -2184,7 +2415,7 @@ YÊU CẦU TINH CHỈNH:
     // KHỞI TẠO & ĐIỀU KHIỂN CHẾ ĐỘ 2: PHÒNG DUYỆT & SOẠN CÂU HỎI (514 CÂU)
     // ══════════════════════════════════════════════════════════════════
 
-    let currentStudioMode = 'MODEL'; // 'MODEL' hoặc 'STAGING'
+    let currentStudioMode = 'STAGING'; // 'MODEL' hoặc 'STAGING'
     let currentChapterFilter = 'ALL';
     let currentLevelFilter = 'ALL';
 
@@ -2195,7 +2426,7 @@ YÊU CẦU TINH CHỈNH:
     let stSimTime = 0.0;
     let stLastTime = 0;
 
-    let currentPoolFilter = 'BANK_ALL';   // 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
+    let currentPoolFilter = 'STAGING_50';   // 'BANK_ALL', 'TN_LT', 'TN_BT', 'DS', 'TLN', 'STAGING_50', 'ALL'
 
     function initStagingSystem() {
         // Nạp nguồn 3.048 câu Ngân Hàng Đề chính thức
@@ -2410,35 +2641,73 @@ YÊU CẦU TINH CHỈNH:
         const q = filteredStagingList[idx];
         if (!q) return;
 
-        // 1. Cập nhật Preview Badges & Header
-        const elId = document.getElementById('st-preview-id');
+        // 1. Cập nhật Hàng Meta Badge Chuẩn 100% Ngân Hàng Đề
+        const elId = document.getElementById('st-nh-badge-id');
         const elCounts = document.getElementById('st-preview-counts-text');
-        const statusBox = document.getElementById('st-preview-status');
-        const typeBox = document.getElementById('st-preview-type');
-        const levelBox = document.getElementById('st-preview-level');
+        const elType = document.getElementById('st-nh-badge-type');
+        const elSubtype = document.getElementById('st-nh-badge-subtype');
+        const elStatus = document.getElementById('st-nh-badge-status');
+        const elLevel = document.getElementById('st-nh-badge-level');
+        const elChuong = document.getElementById('st-nh-badge-chuong');
+        const elBaihoc = document.getElementById('st-nh-badge-baihoc');
+        const elSubtopic = document.getElementById('st-nh-badge-subtopic');
 
         if (elId) elId.textContent = q.id || `CÂU #${idx+1}`;
         if (elCounts) elCounts.textContent = `Câu ${idx+1} / ${filteredStagingList.length}`;
 
-        if (statusBox) {
-            if (q.isApproved || q.chatLuong === 'tinh') {
-                statusBox.className = 'badge-stage-status approved';
-                statusBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> ĐẠT CHUẨN TINH';
+        const loai = q.loai || 'TN';
+        if (elType) {
+            if (loai === 'DS') { elType.className = 'nh-badge b-ds'; elType.textContent = 'Đúng / Sai (Phần II)'; }
+            else if (loai === 'TLN') { elType.className = 'nh-badge b-tln'; elType.textContent = 'Trả Lời Ngắn (Phần III)'; }
+            else { elType.className = 'nh-badge b-tn'; elType.textContent = 'Trắc nghiệm'; }
+        }
+
+        if (elSubtype) {
+            if (loai === 'TN') {
+                elSubtype.style.display = 'inline-flex';
+                if (q.tnType === 'LT') { elSubtype.className = 'nh-badge b-tn-lt'; elSubtype.textContent = 'TN Lý thuyết (THPTQG)'; }
+                else if (q.tnType === 'BT') { elSubtype.className = 'nh-badge b-tn-bt'; elSubtype.textContent = 'TN Tính toán (Chưa chia)'; }
+                else { elSubtype.className = 'nh-badge b-tn-lt'; elSubtype.textContent = 'TN Chuẩn 4 Phương Án'; }
             } else {
-                statusBox.className = 'badge-stage-status pending';
-                statusBox.innerHTML = '<i class="fa-regular fa-clock"></i> CHỜ DUYỆT';
+                elSubtype.style.display = 'none';
             }
         }
 
-        const loai = q.loai || 'TN';
-        if (typeBox) {
-            if (loai === 'DS') typeBox.textContent = 'ĐÚNG / SAI 4 Ý (PHẦN II)';
-            else if (loai === 'TLN') typeBox.textContent = 'TRẢ LỜI NGẮN (PHẦN III)';
-            else if (q.tnType === 'LT') typeBox.textContent = 'TRẮC NGHIỆM LÝ THUYẾT (LT)';
-            else if (q.tnType === 'BT') typeBox.textContent = 'TRẮC NGHIỆM TÍNH TOÁN (BT)';
-            else typeBox.textContent = 'TRẮC NGHIỆM ABCD (PHẦN I)';
+        if (elStatus) {
+            if (q.isApproved || q.chatLuong === 'tinh' || q.chatLuong === 'Tinh') {
+                elStatus.className = 'nh-badge b-tinh';
+                elStatus.innerHTML = '<i class="fa-solid fa-check"></i> Tinh';
+            } else {
+                elStatus.className = 'nh-badge b-pending';
+                elStatus.innerHTML = '<i class="fa-regular fa-clock"></i> Chờ duyệt';
+            }
         }
-        if (levelBox) levelBox.textContent = (q.mucDo === 'VD' ? 'VẬN DỤNG (VD)' : (q.mucDo === 'VDC' ? 'VẬN DỤNG CAO (VDC)' : (q.mucDo === 'NB' ? 'NHẬN BIẾT (NB)' : 'THÔNG HIỂU (TH)')));
+
+        if (elLevel) {
+            const lvl = (q.mucDo || 'TH').toUpperCase();
+            elLevel.className = `nh-badge b-${lvl.toLowerCase()}`;
+            elLevel.textContent = lvl;
+        }
+
+        if (elChuong) elChuong.textContent = (q.chuong || 'Chương 1 – Vật lí nhiệt').toUpperCase();
+        if (elBaihoc) {
+            if (q.baiHoc && q.baiHoc.trim()) {
+                elBaihoc.style.display = 'inline-flex';
+                elBaihoc.textContent = q.baiHoc;
+            } else {
+                elBaihoc.style.display = 'none';
+            }
+        }
+
+        if (elSubtopic) {
+            const stText = q.subTopic || (q.chuong ? `${q.chuong}` : '');
+            if (stText) {
+                elSubtopic.style.display = 'inline-flex';
+                elSubtopic.innerHTML = `<i class="fa-solid fa-tag"></i> ${renderMathTextToHtml(stText)}`;
+            } else {
+                elSubtopic.style.display = 'none';
+            }
+        }
 
         // 2. Đề bài chung
         const debaichungBox = document.getElementById('st-preview-debaichung');
@@ -2483,12 +2752,10 @@ YÊU CẦU TINH CHỈNH:
 
             if (dsBox) {
                 dsBox.innerHTML = statements.map(s => `
-                    <div class="ds-stmt-row">
-                        <div class="ds-stmt-left">
-                            <span class="ds-stmt-label">${s.key})</span>
-                            <span class="ds-stmt-text">${renderMathTextToHtml(s.text)}</span>
-                        </div>
-                        <span class="ds-badge ${s.isTrue ? 'true' : 'false'}">
+                    <div class="nh-tf-row">
+                        <span class="nh-tf-letter">${s.key})</span>
+                        <div class="nh-tf-content">${renderMathTextToHtml(s.text)}</div>
+                        <span class="nh-tf-badge ${s.isTrue ? 'dung' : 'sai'}">
                             ${s.isTrue ? '<i class="fa-solid fa-check"></i> Đúng' : '<i class="fa-solid fa-xmark"></i> Sai'}
                         </span>
                     </div>
@@ -2515,10 +2782,10 @@ YÊU CẦU TINH CHỈNH:
             if (tlnBox) tlnBox.style.display = 'flex';
             if (editorTln) editorTln.style.display = 'block';
 
-            const mockUnit = document.getElementById('st-tln-mock-unit');
-            const correctText = document.getElementById('st-tln-correct-text');
-            if (mockUnit) mockUnit.textContent = q.donVi || q.unit || '';
-            if (correctText) correctText.textContent = `${q.correct || ''} ${q.donVi || ''}`;
+            const correctValBox = document.getElementById('st-tln-correct-val');
+            const tolText = document.getElementById('st-tln-tolerance-text');
+            if (correctValBox) correctValBox.textContent = `${q.correct || ''} ${q.donVi || q.unit || ''}`;
+            if (tolText) tolText.textContent = `(Dung sai cho phép: ±${q.tolerance || 0.01})`;
 
             const inpCorrect = document.getElementById('st-inp-tln-correct');
             const inpUnit = document.getElementById('st-inp-tln-unit');
@@ -2547,10 +2814,10 @@ YÊU CẦU TINH CHỈNH:
                 tnBox.innerHTML = opts.map(o => {
                     const isCorrect = (q.correct && q.correct.toUpperCase() === o.key);
                     return `
-                        <div class="staging-opt-item ${isCorrect ? 'correct' : ''}">
-                            <div class="staging-opt-pill">${o.key}</div>
-                            <div class="staging-opt-content">${renderMathTextToHtml(o.text)}</div>
-                            ${isCorrect ? '<span class="badge-opt-correct"><i class="fa-solid fa-check"></i> Đúng</span>' : ''}
+                        <div class="nh-opt-box ${isCorrect ? 'ok-correct' : ''}">
+                            <span class="nh-opt-letter">${o.key}.</span>
+                            <div class="nh-opt-content">${renderMathTextToHtml(o.text)}</div>
+                            ${isCorrect ? '<span class="nh-opt-tag ok"><i class="fa-solid fa-check"></i> Đúng</span>' : ''}
                         </div>
                     `;
                 }).join('');
@@ -2950,6 +3217,8 @@ YÊU CẦU TINH CHỈNH:
         updateOverridesCountBadge();
         requestAnimationFrame(renderLoop);
         initStagingSystem();
+        // Mặc định khởi động vào Phòng Duyệt & Soạn Câu Hỏi (Phòng Chính)
+        switchStudioMode('STAGING');
     }
 
     if (document.readyState === 'loading') {
