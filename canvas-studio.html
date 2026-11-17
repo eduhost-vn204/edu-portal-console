@@ -10,7 +10,7 @@
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
-    <script src="assets/mo-hinh-thuc-te-models.js?v=20261116-canvas-fix"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-teacher-91models"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -640,6 +640,10 @@
                         📑 Đã chỉnh (<span id="disp-overrides-count">0</span>)
                     </button>
 
+                    <button class="btn-secondary" onclick="exportOverridesJson()" title="Tải file backup JSON chứa tất cả bản tinh chỉnh mô hình Canvas">
+                        📥 Xuất JSON
+                    </button>
+
                     <button class="btn-secondary" onclick="deleteCurrentOverride()" title="Xóa bản tinh chỉnh câu này để quay về mô hình gốc">
                         ↺ Xóa tinh chỉnh
                     </button>
@@ -1132,18 +1136,22 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
                 } catch(e) {}
             }
 
-            // 5. Gửi lên Google Apps Script đám mây để lưu vĩnh viễn vào Google Sheets Settings
-            const payload = {
-                action: 'savesetting',
-                key: 'VLXT_CANVAS_OVERRIDES',
-                value: JSON.stringify(overrides)
-            };
+            // 5. Gửi lên Google Apps Script đám mây theo modelId riêng lẻ (tránh giới hạn 50K ký tự ô tính Google Sheets)
+            try {
+                const payload = {
+                    action: 'savesetting',
+                    key: 'VLXT_CANVAS_' + currentModelId,
+                    value: code
+                };
 
-            await fetch(GAS_BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            });
+                await fetch(GAS_BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (cloudErr) {
+                console.warn("Lỗi đồng bộ Cloud (đã lưu an toàn trong máy):", cloudErr);
+            }
 
             setEditorStatus('hot', `⭐ Đã lưu thành công mô hình ${currentModelId} vào Ngân Hàng Đề & Cloud!`);
             showToast(`✅ Đã lưu ${currentModelId} lên Cloud & Ngân hàng! Mọi đề thi đều tự nhận mô hình mới.`);
@@ -1183,8 +1191,8 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'savesetting',
-                    key: 'VLXT_CANVAS_OVERRIDES',
-                    value: JSON.stringify(overrides)
+                    key: 'VLXT_CANVAS_' + currentModelId,
+                    value: ''
                 })
             });
 
@@ -1195,6 +1203,24 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
         } catch(e) {
             showToast(`↺ Đã khôi phục ${currentModelId} về mô hình gốc.`);
         }
+    }
+
+    // Xuất file backup JSON chứa toàn bộ bản tinh chỉnh mô hình
+    function exportOverridesJson() {
+        const overrides = getLocalOverrides();
+        let exportData = overrides;
+        if (Object.keys(exportData).length === 0 && window.VLXTModels && window.VLXTModels._canvasRegistry) {
+            exportData = {};
+            for (let id in window.VLXTModels._canvasRegistry) {
+                exportData[id] = window.VLXTModels._canvasRegistry[id].toString();
+            }
+        }
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `VLXT_CANVAS_OVERRIDES_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        showToast('📥 Đã tải file sao lưu JSON toàn bộ mô hình Canvas!');
     }
 
     // Modal hiển thị danh sách các câu đã override

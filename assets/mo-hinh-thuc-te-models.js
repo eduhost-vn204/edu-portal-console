@@ -16922,6 +16922,17729 @@ function drawAlphaCluster(ctx, cx, cy, r = 4.5) {
 
 
 
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // 🌟 81 BẢN MÔ HÌNH TINH CHỈNH CHÍNH THỨC CỦA THẦY NGUYỄN XUÂN TRƯỜNG
+    // Đã qua kiểm định: Zero Data Leakage, chuẩn 780x305, Retina 2x, thiết kế phẳng EdTech
+    // Tự động nạp trực tiếp vào canvasRegistry làm mã nguồn chuẩn toàn hệ thống
+    // ══════════════════════════════════════════════════════════════════════════
+    (function() {
+        var VLXTModels = { register: registerCanvas };
+
+    // --- MH-C1-02 ---
+// Mã nguồn vẽ mô hình MH-C1-02
+// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)
+VLXTModels.register('MH-C1-02', function(ctx, w, h, t) {
+      ctx.clearRect(0, 0, w, h);
+      const saw = (t * 0.18) % 1;
+
+      // (5) Cân điện tử
+      drawRoundRect(ctx, 20, 195, 130, 56, 8, '#1e293b', '#64748b', 2.2);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(34, 186, 102, 9);
+      drawRoundRect(ctx, 38, 208, 94, 28, 5, '#050811', '#38bdf8', 1.5);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 14px "DM Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('0.25 kg', 85, 227);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('(5) Cân điện tử', 85, 274);
+
+      // (1) Biến thế nguồn
+      drawRoundRect(ctx, 175, 135, 165, 116, 10, '#1e293b', '#64748b', 2.2);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('(1) Biến thế nguồn', 257, 160);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath(); ctx.arc(298, 202, 19, 0, Math.PI * 2); ctx.stroke();
+      drawArrow(ctx, 298, 202, 310, 189, '#38bdf8', 2.8, 6);
+      ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(210, 214, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#3b82f6'; ctx.beginPath(); ctx.arc(242, 214, 7, 0, Math.PI * 2); ctx.fill();
+
+      // (2) Oát kế & Thời gian
+      drawRoundRect(ctx, 368, 142, 165, 109, 10, '#1e293b', '#64748b', 2.2);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillText('(2) Oát kế & Thời gian', 450, 165);
+      drawRoundRect(ctx, 386, 175, 128, 38, 6, '#050811', '#10b981', 1.8);
+      ctx.fillStyle = '#6ee7b7';
+      ctx.font = '700 14px "DM Mono", monospace';
+      ctx.fillText('P (W) | τ (s)', 450, 199);
+      const pinsX = [398, 424, 476, 502];
+      const pinsCol = ['#ef4444', '#3b82f6', '#ef4444', '#3b82f6'];
+      pinsX.forEach((px, i) => {
+        ctx.fillStyle = pinsCol[i];
+        ctx.beginPath(); ctx.arc(px, 232, 6, 0, Math.PI * 2); ctx.fill();
+      });
+
+      // (4) Nhiệt lượng kế
+      const bx = 575, by = 105, bw = 175, bh = 148;
+      drawRoundRect(ctx, bx, by, bw, bh, 10, '#1e293b', '#94a3b8', 2.6);
+      const wx = bx + 12, wy = by + 42, ww = bw - 24, wh = bh - 54;
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.26)';
+      ctx.fillRect(wx, wy, ww, wh);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      for (let xx = wx; xx <= wx + ww; xx += 4) {
+        const yy = wy + Math.sin(xx * 0.1 + t * 3) * 1.5;
+        if (xx === wx) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+
+      // Nắp bình
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(bx - 5, by - 7, bw + 10, 15);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('(4) Nhiệt lượng kế', bx + bw / 2, by + bh + 22);
+
+      // Dây điện trở chìm trong nước
+      const glow = 0.55 + 0.45 * Math.sin(t * 4) ** 2;
+      ctx.strokeStyle = `rgba(249, 115, 22, ${glow.toFixed(2)})`;
+      ctx.lineWidth = 3.2;
+      ctx.beginPath();
+      ctx.moveTo(bx + 42, by - 7);
+      ctx.lineTo(bx + 42, wy + 60);
+      for (let k = 0; k < 5; k++) {
+        ctx.lineTo(bx + 50 + k * 11, wy + 48);
+        ctx.lineTo(bx + 55 + k * 11, wy + 70);
+      }
+      ctx.lineTo(bx + 106, wy + 60);
+      ctx.lineTo(bx + 106, by - 7);
+      ctx.stroke();
+
+     // (3) Nhiệt kế tăng 1 chiều rồi reset (Đã phóng to ống từ 6.5 -> 10)
+      drawThermometer(ctx, bx + 138, 48, wy + 58, 10, 0.35 + 0.5 * saw, '#ef4444', '');
+
+      // Vẽ khung đỏ rộng và to riêng cho nhãn (3) Nhiệt kế
+      const tkX = bx + 138; // Tâm X của nhiệt kế (713)
+      drawRoundRect(ctx, tkX - 65, 10, 130, 32, 6, '#1e293b', '#ef4444', 2.2);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('(3) Nhiệt kế', tkX, 31);
+
+      // Dây nối mạch
+      ctx.save();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.moveTo(210, 214); ctx.lineTo(210, 282); ctx.lineTo(398, 282); ctx.lineTo(398, 232);
+      ctx.moveTo(476, 232); ctx.lineTo(476, 282); ctx.lineTo(552, 282); ctx.lineTo(552, 74); ctx.lineTo(bx + 42, 74); ctx.lineTo(bx + 42, by - 7);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.moveTo(242, 214); ctx.lineTo(242, 292); ctx.lineTo(424, 292); ctx.lineTo(424, 232);
+      ctx.moveTo(502, 232); ctx.lineTo(502, 292); ctx.lineTo(562, 292); ctx.lineTo(562, 84); ctx.lineTo(bx + 106, 84); ctx.lineTo(bx + 106, by - 7);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // --- MH-C1-03 ---
+VLXTModels.register('MH-C1-03', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+  const bx = 55, by = 88, bw = 235, bh = 180;
+  drawRoundRect(ctx, bx, by, bw, bh, 12, '#1e293b', '#94a3b8', 2.8);
+  const wx = bx + 14, wy = by + 54, ww = bw - 28, wh = bh - 68;
+
+  // Nước trong bình
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.26)';
+  ctx.fillRect(wx, wy, ww, wh);
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  for (let xx = wx; xx <= wx + ww; xx += 4) {
+    const yy = wy + Math.sin(xx * 0.08 + t * 3) * 1.5;
+    if (xx === wx) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+
+  // Dây điện trở chìm dưới đáy
+  ctx.strokeStyle = '#f97316';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(bx + 42, by);
+  ctx.lineTo(bx + 42, wy + 85);
+  for (let k = 0; k < 5; k++) {
+    ctx.lineTo(bx + 52 + k * 14, wy + 73);
+    ctx.lineTo(bx + 59 + k * 14, wy + 95);
+  }
+  ctx.lineTo(bx + 125, wy + 85);
+  ctx.lineTo(bx + 125, by);
+  ctx.stroke();
+
+  // Viên nước đá KÍCH THƯỚC RỘNG RÃI (92x34px)
+  const bob = Math.sin(t * 2.4) * 2.2;
+  const iceX = bx + 48, iceY = wy - 10 + bob, iceW = 92, iceH = 34;
+  drawRoundRect(ctx, iceX, iceY, iceW, iceH, 8, 'rgba(224, 242, 254, 0.9)', '#38bdf8', 2);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Đá: 0,02 kg', iceX + iceW / 2, iceY + 21);
+
+  // Que khuấy đặt cách xa nhiệt kế
+  const stirY = Math.sin(t * 3.5) * 5;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(bx + 156, 48 + stirY);
+  ctx.lineTo(bx + 156, wy + 62 + stirY);
+  ctx.moveTo(bx + 144, wy + 62 + stirY);
+  ctx.lineTo(bx + 168, wy + 62 + stirY);
+  ctx.stroke();
+
+  // Nắp nhiệt lượng kế thiết kế khớp khít miệng bình (có gờ ngàm, viền sáng & chốt luồn)
+  const lidX = bx - 6, lidY = by - 9, lidW = bw + 12, lidH = 16;
+  drawRoundRect(ctx, lidX, lidY, lidW, lidH, 6, '#334155', '#cbd5e1', 2.2);
+  // Gờ ngàm khớp vào lòng miệng bình
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(bx + 3, lidY + lidH - 1, bw - 6, 5);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(bx + 3, lidY + lidH - 1, bw - 6, 5);
+  // Nút cao su luồn 2 cực dây điện trở & lỗ dẫn que khuấy trên nắp
+  drawRoundRect(ctx, bx + 35, lidY - 3, 14, 6, 2, '#0f172a', '#94a3b8', 1.4);
+  drawRoundRect(ctx, bx + 118, lidY - 3, 14, 6, 2, '#0f172a', '#94a3b8', 1.4);
+  drawRoundRect(ctx, bx + 148, lidY - 2, 16, 5, 2, '#0f172a', '#94a3b8', 1.3);
+
+  // Layer nhiệt kế đặt trên cùng bên phải + Nút cao su giữ nhiệt kế + Nhãn viền đỏ cỡ chữ lớn
+  const tx = bx + 202;
+  const prog = (t * 0.2) % 1;
+  const tempRatio = prog < 0.6 ? 0.22 : (0.22 + (prog - 0.6) * 0.9);
+  drawThermometer(ctx, tx, 48, wy + 70, 9.5, tempRatio, '#38bdf8', '');
+  drawRoundRect(ctx, tx - 11, lidY - 3, 22, 7, 3, '#0f172a', '#94a3b8', 1.5);
+
+  const labelW = 86, labelH = 26;
+  drawRoundRect(ctx, tx - labelW / 2, 12, labelW, labelH, 7, '#1e293b', '#ef4444', 2.2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nhiệt kế', tx, 30);
+
+  // Chú thích tên bình bên dưới
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Bình nhiệt lượng kế (Nước + Đá)', bx + bw / 2, by + bh + 22);
+
+  // Đồ thị t(°C) theo τ(s) bên phải
+  const ox = 365, oy = 245, gxW = 365, gyH = 180;
+  drawArrow(ctx, ox, oy, ox + gxW, oy, '#94a3b8', 2.4, 8);
+  drawArrow(ctx, ox, oy, ox, oy - gyH, '#94a3b8', 2.4, 8);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '700 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('t (°C)', ox - 18, oy - gyH - 10);
+  ctx.fillText('τ (s)', ox + gxW + 8, oy + 5);
+  ctx.textAlign = 'right';
+  ctx.fillText('0', ox - 8, oy + 5);
+
+  const bendX = ox + 195;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(ox, oy);
+  ctx.lineTo(bendX, oy);
+  ctx.lineTo(ox + 320, oy - 145);
+  ctx.stroke();
+
+  let dotX, dotY;
+  if (prog < 0.6) {
+    dotX = ox + (prog / 0.6) * 195;
+    dotY = oy;
+  } else {
+    const p2 = (prog - 0.6) / 0.4;
+    dotX = bendX + p2 * 125;
+    dotY = oy - p2 * 145;
+  }
+  ctx.fillStyle = '#fbbf24';
+  ctx.beginPath(); ctx.arc(dotX, dotY, 6.5, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '700 13.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Đá đang nóng chảy (0°C)', ox + 98, oy + 24);
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText('Nước tăng nhiệt độ', bendX + 10, oy - 105);
+});
+
+    // --- MH-C1-04 ---
+VLXTModels.register('MH-C1-04', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+  const saw = (t * 0.2) % 1;
+
+  // Biến áp nguồn
+  drawRoundRect(ctx, 40, 110, 180, 138, 12, '#1e293b', '#64748b', 2.5);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Biến áp nguồn', 130, 138);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '700 15px "DM Mono", monospace';
+  ctx.fillText('U = 1,6 V', 130, 174);
+  ctx.fillText('I = 2,5 A', 130, 202);
+
+  // Oát kế
+  drawRoundRect(ctx, 275, 138, 135, 84, 10, '#1e293b', '#38bdf8', 2.5);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('Oát kế', 342, 168);
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = '700 14px "DM Mono", monospace';
+  ctx.fillText('P = U · I', 342, 196);
+
+  // Thân bình nhiệt lượng kế & chất lỏng
+  const bx = 485, by = 88, bw = 225, bh = 180;
+  drawRoundRect(ctx, bx, by, bw, bh, 12, '#1e293b', '#94a3b8', 2.8);
+  const wx = bx + 14, wy = by + 44, ww = bw - 28, wh = bh - 56;
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.26)';
+  ctx.fillRect(wx, wy, ww, wh);
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  for (let xx = wx; xx <= wx + ww; xx += 4) {
+    const yy = wy + Math.sin(xx * 0.09 + t * 3) * 1.5;
+    if (xx === wx) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+
+  // Dây điện trở đun nóng bên trong bình
+  const glow = 0.55 + 0.45 * Math.sin(t * 4) ** 2;
+  ctx.strokeStyle = `rgba(249, 115, 22, ${glow.toFixed(2)})`;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(bx + 120, by);
+  ctx.lineTo(bx + 120, wy + 78);
+  for (let k = 0; k < 5; k++) {
+    ctx.lineTo(bx + 128 + k * 11, wy + 66);
+    ctx.lineTo(bx + 134 + k * 11, wy + 90);
+  }
+  ctx.lineTo(bx + 185, wy + 78);
+  ctx.lineTo(bx + 185, by);
+  ctx.stroke();
+
+  // Dây nối mạch điện (vẽ trước nắp bình và nhiệt kế để xuyên gọn qua nắp)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.moveTo(220, 162); ctx.lineTo(275, 162);
+  ctx.moveTo(410, 162); ctx.lineTo(445, 162); ctx.lineTo(445, 58); ctx.lineTo(bx + 185, 58); ctx.lineTo(bx + 185, by);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.moveTo(220, 198); ctx.lineTo(275, 198);
+  ctx.moveTo(410, 198); ctx.lineTo(460, 198); ctx.lineTo(460, 70); ctx.lineTo(bx + 120, 70); ctx.lineTo(bx + 120, by);
+  ctx.stroke();
+
+  // Nắp nhiệt lượng kế thiết kế khớp khít miệng bình (có gờ đậy, viền sáng & chốt luồn dây)
+  const lidX = bx - 6, lidY = by - 9, lidW = bw + 12, lidH = 16;
+  drawRoundRect(ctx, lidX, lidY, lidW, lidH, 6, '#334155', '#cbd5e1', 2.2);
+  // Gờ ngàm khớp vào lòng miệng bình
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(bx + 3, lidY + lidH - 1, bw - 6, 5);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(bx + 3, lidY + lidH - 1, bw - 6, 5);
+  // Nút cao su luồn 2 cực dây điện trên nắp
+  drawRoundRect(ctx, bx + 113, lidY - 3, 14, 6, 2, '#0f172a', '#94a3b8', 1.4);
+  drawRoundRect(ctx, bx + 178, lidY - 3, 14, 6, 2, '#0f172a', '#94a3b8', 1.4);
+
+  // Chú thích tên bình bên dưới
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '700 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nhiệt lượng kế (m = 150,0 g)', bx + bw / 2, by + bh + 22);
+
+  // Layer nhiệt kế trên cùng + Nút cao su giữ nhiệt kế trên nắp + Nhãn viền đỏ
+  const tx = bx + 48;
+  drawThermometer(ctx, tx, 46, wy + 78, 10, 0.32 + 0.52 * saw, '#ef4444', '');
+  drawRoundRect(ctx, tx - 10, lidY - 3, 20, 7, 3, '#0f172a', '#94a3b8', 1.5);
+
+  const labelW = 86, labelH = 26;
+  drawRoundRect(ctx, tx - labelW / 2, 12, labelW, labelH, 7, '#1e293b', '#ef4444', 2.2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nhiệt kế', tx, 30);
+});
+
+    // --- MH-C1-05 ---
+VLXTModels.register('MH-C1-05', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.textAlign = 'center';
+
+  // (1) Chai nước (tạo dáng vai chai thuôn cổ, nắp vặn có gân & nhãn nước sắc nét)
+  const botX = 40, botY = 122, botW = 68, botH = 120;
+  // Thân chai chính
+  drawRoundRect(ctx, botX, botY, botW, botH, 11, 'rgba(56, 189, 248, 0.16)', '#38bdf8', 2.4);
+  // Vai chai thuôn lên cổ chai
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(botX + 4, botY + 2);
+  ctx.lineTo(botX + 20, botY - 18);
+  ctx.lineTo(botX + botW - 20, botY - 18);
+  ctx.lineTo(botX + botW - 4, botY + 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // Cổ chai & nắp chai vặn
+  drawRoundRect(ctx, botX + 21, botY - 26, 26, 9, 2, '#1e293b', '#38bdf8', 2);
+  drawRoundRect(ctx, botX + 19, botY - 37, 30, 12, 3, '#334155', '#cbd5e1', 1.8);
+  // Khối nước bên trong chai
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.38)';
+  ctx.beginPath();
+  ctx.roundRect(botX + 3, botY + 26, botW - 6, botH - 29, [0, 0, 8, 8]);
+  ctx.fill();
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(botX + 3, botY + 26); ctx.lineTo(botX + botW - 3, botY + 26);
+  ctx.stroke();
+  // Nhãn chai tinh gọn
+  drawRoundRect(ctx, botX + 8, botY + 50, botW - 16, 28, 4, 'rgba(15, 23, 42, 0.75)', '#38bdf8', 1.2);
+  ctx.fillStyle = '#bae6fd';
+  ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('H₂O', botX + botW / 2, botY + 68);
+
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(1) Chai nước', botX + botW / 2, 270);
+
+  // (2) Nhiệt lượng kế (nắp khớp miệng bình có gờ ngàm + chốt dẫn que khuấy)
+  const bx = 152, by = 100, bw = 158, bh = 142;
+  drawRoundRect(ctx, bx, by, bw, bh, 12, '#1e293b', '#94a3b8', 2.6);
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+  ctx.fillRect(bx + 10, by + 40, bw - 20, bh - 50);
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let xx = bx + 10; xx <= bx + bw - 10; xx += 4) {
+    const yy = by + 40 + Math.sin(xx * 0.09 + t * 3) * 1.2;
+    if (xx === bx + 10) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+
+  // Que khuấy
+  const sy = Math.sin(t * 3.5) * 5;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.moveTo(bx + 115, 62 + sy); ctx.lineTo(bx + 115, by + 105 + sy);
+  ctx.moveTo(bx + 102, by + 105 + sy); ctx.lineTo(bx + 128, by + 105 + sy);
+  ctx.stroke();
+
+  // Nắp nhiệt lượng kế khớp khít
+  const lidX = bx - 5, lidY = by - 8, lidW = bw + 10, lidH = 14;
+  drawRoundRect(ctx, lidX, lidY, lidW, lidH, 5, '#334155', '#cbd5e1', 2);
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(bx + 3, lidY + lidH - 1, bw - 6, 4);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.4;
+  ctx.strokeRect(bx + 3, lidY + lidH - 1, bw - 6, 4);
+  drawRoundRect(ctx, bx + 107, lidY - 2, 16, 5, 2, '#0f172a', '#94a3b8', 1.3);
+
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(2) Nhiệt lượng kế', bx + bw / 2, 270);
+
+  // (3) Cốc nước đá (hở miệng trên)
+  const cx = 355, cy = 118, cw = 120, ch = 124;
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+  ctx.fillRect(cx + 3, cy + 28, cw - 6, ch - 30);
+  drawOpenCup(ctx, cx, cy, cw, ch, '#cbd5e1', 2.8, 4);
+  const bob = Math.sin(t * 2.5) * 2;
+  drawRoundRect(ctx, cx + 16, cy + 22 + bob, 36, 26, 6, 'rgba(224, 242, 254, 0.88)', '#38bdf8', 1.8);
+  drawRoundRect(ctx, cx + 64, cy + 26 - bob, 38, 26, 6, 'rgba(224, 242, 254, 0.88)', '#38bdf8', 1.8);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(3) Cốc nước đá', cx + cw / 2, 270);
+
+  // (5) Nhiệt kế (nhãn viền đỏ chữ to rõ nét)
+  const tx = 542;
+  drawThermometer(ctx, tx, 58, 152, 10, 0.55, '#ef4444', '');
+  drawRoundRect(ctx, tx - 56, 16, 112, 28, 7, '#1e293b', '#ef4444', 2.2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(5) Nhiệt kế', tx, 35);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(±0,1°C)', tx, 190);
+
+  // (4) Cân điện tử (cỡ chữ số & chú thích tăng lớn rõ nét)
+  drawRoundRect(ctx, 610, 178, 142, 64, 8, '#1e293b', '#64748b', 2.4);
+  drawRoundRect(ctx, 623, 169, 116, 9, 3, '#475569', '#94a3b8', 1.5);
+  drawRoundRect(ctx, 632, 194, 98, 32, 5, '#050811', '#10b981', 1.6);
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = '800 15.5px "DM Mono", monospace';
+  ctx.fillText('0.00 g', 681, 215);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('(4) Cân (0,01g)', 681, 270);
+});
+
+    // --- MH-C1-06 ---
+VLXTModels.register('MH-C1-06', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Mở rộng tỉ lệ toàn bộ cụm bình bảo ôn + dàn ống thu nhiệt lớn và thoáng hơn
+  const cx = 178, cy = 86, R = 56;
+  const innerR = R - 9;
+  const splitY = cy + 18; // Đường phân chia nóng - lạnh trong bình trùng tâm vách ngăn ống
+  const tx1 = cx + 28, ty1 = splitY;
+  const tx2 = 468, ty2 = 258;
+  const ang = Math.atan2(ty2 - ty1, tx2 - tx1);
+  const len = Math.hypot(tx2 - tx1, ty2 - ty1);
+
+  // 1. Nền mặt đất & Khung chân giá đỡ thép
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 4.8;
+  ctx.beginPath();
+  ctx.moveTo(166, 142); ctx.lineTo(166, 278);
+  ctx.moveTo(166, 158); ctx.lineTo(480, 278);
+  ctx.moveTo(166, 232); ctx.lineTo(318, 214);
+  ctx.moveTo(30, 278); ctx.lineTo(502, 278);
+  ctx.stroke();
+
+  // 2. Đường nước nóng ra & Đường nước lạnh vào (tách rộng để chữ đứng thoáng, không chạm ống)
+  // Đường nước nóng ra (ngoài cùng bên trái)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 3.8;
+  ctx.beginPath();
+  ctx.moveTo(cx - 32, cy - 20);
+  ctx.lineTo(54, cy - 20);
+  ctx.lineTo(54, 278);
+  ctx.stroke();
+  drawArrow(ctx, 54, 108, 54, 152, '#fca5a5', 2.4, 7);
+
+  ctx.save();
+  ctx.translate(38, 198);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = '#f87171';
+  ctx.font = '800 13.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nước nóng ra', 0, 0);
+  ctx.restore();
+
+  // Đường nước lạnh vào (nằm giữa ống nước nóng và cột giá đỡ)
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.8;
+  ctx.beginPath();
+  ctx.moveTo(cx - 38, splitY + 12);
+  ctx.lineTo(116, splitY + 12);
+  ctx.lineTo(116, 278);
+  ctx.stroke();
+  drawArrow(ctx, 116, 215, 116, 172, '#7dd3fc', 2.4, 7);
+
+  ctx.save();
+  ctx.translate(100, 198);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 13.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nước lạnh vào', 0, 0);
+  ctx.restore();
+
+  // 3. Bình bảo ôn mặt cắt tròn kích thước lớn (200 lít)
+  ctx.fillStyle = '#f59e0b';
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2.6;
+  ctx.stroke();
+
+  // Lõi ruột bình chứa nước
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.clip();
+
+  // Vùng nước nóng phía trên splitY
+  const hotGrad = ctx.createLinearGradient(cx, cy - innerR, cx, splitY);
+  hotGrad.addColorStop(0, '#dc2626');
+  hotGrad.addColorStop(1, '#f97316');
+  ctx.fillStyle = hotGrad;
+  ctx.fillRect(cx - innerR, cy - innerR, innerR * 2, splitY - (cy - innerR));
+
+  // Vùng nước lạnh phía dưới splitY
+  const coldGrad = ctx.createLinearGradient(cx, splitY, cx, cy + innerR);
+  coldGrad.addColorStop(0, '#0284c7');
+  coldGrad.addColorStop(1, '#0369a1');
+  ctx.fillStyle = coldGrad;
+  ctx.fillRect(cx - innerR, splitY, innerR * 2, (cy + innerR) - splitY);
+
+  // Sóng mặt phân cách lớp nước nóng - lạnh
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let wx = cx - innerR; wx <= cx + innerR; wx += 4) {
+    const wy = splitY + Math.sin(wx * 0.14 + t * 3) * 1.4;
+    if (wx === cx - innerR) ctx.moveTo(wx, wy); else ctx.lineTo(wx, wy);
+  }
+  ctx.stroke();
+
+  // Mũi tên đối lưu nước nóng bốc lên đỉnh bình
+  drawArrow(ctx, cx - 14, splitY - 5, cx - 14, cy - 26, '#fef08a', 2.2, 6);
+  drawArrow(ctx, cx + 12, splitY - 5, cx + 12, cy - 26, '#fef08a', 2.2, 6);
+  ctx.restore();
+
+  // Viền lõi bình
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.arc(cx, cy, innerR, 0, Math.PI * 2); ctx.stroke();
+
+  // 4. Dàn ống thu nhiệt mặt cắt lớn (nóng trên - lạnh dưới, nối liền splitY)
+  ctx.save();
+  ctx.translate(tx1, ty1);
+  ctx.rotate(ang);
+
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.roundRect(0, -16, len, 32, [0, 16, 16, 0]);
+  ctx.fill();
+  ctx.stroke();
+
+  // Nửa trên ống (y < 0): Nước nóng (đỏ cam) đi lên vào bình
+  ctx.fillStyle = '#ea580c';
+  ctx.beginPath();
+  ctx.roundRect(-5, -13.5, len + 2, 13.5, [0, 13.5, 0, 0]);
+  ctx.fill();
+
+  // Nửa dưới ống (y > 0): Nước lạnh (xanh dương) chảy xuống đáy ống
+  ctx.fillStyle = '#0284c7';
+  ctx.beginPath();
+  ctx.roundRect(-5, 0, len + 2, 13.5, [0, 0, 13.5, 0]);
+  ctx.fill();
+
+  // Vách ngăn phân chia nóng - lạnh nối thẳng vào splitY
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(-5, 0); ctx.lineTo(len - 18, 0);
+  ctx.stroke();
+
+  // Hạt đối lưu chuyển động rõ nét
+  for (let k = 0; k < 3; k++) {
+    const p = ((t * 0.48 + k / 3) % 1);
+    const xHot = (len - 18) - p * (len - 26);
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath(); ctx.arc(xHot, -6.8, 3.6, 0, Math.PI * 2); ctx.fill();
+
+    const xCold = 10 + p * (len - 26);
+    ctx.fillStyle = '#bae6fd';
+    ctx.beginPath(); ctx.arc(xCold, 6.8, 3.6, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Chữ "Dàn ống thu nhiệt S = 2 m²" cỡ lớn, đặt cách hẳn phía dưới thân ống để không chạm nét
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Dàn ống thu nhiệt S = 2 m²', len * 0.52, 34);
+
+  ctx.restore();
+
+  // Nhãn phân vùng nước trong bình (cỡ chữ lớn rõ nét, không chạm nét)
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nước nóng', cx - 2, cy - 26);
+  ctx.fillText('Nước lạnh', cx - 4, splitY + 17);
+
+  // 5. Mặt trời & các tia bức xạ chiếu xuống dàn ống thu nhiệt (bố trí thoáng, chữ không chạm tia)
+  const sx = 468, sy = 52;
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2.6;
+  for (let a = 0; a < 12; a++) {
+    const rayA = a * (Math.PI * 2 / 12) + t * 0.35;
+    ctx.beginPath();
+    ctx.moveTo(sx + Math.cos(rayA) * 25, sy + Math.sin(rayA) * 25);
+    ctx.lineTo(sx + Math.cos(rayA) * 34, sy + Math.sin(rayA) * 34);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#f59e0b';
+  ctx.beginPath(); ctx.arc(sx, sy, 20, 0, Math.PI * 2); ctx.fill();
+
+  for (let i = 0; i < 4; i++) {
+    const off = ((t * 45 + i * 22) % 58);
+    const rx = 304 + i * 44 - off * 0.42;
+    const ry = 86 + i * 24 + off * 0.62;
+    drawArrow(ctx, rx, ry, rx - 18, ry + 28, '#fbbf24', 2.6, 7.5);
+  }
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Bức xạ mặt trời', 342, 30);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '700 13.5px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('1370 W/m² • H = 60%', 342, 50);
+
+  // 6. Bảng thông số đề bài bên phải (mở rộng & tăng cỡ chữ sắc nét)
+  drawRoundRect(ctx, 526, 54, 238, 212, 10, '#0f172a', '#334155', 2.2);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 15.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('THÔNG SỐ ĐỀ BÀI', 544, 84);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '700 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.fillText('• Diện tích thu: 2 m²', 544, 118);
+  ctx.fillText('• Thể tích bình: 200 lít', 544, 148);
+  ctx.fillText('• Nhiệt độ đầu: 25°C', 544, 178);
+  ctx.fillText('• Cường độ: 1370 W/m²', 544, 208);
+  ctx.fillText('• Hiệu suất thu: 60%', 544, 238);
+});
+
+    // --- MH-C1-09 ---
+// Mã nguồn vẽ mô hình MH-C1-09
+// Chuẩn logic: 780 x 305 | Biến t là thời gian thực (giây)
+VLXTModels.register('MH-C1-09', function(ctx, w, h, t) {
+      ctx.clearRect(0, 0, w, h);
+      const bx = 55, by = 55, bw = 195, bh = 160;
+      drawRoundRect(ctx, bx, by, bw, bh, 14, '#1e293b', '#94a3b8', 2.8);
+      drawRoundRect(ctx, bx + 12, by + 14, bw - 24, bh - 28, 8, 'rgba(239, 68, 68, 0.28)', 'rgba(248,113,113,0.4)', 1.8);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Bình chứa nước nóng', bx + bw / 2, by + 42);
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '700 13.5px "DM Mono", monospace';
+      ctx.fillText('V = 15 L | P = 2,5 kW', bx + bw / 2, by + 70);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText('Đầu: 20°C | H = 97%', bx + bw / 2, by + 96);
+
+      const mixX = 415, mixY = 168;
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 9;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(bx + 65, by + bh - 14);
+      ctx.lineTo(bx + 65, mixY);
+      ctx.lineTo(mixX, mixY);
+      ctx.stroke();
+      ctx.fillStyle = '#fca5a5';
+      ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('Nước nóng ra', 300, mixY - 14);
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      ctx.moveTo(mixX, 270);
+      ctx.lineTo(mixX, mixY);
+      ctx.stroke();
+      drawArrow(ctx, mixX + 20, 255, mixX + 20, 202, '#38bdf8', 2.5, 7);
+      ctx.fillStyle = '#38bdf8';
+      ctx.textAlign = 'left';
+      ctx.fillText('Nước lạnh (20°C)', mixX + 30, 235);
+
+      drawRoundRect(ctx, mixX - 26, mixY - 24, 52, 48, 10, '#334155', '#fbbf24', 2.8);
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '800 12.5px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('TRỘN', mixX, mixY + 5);
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      ctx.moveTo(mixX, mixY - 24);
+      ctx.lineTo(mixX, 72);
+      ctx.lineTo(575, 72);
+      ctx.lineTo(575, 105);
+      ctx.stroke();
+
+      drawRoundRect(ctx, 540, 102, 70, 18, 6, '#94a3b8', '#f8fafc', 1.8);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Vòi hoa sen', 620, 116);
+
+      const dropShift = (t * 90) % 24;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.4;
+      for (let i = -2; i <= 2; i++) {
+        const sx = 575 + i * 11;
+        for (let yy = 126 + dropShift; yy < 258; yy += 24) {
+          ctx.beginPath();
+          ctx.moveTo(sx + i * (yy - 120) * 0.08, yy);
+          ctx.lineTo(sx + i * (yy - 110) * 0.08, yy + 11);
+          ctx.stroke();
+        }
+      }
+    });
+
+    // --- MH-C1-10 ---
+VLXTModels.register('MH-C1-10', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Tiến độ gia nhiệt tuần hoàn (sawtooth 1 chiều: 25°C -> 100°C)
+  const cycle = (t * 0.16) % 1;
+  const temp = 25 + cycle * 75;
+
+  // Vẽ xô nước hở miệng trên (tâm x = 390)
+  const cupX = 305, cupY = 104, cupW = 170, cupH = 166;
+  const flare = 14;
+  const fillRatio = 0.78;
+  const waterTopY = cupY + cupH * (1 - fillRatio);
+  const topFrac = (waterTopY - cupY) / cupH;
+  const leftWaterTopX = cupX + flare * topFrac;
+  const rightWaterTopX = cupX + cupW - flare * topFrac;
+
+  // Khối nước bên trong xô chuyển màu dần từ xanh mát sang đỏ cam khi nóng lên
+  const hotR = Math.round(56 + cycle * 185);
+  const hotG = Math.round(189 - cycle * 95);
+  const hotB = Math.round(248 - cycle * 175);
+  const waterGrad = ctx.createLinearGradient(0, waterTopY, 0, cupY + cupH);
+  waterGrad.addColorStop(0, `rgba(${hotR}, ${hotG}, ${hotB}, 0.55)`);
+  waterGrad.addColorStop(1, 'rgba(14, 116, 144, 0.72)');
+
+  ctx.fillStyle = waterGrad;
+  ctx.beginPath();
+  ctx.moveTo(leftWaterTopX, waterTopY);
+  ctx.lineTo(rightWaterTopX, waterTopY);
+  ctx.lineTo(cupX + cupW - flare, cupY + cupH - 2);
+  ctx.lineTo(cupX + flare, cupY + cupH - 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Đường sóng mặt thoáng sáng rõ
+  ctx.strokeStyle = `rgb(${hotR}, ${hotG}, ${hotB})`;
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for (let wx = leftWaterTopX; wx <= rightWaterTopX; wx += 4) {
+    const wy = waterTopY + Math.sin(wx * 0.1 + t * 3.5) * 1.4;
+    if (wx === leftWaterTopX) ctx.moveTo(wx, wy); else ctx.lineTo(wx, wy);
+  }
+  ctx.stroke();
+
+  // Thành xô sáng nét
+  drawOpenCup(ctx, cupX, cupY, cupW, cupH, '#cbd5e1', 3, flare);
+
+  // Cán cầm nhựa & dây nguồn nối phích cắm phía trên phải
+  ctx.save();
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(428, 60);
+  ctx.bezierCurveTo(475, 32, 520, 40, 558, 64);
+  ctx.stroke();
+
+  // Phích cắm 2 chân
+  drawRoundRect(ctx, 554, 54, 28, 22, 4, '#1e293b', '#cbd5e1', 2);
+  ctx.strokeStyle = '#f8fafc';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(582, 61); ctx.lineTo(595, 61);
+  ctx.moveTo(582, 69); ctx.lineTo(595, 69);
+  ctx.stroke();
+
+  // Tay cầm cách điện gác trên miệng xô
+  drawRoundRect(ctx, 396, 52, 32, 36, 6, '#1e293b', '#f97316', 2.4);
+
+  // Hai thanh dẫn thẳng xuống nước
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(405, 88); ctx.lineTo(405, 190);
+  ctx.moveTo(419, 88); ctx.lineTo(419, 190);
+  ctx.stroke();
+
+  // Vòng dây sục xoắn lò xo phát nhiệt đỏ cam sắc nét
+  const pulse = 0.78 + 0.22 * Math.sin(t * 7);
+  ctx.strokeStyle = `rgba(248, 113, 113, ${pulse.toFixed(2)})`;
+  ctx.lineWidth = 3.6;
+  for (let i = 0; i < 6; i++) {
+    const cy = 194 + i * 8;
+    ctx.beginPath();
+    ctx.ellipse(412, cy, 18, 4.5, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Bong bóng khí sôi bay lên 1 chiều (sawtooth)
+  for (let i = 0; i < 16; i++) {
+    const p = ((t * (0.45 + (i % 4) * 0.12) + i * 0.19) % 1);
+    const bx = 385 + ((i * 19) % 54) + Math.sin(p * 8 + i) * 3;
+    const by = 236 - p * (236 - waterTopY - 4);
+    const br = 1.8 + p * 2.5 * (0.4 + 0.6 * cycle);
+    ctx.strokeStyle = `rgba(224, 242, 254, ${0.9 * (1 - p * 0.45)})`;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(bx, by, br, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Hơi nước bốc lên mặt thoáng khi nhiệt độ cao
+  if (cycle > 0.35) {
+    for (let s = 0; s < 5; s++) {
+      const sp = (t * 0.4 + s * 0.2) % 1;
+      const sx = 338 + s * 25 + Math.sin(sp * 6 + s) * 6;
+      const sy = waterTopY - 6 - sp * 34;
+      ctx.strokeStyle = `rgba(248, 250, 252, ${(1 - sp) * 0.6})`;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.quadraticCurveTo(sx + 4, sy - 6, sx - 2, sy - 12);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích (hỗ trợ cả thẻ 2 dòng và thẻ 1 dòng gọn đẹp)
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent, alignSide) => {
+    const endX = alignSide === 'left' ? bx + bw : bx;
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(endX, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+    if (sub) {
+      ctx.fillText(title, bx + 12, by + 23);
+      ctx.fillStyle = accent;
+      ctx.font = '700 13.5px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(sub, bx + 12, by + 44);
+    } else {
+      ctx.fillText(title, bx + 12, by + bh / 2 + 5);
+    }
+  };
+
+  // Huy hiệu tiêu đề phía trên
+  drawRoundRect(ctx, 185, 10, 410, 30, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('MÔ HÌNH SỤC ĐIỆN ĐUN NƯỚC (P = 1000 W; H = 85%)', 390, 30);
+
+  // 1. Thẻ trên trái: chỉ vào thành xô (x = 309, y = 128)
+  drawNoteCard(303, 128, 24, 96, 232, 56, 'Xô chứa nước (m = 3 kg)', `Nhiệt độ hiện tại: ${temp.toFixed(0)}°C`, '#38bdf8', 'left');
+
+  // 2. Thẻ dưới trái: chấm tròn chỉ sâu vào giữa khối nước bên trong xô (x = 345, y = 212)
+  drawNoteCard(345, 212, 24, 188, 232, 56, 'Nước nhận nhiệt đối lưu', 'c = 4200 J/(kg·K)', '#22d3ee', 'left');
+
+  // 3. Thẻ trên phải: Phích cắm & cán cách điện (đã bỏ dòng công suất)
+  drawNoteCard(568, 76, 518, 102, 238, 42, 'Phích cắm & cán cách điện', '', '#fb923c', 'right');
+
+  // 4. Thẻ dưới phải: chỉ vào dây sục xoắn lò xo
+  drawNoteCard(430, 214, 518, 188, 238, 56, 'Dây sục xoắn lò xo', 'Tỏa nhiệt lượng Q = P · t', '#f87171', 'right');
+});
+
+
+    // --- MH-C1-11 ---
+VLXTModels.register('MH-C1-11', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn sắc nét)
+  drawRoundRect(ctx, 155, 8, 470, 28, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('HỆ THỐNG TẢN NHIỆT LỎNG CPU (CÔNG SUẤT TỎA NHIỆT P)', 390, 27);
+
+  // 1. CPU & Đế đồng (bên trái dưới)
+  ctx.save();
+  // Bo mạch chủ (PCB)
+  drawRoundRect(ctx, 210, 250, 148, 16, 4, '#0f172a', '#475569', 2);
+
+  // Chip CPU phát nhiệt
+  const pulse = 0.6 + 0.4 * Math.sin(t * 5);
+  drawRoundRect(ctx, 234, 230, 100, 20, 3, '#334155', '#64748b', 1.5);
+  ctx.fillStyle = `rgba(239, 68, 68, ${0.48 + 0.3 * pulse})`;
+  ctx.beginPath();
+  ctx.roundRect(244, 234, 80, 12, 2);
+  ctx.fill();
+
+  // Đế đồng (Waterblock / Copper base)
+  const cuGrad = ctx.createLinearGradient(228, 196, 340, 230);
+  cuGrad.addColorStop(0, '#d97706');
+  cuGrad.addColorStop(0.5, '#f59e0b');
+  cuGrad.addColorStop(1, '#b45309');
+  ctx.fillStyle = cuGrad;
+  ctx.strokeStyle = '#fde68a';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.roundRect(228, 196, 112, 34, 6);
+  ctx.fill();
+  ctx.stroke();
+
+  // 2. Két tản nhiệt & Quạt (bên phải)
+  const radX = 435, radY = 86, radW = 132, radH = 116;
+  drawRoundRect(ctx, radX, radY, radW, radH, 8, '#1e293b', '#64748b', 2.2);
+
+  // Lá nhôm tản nhiệt ngang
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 1.6;
+  for (let y = radY + 12; y < radY + radH - 8; y += 10) {
+    ctx.beginPath();
+    ctx.moveTo(radX + 8, y);
+    ctx.lineTo(radX + radW - 8, y);
+    ctx.stroke();
+  }
+
+  // Quạt thổi gió bên phải két
+  const fanX = 578, fanY = 92, fanW = 22, fanH = 104;
+  drawRoundRect(ctx, fanX, fanY, fanW, fanH, 4, '#0f172a', '#38bdf8', 1.8);
+
+  // Cánh quạt quay dao động
+  for (let b = 0; b < 5; b++) {
+    const by = fanY + 12 + b * 19 + Math.sin(t * 14 + b) * 3;
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(fanX + 4, by);
+    ctx.lineTo(fanX + fanW - 4, by + 4);
+    ctx.stroke();
+  }
+
+  // Luồng gió mát thổi ra phải (sawtooth 1 chiều)
+  for (let a = 0; a < 4; a++) {
+    const p = (t * 0.9 + a * 0.25) % 1;
+    const ax = 608 + p * 44;
+    const ay = 104 + a * 26;
+    drawArrow(ctx, ax, ay, ax + 22, ay, `rgba(56, 189, 248, ${1 - p})`, 2, 6);
+  }
+
+  // 3. Hệ thống ống dẫn tuần hoàn (Ống trên: Nóng đỏ; Ống dưới: Nguội xanh)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(276, 196);
+  ctx.lineTo(276, 114);
+  ctx.lineTo(435, 114);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#0ea5e9';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(435, 174);
+  ctx.lineTo(316, 174);
+  ctx.lineTo(316, 196);
+  ctx.stroke();
+
+  // Hạt chất lỏng / hơi chuyển động 1 chiều trong ống
+  for (let i = 0; i < 6; i++) {
+    const p = (t * 0.55 + i / 6) % 1;
+    // Nhánh nóng (82 + 159 = 241px)
+    const dHot = p * 241;
+    let hx, hy;
+    if (dHot < 82) { hx = 276; hy = 196 - dHot; }
+    else { hx = 276 + (dHot - 82); hy = 114; }
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath(); ctx.arc(hx, hy, 3.4, 0, Math.PI * 2); ctx.fill();
+
+    // Nhánh lạnh hồi về (119 + 22 = 141px)
+    const dCold = p * 141;
+    let cx, cy;
+    if (dCold < 119) { cx = 435 - dCold; cy = 174; }
+    else { cx = 316; cy = 174 + (dCold - 119); }
+    ctx.fillStyle = '#e0f2fe';
+    ctx.beginPath(); ctx.arc(cx, cy, 3.4, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích chữ to rõ nét, sắc sảo, không đè nét
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent, alignSide) => {
+    const endX = alignSide === 'left' ? bx + bw : bx;
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(endX, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText(title, bx + 11, by + 22);
+    ctx.fillStyle = accent;
+    ctx.font = '700 13px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText(sub, bx + 11, by + 42);
+  };
+
+  // 5 thẻ chú thích cỡ chữ lớn (14px / 13px) bố trí cân đối ở các vùng trống, không đè nét vẽ
+  drawNoteCard(348, 114, 212, 46, 210, 52, 'Ống dẫn hơi/lỏng nóng', 'Mang nhiệt lên dàn', '#ef4444', 'left');
+  drawNoteCard(228, 212, 16, 148, 184, 52, 'Đế đồng tiếp xúc', 'Thu nhiệt làm bay hơi', '#fbbf24', 'left');
+  drawNoteCard(234, 240, 16, 224, 184, 52, 'Chip CPU tỏa nhiệt', 'Nhiệt độ giới hạn T', '#f87171', 'left');
+  drawNoteCard(520, 86, 560, 14, 206, 52, 'Dàn ngưng & Quạt gió', 'Tỏa nhiệt ra môi trường', '#38bdf8', 'right');
+  drawNoteCard(380, 174, 412, 224, 226, 52, 'Chất lỏng ngưng tụ nguội', 'Tuần hoàn trở lại đế CPU', '#0ea5e9', 'right');
+});
+
+    // --- MH-C1-12 ---
+VLXTModels.register('MH-C1-12', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn thoáng, font hệ thống chuẩn tiếng Việt)
+  drawRoundRect(ctx, 145, 6, 490, 30, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('HỆ THỐNG LÀM MÁT ĐỘNG CƠ Ô TÔ BẰNG CHẤT LỎNG', 390, 26);
+
+  ctx.save();
+  // 1. Két nước tản nhiệt tổ ong (bên trái, dịch cân đối để nhường vùng trống rộng cho thẻ chú thích 2 bên)
+  const radX = 215, radY = 82, radW = 56, radH = 158;
+  drawRoundRect(ctx, radX, radY, radW, radH, 6, '#0f172a', '#64748b', 2.4);
+
+  // Gradient nóng trên -> mát dưới trong két
+  const rGrad = ctx.createLinearGradient(0, radY, 0, radY + radH);
+  rGrad.addColorStop(0, 'rgba(239, 68, 68, 0.52)');
+  rGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.3)');
+  rGrad.addColorStop(1, 'rgba(14, 165, 233, 0.58)');
+  ctx.fillStyle = rGrad;
+  ctx.fillRect(radX + 4, radY + 4, radW - 8, radH - 8);
+
+  // Nan tổ ong
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)';
+  ctx.lineWidth = 1.2;
+  for (let y = radY + 12; y < radY + radH - 6; y += 11) {
+    ctx.beginPath();
+    ctx.moveTo(radX + 4, y);
+    ctx.lineTo(radX + radW - 4, y);
+    ctx.stroke();
+  }
+
+  // Luồng gió làm mát thổi xuyên qua két từ trái sang
+  for (let i = 0; i < 4; i++) {
+    const p = (t * 0.85 + i * 0.25) % 1;
+    const gx = 166 + p * 40;
+    const gy = 100 + i * 36;
+    drawArrow(ctx, gx, gy, gx + 18, gy, `rgba(56, 189, 248, ${1 - p})`, 2, 5.5);
+  }
+
+  // 2. Thân động cơ & Áo nước bao quanh 3 xi-lanh (ở giữa)
+  const engX = 375, engY = 92, engW = 186, engH = 138;
+  drawRoundRect(ctx, engX, engY, engW, engH, 10, 'rgba(14, 165, 233, 0.22)', '#38bdf8', 2.2);
+
+  // 3 Xi-lanh & Pit-tông dao động bên trong áo nước
+  for (let c = 0; c < 3; c++) {
+    const cx = engX + 18 + c * 56;
+    const cy = engY + 16;
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    ctx.fillRect(cx, cy, 38, 104);
+    ctx.strokeRect(cx, cy, 38, 104);
+
+    // Buồng đốt đỏ rực phía trên pit-tông
+    const py = cy + 26 + Math.sin(t * 6 + c * 2.1) * 15;
+    const burn = 0.5 + 0.5 * Math.sin(t * 6 + c * 2.1);
+    ctx.fillStyle = `rgba(249, 115, 22, ${0.38 + 0.45 * burn})`;
+    ctx.fillRect(cx + 2, cy + 2, 34, py - cy - 2);
+
+    // Pit-tông
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(cx + 3, py, 32, 17);
+  }
+
+  // 3. Van hằng nhiệt (Thermostat) tại góc trên trái động cơ
+  ctx.fillStyle = '#f59e0b';
+  ctx.strokeStyle = '#fef08a';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.arc(368, 104, 11, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // 4. Bơm nước tuần hoàn (Water Pump) tại góc dưới trái động cơ
+  const pumpX = 368, pumpY = 216;
+  ctx.fillStyle = '#0284c7';
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(pumpX, pumpY, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Cánh bơm quay
+  ctx.save();
+  ctx.translate(pumpX, pumpY);
+  ctx.rotate(-t * 5);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2.2;
+  for (let b = 0; b < 4; b++) {
+    ctx.rotate(Math.PI / 2);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(9, 0);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // 5. Đường ống dẫn nước nóng (trên: động cơ -> két) & nước nguội (dưới: két -> bơm -> động cơ)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(357, 104);
+  ctx.lineTo(271, 104);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#0ea5e9';
+  ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(271, 216);
+  ctx.lineTo(354, 216);
+  ctx.stroke();
+
+  // Hạt dòng chảy tuần hoàn 1 chiều
+  for (let i = 0; i < 4; i++) {
+    const p = (t * 0.7 + i * 0.25) % 1;
+    // Nóng sang trái
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(355 - p * 82, 104, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nguội sang phải
+    ctx.fillStyle = '#e0f2fe';
+    ctx.beginPath();
+    ctx.arc(273 + p * 80, 216, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích cỡ chữ to rõ nét (14px / 13px), bố trí thoáng ở vùng trống không đè nét
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent, alignSide) => {
+    const endX = alignSide === 'left' ? bx + bw : bx;
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(endX, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 11, by + 21);
+    ctx.fillStyle = accent;
+    ctx.font = '700 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 11, by + 40);
+  };
+
+  // 5 thẻ chú thích lớn rõ nét, đường chỉ không cắt ngang thân động cơ hay két nước
+  drawNoteCard(215, 148, 12, 118, 174, 50, 'Két nước tổ ong', 'Tản nhiệt ra không khí', '#38bdf8', 'left');
+  drawNoteCard(314, 104, 240, 38, 188, 48, 'Nước nóng từ động cơ', 'Nhiệt độ tăng Δt', '#ef4444', 'left');
+  drawNoteCard(368, 230, 224, 248, 222, 48, 'Bơm tuần hoàn & Nước nguội', 'Đẩy nước vào áo xi-lanh', '#0ea5e9', 'right');
+  drawNoteCard(374, 94, 578, 48, 188, 50, 'Van hằng nhiệt', 'Điều tiết lưu lượng', '#fbbf24', 'right');
+  drawNoteCard(561, 166, 578, 148, 188, 50, 'Áo nước bao xi-lanh', 'Hấp thụ nhiệt lượng Q', '#fb923c', 'right');
+});
+
+    // --- MH-C1-13 ---
+VLXTModels.register('MH-C1-13', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (căn lệch trái một chút để nhường khoảng rộng thoáng bên phải cho cụm xả khí khô & nhãn)
+  drawRoundRect(ctx, 160, 8, 360, 28, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('NGUYÊN LÝ MÁY HÚT ẨM DẠNG NGƯNG TỤ', 340, 27);
+
+  // Tọa độ các khối cân đối giữa khung 780x305, chừa khoảng trống rộng rãi cho chữ to (15px) không chạm nét
+  const evapX = 272, evapY = 92, evapW = 54, evapH = 98;
+  const condX = 362, condY = 92, condW = 50, condH = 98;
+  const fanX = 460, fanY = 141;
+  const compX = 496, compY = 216, compW = 84, compH = 66;
+
+  // 1. Luồng dẫn không khí xuyên suốt (Khí ẩm -> Màng lọc -> Dàn bay hơi -> Dàn ngưng tụ -> Quạt -> Khí khô đi lên)
+  const airGrad = ctx.createLinearGradient(72, 141, 550, 141);
+  airGrad.addColorStop(0, 'rgba(45, 212, 191, 0.38)');
+  airGrad.addColorStop(0.45, 'rgba(56, 189, 248, 0.32)');
+  airGrad.addColorStop(0.75, 'rgba(251, 146, 60, 0.42)');
+  airGrad.addColorStop(1, 'rgba(245, 158, 11, 0.55)');
+
+  ctx.fillStyle = airGrad;
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(72, 118);
+  ctx.lineTo(188, 131);
+  ctx.lineTo(516, 131);
+  ctx.lineTo(516, 56);
+  ctx.lineTo(502, 56);
+  ctx.lineTo(528, 24);
+  ctx.lineTo(554, 56);
+  ctx.lineTo(540, 56);
+  ctx.lineTo(540, 151);
+  ctx.lineTo(188, 151);
+  ctx.lineTo(72, 164);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Nhãn "Khí ẩm" cỡ chữ lớn rõ nét
+  drawRoundRect(ctx, 84, 128, 76, 26, 6, '#0f172a', '#2dd4bf', 1.8);
+  ctx.fillStyle = '#5eead4';
+  ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Khí ẩm', 122, 146);
+
+  // Nhãn "Khí khô" đặt thoáng hẳn sang bên phải mũi tên đi lên
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 15.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Khí khô', 562, 46);
+
+  // Hạt luồng khí chuyển động 1 chiều
+  for (let i = 0; i < 6; i++) {
+    const p = (t * 0.45 + i / 6) % 1;
+    const dist = p * 510;
+    let ax, ay, col;
+    if (dist < 425) {
+      ax = 103 + dist;
+      ay = 141;
+      col = ax < 326 ? '#5eead4' : (ax < 412 ? '#93c5fd' : '#fde047');
+    } else {
+      ax = 528;
+      ay = 141 - (dist - 425);
+      col = '#fef08a';
+    }
+    ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(ax, ay, 3.3, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // 2. Màng lọc bụi trước dàn bay hơi
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3.2;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(206, 120); ctx.lineTo(206, 162);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 3. Hệ thống ống đồng tuần hoàn môi chất lạnh nối Máy nén <-> Dàn ngưng tụ <-> Dàn bay hơi
+  // Ống đẩy môi chất nóng (đỏ) từ Máy nén lên đỉnh Dàn ngưng tụ
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(compX + 42, compY);
+  ctx.lineTo(compX + 42, 76);
+  ctx.lineTo(condX + condW / 2, 76);
+  ctx.lineTo(condX + condW / 2, condY);
+  ctx.stroke();
+
+  // Ống tiết lưu (tím nhạt) nối đáy Dàn ngưng tụ sang đáy Dàn bay hơi
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(condX + condW / 2, condY + condH);
+  ctx.lineTo(condX + condW / 2, 200);
+  ctx.lineTo(evapX + evapW - 14, 200);
+  ctx.lineTo(evapX + evapW - 14, evapY + evapH);
+  ctx.stroke();
+
+  // Ống hút hơi lạnh (xanh dương) từ đỉnh Dàn bay hơi về Máy nén
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(evapX + evapW / 2, evapY);
+  ctx.lineTo(evapX + evapW / 2, 76);
+  ctx.lineTo(344, 76);
+  ctx.lineTo(344, 240);
+  ctx.lineTo(compX, 240);
+  ctx.stroke();
+
+  // 4. Dàn bay hơi (Dàn lạnh)
+  drawRoundRect(ctx, evapX, evapY, evapW, evapH, 6, '#0f172a', '#38bdf8', 2.4);
+  ctx.fillStyle = 'rgba(14, 165, 233, 0.22)';
+  ctx.beginPath(); ctx.roundRect(evapX + 2, evapY + 2, evapW - 4, evapH - 4, 4); ctx.fill();
+
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for (let y = evapY + 12; y <= evapY + evapH - 12; y += 14) {
+    ctx.moveTo(evapX + 8, y);
+    ctx.lineTo(evapX + evapW - 8, y);
+    if (y + 7 <= evapY + evapH - 12) {
+      ctx.arc(evapX + evapW - 8, y + 3.5, 3.5, -Math.PI / 2, Math.PI / 2);
+      ctx.lineTo(evapX + 8, y + 7);
+      if (y + 14 <= evapY + evapH - 12) {
+        ctx.arc(evapX + 8, y + 10.5, 3.5, Math.PI / 2, Math.PI * 1.5);
+      }
+    }
+  }
+  ctx.stroke();
+
+  // 5. Dàn ngưng tụ (Dàn nóng)
+  drawRoundRect(ctx, condX, condY, condW, condH, 6, '#0f172a', '#f87171', 2.4);
+  ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
+  ctx.beginPath(); ctx.roundRect(condX + 2, condY + 2, condW - 4, condH - 4, 4); ctx.fill();
+
+  ctx.strokeStyle = '#fca5a5';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  for (let y = condY + 12; y <= condY + condH - 12; y += 14) {
+    ctx.moveTo(condX + 8, y);
+    ctx.lineTo(condX + condW - 8, y);
+    if (y + 7 <= condY + condH - 12) {
+      ctx.arc(condX + condW - 8, y + 3.5, 3.5, -Math.PI / 2, Math.PI / 2);
+      ctx.lineTo(condX + 8, y + 7);
+      if (y + 14 <= condY + condH - 12) {
+        ctx.arc(condX + 8, y + 10.5, 3.5, Math.PI / 2, Math.PI * 1.5);
+      }
+    }
+  }
+  ctx.stroke();
+
+  // 6. Quạt hút/đẩy
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.arc(fanX, fanY, 22, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.save();
+  ctx.translate(fanX, fanY);
+  ctx.rotate(t * 8);
+  ctx.fillStyle = '#38bdf8';
+  for (let b = 0; b < 4; b++) {
+    ctx.rotate(Math.PI / 2);
+    ctx.beginPath();
+    ctx.ellipse(9, 0, 8.5, 3.5, 0.25, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // 7. Giọt nước ngưng tụ rơi xuống khay chứa nước
+  for (let d = 0; d < 4; d++) {
+    const dp = (t * 0.9 + d * 0.25) % 1;
+    const dx = evapX + 12 + d * 10;
+    const dy = evapY + evapH + 4 + dp * 38;
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(dx, dy, 3, 0, Math.PI * 2);
+    ctx.moveTo(dx - 3, dy);
+    ctx.lineTo(dx, dy - 6.5);
+    ctx.lineTo(dx + 3, dy);
+    ctx.fill();
+  }
+
+  // Khay chứa nước ngưng (tăng chiều rộng để chữ "Khay chứa nước" 14.5px nằm gọn thoáng bên trong)
+  const trayX = 232, trayY = 234, trayW = 134, trayH = 52;
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(trayX + 26, trayY - 8);
+  ctx.lineTo(trayX + 44, trayY + 6);
+  ctx.moveTo(trayX + 108, trayY - 8);
+  ctx.lineTo(trayX + 90, trayY + 6);
+  ctx.stroke();
+
+  const waterLevel = 0.44 + 0.34 * ((t * 0.12) % 1);
+  const wH = (trayH - 6) * waterLevel;
+  ctx.fillStyle = 'rgba(14, 165, 233, 0.55)';
+  ctx.beginPath();
+  ctx.roundRect(trayX + 3, trayY + trayH - 3 - wH, trayW - 6, wH, [0, 0, 6, 6]);
+  ctx.fill();
+  drawOpenCup(ctx, trayX, trayY, trayW, trayH, '#cbd5e1', 2.4, 4);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Khay chứa nước', trayX + trayW / 2, trayY + trayH - 10);
+
+  // 8. Máy nén (Compressor)
+  drawRoundRect(ctx, compX, compY, compW, compH, 10, '#1e293b', '#fb923c', 2.4);
+  ctx.fillStyle = '#fdba74';
+  ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('MÁY NÉN', compX + compW / 2, compY + 38);
+
+  // 9. Các nhãn chú thích cỡ chữ lớn (15px), tách xa nhau tại vùng trống hoàn toàn không đè nét vẽ
+  const drawPointerLabel = (px, py, tx, ty, text, color, align) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(px, py, 3.6, 0, Math.PI * 2); ctx.fill();
+
+    ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = align;
+    ctx.fillText(text, align === 'right' ? tx - 7 : (align === 'left' ? tx + 7 : tx), ty + 5);
+  };
+
+  drawPointerLabel(206, 120, 168, 92, 'Màng lọc', '#cbd5e1', 'right');
+  drawPointerLabel(evapX + 20, evapY, 250, 56, 'Dàn bay hơi (Lạnh)', '#38bdf8', 'right');
+  drawPointerLabel(condX + 32, condY, 396, 56, 'Dàn ngưng tụ', '#f87171', 'left');
+  drawPointerLabel(fanX + 12, fanY + 18, 476, 186, 'Quạt gió', '#7dd3fc', 'left');
+  drawPointerLabel(compX + compW, compY + 33, 602, 249, 'Nén gas tuần hoàn', '#fb923c', 'left');
+});
+
+    // --- MH-C1-14 ---
+VLXTModels.register('MH-C1-14', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn thoáng, dùng font hệ thống chuẩn tiếng Việt không dính chữ)
+  drawRoundRect(ctx, 130, 6, 520, 32, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('ỐNG PHÁT TIA X CU-LÍT-GIƠ & HỆ LÀM MÁT ANOT', 390, 27);
+
+  // Tọa độ chuẩn sách giáo khoa Vật lý:
+  const cx = 385, cy = 158, R = 74;
+  const neckTop = cy - 26, neckBot = cy + 26;
+  const leftEnd = 175, rightEnd = 595;
+
+  // 1. Vỏ thủy tinh chân không (2 cổ bo tròn đối xứng nối bầu cầu giữa)
+  ctx.save();
+  ctx.strokeStyle = '#94a3b8';
+  ctx.fillStyle = 'rgba(30, 41, 59, 0.45)';
+  ctx.lineWidth = 2.4;
+  const dxNeck = Math.sqrt(R * R - 26 * 26);
+  const angTopRight = Math.atan2(-26, dxNeck);
+  const angTopLeft = Math.atan2(-26, -dxNeck);
+  const angBotLeft = Math.atan2(26, -dxNeck);
+  const angBotRight = Math.atan2(26, dxNeck);
+
+  ctx.beginPath();
+  ctx.moveTo(leftEnd + 26, neckTop);
+  ctx.lineTo(cx - dxNeck, neckTop);
+  ctx.arc(cx, cy, R, angTopLeft, angTopRight, false);
+  ctx.lineTo(rightEnd - 26, neckTop);
+  ctx.arc(rightEnd - 26, cy, 26, -Math.PI / 2, Math.PI / 2, false);
+  ctx.lineTo(cx + dxNeck, neckBot);
+  ctx.arc(cx, cy, R, angBotRight, angBotLeft, false);
+  ctx.lineTo(leftEnd + 26, neckBot);
+  ctx.arc(leftEnd + 26, cy, 26, Math.PI / 2, -Math.PI / 2, false);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // 2. Nguồn cao áp một chiều (Cực âm - bên trái, Cực dương + bên phải)
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(118, 66);
+  ctx.lineTo(118, cy - 12);
+  ctx.quadraticCurveTo(118, cy, 132, cy);
+  ctx.lineTo(286, cy);
+  ctx.stroke();
+
+  // Chốt cắm cực âm (-)
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath(); ctx.arc(118, 60, 6.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(110, 68); ctx.lineTo(126, 52); ctx.stroke();
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('−', 134, 67);
+
+  // Chỏm cầu Catot K (lõm về phía Anot)
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 4.4;
+  ctx.beginPath();
+  ctx.arc(276, cy, 18, -Math.PI * 0.38, Math.PI * 0.38);
+  ctx.stroke();
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = 'italic 800 20px "Times New Roman", Georgia, serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('K', 268, cy - 6);
+
+  // 3. Sợi nung vonfram & Hai đầu dây nung F, F'
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(278, 88);
+  ctx.lineTo(304, 88);
+  ctx.lineTo(318, 104);
+  ctx.lineTo(318, cy - 12);
+  ctx.stroke();
+  drawArrow(ctx, 304, 88, 270, 88, '#fbbf24', 2.4, 6.5);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'italic 800 20px "Times New Roman", Georgia, serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('F', 262, 94);
+
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(278, 228);
+  ctx.lineTo(304, 228);
+  ctx.lineTo(318, 212);
+  ctx.lineTo(318, cy + 12);
+  ctx.stroke();
+  drawArrow(ctx, 304, 228, 270, 228, '#fbbf24', 2.4, 6.5);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'italic 800 20px "Times New Roman", Georgia, serif';
+  ctx.textAlign = 'right';
+  ctx.fillText("F'", 262, 234);
+
+  // Lò xo sợi nung phát sáng vàng cam ở giữa
+  ctx.strokeStyle = '#fde047';
+  ctx.lineWidth = 2.6;
+  for (let s = 0; s < 3; s++) {
+    ctx.beginPath();
+    ctx.arc(315, cy - 8 + s * 8, 5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // 4. Chùm electron hội tụ từ Catot K đập vào mặt vát lõm của Anot A
+  const hitX = 387, hitY = cy + 2;
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+  ctx.lineWidth = 1.6;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(294, cy - 15); ctx.lineTo(hitX, hitY);
+  ctx.moveTo(294, cy + 15); ctx.lineTo(hitX, hitY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  for (let e = 0; e < 6; e++) {
+    const ep = (t * 1.4 + e / 6) % 1;
+    const spread = (1 - ep) * ((e % 3 - 1) * 10);
+    const ex = 296 + ep * (hitX - 296);
+    const ey = cy + spread;
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath(); ctx.arc(ex, ey, 2.7, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // 5. Đối âm cực (Anot A) mặt vát CONG LÕM (vát tròn) hướng xuống dưới trái đúng chuẩn SGK
+  const anotGrad = ctx.createLinearGradient(368, cy - 16, 424, cy + 18);
+  anotGrad.addColorStop(0, '#f59e0b');
+  anotGrad.addColorStop(1, '#b45309');
+  ctx.fillStyle = anotGrad;
+  ctx.strokeStyle = '#fde68a';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(368, cy - 15);
+  ctx.lineTo(422, cy - 15);
+  ctx.lineTo(422, cy + 17);
+  ctx.lineTo(404, cy + 17);
+  // Mặt vát cong lõm (vát tròn) nối từ (404, cy + 17) lên (368, cy - 15)
+  ctx.quadraticCurveTo(382, cy + 10, 368, cy - 15);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Lớp bia Vonfram (W) cong lõm ôm khít theo mặt vát tròn của Anot A
+  ctx.strokeStyle = '#f8fafc';
+  ctx.lineWidth = 3.6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(370, cy - 13);
+  ctx.quadraticCurveTo(383, cy + 9, 403, cy + 16);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+
+  // Nhãn Anot A cỡ chữ lớn rõ nét
+  ctx.fillStyle = '#fb923c';
+  ctx.font = 'italic 800 22px "Times New Roman", Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('A', 398, cy - 23);
+
+  // Dây dẫn cực dương (+) nối vào cán Anot
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(615, 66);
+  ctx.lineTo(615, cy - 5);
+  ctx.stroke();
+
+  // Chốt cắm cực dương (+)
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath(); ctx.arc(615, 60, 6.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(607, 68); ctx.lineTo(623, 52); ctx.stroke();
+  ctx.fillStyle = '#ef4444';
+  ctx.font = '800 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('+', 600, 67);
+
+  // Cán dẫn nước làm nguội xuyên dọc trục Anot ra ngoài cổ phải
+  ctx.fillStyle = '#0f172a';
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2;
+  ctx.fillRect(422, cy - 5, 210, 10);
+  ctx.strokeRect(422, cy - 5, 210, 10);
+
+  // Ống nước lạnh vào & Ống nước nóng ra
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(652, cy - 34);
+  ctx.lineTo(652, cy - 8);
+  ctx.quadraticCurveTo(652, cy - 2, 644, cy - 2);
+  ctx.lineTo(426, cy - 2);
+  ctx.stroke();
+  drawArrow(ctx, 652, cy - 34, 652, cy - 12, '#38bdf8', 2.2, 5.5);
+
+  ctx.strokeStyle = '#f87171';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(426, cy + 2);
+  ctx.lineTo(644, cy + 2);
+  ctx.quadraticCurveTo(652, cy + 2, 652, cy + 8);
+  ctx.lineTo(652, cy + 34);
+  ctx.stroke();
+  drawArrow(ctx, 652, cy + 12, 652, cy + 36, '#f87171', 2.2, 5.5);
+
+  // Hạt nước tuần hoàn làm nguội bên trong cán Anot
+  for (let i = 0; i < 4; i++) {
+    const p = (t * 0.8 + i * 0.25) % 1;
+    ctx.fillStyle = '#7dd3fc';
+    ctx.beginPath(); ctx.arc(630 - p * 200, cy - 2, 2.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fca5a5';
+    ctx.beginPath(); ctx.arc(430 + p * 200, cy + 2, 2.2, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Nhãn "Nước làm nguội" chữ lớn tách thoáng dưới cổ phải
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nước làm', 612, cy + 58);
+  ctx.fillText('nguội', 612, cy + 80);
+
+  // Điểm phát tia X tại tâm mặt vát tròn Anot
+  const hitGlow = 0.65 + 0.35 * Math.sin(t * 18);
+  ctx.fillStyle = `rgba(254, 240, 138, ${hitGlow.toFixed(2)})`;
+  ctx.beginPath(); ctx.arc(hitX, hitY, 5.5, 0, Math.PI * 2); ctx.fill();
+
+  // 6. Chùm tia X phát vuông góc mặt vát hướng xuống dưới trái (5 tia quạt rõ nét)
+  const rayAngles = [2.32, 2.02, 1.72, 1.44, 1.18];
+  for (let r = 0; r < rayAngles.length; r++) {
+    const ang = rayAngles[r];
+    const rp = (t * 1.1 + r * 0.18) % 1;
+    const xEnd = hitX + Math.cos(ang) * 98;
+    const yEnd = hitY + Math.sin(ang) * 98;
+    drawArrow(ctx, hitX, hitY, xEnd, yEnd, '#34d399', 2.2, 6.5);
+
+    const px = hitX + Math.cos(ang) * (14 + rp * 74);
+    const py = hitY + Math.sin(ang) * (14 + rp * 74);
+    ctx.fillStyle = '#a7f3d0';
+    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Nhãn "Tia X" cỡ chữ lớn rõ nét ngay dưới chùm tia ("Tia" đứng, "X" in nghiêng chuẩn ký hiệu vật lý)
+  ctx.fillStyle = '#34d399';
+  ctx.font = '800 19px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('Tia ', 374, 286);
+  ctx.font = 'italic 800 20px "Times New Roman", Georgia, serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('X', 375, 286);
+
+  // Bảng chú thích ký hiệu góc trái dưới (mở rộng kích thước & tăng cỡ chữ 15px, giãn dòng thoáng không dính chữ)
+  drawRoundRect(ctx, 16, 198, 224, 92, 8, '#0f172a', '#334155', 1.8);
+  ctx.textAlign = 'left';
+  ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText('• K: Catot lõm hội tụ e⁻', 28, 223);
+  ctx.fillStyle = '#fbbf24';
+  ctx.fillText("• F, F': Dây nung catot", 28, 250);
+  ctx.fillStyle = '#fb923c';
+  ctx.fillText('• A: Đối âm cực (Anot)', 28, 277);
+
+  ctx.restore();
+});
+
+    // --- MH-C1-15 ---
+VLXTModels.register('MH-C1-15', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên
+  drawRoundRect(ctx, 165, 6, 450, 30, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('QUẠT ĐIỀU HÒA HƠI NƯỚC (LÀM MÁT BAY HƠI)', 390, 26);
+
+  // Tọa độ thân quạt điều hòa đặt trung tâm khung 780x305
+  const bodyX = 240, bodyY = 54, bodyW = 300, bodyH = 192;
+
+  // 1. Vỏ thân máy quạt điều hòa
+  drawRoundRect(ctx, bodyX, bodyY, bodyW, bodyH, 12, '#0f172a', '#64748b', 2.5);
+
+  // 2. Bể chứa nước dưới đáy thân máy
+  const tankX = bodyX + 12, tankY = bodyY + 142, tankW = bodyW - 24, tankH = 38;
+  drawRoundRect(ctx, tankX, tankY, tankW, tankH, 6, '#1e293b', '#38bdf8', 2);
+
+  const waterRatio = 0.72 - 0.14 * ((t * 0.08) % 1);
+  const wH = (tankH - 6) * waterRatio;
+  ctx.fillStyle = 'rgba(14, 165, 233, 0.45)';
+  ctx.beginPath();
+  ctx.roundRect(tankX + 3, tankY + tankH - 3 - wH, tankW - 6, wH, [0, 0, 4, 4]);
+  ctx.fill();
+
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  for (let wx = tankX + 4; wx <= tankX + tankW - 4; wx += 4) {
+    const wy = tankY + tankH - 3 - wH + Math.sin(wx * 0.12 + t * 3) * 1;
+    if (wx === tankX + 4) ctx.moveTo(wx, wy); else ctx.lineTo(wx, wy);
+  }
+  ctx.stroke();
+
+  // 3. Bơm chìm & Đường nước tuần hoàn lên máng phân phối trên đỉnh tấm làm mát
+  const pumpX = 432, pumpY = tankY + 13;
+  drawRoundRect(ctx, pumpX, pumpY, 34, 20, 5, '#0284c7', '#bae6fd', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath(); ctx.arc(pumpX + 17, pumpY + 10, 4, 0, Math.PI * 2); ctx.fill();
+
+  const pipeX = pumpX + 17;
+  const padX = 266, padY = 80, padW = 44, padH = 110;
+  const headerCenterX = padX + padW / 2;
+
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 4;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(pipeX, pumpY);
+  ctx.lineTo(pipeX, 44);
+  ctx.lineTo(headerCenterX, 44);
+  ctx.lineTo(headerCenterX, 62);
+  ctx.stroke();
+
+  drawRoundRect(ctx, padX - 4, 62, padW + 8, 12, 4, '#0284c7', '#7dd3fc', 1.8);
+
+  // Hạt nước chuyển động tuần hoàn trong ống bơm lên
+  for (let i = 0; i < 5; i++) {
+    const p = (t * 0.55 + i / 5) % 1;
+    const totalLen = (pumpY - 44) + (pipeX - headerCenterX) + 18;
+    const dist = p * totalLen;
+    let dx, dy;
+    if (dist < (pumpY - 44)) {
+      dx = pipeX;
+      dy = pumpY - dist;
+    } else if (dist < (pumpY - 44) + (pipeX - headerCenterX)) {
+      dx = pipeX - (dist - (pumpY - 44));
+      dy = 44;
+    } else {
+      dx = headerCenterX;
+      dy = 44 + (dist - ((pumpY - 44) + (pipeX - headerCenterX)));
+    }
+    ctx.fillStyle = '#e0f2fe';
+    ctx.beginPath(); ctx.arc(dx, dy, 2.5, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // 4. Tấm làm mát tổ ong (Cooling Pad) & Dòng nước thấm chảy từ trên xuống
+  drawRoundRect(ctx, padX, padY, padW, padH, 5, 'rgba(217, 119, 6, 0.35)', '#f59e0b', 2.2);
+
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.55)';
+  ctx.lineWidth = 1.4;
+  for (let y = padY + 8; y < padY + padH - 6; y += 11) {
+    ctx.beginPath();
+    ctx.moveTo(padX + 4, y);
+    ctx.lineTo(padX + padW / 2, y + 5.5);
+    ctx.lineTo(padX + padW - 4, y);
+    ctx.stroke();
+  }
+
+  for (let col = 0; col < 2; col++) {
+    const wx = padX + 14 + col * 16;
+    const wp = (t * 0.7 + col * 0.35) % 1;
+    const wy = padY + 8 + wp * (padH - 22);
+    drawArrow(ctx, wx, wy, wx, wy + 14, '#38bdf8', 1.8, 4.5);
+  }
+  drawArrow(ctx, padX + padW + 6, padY + padH - 8, padX + padW + 6, tankY - 2, '#38bdf8', 2, 5);
+
+  // 5. Lồng quạt ly tâm / hướng trục ở giữa & Cửa gió ra bên phải
+  const fanX = 392, fanY = 132;
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath(); ctx.arc(fanX, fanY, 33, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+  ctx.save();
+  ctx.translate(fanX, fanY);
+  ctx.rotate(t * 7.5);
+  ctx.fillStyle = '#38bdf8';
+  for (let b = 0; b < 4; b++) {
+    ctx.rotate(Math.PI / 2);
+    ctx.beginPath();
+    ctx.ellipse(14, 0, 12, 4.5, 0.35, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+  ctx.fillStyle = '#0f172a';
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(fanX, fanY, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+  // Cửa nan chớp hướng gió bên phải thân máy
+  drawRoundRect(ctx, 492, 82, 26, 100, 4, '#1e293b', '#64748b', 1.8);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.5;
+  for (let gx = 498; gx <= 512; gx += 7) {
+    ctx.beginPath();
+    ctx.moveTo(gx, 88);
+    ctx.lineTo(gx, 176);
+    ctx.stroke();
+  }
+
+  // 6. Hai luồng khí rõ rệt: Khí nóng khô vào (cam đỏ bên trái) -> Gió mát ẩm ra (xanh dương bên phải)
+  for (let i = 0; i < 3; i++) {
+    const p = (t * 0.85 + i * 0.33) % 1;
+    const hx = 148 + p * 62;
+    const hy = 100 + i * 33;
+    drawArrow(ctx, hx, hy, hx + 26, hy, `rgba(249, 115, 22, ${1 - p * 0.4})`, 2.6, 7);
+
+    const mx = 316 + p * 26;
+    drawArrow(ctx, mx, hy, mx + 16, hy, `rgba(125, 211, 252, ${1 - p * 0.4})`, 2, 5.5);
+
+    const cx = 548 + p * 68;
+    drawArrow(ctx, cx, hy, cx + 28, hy, `rgba(56, 189, 248, ${1 - p * 0.4})`, 2.6, 7);
+  }
+
+  // 7. Các thẻ chú thích kèm đường dẫn chỉ chính xác vào từng bộ phận (giúp học sinh quan sát trực quan)
+  const drawLinkedTag = (px, py, bx, by, bw, bh, text, accent) => {
+    const cxBox = bx + bw / 2;
+    const cyBox = by < py ? by + bh : by;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(cxBox, cyBox);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 7, '#0f172a', accent, 1.8);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, cxBox, by + bh / 2 + 5);
+  };
+
+  // Nhãn cửa hút khí nóng (trái trên) & cửa gió mát ra (phải trên) có mũi tên chỉ tới luồng khí
+  drawLinkedTag(172, 96, 22, 48, 186, 30, 'Khí nóng khô vào (T₁)', '#fb923c');
+  drawLinkedTag(576, 96, 566, 48, 192, 30, 'Gió mát thổi ra (T₂ < T₁)', '#38bdf8');
+
+  // Chú thích phụ 2 bên luồng khí
+  ctx.font = '800 13.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#fb923c';
+  ctx.fillText('Nhiệt độ cao', 215, 196);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText('Bay hơi thu nhiệt', 320, 90);
+
+  // 3 thẻ chú thích bộ phận bên dưới có đường chỉ thẳng tới đúng từng bộ phận bên trong máy
+  drawLinkedTag(288, 184, 152, 266, 152, 30, 'Tấm làm mát tổ ong', '#f59e0b');
+  drawLinkedTag(449, 212, 316, 266, 148, 30, 'Bể nước & Bơm', '#0ea5e9');
+  drawLinkedTag(392, 165, 476, 266, 148, 30, 'Quạt hút & thổi', '#94a3b8');
+});
+
+    // --- MH-C1-18 ---
+VLXTModels.register('MH-C1-18', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn sắc nét, không dính chữ)
+  drawRoundRect(ctx, 145, 6, 490, 30, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('NGHỀ ĐÚC ĐỒNG TRÀ ĐÔNG (NẤU CHẢY & RÓT KHUÔN)', 390, 26);
+
+  ctx.save();
+  // 1. Lò nung rực lửa (bên trái, sáng rõ khối gạch chịu nhiệt & cửa lò)
+  const furX = 218, furY = 136, furW = 106, furH = 144;
+  drawRoundRect(ctx, furX, furY, furW, furH, 10, '#1e293b', '#94a3b8', 2.4);
+
+  // Vòm cửa lò rực lửa cam đỏ
+  const fireGlow = 0.78 + 0.22 * Math.sin(t * 9);
+  const fGrad = ctx.createRadialGradient(furX + 53, furY + 94, 6, furX + 53, furY + 94, 46);
+  fGrad.addColorStop(0, '#fef08a');
+  fGrad.addColorStop(0.55, `rgba(249, 115, 22, ${fireGlow.toFixed(2)})`);
+  fGrad.addColorStop(1, 'rgba(185, 28, 28, 0.35)');
+  ctx.fillStyle = fGrad;
+  ctx.beginPath();
+  ctx.roundRect(furX + 18, furY + 52, 70, 78, [34, 34, 8, 8]);
+  ctx.fill();
+  ctx.strokeStyle = '#fb923c';
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
+  // Than hồng & tia lửa bập bùng bên trong lò
+  for (let f = 0; f < 4; f++) {
+    const fp = (t * 1.6 + f * 0.25) % 1;
+    const fx = furX + 32 + f * 14;
+    const fy = furY + 116 - fp * 42;
+    ctx.fillStyle = `rgba(254, 240, 138, ${(1 - fp * 0.8).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(fx, fy, 3.8 * (1 - fp * 0.45), 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 2. Nồi nấu đồng (Crucible) nghiêng rót đồng nóng chảy ở giữa trên
+  ctx.save();
+  ctx.translate(384, 108);
+  ctx.rotate(0.45);
+
+  // Thân nồi nấu bằng gốm chịu nhiệt
+  ctx.fillStyle = '#334155';
+  ctx.strokeStyle = '#fb923c';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(-28, -24);
+  ctx.lineTo(-20, 28);
+  ctx.lineTo(20, 28);
+  ctx.lineTo(28, -24);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Bề mặt đồng lỏng phát sáng bên trong nồi
+  ctx.fillStyle = '#fb923c';
+  ctx.fillRect(-24, -18, 48, 12);
+
+  // Càng gắp dài giữ nồi
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(-26, 0);
+  ctx.lineTo(-86, 18);
+  ctx.stroke();
+  ctx.restore();
+
+  // 3. Dòng đồng lỏng đỏ cam chảy vào khuôn (thiết kế phẳng sắc nét, không shadowBlur)
+  ctx.strokeStyle = '#f97316';
+  ctx.lineWidth = 7;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(414, 98);
+  ctx.quadraticCurveTo(446, 114, 452, 174);
+  ctx.stroke();
+
+  // Lõi sáng vàng trong dòng đồng lỏng
+  ctx.strokeStyle = '#fef08a';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(414, 98);
+  ctx.quadraticCurveTo(446, 114, 452, 174);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+
+  // Tia lửa kim loại bắn ra tại miệng rót (1 chiều sawtooth)
+  for (let s = 0; s < 6; s++) {
+    const sp = (t * 1.5 + s / 6) % 1;
+    const ang = -Math.PI * 0.8 + (s % 5) * 0.4;
+    const sx = 452 + Math.cos(ang) * sp * 28;
+    const sy = 172 + Math.sin(ang) * sp * 22 + sp * sp * 14;
+    ctx.fillStyle = `rgba(254, 240, 138, ${(1 - sp).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 4. Khuôn đúc chuông / trống đồng (bên phải dưới)
+  const moldX = 394, moldY = 174, moldW = 116, moldH = 106;
+  drawRoundRect(ctx, moldX, moldY, moldW, moldH, 8, '#451a03', '#d97706', 2.4);
+
+  // Lòng khuôn hình dáng chuông đồng truyền thống (quai chuông trên, thân chuông loe miệng dưới)
+  const fillCycle = (t * 0.18) % 1;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(moldX + 46, moldY + 6);
+  ctx.lineTo(moldX + 70, moldY + 6);
+  ctx.lineTo(moldX + 70, moldY + 18);
+  ctx.quadraticCurveTo(moldX + 86, moldY + 22, moldX + 88, moldY + 44);
+  ctx.lineTo(moldX + 98, moldY + 94);
+  ctx.lineTo(moldX + 18, moldY + 94);
+  ctx.lineTo(moldX + 28, moldY + 44);
+  ctx.quadraticCurveTo(moldX + 30, moldY + 22, moldX + 46, moldY + 18);
+  ctx.closePath();
+  ctx.fillStyle = '#1c1917';
+  ctx.fill();
+  ctx.clip();
+
+  // Mức đồng lỏng dâng lên trong khuôn
+  const fillH = 88 * (0.25 + 0.75 * fillCycle);
+  const mGrad = ctx.createLinearGradient(0, moldY + 94 - fillH, 0, moldY + 94);
+  mGrad.addColorStop(0, '#fef08a');
+  mGrad.addColorStop(0.35, '#f97316');
+  mGrad.addColorStop(1, '#dc2626');
+  ctx.fillStyle = mGrad;
+  ctx.fillRect(moldX, moldY + 94 - fillH, moldW, fillH);
+  ctx.restore();
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích chữ to rõ nét (14px / 13px), tách thoáng 2 bên không chạm hình
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent, alignSide) => {
+    const endX = alignSide === 'left' ? bx + bw : bx;
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(endX, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 11, by + 22);
+    ctx.fillStyle = accent;
+    ctx.font = '700 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 11, by + 42);
+  };
+
+  // 4 thẻ chú thích lớn rõ nét bố trí cân đối ở các vùng trống
+  drawNoteCard(365, 92, 14, 52, 224, 52, 'Nồi đồng nóng chảy', 'Nhiệt độ nóng chảy ~1084°C', '#fbbf24', 'left');
+  drawNoteCard(218, 212, 14, 198, 182, 52, 'Lò nung nhiên liệu', 'Cấp nhiệt nấu chảy đồng', '#f97316', 'left');
+  drawNoteCard(442, 124, 536, 68, 230, 52, 'Dòng đồng lỏng rót khuôn', 'Chuyển thể Lỏng → Rắn', '#fb923c', 'right');
+  drawNoteCard(510, 226, 536, 198, 230, 52, 'Khuôn đúc chuông đồng', 'Tỏa nhiệt đông đặc λ · m', '#f59e0b', 'right');
+});
+
+    // --- MH-C1-19 ---
+VLXTModels.register('MH-C1-19', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (chữ to, sắc nét, chuẩn tiếng Việt)
+  drawRoundRect(ctx, 110, 6, 560, 34, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('ƯỚP LẠNH LON BIA TRONG THÙNG XỐP ĐÁ (CÂN BẰNG NHIỆT)', 390, 29);
+
+  const coolProgress = (t * 0.14) % 1; // 0 -> 1 quá trình làm lạnh & tan đá
+
+  ctx.save();
+  // 1. Thùng xốp cách nhiệt mở nắp trên (thu gọn bề ngang để nhường chỗ cho thẻ chữ thật to 2 bên)
+  const boxX = 268, boxY = 116, boxW = 244, boxH = 162;
+
+  // Nắp thùng xốp mở nghiêng sang trái phía trên
+  ctx.save();
+  ctx.translate(boxX, boxY);
+  ctx.rotate(-0.34);
+  drawRoundRect(ctx, -4, -18, 180, 18, 5, '#e2e8f0', '#94a3b8', 2);
+  ctx.restore();
+
+  // Lòng thùng xốp sáng nhẹ giúp nổi bật các lon bia & viên đá
+  ctx.fillStyle = 'rgba(30, 41, 59, 0.72)';
+  ctx.fillRect(boxX + 6, boxY + 4, boxW - 12, boxH - 10);
+
+  // Lớp nước đá tan đọng dưới đáy thùng xốp
+  const meltWaterH = 18 + coolProgress * 34;
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.48)';
+  ctx.fillRect(boxX + 8, boxY + boxH - 8 - meltWaterH, boxW - 16, meltWaterH);
+
+  // Mặt thoáng nước đá tan có sóng gợn nhẹ
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const waterSurfaceY = boxY + boxH - 8 - meltWaterH;
+  for (let wx = boxX + 8; wx <= boxX + boxW - 8; wx += 4) {
+    const wy = waterSurfaceY + Math.sin(wx * 0.12 + t * 3) * 1.1;
+    if (wx === boxX + 8) ctx.moveTo(wx, wy); else ctx.lineTo(wx, wy);
+  }
+  ctx.stroke();
+
+  // 2. Các lon bia nhôm xếp trong thùng (màu chuyển dần từ cam ấm sang xanh lạnh)
+  const canPositions = [294, 348, 402, 456];
+  const canR = Math.round(245 - coolProgress * 210);
+  const canG = Math.round(158 + coolProgress * 45);
+  const canB = Math.round(66 + coolProgress * 185);
+
+  canPositions.forEach((cx) => {
+    const cy = 156;
+    const cw = 34, ch = 100;
+    const cGrad = ctx.createLinearGradient(cx, cy, cx + cw, cy);
+    cGrad.addColorStop(0, `rgb(${canR}, ${canG}, ${canB})`);
+    cGrad.addColorStop(0.5, '#f8fafc');
+    cGrad.addColorStop(1, `rgb(${canR}, ${canG}, ${canB})`);
+
+    ctx.fillStyle = cGrad;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.roundRect(cx, cy, cw, ch, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Nắp lon nhôm ánh kim phía trên
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(cx + 4, cy + 2, cw - 8, 4);
+
+    // Nhãn vòng giữa lon rõ nét
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.fillRect(cx + 1, cy + 33, cw - 2, 28);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 10.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('330ml', cx + cw / 2, cy + 51);
+  });
+
+  // 3. Các viên đá lạnh (0°C) xen kẽ xung quanh lon bia, nhỏ dần khi tan
+  const iceScale = 1 - coolProgress * 0.36;
+  const iceCoords = [
+    [282, 184, 17], [336, 172, 19], [390, 180, 18], [444, 171, 19], [496, 186, 17],
+    [286, 220, 19], [339, 214, 20], [392, 218, 19], [445, 212, 20], [494, 222, 18]
+  ];
+  iceCoords.forEach(([ix, iy, isize]) => {
+    const s = isize * iceScale;
+    drawRoundRect(ctx, ix - s / 2, iy - s / 2, s, s, 4, 'rgba(224, 242, 254, 0.88)', '#38bdf8', 1.6);
+  });
+
+  // 4. Mũi tên truyền nhiệt từ lon bia (nóng hơn) sang viên đá (0°C)
+  const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+  ctx.globalAlpha = 0.55 + 0.45 * pulse;
+  drawArrow(ctx, 350, 194, 336, 194, '#f97316', 2.4, 6);
+  drawArrow(ctx, 404, 194, 390, 194, '#f97316', 2.4, 6);
+  drawArrow(ctx, 458, 194, 444, 194, '#f97316', 2.4, 6);
+  ctx.globalAlpha = 1;
+
+  // 5. Thành thùng xốp cách nhiệt chữ U dày sắc nét
+  ctx.strokeStyle = '#f1f5f9';
+  ctx.lineWidth = 10;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(boxX, boxY);
+  ctx.lineTo(boxX, boxY + boxH);
+  ctx.lineTo(boxX + boxW, boxY + boxH);
+  ctx.lineTo(boxX + boxW, boxY);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1.6;
+  ctx.strokeRect(boxX - 5, boxY, 10, boxH + 5);
+  ctx.strokeRect(boxX + boxW - 5, boxY, 10, boxH + 5);
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích chữ thật to (16px / 14.5px), tương phản cao giúp học sinh dễ đọc
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent, alignSide) => {
+    const endX = alignSide === 'left' ? bx + bw : bx;
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(endX, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 9, '#0f172a', accent, 2.2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 12, by + 26);
+    ctx.fillStyle = accent;
+    ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 12, by + 49);
+  };
+
+  // 4 thẻ chú thích lớn (232x62px), bố trí thoáng ở 2 bên thùng xốp
+  drawNoteCard(263, 152, 10, 114, 232, 62, 'Thùng xốp cách nhiệt', 'Ngăn trao đổi nhiệt ngoài', '#e2e8f0', 'left');
+  drawNoteCard(286, 220, 10, 206, 232, 62, 'Nước đá lạnh (0°C)', 'Nhận nhiệt nóng chảy λ · m', '#38bdf8', 'left');
+  drawNoteCard(473, 165, 538, 114, 232, 62, 'Các lon bia (t₁ > 0°C)', 'Tỏa nhiệt giảm nhiệt độ', '#fb923c', 'right');
+  drawNoteCard(496, 256, 538, 206, 232, 62, 'Nước đá tan ra (0°C)', 'Cân bằng nhiệt Q_tỏa = Q_thu', '#7dd3fc', 'right');
+});
+
+
+    // --- MH-C1-21 ---
+VLXTModels.register('MH-C1-21', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn 15.5px sắc nét)
+  drawRoundRect(ctx, 115, 6, 550, 32, 8, '#0f172a', '#334155', 1.8);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CHU TRÌNH ĐỘNG CƠ XĂNG 4 KỲ (NẠP → NÉN → NỔ → THẢI)', 390, 27);
+
+  // Tốc độ quay vừa phải giúp học sinh quan sát rõ từng chuyển động của xupap, bugi, dòng khí và pit-tông
+  const theta = (t * 1.45) % (Math.PI * 4);
+  const phaseIdx = Math.floor(theta / Math.PI); // 0: Nạp, 1: Nén, 2: Nổ, 3: Thải
+  const phaseProgress = (theta % Math.PI) / Math.PI;
+
+  const phases = [
+    { title: '1. KỲ NẠP', desc: 'Xupap nạp mở, hút khí vào', color: '#38bdf8' },
+    { title: '2. KỲ NÉN', desc: 'Hai xupap đóng, nén khí', color: '#fbbf24' },
+    { title: '3. KỲ NỔ (SINH CÔNG)', desc: 'Bugi đánh lửa, đẩy pit-tông', color: '#ef4444' },
+    { title: '4. KỲ THẢI', desc: 'Xupap xả mở, đẩy khí thải', color: '#cbd5e1' }
+  ];
+
+  // Cơ cấu trục khuỷu - thanh truyền - pit-tông chuẩn động học
+  const crankX = 390, crankY = 238, crankR = 25, rodLen = 76;
+  const pinX = crankX + Math.sin(theta) * crankR;
+  const pinY = crankY - Math.cos(theta) * crankR;
+  const wristY = pinY - Math.sqrt(rodLen * rodLen - (pinX - crankX) * (pinX - crankX));
+  const pistonTopY = wristY - 14;
+  const pistonH = 26;
+
+  const cylX = 350, cylY = 76, cylW = 80, cylH = 122;
+  const pistonNorm = (1 - Math.cos(theta)) / 2;
+
+  ctx.save();
+
+  // 1. Cụm ống dẫn khí nạp (trái) & ống xả (phải)
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.roundRect(292, 54, 84, 22, [6, 0, 0, 6]);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.roundRect(404, 54, 84, 22, [0, 6, 6, 0]);
+  ctx.fill();
+  ctx.stroke();
+
+  // Nắp quy-lát bọc đỉnh xi-lanh
+  drawRoundRect(ctx, cylX - 6, cylY - 8, cylW + 12, 10, 4, '#334155', '#94a3b8', 2);
+
+  // 2. Thành xi-lanh mặt cắt dày dặn
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(cylX, cylY, cylW, cylH);
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(cylX, cylY);
+  ctx.lineTo(cylX, cylY + cylH);
+  ctx.moveTo(cylX + cylW, cylY);
+  ctx.lineTo(cylX + cylW, cylY + cylH);
+  ctx.stroke();
+
+  // Cácte (hộp trục khuỷu) phía dưới
+  ctx.strokeStyle = 'rgba(100, 116, 139, 0.55)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(crankX, crankY, 37, -Math.PI * 0.15, Math.PI * 1.15, false);
+  ctx.stroke();
+
+  // 3. Buồng đốt & Các hạt phân tử khí mô phỏng áp suất - nhiệt độ trực quan
+  const chamberH = Math.max(8, pistonTopY - cylY);
+  let chamberFill = 'rgba(56, 189, 248, 0.25)';
+  let particleColor = '#7dd3fc';
+  let speedMult = 1;
+
+  if (phaseIdx === 1) {
+    const comp = 1 - pistonNorm;
+    chamberFill = `rgba(251, 191, 36, ${(0.22 + comp * 0.52).toFixed(2)})`;
+    particleColor = '#fde047';
+    speedMult = 1.6 + comp * 1.5;
+  } else if (phaseIdx === 2) {
+    const exp = 1 - pistonNorm;
+    chamberFill = `rgba(239, 68, 68, ${(0.32 + exp * 0.6).toFixed(2)})`;
+    particleColor = '#fca5a5';
+    speedMult = 2.8 - pistonNorm * 1.2;
+  } else if (phaseIdx === 3) {
+    chamberFill = 'rgba(148, 163, 184, 0.32)';
+    particleColor = '#cbd5e1';
+    speedMult = 1.2;
+  }
+
+  ctx.fillStyle = chamberFill;
+  ctx.fillRect(cylX + 2, cylY + 2, cylW - 4, chamberH - 2);
+
+  // Các hạt phân tử khí chuyển động nhiệt hỗn loạn trong buồng đốt
+  for (let i = 0; i < 14; i++) {
+    const px = cylX + 10 + ((Math.sin(t * 3.1 * speedMult + i * 1.7) + 1) / 2) * (cylW - 20);
+    const py = cylY + 6 + ((Math.cos(t * 2.7 * speedMult + i * 2.3) + 1) / 2) * Math.max(4, chamberH - 12);
+    ctx.fillStyle = particleColor;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 4. Xupap nạp (trái) & Xupap xả (phải) đóng mở nhịp nhàng theo đúng pha
+  const intakeLift = (phaseIdx === 0) ? Math.sin(phaseProgress * Math.PI) * 8 : 0;
+  const exhaustLift = (phaseIdx === 3) ? Math.sin(phaseProgress * Math.PI) * 8 : 0;
+
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.moveTo(367, 44 + intakeLift);
+  ctx.lineTo(367, 76 + intakeLift);
+  ctx.moveTo(358, 76 + intakeLift);
+  ctx.lineTo(376, 76 + intakeLift);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#f87171';
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  ctx.moveTo(413, 44 + exhaustLift);
+  ctx.lineTo(413, 76 + exhaustLift);
+  ctx.moveTo(404, 76 + exhaustLift);
+  ctx.lineTo(422, 76 + exhaustLift);
+  ctx.stroke();
+
+  // 5. Dòng khí nạp vào (Kỳ 1) & Dòng khí thải thoát ra (Kỳ 4)
+  if (phaseIdx === 0) {
+    for (let k = 0; k < 2; k++) {
+      const kp = (t * 1.6 + k * 0.5) % 1;
+      const ax = 296 + kp * 44;
+      drawArrow(ctx, ax, 65, ax + 18, 65, '#38bdf8', 2.4, 6);
+    }
+    drawArrow(ctx, cylX - 13, 114, cylX - 13, 154, '#38bdf8', 2.6, 7);
+  } else if (phaseIdx === 1) {
+    drawArrow(ctx, cylX - 13, 154, cylX - 13, 114, '#fbbf24', 2.6, 7);
+  } else if (phaseIdx === 2) {
+    drawArrow(ctx, cylX - 13, 110, cylX - 13, 158, '#ef4444', 3.2, 8);
+  } else if (phaseIdx === 3) {
+    for (let k = 0; k < 2; k++) {
+      const kp = (t * 1.6 + k * 0.5) % 1;
+      const ax = 424 + kp * 44;
+      drawArrow(ctx, ax, 65, ax + 18, 65, '#cbd5e1', 2.4, 6);
+    }
+    drawArrow(ctx, cylX - 13, 154, cylX - 13, 114, '#cbd5e1', 2.6, 7);
+  }
+
+  // 6. Bugi đánh lửa ở chính giữa nắp xi-lanh
+  drawRoundRect(ctx, 385, 40, 10, 28, 2, '#e2e8f0', '#64748b', 1.4);
+  ctx.fillStyle = '#0284c7';
+  ctx.fillRect(384, 47, 12, 8);
+
+  if (phaseIdx === 2 && phaseProgress < 0.25) {
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(390, 68);
+    ctx.lineTo(382, 77);
+    ctx.lineTo(397, 82);
+    ctx.lineTo(388, 92);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.85)';
+    ctx.beginPath();
+    ctx.arc(390, 80, 7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 7. Pit-tông, Thanh truyền & Trục khuỷu quay tròn
+  drawRoundRect(ctx, cylX + 3, pistonTopY, cylW - 6, pistonH, 4, '#cbd5e1', '#475569', 1.8);
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(cylX + 5, pistonTopY + 5); ctx.lineTo(cylX + cylW - 5, pistonTopY + 5);
+  ctx.moveTo(cylX + 5, pistonTopY + 9); ctx.lineTo(cylX + cylW - 5, pistonTopY + 9);
+  ctx.stroke();
+
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.arc(crankX, crankY, crankR, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(crankX, crankY, crankR + 8, -0.4, 0.7);
+  ctx.stroke();
+  drawArrow(ctx, crankX + (crankR + 8) * Math.cos(0.6), crankY + (crankR + 8) * Math.sin(0.6), crankX + (crankR + 8) * Math.cos(0.85), crankY + (crankR + 8) * Math.sin(0.85), '#f59e0b', 2, 5.5);
+
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(crankX, wristY);
+  ctx.lineTo(pinX, pinY);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(crankX, crankY);
+  ctx.lineTo(pinX, pinY);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+
+  ctx.fillStyle = '#0f172a';
+  ctx.strokeStyle = '#f8fafc';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(crankX, wristY, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(crankX, crankY, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(pinX, pinY, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+  // 8. Bảng điều khiển hiển thị 4 kỳ bên trái (tăng cỡ chữ lên 15px / 13.5px rất to và dễ đọc)
+  phases.forEach((ph, idx) => {
+    const active = idx === phaseIdx;
+    const by = 48 + idx * 62;
+    const bh = 55;
+    drawRoundRect(
+      ctx,
+      14,
+      by,
+      258,
+      bh,
+      8,
+      active ? '#1e293b' : 'rgba(15, 23, 42, 0.65)',
+      active ? ph.color : '#334155',
+      active ? 2.4 : 1.5
+    );
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = active ? ph.color : '#cbd5e1';
+    ctx.font = '800 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(ph.title, 26, by + 21);
+
+    ctx.fillStyle = active ? '#f8fafc' : '#94a3b8';
+    ctx.font = '600 13.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(ph.desc, 26, by + 42);
+  });
+
+  ctx.restore();
+
+  // 9. Các thẻ chú thích cấu tạo bên phải tăng cỡ chữ lớn (15.5px / 14px) cực kỳ dễ đọc
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent) => {
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2.2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 12, by + 24);
+    ctx.fillStyle = accent;
+    ctx.font = '700 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 12, by + 46);
+  };
+
+  drawNoteCard(395, 50, 498, 48, 268, 60, 'Bugi đánh lửa', 'Đốt cháy hỗn hợp xăng - khí', '#fef08a');
+  drawNoteCard(430, 148, 498, 136, 268, 60, 'Xi-lanh & Pit-tông', 'Thể tích khí biến thiên', '#38bdf8');
+  drawNoteCard(415, 238, 498, 224, 268, 60, 'Trục khuỷu & Thanh truyền', 'Biến tịnh tiến → chuyển động quay', '#f59e0b');
+});
+
+    // --- MH-C2-23 ---
+VLXTModels.register('MH-C2-23', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ lớn 17px cực kỳ rõ nét)
+  drawRoundRect(ctx, 85, 6, 610, 34, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('QUẢ BÓNG THỜI TIẾT (BÓNG THÁM KHÔNG) GIÃN NỞ THEO ĐỘ CAO', 390, 29);
+
+  // Chu kỳ bay lên liên tục: tịnh tiến từ gần mặt đất lên tầng cao & giãn nở rõ rệt
+  const saw = (t * 0.16) % 1;
+  const cx = 374 + Math.sin(t * 1.4) * 5; // Lắc lư nhẹ theo gió khi bay lên
+  const cy = 200 - saw * 72;               // Bay lên cao rõ rệt: y từ 200px lên 128px
+  const R = 28 + saw * 40;                 // Giãn nở rõ rệt từ 28px lên 68px
+
+  ctx.save();
+
+  // Hiệu ứng mây & luồng gió trôi từ trên xuống dưới (tạo cảm giác bóng đang bay vút lên cao)
+  const drawCloud = (x, y, scale) => {
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.22)';
+    ctx.beginPath();
+    ctx.arc(x, y, 12 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 11 * scale, y - 4 * scale, 14 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 24 * scale, y, 11 * scale, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  const cloud1Y = 54 + ((t * 28) % 210);
+  const cloud2Y = 54 + ((t * 28 + 105) % 210);
+  drawCloud(272, cloud1Y, 0.85);
+  drawCloud(442, cloud2Y, 0.75);
+
+  // Vệt gió lướt dọc hai bên khi bóng đang bay lên
+  for (let wLine = 0; wLine < 4; wLine++) {
+    const wp = (t * 0.9 + wLine * 0.25) % 1;
+    const wx = wLine % 2 === 0 ? 282 + wLine * 8 : 458 - wLine * 6;
+    const wy = 66 + wp * 190;
+    ctx.strokeStyle = `rgba(125, 211, 252, ${(0.35 * (1 - wp)).toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(wx, wy);
+    ctx.lineTo(wx, wy + 22);
+    ctx.stroke();
+  }
+
+  // Đường mức tham chiếu tầng cao & mặt đất
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+  ctx.setLineDash([5, 5]);
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(260, 56); ctx.lineTo(482, 56);
+  ctx.moveTo(260, 276); ctx.lineTo(482, 276);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Thẻ thông tin tầng cao (~40 km) bên trái trên (cỡ chữ lớn 16.5px / 15px)
+  drawRoundRect(ctx, 10, 48, 250, 66, 8, '#0f172a', '#fbbf24', 2);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Tầng cao (~40 km)', 22, 74);
+  ctx.fillStyle = '#f1f5f9';
+  ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Áp suất giảm → Bóng giãn to', 22, 100);
+
+  // Thẻ thông tin mặt đất bên trái dưới (cỡ chữ lớn 16.5px / 15px)
+  drawRoundRect(ctx, 10, 212, 250, 66, 8, '#0f172a', '#94a3b8', 2);
+  ctx.fillStyle = '#e2e8f0';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Mặt đất (0h & 12h UTC)', 22, 238);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Thả bóng chứa khí nhẹ', 22, 264);
+
+  // Mũi tên chỉ hướng bóng đang bay lên cao (bám theo thân bóng)
+  drawArrow(ctx, cx - R - 16, cy + 22, cx - R - 16, cy - 22, '#38bdf8', 3, 8.5);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = '800 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('Bay lên', cx - R - 23, cy + 5);
+
+  // Vỏ bóng thám không hình cầu giãn nở
+  const bGrad = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.1, cx, cy, R);
+  bGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+  bGrad.addColorStop(0.7, 'rgba(56, 189, 248, 0.25)');
+  bGrad.addColorStop(1, 'rgba(14, 165, 233, 0.48)');
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Các mũi tên vectơ áp suất khí bên trong đẩy vuông góc vào mặt trong thành bóng
+  const numArrows = 8;
+  for (let i = 0; i < numArrows; i++) {
+    const ang = (i * Math.PI * 2) / numArrows + Math.PI / 8;
+    const rInner = Math.max(8, R * 0.28);
+    const rOuter = R - 5;
+    const x1 = cx + Math.cos(ang) * rInner;
+    const y1 = cy + Math.sin(ang) * rInner;
+    const x2 = cx + Math.cos(ang) * rOuter;
+    const y2 = cy + Math.sin(ang) * rOuter;
+    drawArrow(ctx, x1, y1, x2, y2, '#fbbf24', 2.4, 7);
+  }
+
+  // Cổ buộc bóng (kích thước cố định)
+  const neckY = cy + R;
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillRect(cx - 5, neckY - 2, 10, 7);
+
+  // Dây treo cố định chiều dài 18px
+  const cordLen = 18;
+  const boxTopY = neckY + 5 + cordLen;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(cx, neckY + 5);
+  ctx.lineTo(cx, boxTopY);
+  ctx.stroke();
+
+  // HỘP CẢM BIẾN KÍCH THƯỚC CỐ ĐỊNH TUYỆT ĐỐI (46 x 24 px)
+  const boxW = 46;
+  const boxH = 24;
+  drawRoundRect(ctx, cx - boxW / 2, boxTopY, boxW, boxH, 5, '#1e293b', '#10b981', 2.4);
+
+  // Anten phát tín hiệu GPS/vô tuyến cố định + Sóng vô tuyến truyền về trạm
+  ctx.strokeStyle = '#34d399';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cx + 14, boxTopY);
+  ctx.lineTo(cx + 14, boxTopY - 10);
+  ctx.stroke();
+
+  const waveP = (t * 1.4) % 1;
+  ctx.strokeStyle = `rgba(52, 211, 153, ${(1 - waveP).toFixed(2)})`;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.arc(cx + 14, boxTopY - 10, 5 + waveP * 11, -Math.PI * 0.75, -Math.PI * 0.15);
+  ctx.stroke();
+
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = '800 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('GPS', cx, boxTopY + 17);
+  ctx.restore();
+
+  // Hàm vẽ thẻ chú thích bên phải cỡ chữ siêu lớn (16.5px / 15px) dễ đọc từ xa
+  const drawNoteCard = (px, py, bx, by, bw, bh, title, sub, accent) => {
+    const midY = by + bh / 2;
+
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx, midY);
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', accent, 2.2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 12, by + 26);
+    ctx.fillStyle = accent;
+    ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 12, by + 51);
+  };
+
+  // 3 thẻ chú thích bên phải (kích thước thẻ mở rộng chứa vừa chữ to 16.5px / 15px không chạm viền)
+  drawNoteCard(cx + R * 0.72, cy - R * 0.72, 492, 48, 278, 66, 'Vỏ bóng đàn hồi', 'Giãn nở khi áp suất ngoài giảm', '#38bdf8');
+  drawNoteCard(cx + R - 5, cy, 492, 132, 278, 66, 'Áp suất khí bên trong', 'Đẩy vuông góc thành bóng', '#fbbf24');
+  drawNoteCard(cx + boxW / 2, boxTopY + boxH / 2, 492, 216, 278, 66, 'Hộp cảm biến & GPS', 'Đo nhiệt độ, áp suất, gió', '#10b981');
+});
+
+    // --- MH-C2-24 ---
+VLXTModels.register('MH-C2-24', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // Huy hiệu tiêu đề phía trên (cỡ chữ tăng lên 18px)
+  drawRoundRect(ctx, 40, 4, 700, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 18px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BÓNG THÁM KHÔNG KHÍ HYDROGEN (H₂) — TỪ MẶT ĐẤT ĐẾN GIỚI HẠN NỔ', 390, 28);
+
+  // Chu kỳ bay lên cao liên tục & giãn nở tới giới hạn nổ
+  const saw = (t * 0.17) % 1;
+  const cx = 278 + Math.sin(t * 1.4) * 4;
+  const cy = 194 - saw * 74; // Bay vút lên cao rõ rệt: y từ 194px lên 120px
+  const R = 30 + saw * 38;   // Giãn nở rõ rệt từ 30px lên 68px
+
+  ctx.save();
+
+  // Hiệu ứng mây & luồng gió trôi từ trên xuống tạo cảm giác bóng đang bay vút lên cao
+  const drawCloud = (x, y, scale) => {
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.22)';
+    ctx.beginPath();
+    ctx.arc(x, y, 12 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 11 * scale, y - 4 * scale, 14 * scale, 0, Math.PI * 2);
+    ctx.arc(x + 24 * scale, y, 11 * scale, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  drawCloud(180, 52 + ((t * 28) % 210), 0.85);
+  drawCloud(340, 52 + ((t * 28 + 105) % 210), 0.75);
+
+  for (let wLine = 0; wLine < 4; wLine++) {
+    const wp = (t * 0.9 + wLine * 0.25) % 1;
+    const wx = wLine % 2 === 0 ? 188 + wLine * 8 : 358 - wLine * 6;
+    const wy = 62 + wp * 195;
+    ctx.strokeStyle = `rgba(125, 211, 252, ${(0.35 * (1 - wp)).toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(wx, wy);
+    ctx.lineTo(wx, wy + 22);
+    ctx.stroke();
+  }
+
+  // Mũi tên chỉ hướng bay lên bên trái quả bóng (cỡ chữ tăng lên 16.5px)
+  drawArrow(ctx, cx - R - 14, cy + 22, cx - R - 14, cy - 22, '#38bdf8', 3, 8.5);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('Bay lên', cx - R - 21, cy + 6);
+
+  // Vỏ bóng thám không chứa khí Hydrogen (H₂)
+  const isNearBurst = saw > 0.86;
+  const bGrad = ctx.createRadialGradient(cx - R * 0.25, cy - R * 0.25, 6, cx, cy, R);
+  bGrad.addColorStop(0, isNearBurst ? 'rgba(254, 202, 202, 0.45)' : 'rgba(16, 185, 129, 0.38)');
+  bGrad.addColorStop(1, isNearBurst ? 'rgba(239, 68, 68, 0.32)' : 'rgba(56, 189, 248, 0.25)');
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = isNearBurst ? '#ef4444' : '#38bdf8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Mũi tên áp suất khí Hydrogen bên trong đẩy vuông góc vào mặt trong thành bóng
+  for (let i = 0; i < 8; i++) {
+    const ang = (i * Math.PI * 2) / 8 + Math.PI / 8;
+    const r1 = Math.max(8, R * 0.28);
+    const r2 = R - 5;
+    drawArrow(
+      ctx,
+      cx + Math.cos(ang) * r1,
+      cy + Math.sin(ang) * r1,
+      cx + Math.cos(ang) * r2,
+      cy + Math.sin(ang) * r2,
+      isNearBurst ? '#fca5a5' : '#34d399',
+      2.5,
+      7.5
+    );
+  }
+
+  // Cổ buộc & dây treo & hộp cảm biến kích thước cố định (62 x 26 px)
+  const neckY = cy + R;
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillRect(cx - 5, neckY - 2, 10, 7);
+
+  const boxTopY = neckY + 20;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(cx, neckY + 5);
+  ctx.lineTo(cx, boxTopY);
+  ctx.stroke();
+
+  const boxW = 62, boxH = 26;
+  drawRoundRect(ctx, cx - boxW / 2, boxTopY, boxW, boxH, 5, '#1e293b', '#10b981', 2.4);
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = '800 13.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SENSOR', cx, boxTopY + 18);
+
+  // Thẻ chú thích bên trái dưới chỉ vào hộp cảm biến & khí H2 (cỡ chữ tăng lên 16.5px / 15.5px)
+  const tagX = 10, tagY = 220, tagW = 196, tagH = 68;
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - boxW / 2, boxTopY + boxH / 2);
+  ctx.lineTo(tagX + tagW, tagY + tagH / 2);
+  ctx.stroke();
+  ctx.fillStyle = '#10b981';
+  ctx.beginPath();
+  ctx.arc(cx - boxW / 2, boxTopY + boxH / 2, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  drawRoundRect(ctx, tagX, tagY, tagW, tagH, 8, '#0f172a', '#10b981', 2);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Cảm biến cố định', tagX + 12, tagY + 27);
+  ctx.fillStyle = '#34d399';
+  ctx.font = '700 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Khí Hydrogen (H₂)', tagX + 12, tagY + 53);
+
+  // 2 Thẻ thông số đề dẫn bên phải (mở rộng khung & tăng chữ lên 17px / 16.5px)
+  drawRoundRect(ctx, 390, 48, 382, 124, 10, '#0f172a', '#38bdf8', 2.2);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('TRẠNG THÁI THẢ BÓNG (MẶT ĐẤT)', 406, 76);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Thể tích ban đầu: V = 15,8 m³', 406, 104);
+  ctx.fillText('• Áp suất: p = 105 000 Pa | t = 27°C', 406, 131);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText('• ĐKTC (0°C; 101300 Pa): ρ = 0,09 kg/m³', 406, 158);
+
+  drawRoundRect(ctx, 390, 182, 382, 108, 10, '#0f172a', '#f87171', 2.2);
+  ctx.fillStyle = '#fca5a5';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('GIỚI HẠN BỊ NỔ Ở ĐỘ CAO LỚN', 406, 210);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Thể tích giới hạn nổ: V = 39,5 m³', 406, 239);
+  ctx.fillText('• Áp suất khi nổ: p = 27 640 Pa', 406, 267);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-25 ---
+VLXTModels.register('MH-C2-25', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên
+  drawRoundRect(ctx, 36, 4, 708, 34, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 17.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('KHINH KHÍ CẦU HỞ ĐÁY (V = 1,15 m³; m = 0,2 kg; t₁ = 20°C)', 390, 27);
+
+  // Dao động bồng bềnh nhẹ theo nhịp đốt nóng
+  const bob = Math.sin(t * 2.2) * 3.5;
+  const cx = 268;
+  const cy = 140 + bob;
+
+  ctx.save();
+
+  // --- LỚP 1: MÔI TRƯỜNG KHÔNG KHÍ XUNG QUANH (ρ₀, p₁, t₁) ---
+  for (let i = 0; i < 6; i++) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const row = Math.floor(i / 2);
+    const ax = cx + side * (96 + (row % 2) * 14);
+    const ay = 78 + row * 68 + Math.sin(t * 1.5 + i) * 4;
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.32)';
+    ctx.beginPath();
+    ctx.arc(ax, ay, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- LỚP 2: VỎ KHINH KHÍ CẦU & CÁC MÚI VẢI NHIỆT ---
+  const bGrad = ctx.createRadialGradient(cx, cy - 18, 10, cx, cy, 74);
+  bGrad.addColorStop(0, 'rgba(253, 186, 116, 0.52)');
+  bGrad.addColorStop(0.55, 'rgba(249, 115, 22, 0.34)');
+  bGrad.addColorStop(1, 'rgba(220, 38, 38, 0.24)');
+
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = '#fb923c';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 60);
+  ctx.bezierCurveTo(cx - 78, cy + 28, cx - 76, cy - 64, cx, cy - 64);
+  ctx.bezierCurveTo(cx + 76, cy - 64, cx + 78, cy + 28, cx + 17, cy + 60);
+  ctx.stroke();
+  ctx.fill();
+
+  // Đường gân các múi khí cầu tạo khối 3D trực quan
+  ctx.strokeStyle = 'rgba(251, 146, 60, 0.36)';
+  ctx.lineWidth = 1.6;
+  [-1, 1].forEach((dir) => {
+    ctx.beginPath();
+    ctx.moveTo(cx + dir * 7, cy + 60);
+    ctx.bezierCurveTo(cx + dir * 36, cy + 24, cx + dir * 35, cy - 62, cx, cy - 64);
+    ctx.stroke();
+  });
+
+  // --- LỚP 3: DÒNG ĐỐI LƯU NHIỆT BÊN TRONG & KHÍ TRÀN QUA LỖ HỞ ---
+  for (let k = 0; k < 3; k++) {
+    const p = (t * 0.85 + k / 3) % 1;
+    const py = cy + 44 - p * 88;
+    const alpha = Math.sin(p * Math.PI) * 0.75;
+    ctx.strokeStyle = `rgba(253, 224, 71, ${alpha.toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, py + 7);
+    ctx.lineTo(cx, py - 7);
+    ctx.moveTo(cx - 3.5, py - 3);
+    ctx.lineTo(cx, py - 7);
+    ctx.lineTo(cx + 3.5, py - 3);
+    ctx.stroke();
+  }
+
+  // Vòng tuần hoàn đối lưu hai bên thành cầu
+  [-1, 1].forEach((dir) => {
+    ctx.strokeStyle = 'rgba(254, 215, 170, 0.38)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(cx + dir * 24, cy - 6, 18, dir === 1 ? -Math.PI * 0.45 : Math.PI * 0.55, dir === 1 ? Math.PI * 0.45 : Math.PI * 1.45);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Các hạt không khí tràn ra ngoài qua lỗ hở đáy do giãn nở đẳng áp
+  for (let e = 0; e < 4; e++) {
+    const ep = (t * 0.75 + e * 0.25) % 1;
+    const dir = e % 2 === 0 ? -1 : 1;
+    const ex = cx + dir * (11 + ep * 24);
+    const ey = cy + 62 + ep * 22;
+    ctx.fillStyle = `rgba(125, 211, 252, ${(0.85 * (1 - ep)).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(ex, ey, 2.8 * (1 - ep * 0.3), 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- LỚP 4: CỔ LỖ HỞ, ĐẦU ĐỐT LỬA & GIỎ TREO ---
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 60);
+  ctx.lineTo(cx - 17, cy + 68);
+  ctx.moveTo(cx + 17, cy + 60);
+  ctx.lineTo(cx + 17, cy + 68);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 15, cy + 67);
+  ctx.lineTo(cx - 13, cy + 92);
+  ctx.moveTo(cx + 15, cy + 67);
+  ctx.lineTo(cx + 13, cy + 92);
+  ctx.stroke();
+
+  // Đầu đốt (burner)
+  drawRoundRect(ctx, cx - 7, cy + 80, 14, 6, 2, '#64748b', '#e2e8f0', 1.4);
+
+  // Ngọn lửa đốt nóng
+  const flameH = 14 + Math.sin(t * 15) * 3.5;
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(cx - 6.5, cy + 80);
+  ctx.quadraticCurveTo(cx, cy + 80 - flameH * 1.65, cx + 6.5, cy + 80);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.moveTo(cx - 3.5, cy + 80);
+  ctx.quadraticCurveTo(cx, cy + 80 - flameH * 1.05, cx + 3.5, cy + 80);
+  ctx.closePath();
+  ctx.fill();
+
+  // Giỏ chở thiết bị phía dưới
+  drawRoundRect(ctx, cx - 16, cy + 92, 32, 18, 4, '#334155', '#cbd5e1', 2.2);
+
+  // --- LỚP 5: HỆ BA VECTƠ LỰC TÁC DỤNG TẠI TÂM O ---
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 1. Vectơ lực đẩy Archimedes F_A hướng lên (chỉ số A hạ thấp rõ nét)
+  drawArrow(ctx, cx, cy, cx, cy - 86, '#10b981', 3.4, 9.5);
+  drawRoundRect(ctx, cx + 12, cy - 92, 48, 30, 6, '#0f172a', '#10b981', 1.8);
+  ctx.fillStyle = '#6ee7b7';
+  ctx.textAlign = 'left';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('F', cx + 24, cy - 72);
+  ctx.font = '800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('A', cx + 35, cy - 67);
+  drawArrow(ctx, cx + 24, cy - 87, cx + 37, cy - 87, '#6ee7b7', 1.8, 4.5);
+
+  // 2. Vectơ trọng lực vỏ & bộ đốt P hướng xuống
+  drawArrow(ctx, cx - 8, cy, cx - 8, cy + 68, '#38bdf8', 3.2, 9);
+  drawRoundRect(ctx, cx - 62, cy + 34, 42, 30, 6, '#0f172a', '#38bdf8', 1.8);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('P', cx - 41, cy + 55);
+  drawArrow(ctx, cx - 47, cy + 40, cx - 34, cy + 40, '#7dd3fc', 1.8, 4.5);
+
+  // 3. Vectơ trọng lực khí nóng P_khí hướng xuống (chỉ số khí hạ thấp rõ nét)
+  drawArrow(ctx, cx + 8, cy, cx + 8, cy + 84, '#f87171', 3.2, 9);
+  drawRoundRect(ctx, cx + 20, cy + 46, 62, 30, 6, '#0f172a', '#f87171', 1.8);
+  ctx.fillStyle = '#fca5a5';
+  ctx.textAlign = 'left';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('P', cx + 31, cy + 66);
+  ctx.font = '800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('khí', cx + 43, cy + 71);
+  drawArrow(ctx, cx + 31, cy + 51, cx + 44, cy + 51, '#fca5a5', 1.8, 4.5);
+
+  // --- LỚP 6: THẺ CHÚ THÍCH LỖ HỞ ĐÁY & BẢNG THÔNG SỐ ---
+  const tagX = 10, tagY = 222, tagW = 198, tagH = 68;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 65);
+  ctx.lineTo(tagX + tagW, tagY + tagH / 2);
+  ctx.stroke();
+  ctx.fillStyle = '#38bdf8';
+  ctx.beginPath();
+  ctx.arc(cx - 17, cy + 65, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  drawRoundRect(ctx, tagX, tagY, tagW, tagH, 8, '#0f172a', '#38bdf8', 2);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Lỗ hở thông khí quyển', tagX + 12, tagY + 26);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Áp suất trong = p₁ (đẳng áp)', tagX + 12, tagY + 52);
+
+  // Bảng thông số đề dẫn bên phải
+  drawRoundRect(ctx, 396, 48, 374, 242, 10, '#0f172a', '#fb923c', 2.2);
+  ctx.fillStyle = '#fb923c';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('THÔNG SỐ KHINH KHÍ CẦU', 412, 76);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Thể tích không đổi: V = 1,15 m³', 412, 106);
+  ctx.fillText('• Khối lượng vỏ & bộ đốt: m = 0,2 kg', 412, 134);
+  ctx.fillText('• Mặt đất: t₁ = 20°C; p₁ = 1,013·10⁵ Pa', 412, 162);
+  ctx.fillText('• Khối lượng riêng KK: ρ₀ = 1,2 kg/m³', 412, 190);
+  ctx.fillText('• Gia tốc trọng trường: g = 10 m/s²', 412, 218);
+
+  // Dòng điều kiện bay lên vẽ chuẩn chỉ số dưới F_A và P_khí
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  let curX = 412;
+  const condY = 248;
+  const drawSeg = (txt, isSub = false, isItalic = false) => {
+    ctx.font = `${isItalic ? 'italic ' : ''}800 ${isSub ? '11.5px' : '15.5px'} system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
+    ctx.fillText(txt, curX, isSub ? condY + 4.5 : condY);
+    curX += ctx.measureText(txt).width;
+  };
+  drawSeg('• Điều kiện bay lên: ');
+  drawSeg('F', false, true);
+  drawSeg('A', true, false);
+  drawSeg(' > ');
+  drawSeg('P', false, true);
+  drawSeg(' + ');
+  drawSeg('P', false, true);
+  drawSeg('khí', true, false);
+
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '700 14px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('  (Lực đẩy Archimedes > Tổng trọng lực)', 412, 272);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-26 ---
+VLXTModels.register('MH-C2-26', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ lớn 17.5px sắc nét)
+  drawRoundRect(ctx, 36, 4, 708, 34, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 17.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('LỄ HỘI KHINH KHÍ CẦU HUẾ (V = 336 m³; m = 84 kg; 27°C; 1 atm)', 390, 27);
+
+  // Dao động bồng bềnh nhẹ theo nhịp đốt nóng
+  const bob = Math.sin(t * 2.2) * 3.5;
+  const cx = 248;
+  const cy = 140 + bob;
+
+  ctx.save();
+
+  // --- LỚP 1: MÔI TRƯỜNG KHÔNG KHÍ XUNG QUANH (27°C, 1 atm) ---
+  for (let i = 0; i < 6; i++) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const row = Math.floor(i / 2);
+    const ax = cx + side * (94 + (row % 2) * 14);
+    const ay = 78 + row * 68 + Math.sin(t * 1.5 + i) * 4;
+    ctx.fillStyle = 'rgba(250, 204, 21, 0.28)';
+    ctx.beginPath();
+    ctx.arc(ax, ay, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- LỚP 2: VỎ KHINH KHÍ CẦU LỄ HỘI HUẾ & CÁC MÚI VẢI ---
+  const bGrad = ctx.createRadialGradient(cx, cy - 18, 10, cx, cy, 74);
+  bGrad.addColorStop(0, 'rgba(250, 204, 21, 0.56)');
+  bGrad.addColorStop(0.55, 'rgba(249, 115, 22, 0.36)');
+  bGrad.addColorStop(1, 'rgba(225, 29, 72, 0.28)');
+
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 60);
+  ctx.bezierCurveTo(cx - 78, cy + 28, cx - 76, cy - 64, cx, cy - 64);
+  ctx.bezierCurveTo(cx + 76, cy - 64, cx + 78, cy + 28, cx + 17, cy + 60);
+  ctx.stroke();
+  ctx.fill();
+
+  // Đường gân các múi kinh tuyến trang trí lễ hội tạo khối 3D
+  ctx.strokeStyle = 'rgba(254, 240, 138, 0.42)';
+  ctx.lineWidth = 1.7;
+  [-1, 1].forEach((dir) => {
+    ctx.beginPath();
+    ctx.moveTo(cx + dir * 7, cy + 60);
+    ctx.bezierCurveTo(cx + dir * 36, cy + 24, cx + dir * 35, cy - 62, cx, cy - 64);
+    ctx.stroke();
+  });
+
+  // --- LỚP 3: DÒNG ĐỐI LƯU NHIỆT BÊN TRONG & KHÍ TRÀN QUA LỖ HỞ ---
+  // Luồng khí nóng bốc lên dọc trục giữa
+  for (let k = 0; k < 3; k++) {
+    const p = (t * 0.85 + k / 3) % 1;
+    const py = cy + 44 - p * 88;
+    const alpha = Math.sin(p * Math.PI) * 0.78;
+    ctx.strokeStyle = `rgba(254, 240, 138, ${alpha.toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, py + 7);
+    ctx.lineTo(cx, py - 7);
+    ctx.moveTo(cx - 3.5, py - 3);
+    ctx.lineTo(cx, py - 7);
+    ctx.lineTo(cx + 3.5, py - 3);
+    ctx.stroke();
+  }
+
+  // Vòng tuần hoàn đối lưu hai bên thành cầu
+  [-1, 1].forEach((dir) => {
+    ctx.strokeStyle = 'rgba(254, 215, 170, 0.38)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(cx + dir * 24, cy - 6, 18, dir === 1 ? -Math.PI * 0.45 : Math.PI * 0.55, dir === 1 ? Math.PI * 0.45 : Math.PI * 1.45);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Các hạt khí tràn qua lỗ hở đáy do giãn nở đẳng áp (p_trong = 1 atm)
+  for (let e = 0; e < 4; e++) {
+    const ep = (t * 0.75 + e * 0.25) % 1;
+    const dir = e % 2 === 0 ? -1 : 1;
+    const ex = cx + dir * (11 + ep * 24);
+    const ey = cy + 62 + ep * 22;
+    ctx.fillStyle = `rgba(253, 224, 71, ${(0.82 * (1 - ep)).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(ex, ey, 2.8 * (1 - ep * 0.3), 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- LỚP 4: CỔ LỖ HỞ, ĐẦU ĐỐT LỬA & GIỎ MÂY CHỞ KHÁCH ---
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 60);
+  ctx.lineTo(cx - 17, cy + 68);
+  ctx.moveTo(cx + 17, cy + 60);
+  ctx.lineTo(cx + 17, cy + 68);
+  ctx.stroke();
+
+  // Dây cáp treo giỏ mây
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 15, cy + 67);
+  ctx.lineTo(cx - 14, cy + 94);
+  ctx.moveTo(cx + 15, cy + 67);
+  ctx.lineTo(cx + 14, cy + 94);
+  ctx.stroke();
+
+  // Đầu đốt (burner)
+  drawRoundRect(ctx, cx - 7, cy + 81, 14, 6, 2, '#64748b', '#e2e8f0', 1.4);
+
+  // Ngọn lửa đốt nóng phập phồng hướng thẳng vào miệng cầu
+  const flameH = 14 + Math.sin(t * 15) * 3.5;
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(cx - 7, cy + 81);
+  ctx.quadraticCurveTo(cx, cy + 81 - flameH * 1.65, cx + 7, cy + 81);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.moveTo(cx - 3.5, cy + 81);
+  ctx.quadraticCurveTo(cx, cy + 81 - flameH * 1.05, cx + 3.5, cy + 81);
+  ctx.closePath();
+  ctx.fill();
+
+  // Giỏ mây chở khách phía dưới
+  drawRoundRect(ctx, cx - 18, cy + 94, 36, 20, 5, '#78350f', '#fbbf24', 2.2);
+
+  // --- LỚP 5: HỆ BA VECTƠ LỰC TÁC DỤNG TẠI TÂM O ---
+  ctx.fillStyle = '#f8fafc';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 1. Vectơ lực đẩy Archimedes F_A hướng thẳng đứng lên trên (chỉ số dưới A)
+  drawArrow(ctx, cx, cy, cx, cy - 86, '#10b981', 3.4, 9.5);
+  drawRoundRect(ctx, cx + 12, cy - 92, 48, 30, 6, '#0f172a', '#10b981', 1.8);
+  ctx.fillStyle = '#6ee7b7';
+  ctx.textAlign = 'left';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('F', cx + 24, cy - 72);
+  ctx.font = '800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('A', cx + 35, cy - 67);
+  drawArrow(ctx, cx + 24, cy - 87, cx + 37, cy - 87, '#6ee7b7', 1.8, 4.5);
+
+  // 2. Vectơ trọng lực vỏ & giỏ P hướng xuống (lệch trái 8px)
+  drawArrow(ctx, cx - 8, cy, cx - 8, cy + 68, '#38bdf8', 3.2, 9);
+  drawRoundRect(ctx, cx - 62, cy + 34, 42, 30, 6, '#0f172a', '#38bdf8', 1.8);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('P', cx - 41, cy + 55);
+  drawArrow(ctx, cx - 47, cy + 40, cx - 34, cy + 40, '#7dd3fc', 1.8, 4.5);
+
+  // 3. Vectơ trọng lực khí nóng P_khí hướng xuống (lệch phải 8px, chỉ số dưới khí)
+  drawArrow(ctx, cx + 8, cy, cx + 8, cy + 84, '#f87171', 3.2, 9);
+  drawRoundRect(ctx, cx + 20, cy + 46, 62, 30, 6, '#0f172a', '#f87171', 1.8);
+  ctx.fillStyle = '#fca5a5';
+  ctx.textAlign = 'left';
+  ctx.font = 'italic 800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('P', cx + 31, cy + 66);
+  ctx.font = '800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('khí', cx + 43, cy + 71);
+  drawArrow(ctx, cx + 31, cy + 51, cx + 44, cy + 51, '#fca5a5', 1.8, 4.5);
+
+  // --- LỚP 6: THẺ CHÚ THÍCH LỖ HỞ ĐÁY & BẢNG THÔNG SỐ ---
+  const tagX = 10, tagY = 222, tagW = 194, tagH = 68;
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 17, cy + 65);
+  ctx.lineTo(tagX + tagW, tagY + tagH / 2);
+  ctx.stroke();
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.arc(cx - 17, cy + 65, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  drawRoundRect(ctx, tagX, tagY, tagW, tagH, 8, '#0f172a', '#facc15', 2);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Lỗ hở thông khí quyển', tagX + 12, tagY + 26);
+  ctx.fillStyle = '#fde047';
+  ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Áp suất trong = 1 atm', tagX + 12, tagY + 52);
+
+  // Bảng thông số đề dẫn bên phải (cỡ chữ lớn 16.5px / 15.5px sắc nét)
+  drawRoundRect(ctx, 376, 48, 394, 242, 10, '#0f172a', '#facc15', 2.2);
+  ctx.fillStyle = '#facc15';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('THÔNG SỐ KHINH KHÍ CẦU LỄ HỘI HUẾ', 392, 76);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Thể tích khí cầu: V = 336 m³', 392, 106);
+  ctx.fillText('• Khối lượng vỏ: m = 84 kg', 392, 134);
+  ctx.fillText('• Môi trường: t = 27°C; p = 1 atm', 392, 162);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText('  (1 atm = 1,013·10⁵ Pa)', 392, 188);
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillText('• Khối lượng mol: M = 20·10⁻³ kg/mol', 392, 216);
+
+  // Dòng điều kiện bay lên hiển thị chuẩn chỉ số dưới F_A và P_khí
+  ctx.fillStyle = '#6ee7b7';
+  let curX = 392;
+  const condY = 246;
+  const drawSeg = (txt, isSub = false, isItalic = false) => {
+    ctx.font = `${isItalic ? 'italic ' : ''}800 ${isSub ? '11.5px' : '15.5px'} system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
+    ctx.fillText(txt, curX, isSub ? condY + 4.5 : condY);
+    curX += ctx.measureText(txt).width;
+  };
+  drawSeg('• Điều kiện bay lên: ');
+  drawSeg('F', false, true);
+  drawSeg('A', true, false);
+  drawSeg(' > ');
+  drawSeg('P', false, true);
+  drawSeg(' + ');
+  drawSeg('P', false, true);
+  drawSeg('khí', true, false);
+
+  ctx.fillStyle = '#fb923c';
+  ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Đốt nóng khí bên trong để tạo lực nâng', 392, 274);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-27 ---
+VLXTModels.register('MH-C2-27', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm vẽ nhãn chữ to, đậm, rõ nét cho học sinh dễ đọc từ xa
+    function drawBigLabel(px, py, bx, by, text, color) {
+        ctx.save();
+        ctx.font = '700 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+        const textW = ctx.measureText(text).width;
+        const padX = 12;
+        const boxW = textW + padX * 2;
+        const boxH = 30;
+
+        // Tự động giữ hộp nhãn nằm gọn trong khung 780x305
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(44, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        // Đường chỉ dẫn + chấm tròn điểm neo
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Khung nền nhãn phẳng sắc nét
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 6, '#0f172a', color, 2.2);
+
+        // Chữ nhãn to rõ
+        ctx.fillStyle = '#f8fafc';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, safeBx + boxW / 2, safeBy + boxH / 2 + 0.5);
+        ctx.restore();
+    }
+
+    // Tiêu đề to, nổi bật ở trên cùng
+    ctx.save();
+    const titleText = 'THÍ NGHIỆM KIỂM CHỨNG ĐỊNH LUẬT BOYLE (t = 23,5°C)';
+    ctx.font = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleText).width + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 30, 15, '#0f172a', '#38bdf8', 2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleText, 14 + titleW / 2, 23.5);
+    ctx.restore();
+
+    // Nén khí 1 chiều sawtooth: V giảm từ 22 -> 14 cm³, p tăng tương ứng
+    const saw = (t * 0.22) % 1;
+    const cylX = 210, cylY = 182, cylW = 285, cylH = 72;
+    const pistonX = cylX + 225 - saw * 95;
+    const axisY = cylY + cylH / 2;
+
+    ctx.save();
+    // Đế đỡ bộ thí nghiệm
+    drawRoundRect(ctx, 130, 262, 445, 16, 4, '#334155', '#64748b', 2);
+    drawRoundRect(ctx, 185, 242, 28, 22, 3, '#475569', '#94a3b8', 2);
+    drawRoundRect(ctx, 480, 172, 16, 92, 3, '#475569', '#94a3b8', 2);
+
+    // Vùng khí bị nén bên trong xilanh & ống dẫn
+    const gasAlpha = 0.22 + saw * 0.26;
+    ctx.fillStyle = `rgba(56, 189, 248, ${gasAlpha.toFixed(2)})`;
+    ctx.fillRect(cylX, cylY + 2, pistonX - cylX, cylH - 4);
+    ctx.fillRect(142, 126, 16, 100);
+    ctx.fillRect(142, 210, cylX - 140, 16);
+
+    // Viền ngoài xilanh + ống dẫn chữ L liền mạch
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.2;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(142, 126);
+    ctx.lineTo(142, 226);
+    ctx.lineTo(210, 226);
+    ctx.lineTo(210, cylY + cylH);
+    ctx.lineTo(cylX + cylW, cylY + cylH);
+    ctx.moveTo(158, 126);
+    ctx.lineTo(158, 210);
+    ctx.lineTo(210, 210);
+    ctx.lineTo(210, cylY);
+    ctx.lineTo(cylX + cylW, cylY);
+    ctx.stroke();
+
+    // Vạch chia thể tích V trên thân xilanh
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.8;
+    for (let i = 1; i <= 7; i++) {
+        const vx = cylX + i * 32;
+        ctx.beginPath();
+        ctx.moveTo(vx, cylY + cylH);
+        ctx.lineTo(vx, cylY + cylH - 12);
+        ctx.stroke();
+    }
+
+    // Pít-tông & Trục vít tay quay bên phải
+    drawRoundRect(ctx, pistonX, cylY + 3, 18, cylH - 6, 3, '#94a3b8', '#f8fafc', 2.2);
+
+    const crankX = 568;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(pistonX + 18, axisY);
+    ctx.lineTo(crankX, axisY);
+    ctx.stroke();
+
+    // Vạch ren trên trục vít
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.6;
+    for (let tx = pistonX + 26; tx < crankX - 6; tx += 8) {
+        ctx.beginPath();
+        ctx.moveTo(tx, axisY - 3);
+        ctx.lineTo(tx + 3, axisY + 3);
+        ctx.stroke();
+    }
+
+    // Tay quay 2D phẳng đồng bộ
+    const crankAngle = saw * Math.PI * 8;
+    const crankRadius = 38;
+    const armY = axisY - Math.cos(crankAngle) * crankRadius;
+    const handleDepth = Math.sin(crankAngle);
+
+    if (handleDepth < 0) {
+        drawRoundRect(ctx, crankX + 24, armY - 7, 16, 14, 3, '#0369a1', '#94a3b8', 1.8);
+    }
+
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 4.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(crankX, axisY);
+    ctx.lineTo(crankX, armY);
+    ctx.lineTo(crankX + 28, armY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#64748b';
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(crankX, axisY, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    if (handleDepth >= 0) {
+        drawRoundRect(ctx, crankX + 24, armY - 7, 16, 14, 3, '#0284c7', '#f8fafc', 2);
+    }
+
+    // Áp kế gắn trên đầu ống dẫn (x = 150, y = 92)
+    const needleAng = Math.PI * 0.85 + saw * Math.PI * 0.85;
+    drawPressureGauge(ctx, 150, 92, 32, needleAng, 'bar', '', '#38bdf8');
+
+    // Đầu dò cảm biến nhiệt độ cắm xuyên vào lòng ống dẫn
+    const probeY = 158;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(222, 144);
+    ctx.bezierCurveTo(198, 144, 190, probeY, 174, probeY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(160, probeY - 3, 14, 6);
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(172, probeY);
+    ctx.lineTo(147, probeY);
+    ctx.stroke();
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(147, probeY, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hộp hiển thị nhiệt kế số 23,5°C chữ thật to
+    drawRoundRect(ctx, 222, 122, 122, 42, 8, '#0f172a', '#10b981', 2.4);
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 22px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('23.5°C', 283, 143);
+    ctx.restore();
+
+    // Các nhãn callout chữ to, rõ nét, bố trí thoáng không đè lên thiết bị
+    drawBigLabel(118, 92, 10, 77, 'Áp kế (bar)', '#38bdf8');
+    drawBigLabel(344, 143, 366, 128, 'Cảm biến nhiệt độ', '#10b981');
+    drawBigLabel(375, 182, 425, 58, 'Xilanh chứa khí', '#cbd5e1');
+    drawBigLabel(crankX + 6, axisY - 22, 592, 108, 'Tay quay nén khí', '#38bdf8');
+});
+
+    // --- MH-C2-28 ---
+VLXTModels.register('MH-C2-28', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 19px sắc nét)
+  drawRoundRect(ctx, 24, 4, 732, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 19px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('KHẢO SÁT ÁP SUẤT THEO NHIỆT ĐỘ ĐẲNG TÍCH (V = 1 lít)', 390, 29);
+
+  const saw = (t * 0.2) % 1; // Tăng nhiệt độ 1 chiều -> reset
+  const cupX = 216, cupY = 106, cupW = 180, cupH = 146;
+  const wallW = 3.5;
+
+  ctx.save();
+
+  // 2. Giá đỡ kiềng 3 chân & Đèn cồn bên dưới chậu nước
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(cupX - 8, cupY + cupH + 2);
+  ctx.lineTo(cupX + cupW + 8, cupY + cupH + 2);
+  ctx.moveTo(cupX + 12, cupY + cupH + 2);
+  ctx.lineTo(cupX - 4, 294);
+  ctx.moveTo(cupX + cupW - 12, cupY + cupH + 2);
+  ctx.lineTo(cupX + cupW + 4, 294);
+  ctx.stroke();
+
+  // Đèn cồn & ngọn lửa đun nóng
+  const burnerCenterX = cupX + cupW / 2;
+  drawRoundRect(ctx, burnerCenterX - 24, 276, 48, 18, 5, '#334155', '#cbd5e1', 2);
+  const fl = 14 + Math.sin(t * 14) * 3;
+  ctx.fillStyle = '#f97316';
+  ctx.beginPath();
+  ctx.moveTo(burnerCenterX, 276);
+  ctx.quadraticCurveTo(burnerCenterX - 11, 265, burnerCenterX, 276 - fl);
+  ctx.quadraticCurveTo(burnerCenterX + 11, 265, burnerCenterX, 276);
+  ctx.fill();
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.moveTo(burnerCenterX, 276);
+  ctx.quadraticCurveTo(burnerCenterX - 5, 269, burnerCenterX, 276 - fl * 0.6);
+  ctx.quadraticCurveTo(burnerCenterX + 5, 269, burnerCenterX, 276);
+  ctx.fill();
+
+  // 3. Nước trong chậu tràn sát hai thành bên của cốc
+  const waterTop = cupY + 26;
+  const waterLeft = cupX + wallW * 0.4;
+  const waterRight = cupX + cupW - wallW * 0.4;
+  const waterBot = cupY + cupH - wallW * 0.4;
+  const wGrad = ctx.createLinearGradient(0, waterTop, 0, waterBot);
+  wGrad.addColorStop(0, `rgba(56, 189, 248, ${(0.30 + saw * 0.14).toFixed(2)})`);
+  wGrad.addColorStop(1, `rgba(239, 68, 68, ${(0.20 + saw * 0.25).toFixed(2)})`);
+  ctx.fillStyle = wGrad;
+  ctx.fillRect(waterLeft, waterTop, waterRight - waterLeft, waterBot - waterTop);
+
+  // Dòng đối lưu nhiệt nhẹ trong nước khi đun nóng
+  for (let b = 0; b < 5; b++) {
+    const bp = (t * 0.65 + b * 0.2) % 1;
+    const bxWave = waterLeft + 16 + (b * 34) + Math.sin(bp * 6 + b) * 3;
+    const byWave = waterBot - 10 - bp * (waterBot - waterTop - 16);
+    ctx.fillStyle = `rgba(186, 230, 253, ${(0.45 * (1 - bp)).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(bxWave, byWave, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Mặt thoáng nước
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(waterLeft, waterTop);
+  ctx.lineTo(waterRight, waterTop);
+  ctx.stroke();
+
+  // Thành chậu thủy tinh hở miệng trên
+  drawOpenCup(ctx, cupX, cupY, cupW, cupH, 0, { wallColor: '#cbd5e1', wallWidth: wallW });
+
+  // 4. Bình cầu thủy tinh liền mạch giữa cổ bình và bụng bình
+  const bx = 324, by = 186, br = 46;
+  const neckHalfW = 13;
+  const neckTopY = 92;
+  const joinAngle = Math.asin(neckHalfW / br);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(bx - neckHalfW, neckTopY);
+  ctx.lineTo(bx - neckHalfW, by - Math.cos(joinAngle) * br);
+  ctx.arc(bx, by, br, -Math.PI / 2 - joinAngle, -Math.PI / 2 + joinAngle, true);
+  ctx.lineTo(bx + neckHalfW, neckTopY);
+  ctx.closePath();
+
+  const gGrad = ctx.createRadialGradient(bx - 12, by - 12, 6, bx, by, br);
+  gGrad.addColorStop(0, 'rgba(224, 242, 254, 0.42)');
+  gGrad.addColorStop(1, `rgba(56, 189, 248, ${(0.28 + saw * 0.24).toFixed(2)})`);
+  ctx.fillStyle = gGrad;
+  ctx.fill();
+
+  // Chuyển động nhiệt hỗn loạn của các phân tử khí bên trong bình cầu
+  const molSpeed = 1.6 + saw * 2.8;
+  for (let m = 0; m < 8; m++) {
+    const ang = m * 0.785 + t * molSpeed * (m % 2 === 0 ? 1 : -1);
+    const rad = 14 + (m % 3) * 10;
+    const mx = bx + Math.cos(ang) * rad;
+    const my = by + Math.sin(ang * 1.15) * rad;
+    ctx.fillStyle = saw > 0.6 ? '#fca5a5' : '#7dd3fc';
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(bx - neckHalfW, neckTopY);
+  ctx.lineTo(bx - neckHalfW, by - Math.cos(joinAngle) * br);
+  ctx.arc(bx, by, br, -Math.PI / 2 - joinAngle, -Math.PI / 2 + joinAngle, true);
+  ctx.lineTo(bx + neckHalfW, neckTopY);
+  ctx.stroke();
+  ctx.restore();
+
+  // Nút cao su màu cam đậy kín cổ bình
+  drawRoundRect(ctx, bx - neckHalfW + 1, 88, (neckHalfW - 1) * 2, 20, 3, '#f97316', '#fed7aa', 2);
+
+  // 5. Ống dẫn khí chữ L đâm xuyên qua nút cao su vào lòng bình và nối kín chân áp kế
+  const tubeInnerX1 = bx - 4, tubeInnerX2 = bx + 4;
+  const tubeTipY = 128;
+  const tubeTopY1 = 54, tubeTopY2 = 62;
+  const tubeRightX1 = 424, tubeRightX2 = 432;
+  const tubeBotY1 = 216, tubeBotY2 = 224;
+  const gaugeStemX = 472;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+  ctx.beginPath();
+  ctx.moveTo(tubeInnerX1, tubeTipY);
+  ctx.lineTo(tubeInnerX1, tubeTopY1);
+  ctx.lineTo(tubeRightX2, tubeTopY1);
+  ctx.lineTo(tubeRightX2, tubeBotY1);
+  ctx.lineTo(gaugeStemX, tubeBotY1);
+  ctx.lineTo(gaugeStemX, tubeBotY2);
+  ctx.lineTo(tubeRightX1, tubeBotY2);
+  ctx.lineTo(tubeRightX1, tubeTopY2);
+  ctx.lineTo(tubeInnerX2, tubeTopY2);
+  ctx.lineTo(tubeInnerX2, tubeTipY);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2.6;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(tubeInnerX1, tubeTipY);
+  ctx.lineTo(tubeInnerX1, tubeTopY1);
+  ctx.lineTo(tubeRightX2, tubeTopY1);
+  ctx.lineTo(tubeRightX2, tubeBotY1);
+  ctx.lineTo(gaugeStemX, tubeBotY1);
+  ctx.moveTo(tubeInnerX2, tubeTipY);
+  ctx.lineTo(tubeInnerX2, tubeTopY2);
+  ctx.lineTo(tubeRightX1, tubeTopY2);
+  ctx.lineTo(tubeRightX1, tubeBotY2);
+  ctx.lineTo(gaugeStemX, tubeBotY2);
+  ctx.stroke();
+  ctx.restore();
+
+  // 6. Nhiệt kế cắm trong bình nước bên trái bình cầu
+  drawThermometer(ctx, 244, 54, 212, 7.5, 0.32 + saw * 0.55, '#ef4444', '');
+
+  // 7. Áp kế & Chân đế bên phải
+  drawRoundRect(ctx, gaugeStemX - 26, 240, 52, 12, 3, '#64748b', '#cbd5e1', 2);
+  drawRoundRect(ctx, gaugeStemX - 7, 174, 14, 66, 3, '#475569', '#cbd5e1', 2.2);
+  drawRoundRect(ctx, gaugeStemX - 13, 213, 10, 14, 2, '#94a3b8', '#f8fafc', 1.8);
+  const needleAng = Math.PI * 0.8 + saw * Math.PI * 0.7;
+  drawPressureGauge(ctx, gaugeStemX, 140, 35, needleAng, '10⁵ Pa', '', '#38bdf8');
+
+  // 8. Các thẻ chú thích CHỮ SIÊU TO (Tiêu đề 17px, dòng phụ 16px) rõ ràng trên màn hình chiếu
+  const drawTag = (px, py, bxTag, byTag, bw, bh, borderCol, title, sub1, sub2) => {
+    ctx.strokeStyle = borderCol;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bxTag < px ? bxTag + bw : bxTag, byTag + bh / 2);
+    ctx.stroke();
+    ctx.fillStyle = borderCol;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bxTag, byTag, bw, bh, 8, '#0f172a', borderCol, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bxTag + 12, byTag + 26);
+    if (sub1) {
+      ctx.fillStyle = borderCol === '#e2e8f0' ? '#cbd5e1' : borderCol;
+      ctx.font = '700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(sub1, bxTag + 12, byTag + 51);
+    }
+    if (sub2) {
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(sub2, bxTag + 12, byTag + 74);
+    }
+  };
+
+  // 3 Thẻ bên trái (rộng 196px, chữ 17px / 16px cực to dễ đọc)
+  drawTag(238, 86, 8, 48, 196, 64, '#ef4444', 'Nhiệt kế đo nước', 'Coi t_khí = t_nước');
+  drawTag(216, 162, 8, 122, 196, 64, '#38bdf8', 'Chậu nước đun nóng', 'Truyền nhiệt đẳng tích');
+  drawTag(311, 98, 8, 196, 196, 64, '#f97316', 'Nút cao su kín', 'Ống dẫn xuyên qua nút');
+
+  // 2 Thẻ bên phải (rộng 252px, chữ 17px / 16px cực to dễ đọc)
+  drawTag(507, 140, 520, 62, 252, 66, '#38bdf8', 'Áp kế đo áp suất p', 'Đơn vị đo: 10⁵ Pa');
+  drawTag(368, 198, 520, 154, 252, 90, '#e2e8f0', 'Bình cầu khí (V = 1 lít)', '• Thể tích không đổi', '• Áp suất p tăng theo T');
+
+  ctx.restore();
+});
+
+    // --- MH-C2-29 ---
+VLXTModels.register('MH-C2-29', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 19px sắc nét)
+  drawRoundRect(ctx, 24, 4, 732, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 19px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('THÍ NGHIỆM KIỂM CHỨNG PHƯƠNG TRÌNH TRẠNG THÁI KHÍ LÍ TƯỞNG', 390, 29);
+
+  const saw = (t * 0.2) % 1;
+  const cupX = 245, cupY = 166, cupW = 285, cupH = 118;
+  const wallW = 3.2;
+
+  ctx.save();
+
+  // 2. Nước đun nóng trong chậu tràn sát 2 thành bên của cốc & hiệu ứng đối lưu nhiệt
+  const waterTop = cupY + 26;
+  const wGrad = ctx.createLinearGradient(0, waterTop, 0, cupY + cupH);
+  wGrad.addColorStop(0, 'rgba(56, 189, 248, 0.34)');
+  wGrad.addColorStop(1, 'rgba(239, 68, 68, 0.24)');
+  ctx.fillStyle = wGrad;
+  ctx.fillRect(cupX + wallW * 0.4, waterTop, cupW - wallW * 0.8, cupH - 26 - wallW * 0.4);
+
+  // Hạt đối lưu nhiệt nhẹ trong chậu nước
+  for (let b = 0; b < 6; b++) {
+    const bp = (t * 0.65 + b * 0.16) % 1;
+    const bxWave = cupX + 18 + b * 46 + Math.sin(bp * 6 + b) * 3;
+    const byWave = cupY + cupH - 10 - bp * (cupH - 38);
+    ctx.fillStyle = `rgba(186, 230, 253, ${(0.45 * (1 - bp)).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(bxWave, byWave, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = '#7dd3fc';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(cupX + wallW * 0.4, waterTop);
+  ctx.lineTo(cupX + cupW - wallW * 0.4, waterTop);
+  ctx.stroke();
+
+  // Thành chậu thủy tinh hở miệng trên
+  drawOpenCup(ctx, cupX, cupY, cupW, cupH, 0, { wallColor: '#cbd5e1', wallWidth: wallW });
+
+  // 3. Bình tam giác Erlenmeyer nhúng trong chậu nước (tâm x = 365)
+  const fx = 365;
+  ctx.beginPath();
+  ctx.moveTo(fx - 18, 128);
+  ctx.lineTo(fx - 18, 162);
+  ctx.lineTo(fx - 64, 260);
+  ctx.quadraticCurveTo(fx - 66, 270, fx - 54, 270);
+  ctx.lineTo(fx + 54, 270);
+  ctx.quadraticCurveTo(fx + 66, 270, fx + 64, 260);
+  ctx.lineTo(fx + 18, 162);
+  ctx.lineTo(fx + 18, 128);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(14, 165, 233, 0.26)';
+  ctx.fill();
+
+  // Các phân tử khí chuyển động nhiệt bên trong bình tam giác
+  const molSpeed = 1.6 + saw * 2.4;
+  for (let m = 0; m < 7; m++) {
+    const ang = m * 0.9 + t * molSpeed * (m % 2 === 0 ? 1 : -1);
+    const mx = fx + Math.cos(ang) * (14 + (m % 3) * 9);
+    const my = 224 + Math.sin(ang * 1.2) * (12 + (m % 2) * 8);
+    ctx.fillStyle = saw > 0.6 ? '#fca5a5' : '#7dd3fc';
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = '#f8fafc';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Nút cao su đậy kín miệng bình tam giác (y = 118 -> 136)
+  drawRoundRect(ctx, fx - 21, 118, 42, 18, 4, '#334155', '#94a3b8', 2.2);
+
+  // 4. Ống dẫn nhánh trái từ cổ bình tam giác nối thông kín khít vào chân áp kế
+  const gX = 212, gY = 104, gR = 32;
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(fx - 18, 146);
+  ctx.lineTo(gX, 146);
+  ctx.lineTo(gX, gY + gR + 10);
+  ctx.moveTo(fx - 18, 154);
+  ctx.lineTo(gX - 8, 154);
+  ctx.lineTo(gX - 8, gY + gR + 10);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+  ctx.fillRect(gX - 8, 146, fx - 18 - (gX - 8), 8);
+  ctx.fillRect(gX - 8, gY + gR + 10, 8, 146 - (gY + gR + 10));
+
+  // Cổ ren nối kín vào áp kế
+  drawRoundRect(ctx, gX - 11, gY + gR - 2, 14, 14, 2, '#64748b', '#cbd5e1', 2);
+  drawPressureGauge(ctx, gX - 4, gY, gR, Math.PI * 0.8 + saw * Math.PI * 0.65, '', '', '#f59e0b');
+
+  // 5. DỤNG CỤ (1): Xilanh có đầu ống nhỏ đâm xuyên qua nút cao su vào lòng bình khí
+  const syX = fx, syTop = 58, syBot = 112, syW = 24;
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+  ctx.fillRect(syX - 3, syBot, 6, 40);
+  ctx.strokeStyle = '#f8fafc';
+  ctx.lineWidth = 2.4;
+  ctx.strokeRect(syX - 3, syBot, 6, 40);
+
+  // Thân xilanh (1)
+  drawRoundRect(ctx, syX - syW / 2, syTop, syW, syBot - syTop, 3, 'rgba(15, 23, 42, 0.85)', '#cbd5e1', 2.6);
+  // Vạch chia thể tích
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.4;
+  for (let yy = syTop + 10; yy < syBot - 6; yy += 8) {
+    ctx.beginPath();
+    ctx.moveTo(syX - syW / 2, yy);
+    ctx.lineTo(syX - 3, yy);
+    ctx.stroke();
+  }
+  // Pít-tông bên trong xilanh (1)
+  const pisY = syTop + 20 + saw * 16;
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(syX - syW / 2 + 2, pisY, syW - 4, 8);
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(syX, pisY);
+  ctx.lineTo(syX, syTop - 12);
+  ctx.moveTo(syX - 11, syTop - 12);
+  ctx.lineTo(syX + 11, syTop - 12);
+  ctx.stroke();
+
+  // 6. DỤNG CỤ (2): Nhiệt kế cắm trong nước đun nóng bên phải bình tam giác
+  drawThermometer(ctx, 466, 98, 224, 6.5, 0.35 + saw * 0.5, '#ef4444', '');
+
+  // 7. Nhãn chỉ đánh số (1) và (2) theo đúng hình gốc (cỡ chữ lớn 18px)
+  function drawCircleNum(nx, ny, tx, ty, numStr) {
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(nx, ny);
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.arc(nx, ny, 19, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 18px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(numStr, nx, ny + 1);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  drawCircleNum(448, 72, syX + syW / 2, 82, '1');
+  drawCircleNum(564, 114, 474, 128, '2');
+
+  // 8. Nhãn chú thích chữ siêu to (17.5px) cho học sinh dễ đọc
+  const drawBigTag = (px, py, bx, by, bw, bh, col, text) => {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx < px ? bx + bw : bx, by + bh / 2);
+    ctx.stroke();
+
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', col, 2);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, bx + bw / 2, by + bh / 2 + 6);
+  };
+
+  // Thẻ Áp kế bên trái
+  drawBigTag(gX - 36, gY, 28, 82, 108, 42, '#f59e0b', 'Áp kế');
+
+  // Thẻ Bình chứa khí bên phải
+  drawBigTag(fx + 35, 200, 560, 178, 178, 42, '#38bdf8', 'Bình chứa khí');
+
+  // Nhãn Nước đun nóng bên trong chậu nước (chữ to 16.5px nổi bật)
+  ctx.fillStyle = '#fca5a5';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nước đun nóng', 466, 256);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-30 ---
+VLXTModels.register('MH-C2-30', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm vẽ nhãn callout cỡ chữ lớn mặc định, rõ nét, không tràn khung
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        ctx.font = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+        const lineH = 21;
+        const padX = 12;
+        const padY = 8;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = ctx.measureText(lines[i]).width;
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5));
+        }
+        ctx.restore();
+    }
+
+    // Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleText = 'BÌNH CẦU A (3,5 lít) TRONG BÌNH NƯỚC B & ÁP KẾ THỦY NGÂN CHỮ U';
+    ctx.font = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleText).width + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 30, 15, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleText, 14 + titleW / 2, 23.5);
+    ctx.restore();
+
+    const saw = (t * 0.2) % 1;
+    const dhShift = saw * 26;
+
+    ctx.save();
+
+    // =========================================================
+    // 1. BÌNH NƯỚC B & BÌNH CẦU A (BÊN TRÁI)
+    // =========================================================
+    const bx = 54, by = 114, bw = 192, bh = 164;
+    const wallW = 3.2;
+
+    // Bàn đỡ bình nước B
+    drawRoundRect(ctx, bx - 10, by + bh, bw + 20, 10, 4, '#334155', '#64748b', 1.8);
+
+    // Nước trong bình B
+    ctx.fillStyle = `rgba(14, 165, 233, ${(0.28 + saw * 0.14).toFixed(2)})`;
+    ctx.fillRect(bx + wallW * 0.4, by + 20, bw - wallW * 0.8, bh - 20 - wallW * 0.4);
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx + wallW * 0.4, by + 20);
+    ctx.lineTo(bx + bw - wallW * 0.4, by + 20);
+    ctx.stroke();
+
+    // Dây nung điện trở R (~220V) ở đáy bình B
+    const coilX1 = bx + 112, coilX2 = bx + 166, coilY = by + bh - 22;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(bx + bw + 14, coilY - 7);
+    ctx.lineTo(coilX2, coilY - 7);
+    ctx.moveTo(bx + bw + 14, coilY + 7);
+    ctx.lineTo(coilX2, coilY + 7);
+    ctx.stroke();
+
+    ctx.strokeStyle = saw > 0.1 ? '#ef4444' : '#f87171';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(coilX2, coilY - 7);
+    const turns = 6;
+    const step = (coilX2 - coilX1) / turns;
+    for (let i = 0; i < turns; i++) {
+        const sx = coilX2 - i * step;
+        ctx.lineTo(sx - step * 0.25, coilY - 12);
+        ctx.lineTo(sx - step * 0.75, coilY + 12);
+        ctx.lineTo(sx - step, coilY - 7);
+    }
+    ctx.lineTo(coilX1 - 6, coilY - 7);
+    ctx.lineTo(coilX1 - 6, coilY + 7);
+    ctx.lineTo(coilX2, coilY + 7);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 16.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('R (~220V)', bx + bw + 18, coilY + 5);
+
+    // Bọt khí nhỏ bay lên khi đun nước
+    ctx.fillStyle = 'rgba(224, 242, 254, 0.75)';
+    for (let b = 0; b < 5; b++) {
+        const bProg = ((t * (0.32 + b * 0.06)) + b * 0.23) % 1;
+        const bubX = coilX1 + 8 + ((b * 13) % 44) + Math.sin(t * 4 + b) * 3;
+        const bubY = (coilY - 14) - bProg * (bh - 52);
+        ctx.beginPath();
+        ctx.arc(bubX, bubY, 2.2 + (b % 2) * 0.8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Thành bình thủy tinh B
+    drawOpenCup(ctx, bx, by, bw, bh, 0, { wallColor: '#cbd5e1', wallWidth: wallW });
+
+    // Bình cầu A (3,5 lít) ngập hoàn toàn trong nước bình B
+    const ax = 126, ay = 198, ar = 46;
+    const nHalf = 13, nTop = 98;
+    const jAng = Math.asin(nHalf / ar);
+    ctx.beginPath();
+    ctx.moveTo(ax - nHalf, nTop);
+    ctx.lineTo(ax - nHalf, ay - Math.cos(jAng) * ar);
+    ctx.arc(ax, ay, ar, -Math.PI / 2 - jAng, -Math.PI / 2 + jAng, true);
+    ctx.lineTo(ax + nHalf, nTop);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(224, 242, 254, 0.35)';
+    ctx.fill();
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 2.6;
+    ctx.stroke();
+
+    // Giá đỡ & kẹp cổ bình A bên trái
+    drawRoundRect(ctx, 18, 108, 14, 176, 3, '#475569', '#94a3b8', 1.8);
+    drawRoundRect(ctx, 10, 280, 42, 8, 3, '#334155', '#94a3b8', 1.8);
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(32, 118, ax - nHalf - 32, 6);
+    drawRoundRect(ctx, ax - nHalf - 4, 115, 8, 12, 2, '#94a3b8', '#f8fafc', 1.5);
+
+    // Nút cao su kín đậy miệng bình A
+    drawRoundRect(ctx, ax - nHalf + 1, 95, (nHalf - 1) * 2, 18, 3, '#334155', '#94a3b8', 2);
+
+    // Nhiệt kế T cắm xuyên nút cao su vào lòng bình A
+    drawThermometer(ctx, ax - 5, 52, 178, 4.5, 0.32 + saw * 0.48, '#ef4444', '');
+
+    // Nhãn chữ lớn cho T, A, B
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 18.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('T', ax - 14, 70);
+
+    ctx.font = '800 16.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('A (3,5 l)', ax, 206);
+
+    ctx.font = '800 18.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('B', bx - 8, 152);
+
+    // =========================================================
+    // 2. ỐNG DẪN KHÍ NHỎ & ÁP KẾ THỦY NGÂN CHỮ U (NẰM TRỌN TRONG BẢNG ĐỠ)
+    // =========================================================
+    const uLeftX = 414, uRightX = 514;
+    const uMidX = (uLeftX + uRightX) / 2;
+    const rOuter = (uRightX - uLeftX) / 2 + 5.5; // = 55.5
+    const rInner = (uRightX - uLeftX) / 2 - 5.5; // = 44.5
+
+    // Đặt đáy uốn cong uBotY sao cho điểm thấp nhất (uBotY + rOuter = 224 + 55.5 = 279.5) nằm gọn trên đế bảng!
+    const uBotY = 224;
+    const hgLeftY = 166;
+    const hgRightY = 124 - dhShift;
+    const uTopRightY = 64;
+    const pipeTopY = 64;
+
+    // Bảng giá đỡ bao trọn toàn bộ đoạn cong đáy ống chữ U (từ y=48 đến y=284)
+    drawRoundRect(ctx, uLeftX - 18, 48, (uRightX - uLeftX) + 68, 236, 6, '#1e293b', '#475569', 1.8);
+    drawRoundRect(ctx, uLeftX - 28, 284, (uRightX - uLeftX) + 88, 10, 4, '#334155', '#64748b', 1.8);
+
+    // Thước chia vạch dọc theo nhánh phải
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    for (let yy = 64; yy <= 220; yy += 13) {
+        const isMajor = (yy - 64) % 26 === 0;
+        ctx.beginPath();
+        ctx.moveTo(uRightX + 9, yy);
+        ctx.lineTo(uRightX + (isMajor ? 21 : 15), yy);
+        ctx.stroke();
+    }
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16.5px "DM Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('0', uRightX + 24, hgLeftY + 5);
+    ctx.fillText('Δh', uRightX + 24, (hgLeftY + hgRightY) / 2 + 5);
+
+    // Cột thủy ngân đỏ bên trong ống chữ U
+    const tubeInnerW = 8;
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = tubeInnerW;
+    ctx.lineCap = 'butt';
+    ctx.beginPath();
+    ctx.moveTo(uLeftX, hgLeftY);
+    ctx.lineTo(uLeftX, uBotY);
+    ctx.arc(uMidX, uBotY, (uRightX - uLeftX) / 2, Math.PI, 0, true);
+    ctx.lineTo(uRightX, hgRightY);
+    ctx.stroke();
+
+    // Mặt khum sáng ở hai đầu cột thủy ngân
+    ctx.fillStyle = '#fca5a5';
+    ctx.fillRect(uLeftX - tubeInnerW / 2, hgLeftY - 1.5, tubeInnerW, 3);
+    ctx.fillRect(uRightX - tubeInnerW / 2, hgRightY - 1.5, tubeInnerW, 3);
+
+    // Vỏ ống thủy tinh chữ U & Ống mao dẫn nối từ bình cầu A
+    const pipeX = ax + 5;
+    const pipeBotY = 122;
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pipeX - 2.5, pipeBotY);
+    ctx.lineTo(pipeX - 2.5, pipeTopY - 2.5);
+    ctx.lineTo(uLeftX + 5.5, pipeTopY - 2.5);
+    ctx.moveTo(pipeX + 2.5, pipeBotY);
+    ctx.lineTo(pipeX + 2.5, pipeTopY + 2.5);
+    ctx.lineTo(uLeftX - 5.5, pipeTopY + 2.5);
+    ctx.stroke();
+
+    // Viền ngoài và viền trong ống áp kế chữ U
+    ctx.beginPath();
+    ctx.moveTo(uLeftX - 5.5, pipeTopY - 2.5);
+    ctx.lineTo(uLeftX - 5.5, uBotY);
+    ctx.arc(uMidX, uBotY, rOuter, Math.PI, 0, true);
+    ctx.lineTo(uRightX + 5.5, uTopRightY);
+
+    ctx.moveTo(uLeftX + 5.5, pipeTopY + 2.5);
+    ctx.lineTo(uLeftX + 5.5, uBotY);
+    ctx.arc(uMidX, uBotY, rInner, Math.PI, 0, true);
+    ctx.lineTo(uRightX - 5.5, uTopRightY);
+    ctx.stroke();
+
+    // Đường gióng ngang mức 0 & mũi tên 2 chiều chỉ độ chênh lệch áp suất Δh
+    ctx.strokeStyle = '#fbbf24';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(uLeftX - 8, hgLeftY);
+    ctx.lineTo(uRightX + 18, hgLeftY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const arrowX = uRightX - 20;
+    drawArrow(ctx, arrowX, hgLeftY, arrowX, hgRightY, '#fbbf24', 2.4, 6);
+    drawArrow(ctx, arrowX, hgRightY, arrowX, hgLeftY, '#fbbf24', 2.4, 6);
+
+    ctx.restore();
+
+    // =========================================================
+    // 3. CÁC NHÃN CHÚ THÍCH CỠ CHỮ LỚN, RÕ RÀNG
+    // =========================================================
+    drawLargeCallout(uRightX + 6, uTopRightY + 4, 580, 52, ['Nhánh phải hở', 'p₀ = 760 mmHg'], '#38bdf8');
+    drawLargeCallout(arrowX, (hgLeftY + hgRightY) / 2, 580, 148, ['Chênh lệch Δh', 'p = p₀ + Δh'], '#fbbf24');
+    drawLargeCallout(275, pipeTopY, 206, 114, ['Ống dẫn khí nhỏ', 'Thể tích V = 3,5 l'], '#cbd5e1');
+});
+
+    // --- MH-C2-31 ---
+VLXTModels.register('MH-C2-31', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 18px, chuẩn chỉ số dưới N₂ và p_max)
+  drawRoundRect(ctx, 20, 4, 740, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.textAlign = 'left';
+  const titleParts = [
+    { txt: 'HỆ THỐNG TÚI KHÍ AN TOÀN Ô TÔ (KHÍ N', sub: false },
+    { txt: '2', sub: true },
+    { txt: ' · V = 60 lít · 25°C · p', sub: false },
+    { txt: 'max', sub: true },
+    { txt: ' = 5 psi)', sub: false }
+  ];
+  let totalTitleW = 0;
+  titleParts.forEach((p) => {
+    ctx.font = `800 ${p.sub ? '13px' : '18px'} system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
+    totalTitleW += ctx.measureText(p.txt).width;
+  });
+  let titleX = 390 - totalTitleW / 2;
+  titleParts.forEach((p) => {
+    ctx.font = `800 ${p.sub ? '13px' : '18px'} system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
+    ctx.fillText(p.txt, titleX, p.sub ? 32 : 28);
+    titleX += ctx.measureText(p.txt).width;
+  });
+
+  // Chu kỳ hoạt động: 0..0.18 cảm biến kích hoạt -> 0.18..0.38 đánh lửa kích nổ -> 0.38..1.0 túi khí N2 bơm căng tối đa
+  const cycle = (t * 0.32) % 1;
+  const inflate = Math.min(1, Math.max(0, (cycle - 0.15) / 0.65));
+  const easeOut = 1 - Math.pow(1 - inflate, 2.2);
+  const bagR = 22 + easeOut * 52;
+
+  ctx.save();
+
+  // --- BƯỚC 1: CẢM BIẾN VA CHẠM (CRASH SENSOR) ---
+  const sensActive = cycle < 0.45;
+  drawRoundRect(ctx, 18, 128, 126, 76, 10, '#0f172a', sensActive ? '#ef4444' : '#64748b', 2.6);
+  // Biểu tượng xung gia tốc va chạm bên trong cảm biến
+  ctx.strokeStyle = sensActive ? '#f87171' : '#94a3b8';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(32, 146);
+  ctx.lineTo(44, 146);
+  ctx.lineTo(50, 138);
+  ctx.lineTo(56, 154);
+  ctx.lineTo(62, 142);
+  ctx.lineTo(68, 146);
+  ctx.lineTo(130, 146);
+  ctx.stroke();
+
+  ctx.fillStyle = sensActive ? '#fca5a5' : '#cbd5e1';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CẢM BIẾN', 81, 173);
+  ctx.fillText('VA CHẠM', 81, 193);
+
+  // Dây dẫn & Xung tín hiệu điện truyền sang bộ kích nổ
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(144, 166);
+  ctx.lineTo(208, 166);
+  ctx.stroke();
+
+  const sigPos = Math.min(1, cycle / 0.3);
+  if (cycle < 0.45) {
+    const sx = 148 + sigPos * 56;
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(sx, 166, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  drawArrow(ctx, 146, 166, 206, 166, '#fbbf24', 2.8, 8);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Tín hiệu điện', 176, 150);
+
+  // --- BƯỚC 2: BỘ KÍCH NỔ TẠO KHÍ NITƠ (INFLATOR) ---
+  drawRoundRect(ctx, 210, 118, 128, 96, 10, '#1e293b', '#f97316', 2.8);
+  ctx.fillStyle = '#fdba74';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('BỘ KÍCH NỔ', 274, 141);
+
+  // Buồng phản ứng tạo khí N₂ bên trong bộ kích nổ
+  const igniting = cycle >= 0.12 && cycle <= 0.55;
+  drawRoundRect(ctx, 224, 150, 100, 32, 6, '#0f172a', igniting ? '#fbbf24' : '#475569', 1.8);
+  if (igniting) {
+    ctx.fillStyle = '#f97316';
+    ctx.beginPath();
+    ctx.arc(274, 166, 11 + Math.sin(t * 24) * 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(274, 166, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('Sinh khí N₂', 274, 202);
+
+  // Cổ phun khí N₂ từ bộ kích nổ vào túi khí
+  drawArrow(ctx, 340, 166, 384, 166, '#38bdf8', 3.4, 9);
+
+  // --- BƯỚC 3: TÚI KHÍ AN TOÀN PHỒNG CĂNG (AIR BAG) ---
+  const bagCX = 388 + bagR * 0.85;
+  const bagCY = 166;
+  const bGrad = ctx.createRadialGradient(bagCX - bagR * 0.25, bagCY - bagR * 0.25, 6, bagCX, bagCY, bagR);
+  bGrad.addColorStop(0, 'rgba(248, 250, 252, 0.56)');
+  bGrad.addColorStop(0.65, 'rgba(56, 189, 248, 0.34)');
+  bGrad.addColorStop(1, 'rgba(14, 165, 233, 0.26)');
+
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.ellipse(bagCX, bagCY, bagR * 0.85, bagR * 1.12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Đường chỉ may gia cường đặc trưng trên mặt túi khí
+  if (bagR > 36) {
+    ctx.strokeStyle = 'rgba(224, 242, 254, 0.45)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.ellipse(bagCX, bagCY, bagR * 0.56, bagR * 0.78, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Các phân tử khí Nitơ (N₂) chuyển động nhiệt & đẩy căng thành túi
+  const molCount = 14;
+  for (let i = 0; i < molCount; i++) {
+    const ang = i * (Math.PI * 2 / molCount) + t * 2.8 * (i % 2 === 0 ? 1 : -1);
+    const ratio = 0.22 + ((i * 29) % 65) / 100;
+    const px = bagCX + Math.cos(ang) * (bagR * 0.74 * ratio);
+    const py = bagCY + Math.sin(ang * 1.15) * (bagR * 0.98 * ratio);
+    ctx.fillStyle = '#6ee7b7';
+    ctx.beginPath();
+    ctx.arc(px, py, 2.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Nhãn "Túi khí N₂" phía trên túi khí
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Túi khí N₂', bagCX, bagCY - bagR * 1.12 - 10);
+
+  // --- BƯỚC 4: BẢNG THÔNG SỐ KỸ THUẬT CHỮ TO RÕ NÉT BÊN PHẢI ---
+  drawRoundRect(ctx, 526, 52, 242, 236, 10, '#0f172a', '#38bdf8', 2.2);
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('THÔNG SỐ TÚI KHÍ', 542, 80);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Khí bơm: Nitơ (N₂)', 542, 112);
+  ctx.fillText('• Thể tích: V ≈ 60 lít', 542, 142);
+  ctx.fillText('• Nhiệt độ: t = 25°C', 542, 172);
+  ctx.fillText('• Áp suất tối đa:', 542, 202);
+
+  // Dòng p_max = 5 psi vẽ chuẩn chỉ số dưới
+  ctx.fillStyle = '#fbbf24';
+  let pxCur = 556;
+  const pyLine = 230;
+  ctx.font = 'italic 800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('p', pxCur, pyLine);
+  pxCur += ctx.measureText('p').width;
+  ctx.font = '800 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('max', pxCur, pyLine + 4.5);
+  pxCur += ctx.measureText('max').width;
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(' = 5 psi', pxCur, pyLine);
+
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '700 15px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('(1 psi ≈ 6,895 kPa)', 554, 258);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-32 ---
+VLXTModels.register('MH-C2-32', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 18.5px sắc nét)
+  drawRoundRect(ctx, 24, 4, 732, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 18.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BÓNG ĐÈN SỢI ĐỐT WOLFRAM CHỨA KHÍ TRƠ Ở ÁP SUẤT THẤP', 390, 29);
+
+  const pulse = 0.6 + 0.4 * Math.sin(t * 3.5) ** 2;
+  const cx = 296, cy = 148;
+
+  ctx.save();
+
+  // 2. Tia bức xạ ánh sáng phẳng sắc nét quanh bóng đèn (không dùng glow mờ nhòe)
+  ctx.strokeStyle = `rgba(250, 204, 21, ${(0.35 + 0.4 * pulse).toFixed(2)})`;
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  const rayAngles = [-Math.PI * 0.85, -Math.PI * 0.68, -Math.PI * 0.5, -Math.PI * 0.32, -Math.PI * 0.15, 0, Math.PI];
+  rayAngles.forEach((ang) => {
+    const r1 = 72;
+    const r2 = 82 + pulse * 6;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(ang) * r1, (cy - 22) + Math.sin(ang) * r1);
+    ctx.lineTo(cx + Math.cos(ang) * r2, (cy - 22) + Math.sin(ang) * r2);
+    ctx.stroke();
+  });
+
+  // 3. Bầu thủy tinh chịu nhiệt hình quả lê
+  ctx.beginPath();
+  ctx.moveTo(cx - 25, cy + 64);
+  ctx.bezierCurveTo(cx - 33, cy + 34, cx - 62, cy + 14, cx - 62, cy - 22);
+  ctx.arc(cx, cy - 22, 62, Math.PI, 0, false);
+  ctx.bezierCurveTo(cx + 62, cy + 14, cx + 33, cy + 34, cx + 25, cy + 64);
+  ctx.closePath();
+
+  const bulbGrad = ctx.createRadialGradient(cx, cy - 22, 8, cx, cy - 12, 66);
+  bulbGrad.addColorStop(0, `rgba(254, 240, 138, ${(0.22 + 0.14 * pulse).toFixed(2)})`);
+  bulbGrad.addColorStop(0.65, 'rgba(56, 189, 248, 0.16)');
+  bulbGrad.addColorStop(1, 'rgba(224, 242, 254, 0.22)');
+  ctx.fillStyle = bulbGrad;
+  ctx.fill();
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // 4. Trụ thủy tinh trung tâm & Hai dây dẫn điện cực lên sợi đốt
+  ctx.fillStyle = 'rgba(148, 163, 184, 0.28)';
+  ctx.fillRect(cx - 6, cy + 18, 12, 46);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(cx - 7, cy + 64);
+  ctx.lineTo(cx - 20, cy - 20);
+  ctx.moveTo(cx + 7, cy + 64);
+  ctx.lineTo(cx + 20, cy - 20);
+  ctx.stroke();
+
+  // Dây tóc Wolfram xoắn lò xo phát sáng rực
+  ctx.strokeStyle = pulse > 0.78 ? '#fef08a' : '#facc15';
+  ctx.lineWidth = 3.2;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx - 20, cy - 20);
+  for (let i = 0; i <= 10; i++) {
+    const fx = cx - 20 + i * 4;
+    const fy = cy - 20 + (i % 2 === 0 ? -5.5 : 5.5);
+    ctx.lineTo(fx, fy);
+  }
+  ctx.stroke();
+
+  // 5. Các phân tử khí trơ (Argon/Nitơ) chuyển động nhiệt bên trong bóng
+  ctx.fillStyle = '#38bdf8';
+  const pts = [[-32, -34], [30, -36], [-38, -4], [36, -6], [0, -56], [-18, 14], [20, 12]];
+  pts.forEach(([dx, dy], idx) => {
+    const ox = Math.cos(t * 4.2 + idx * 1.1) * 4.5;
+    const oy = Math.sin(t * 4.6 + idx * 1.3) * 4.5;
+    ctx.beginPath();
+    ctx.arc(cx + dx + ox, cy + dy + oy, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // 6. Đui đèn xoáy kim loại & Cực tiếp xúc phía dưới
+  drawRoundRect(ctx, cx - 24, cy + 64, 48, 32, 4, '#475569', '#cbd5e1', 2.4);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 24, cy + 75);
+  ctx.lineTo(cx + 24, cy + 75);
+  ctx.moveTo(cx - 24, cy + 86);
+  ctx.lineTo(cx + 24, cy + 86);
+  ctx.stroke();
+  drawRoundRect(ctx, cx - 12, cy + 96, 24, 9, 3, '#1e293b', '#94a3b8', 2);
+
+  // 7. Các thẻ chú thích CHỮ SIÊU TO (Tiêu đề 16.5px, dòng phụ 15.5px) bên trái
+  const drawBigTag = (px, py, bx, by, bw, bh, col, title, sub) => {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx + bw, by + bh / 2);
+    ctx.stroke();
+
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', col, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 11, by + 26);
+    ctx.fillStyle = col === '#cbd5e1' ? '#94a3b8' : col;
+    ctx.font = '700 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(sub, bx + 11, by + 51);
+  };
+
+  drawBigTag(cx - 20, cy - 20, 8, 52, 198, 64, '#fbbf24', 'Sợi đốt Wolfram', 'Chịu nhiệt độ rất cao');
+  drawBigTag(cx - 62, cy - 22, 8, 128, 198, 64, '#cbd5e1', 'Vỏ thủy tinh chịu nhiệt', 'Thể tích khí không đổi');
+  drawBigTag(cx - 38, cy - 4, 8, 204, 198, 64, '#38bdf8', 'Khí trơ áp suất thấp', 'Hạn chế bay hơi dây tóc');
+
+  // 8. Thẻ thông số cấu tạo & nguyên lý bên phải (Chữ siêu to 17px / 16px)
+  drawRoundRect(ctx, 404, 56, 366, 212, 10, '#0f172a', '#fbbf24', 2.2);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('CẤU TẠO & NGUYÊN LÝ ĐÈN SỢI ĐỐT', 420, 86);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Dây tóc: Kim loại Wolfram (W)', 420, 120);
+  ctx.fillText('• Vỏ bóng: Thủy tinh chịu nhiệt kín', 420, 152);
+  ctx.fillText('• Khí bên trong: Khí trơ áp suất thấp', 420, 184);
+  ctx.fillText('• Đẳng tích: Áp suất p tăng theo T', 420, 216);
+  ctx.fillStyle = '#fde047';
+  ctx.fillText('• Ứng dụng: Chiếu sáng & sưởi ấm', 420, 248);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-33 ---
+VLXTModels.register('MH-C2-33', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm đo và vẽ văn bản hỗ trợ chỉ số dưới chuẩn (vd: "ρ_{nước} = 1,0 g/cm³", "S_{1}", "S_{2}")
+    const mainFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const subFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mainFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = subFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mainFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichTextCenter(text, cx, cy) {
+        const totalW = measureRichText(text);
+        let curX = cx - totalW / 2;
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mainFont;
+                ctx.fillText(part, curX, cy);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = subFont;
+            ctx.fillText(subPart, curX, cy + 4.5);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mainFont;
+            ctx.fillText(part, curX, cy);
+        }
+    }
+
+    // Hàm vẽ nhãn callout cỡ chữ to mặc định, rõ nét, không tràn khung 780x305
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 22;
+        const padX = 12;
+        const padY = 8;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichTextCenter(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5));
+        }
+        ctx.restore();
+    }
+
+    // Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleText = 'SÚNG PHUN NƯỚC — NGUYÊN LÝ TRUYỀN ÁP SUẤT PASCAL';
+    ctx.font = '800 16px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleText).width + 30;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleText, 14 + titleW / 2, 24);
+    ctx.restore();
+
+    const saw = (t * 0.25) % 1;
+    const strokePx = saw * 36;
+    const pisX = 335 - strokePx;
+
+    ctx.save();
+
+    // 1. Vỏ thân súng phun nước mặt cắt phẳng trực quan
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.72)';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(132, 60);
+    ctx.lineTo(542, 60);
+    ctx.lineTo(542, 134);
+    ctx.lineTo(442, 148);
+    ctx.lineTo(442, 224);
+    ctx.lineTo(222, 224);
+    ctx.lineTo(202, 286);
+    ctx.lineTo(122, 286);
+    ctx.lineTo(146, 185);
+    ctx.lineTo(132, 162);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 2. Khoang chứa nước chữ U bên trong (nòng trên + ống nối trái + buồng pít-tông dưới)
+    ctx.fillStyle = 'rgba(14, 165, 233, 0.42)';
+    ctx.fillRect(166, 74, 360, 40);
+    ctx.fillRect(166, 114, 36, 94);
+    ctx.fillRect(202, 162, pisX - 202, 46);
+
+    // Thành buồng nước sắc nét
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(526, 74);
+    ctx.lineTo(166, 74);
+    ctx.lineTo(166, 208);
+    ctx.lineTo(356, 208);
+    ctx.moveTo(526, 114);
+    ctx.lineTo(202, 114);
+    ctx.lineTo(202, 162);
+    ctx.lineTo(356, 162);
+    ctx.stroke();
+
+    // Mũi tên truyền áp suất bên trong lòng chất lỏng
+    drawArrow(ctx, 265, 185, 222, 185, 'rgba(186, 230, 253, 0.85)', 2, 5);
+    drawArrow(ctx, 184, 175, 184, 130, 'rgba(186, 230, 253, 0.85)', 2, 5);
+    drawArrow(ctx, 210, 94, 255, 94, 'rgba(186, 230, 253, 0.85)', 2, 5);
+
+    // 3. Vòi phun tiết diện nhỏ S2 = 0,09 cm² ở đầu phải nòng trên
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(526, 72, 18, 17);
+    ctx.fillRect(526, 99, 18, 17);
+
+    // Tia nước phun mạnh ra từ vòi phun (1 chiều)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(544, 94);
+    ctx.lineTo(750, 94);
+    ctx.stroke();
+
+    for (let i = 0; i < 5; i++) {
+        const jp = (t * 1.4 + i * 0.2) % 1;
+        const jx = 548 + jp * 175;
+        drawArrow(ctx, jx, 94, jx + 26, 94, `rgba(56, 189, 248, ${(1 - jp * 0.65).toFixed(2)})`, 2.8, 7);
+    }
+
+    // 4. Pít-tông tiết diện S1 = 2,1 cm² & Cò súng
+    drawRoundRect(ctx, pisX, 164, 14, 42, 2, '#cbd5e1', '#f8fafc', 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(pisX + 4, 165, 6, 40);
+
+    // Thanh nối cò súng
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(pisX + 14, 180, 44, 10);
+
+    // Cò súng
+    drawRoundRect(ctx, pisX + 58, 166, 15, 38, 4, '#f59e0b', '#fef08a', 2);
+
+    // Mũi tên lực F = 4,2 N tác dụng vào cò súng
+    drawArrow(ctx, pisX + 114, 185, pisX + 76, 185, '#ef4444', 3.4, 8);
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 17px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('F', pisX + 118, 191);
+
+    ctx.restore();
+
+    // 5. Các nhãn thông số đề dẫn chữ to, ký hiệu ρ và chỉ số dưới chuẩn xác
+    drawLargeCallout(340, 94, 232, 118, ['Nước truyền nguyên vẹn áp suất'], '#38bdf8');
+    drawLargeCallout(pisX + 7, 208, 10, 234, ['Pít-tông: S_{1} = 2,1 cm² | Dịch chuyển 2,2 cm'], '#cbd5e1');
+    drawLargeCallout(pisX + 94, 192, 474, 236, ['Cò súng: Lực F = 4,2 N'], '#ef4444');
+    drawLargeCallout(544, 94, 548, 134, ['Vòi phun: S_{2} = 0,09 cm²', 'ρ_{nước} = 1,0 g/cm³'], '#38bdf8');
+});
+
+    // --- MH-C2-34 ---
+VLXTModels.register('MH-C2-34', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản có chỉ số dưới chuẩn (vd: "V_{bình}", "p_{0}", "V_{khí}")
+    const baseMainFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout chữ lớn, sắc nét, tự giữ gọn trong khung 780x305
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 21;
+        const padX = 12;
+        const padY = 7;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(44, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (viết chỉ số dưới chuẩn xác)
+    ctx.save();
+    const titleStr = 'BÌNH TÍCH ÁP MÁY LỌC NƯỚC (V_{bình} = 12 lít; p_{0} = 120 kPa)';
+    const titleMFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 30, 15, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 23.5, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    // Nước bơm vào bóng trên tăng từ 6 lít -> 9 lít (1 chiều sawtooth)
+    const saw = (t * 0.2) % 1;
+    const waterRatio = 0.5 + saw * 0.25; // 6/12 -> 9/12
+    const tx = 172, ty = 82, tw = 196, th = 194;
+    const membraneY = ty + 20 + (th - 40) * waterRatio;
+
+    ctx.save();
+    // Vỏ bình tích áp hình trụ bo tròn 2 đầu
+    drawRoundRect(ctx, tx, ty, tw, th, 44, '#0f172a', '#cbd5e1', 3.4);
+
+    // Clip bên trong ruột bình tích áp
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(tx + 3, ty + 3, tw - 6, th - 6, 41);
+    else ctx.rect(tx + 3, ty + 3, tw - 6, th - 6);
+    ctx.clip();
+
+    // Phần trên: Bóng chứa nước (màu xanh dương đậm sắc nét)
+    ctx.fillStyle = 'rgba(14, 165, 233, 0.38)';
+    ctx.fillRect(tx, ty, tw, membraneY - ty);
+
+    // Phần dưới: Bóng chứa khí nén (màu hổ phách)
+    ctx.fillStyle = `rgba(245, 158, 11, ${(0.24 + saw * 0.18).toFixed(2)})`;
+    ctx.fillRect(tx, membraneY, tw, ty + th - membraneY);
+
+    // Màng cao su đàn hồi ngăn cách hai bóng
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(tx, membraneY);
+    ctx.quadraticCurveTo(tx + tw / 2, membraneY + 8, tx + tw, membraneY);
+    ctx.stroke();
+    ctx.restore();
+
+    // Nhãn chữ lớn bên trong 2 khoang bóng
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Bóng chứa nước', tx + tw / 2, ty + 52);
+
+    ctx.fillStyle = '#fde68a';
+    ctx.fillText('Bóng chứa khí', tx + tw / 2, ty + th - 32);
+
+    // Van bơm khí nạp áp suất ban đầu p0 ở đáy bình tích áp
+    const pipeX = tx + tw / 2;
+    drawRoundRect(ctx, pipeX - 7, ty + th, 14, 12, 2, '#64748b', '#cbd5e1', 1.8);
+    drawRoundRect(ctx, pipeX - 5, ty + th + 12, 10, 6, 2, '#fbbf24', '#fef08a', 1.5);
+
+    // Đường ống nước vào/ra phía trên đỉnh bình
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(pipeX, ty);
+    ctx.lineTo(pipeX, 46);
+    ctx.moveTo(pipeX, 58);
+    ctx.lineTo(pipeX + 124, 58);
+    ctx.stroke();
+
+    // Rơ-le áp suất trên nhánh ống nước vào
+    drawRoundRect(ctx, pipeX + 34, 47, 36, 22, 5, '#1e293b', '#10b981', 2.4);
+    drawArrow(ctx, pipeX + 120, 58, pipeX + 74, 58, '#38bdf8', 2.4, 6);
+    drawArrow(ctx, pipeX, 50, pipeX, 38, '#38bdf8', 2.4, 6);
+
+    // Chân đế bình tích áp
+    drawRoundRect(ctx, tx + 26, ty + th, 26, 14, 3, '#475569', '#94a3b8', 2);
+    drawRoundRect(ctx, tx + tw - 52, ty + th, 26, 14, 3, '#475569', '#94a3b8', 2);
+
+    // Chú thích callout chữ to, rõ ràng
+    drawLargeCallout(pipeX - 4, 44, 16, 48, ['Ống nước ra'], '#38bdf8');
+    drawLargeCallout(pipeX + 52, 69, 396, 62, ['Rơ-le áp suất tự động', 'Ngắt ở 9 lít · Đóng ở 6 lít'], '#10b981');
+
+    // Thẻ thông số đề dẫn bên phải chữ to, dễ đọc, có chỉ số dưới chuẩn (Zero Data Leakage)
+    const cardX = 396, cardY = 128, cardW = 370, cardH = 162;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#fbbf24', 2.2);
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('THÔNG SỐ BÌNH TÍCH ÁP (T = const)', cardX + 16, cardY + 24);
+
+    ctx.fillStyle = '#f8fafc';
+    const itemMFont = '700 14.5px "Be Vietnam Pro", system-ui, sans-serif';
+    const itemSFont = '700 11px "Be Vietnam Pro", system-ui, sans-serif';
+    drawRichText('• Dung tích toàn bình: V = 12 lít', cardX + 16, cardY + 54, 'left', itemMFont, itemSFont, 4);
+    drawRichText('• Khi chưa có nước: V_{khí} = 12 lít, p_{0} = 120 kPa', cardX + 16, cardY + 82, 'left', itemMFont, itemSFont, 4);
+    drawRichText('• Bơm đầy 9 lít nước → Rơ-le ngắt điện', cardX + 16, cardY + 110, 'left', itemMFont, itemSFont, 4);
+    drawRichText('• Xả còn 6 lít nước → Công tắc đóng lại', cardX + 16, cardY + 138, 'left', itemMFont, itemSFont, 4);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-35 ---
+VLXTModels.register('MH-C2-35', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 18.5px sắc nét)
+  drawRoundRect(ctx, 24, 4, 732, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 18.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BƠM TAY XE ĐẠP 2 TRẠNG THÁI (H = 50 cm; p₀ = 10⁵ Pa; 27°C)', 390, 29);
+
+  const saw = (t * 0.25) % 1; // Chu kỳ 1 chiều -> reset
+  const cw = 82, ch = 136;
+
+  // Hàm vẽ thẻ chú thích chữ to tự động đo chiều rộng chữ để KHÔNG BAO GIỜ tràn viền
+  const drawBigTag = (px, py, bx, by, minW, bh, borderCol, title, sub) => {
+    ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    let maxTextW = ctx.measureText(title).width;
+    if (sub) {
+      ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      maxTextW = Math.max(maxTextW, ctx.measureText(sub).width);
+    }
+    const bw = Math.max(minW, Math.ceil(maxTextW + 22));
+
+    ctx.strokeStyle = borderCol;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx < px ? bx + bw : bx, by + bh / 2);
+    ctx.stroke();
+
+    ctx.fillStyle = borderCol;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, bx, by, bw, bh, 8, '#0f172a', borderCol, 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(title, bx + 11, sub ? by + 23 : by + bh / 2 + 5.5);
+    if (sub) {
+      ctx.fillStyle = borderCol;
+      ctx.font = '700 14.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(sub, bx + 11, by + 46);
+    }
+  };
+
+  ctx.save();
+
+  // =========================================================================
+  // TRẠNG THÁI 1 (TRÁI): KÉO TAY BƠM LÊN (HÚT KHÍ VÀO — ĐẲNG ÁP p₀)
+  // =========================================================================
+  const c1x = 166, c1y = 128;
+  const pis1Y = c1y + 84 - saw * 56; // Pít-tông kéo lên (tăng thể tích buồng chứa)
+
+  // Tiêu đề trạng thái 1 (chữ to 16.5px)
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('1. KÉO TAY BƠM LÊN', c1x + cw / 2, 62);
+
+  // Vùng khí bên trong xilanh 1
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+  ctx.fillRect(c1x, pis1Y + 12, cw, c1y + ch - (pis1Y + 12));
+
+  // Các phân tử khí chuyển động bên trong xilanh 1
+  ctx.fillStyle = '#7dd3fc';
+  for (let i = 0; i < 6; i++) {
+    const chamberH = Math.max(18, c1y + ch - (pis1Y + 18));
+    const mx = c1x + 14 + ((i * 23) % (cw - 28)) + Math.cos(t * 3 + i) * 3;
+    const my = pis1Y + 16 + ((i * 19) % chamberH);
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Thân xilanh 1 (chừa lỗ van đầu vào bên trái tại y = 148..170)
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(c1x, c1y);
+  ctx.lineTo(c1x, 148);
+  ctx.moveTo(c1x, 170);
+  ctx.lineTo(c1x, c1y + ch);
+  ctx.lineTo(c1x + cw, c1y + ch);
+  ctx.moveTo(c1x + cw, c1y);
+  ctx.lineTo(c1x + cw, c1y + ch - 26);
+  // Ống ra ngang bên dưới phải
+  ctx.moveTo(c1x + cw, c1y + ch - 26);
+  ctx.lineTo(c1x + cw + 34, c1y + ch - 26);
+  ctx.moveTo(c1x + cw, c1y + ch);
+  ctx.lineTo(c1x + cw + 34, c1y + ch);
+  ctx.stroke();
+
+  // Van đầu vào MỞ (bản lề mở vào trong buồng xilanh)
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 3.8;
+  ctx.beginPath();
+  ctx.moveTo(c1x, 148);
+  ctx.lineTo(c1x + 14, 165);
+  ctx.stroke();
+
+  // Van đầu ra ĐÓNG (chắn kín cổ ống ra)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 3.8;
+  ctx.beginPath();
+  ctx.moveTo(c1x + cw, c1y + ch - 26);
+  ctx.lineTo(c1x + cw, c1y + ch);
+  ctx.stroke();
+
+  // Pít-tông & Tay bơm kéo lên
+  drawRoundRect(ctx, c1x + 3, pis1Y, cw - 6, 12, 2, '#94a3b8', '#f8fafc', 2);
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(c1x + cw / 2, pis1Y);
+  ctx.lineTo(c1x + cw / 2, pis1Y - 36);
+  ctx.stroke();
+  drawRoundRect(ctx, c1x + 14, pis1Y - 44, cw - 28, 10, 4, '#f97316', '#fed7aa', 2);
+  drawArrow(ctx, c1x + cw + 14, pis1Y - 8, c1x + cw + 14, pis1Y - 44, '#10b981', 3, 8);
+
+  // Luồng khí đi vào qua van mở
+  drawArrow(ctx, c1x - 28, 159, c1x - 3, 159, '#38bdf8', 2.8, 7.5);
+
+  // Nhãn chú thích trạng thái 1 (không tràn viền)
+  drawBigTag(c1x - 14, 159, 8, 132, 126, 56, '#10b981', 'Van vào MỞ', 'Khí đi vào (p₀)');
+  drawBigTag(c1x + cw, c1y + ch - 13, 256, 248, 124, 38, '#ef4444', 'Van ra ĐÓNG');
+
+  // Đường phân cách giữa 2 trạng thái
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.moveTo(392, 52);
+  ctx.lineTo(392, 290);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // =========================================================================
+  // TRẠNG THÁI 2 (PHẢI): ĐẨY TAY BƠM XUỐNG (NÉN KHÍ & ĐẨY RA LỐP XE)
+  // =========================================================================
+  const c2x = 552, c2y = 128;
+  const pis2Y = c2y + 24 + saw * 62; // Pít-tông đẩy xuống
+
+  // Tiêu đề trạng thái 2 (chữ to 16.5px)
+  ctx.fillStyle = '#fb923c';
+  ctx.font = '800 16.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('2. ĐẨY TAY BƠM XUỐNG', c2x + cw / 2, 62);
+
+  // Vùng khí bị nén bên dưới pít-tông
+  ctx.fillStyle = `rgba(249, 115, 22, ${(0.24 + saw * 0.28).toFixed(2)})`;
+  ctx.fillRect(c2x, pis2Y + 12, cw, c2y + ch - (pis2Y + 12));
+
+  // Các phân tử khí bị nén dồn lại & chuyển động nhanh hơn
+  ctx.fillStyle = '#fed7aa';
+  for (let i = 0; i < 6; i++) {
+    const chamberH = Math.max(14, c2y + ch - (pis2Y + 16));
+    const mx = c2x + 14 + ((i * 23) % (cw - 28)) + Math.cos(t * (4 + saw * 3) + i) * 3;
+    const my = pis2Y + 15 + ((i * 17) % chamberH);
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Thân xilanh 2
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(c2x, c2y);
+  ctx.lineTo(c2x, c2y + ch);
+  ctx.lineTo(c2x + cw + 34, c2y + ch);
+  ctx.moveTo(c2x + cw, c2y);
+  ctx.lineTo(c2x + cw, c2y + ch - 26);
+  ctx.lineTo(c2x + cw + 34, c2y + ch - 26);
+  ctx.stroke();
+
+  // Van đầu vào ĐÓNG (ép chặt vào thành trái)
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(c2x + 2, 148);
+  ctx.lineTo(c2x + 2, 170);
+  ctx.stroke();
+
+  // Van đầu ra MỞ (bản lề mở sang phải)
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 3.8;
+  ctx.beginPath();
+  ctx.moveTo(c2x + cw, c2y + ch - 26);
+  ctx.lineTo(c2x + cw + 16, c2y + ch - 12);
+  ctx.stroke();
+
+  // Pít-tông & Tay bơm đẩy xuống
+  drawRoundRect(ctx, c2x + 3, pis2Y, cw - 6, 12, 2, '#94a3b8', '#f8fafc', 2);
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(c2x + cw / 2, pis2Y);
+  ctx.lineTo(c2x + cw / 2, pis2Y - 36);
+  ctx.stroke();
+  drawRoundRect(ctx, c2x + 14, pis2Y - 44, cw - 28, 10, 4, '#f97316', '#fed7aa', 2);
+  drawArrow(ctx, c2x - 12, pis2Y - 44, c2x - 12, pis2Y - 8, '#fb923c', 3, 8);
+
+  // Luồng khí nén bị đẩy ra qua van đầu ra mở
+  drawArrow(ctx, c2x + cw + 8, c2y + ch - 13, c2x + cw + 42, c2y + ch - 13, '#38bdf8', 3, 8);
+
+  // Nhãn chú thích trạng thái 2 (thẻ "Van vào ĐÓNG" nằm gọn bên trái c2x = 552, không đè viền)
+  drawBigTag(c2x, 159, 400, 140, 128, 38, '#ef4444', 'Van vào ĐÓNG');
+  drawBigTag(c2x + cw + 20, c2y + ch - 13, 652, 184, 122, 56, '#10b981', 'Van ra MỞ', 'Khí bị đẩy ra');
+
+  ctx.restore();
+});
+
+    // --- MH-C2-36 ---
+VLXTModels.register('MH-C2-36', function(ctx, w, h, t) {
+  ctx.clearRect(0, 0, w, h);
+
+  // 1. Huy hiệu tiêu đề phía trên (cỡ chữ siêu to 18.5px sắc nét)
+  drawRoundRect(ctx, 24, 4, 732, 36, 8, '#0f172a', '#334155', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 18.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BÌNH KHÍ HELIUM NÉN (6 lít; 5,00·10⁵ Pa) BƠM BÓNG BAY SỰ KIỆN', 390, 29);
+
+  const saw = (t * 0.25) % 1;
+  const bR = 26 + saw * 22;
+
+  ctx.save();
+
+  // --- BÌNH NÉN KHÍ HELIUM BÊN TRÁI ---
+  const tx = 64, ty = 92, tw = 112, th = 186;
+  const vx = tx + tw / 2;
+
+  // Tay xách bảo vệ van trên đỉnh bình
+  ctx.strokeStyle = '#f472b6';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(tx + 20, ty + 14);
+  ctx.lineTo(tx + 14, ty - 14);
+  ctx.lineTo(tx + 38, ty - 14);
+  ctx.moveTo(tx + tw - 20, ty + 14);
+  ctx.lineTo(tx + tw - 14, ty - 14);
+  ctx.lineTo(tx + tw - 38, ty - 14);
+  ctx.stroke();
+
+  // Thân bình khí nén Helium (màu hồng tím đặc trưng)
+  const tGrad = ctx.createLinearGradient(tx, ty, tx + tw, ty);
+  tGrad.addColorStop(0, '#be185d');
+  tGrad.addColorStop(0.45, '#ec4899');
+  tGrad.addColorStop(1, '#9d174d');
+  drawRoundRect(ctx, tx, ty, tw, th, 28, tGrad, '#fbcfe8', 2.8);
+
+  // Van khóa & đồng hồ giảm áp trên đỉnh bình
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillRect(vx - 8, ty - 16, 16, 16);
+  ctx.fillStyle = '#10b981';
+  ctx.fillRect(vx - 18, ty - 21, 36, 6);
+
+  // Thông số in trên thân bình (chữ siêu to 22px / 16px)
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('He', vx, ty + 62);
+  ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('V = 6 lít', vx, ty + 94);
+  ctx.fillText('5,00·10⁵ Pa', vx, ty + 120);
+
+  // --- VÒI BƠM & QUẢ BÓNG BAY ĐANG BƠM CĂNG ---
+  const bx = 294, by = 132;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(vx + 8, ty - 8);
+  ctx.quadraticCurveTo(222, ty - 16, bx, by + bR * 1.06 + 8);
+  ctx.stroke();
+
+  // Dòng khí Helium truyền qua vòi bơm
+  const flowP = (t * 0.9) % 1;
+  const fx = (1 - flowP) * (1 - flowP) * (vx + 8) + 2 * (1 - flowP) * flowP * 222 + flowP * flowP * bx;
+  const fy = (1 - flowP) * (1 - flowP) * (ty - 8) + 2 * (1 - flowP) * flowP * (ty - 16) + flowP * flowP * (by + bR * 1.06 + 8);
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Quả bóng bay đang bơm căng
+  const bGrad = ctx.createRadialGradient(bx - bR * 0.25, by - bR * 0.25, 6, bx, by, bR);
+  bGrad.addColorStop(0, 'rgba(186, 230, 253, 0.52)');
+  bGrad.addColorStop(1, 'rgba(56, 189, 248, 0.34)');
+  ctx.fillStyle = bGrad;
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.ellipse(bx, by, bR * 0.9, bR * 1.06, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Cổ bóng buộc vòi bơm
+  ctx.fillStyle = '#0284c7';
+  ctx.fillRect(bx - 5, by + bR * 1.06, 10, 7);
+
+  // Thẻ thông số quả bóng đang bơm (cỡ chữ siêu to 15.5px ngay dưới bóng, không bao giờ tràn vỏ bóng)
+  drawRoundRect(ctx, bx - 64, 214, 128, 56, 8, '#0f172a', '#38bdf8', 2);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 15.5px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('V₀ = 2,0 lít', bx, 237);
+  ctx.fillStyle = '#7dd3fc';
+  ctx.fillText('1,25·10⁵ Pa', bx, 259);
+
+  // --- CÁC QUẢ BÓNG BAY HELIUM ĐÃ BƠM XONG BAY LÊN ---
+  const floatY = (t * 28) % 55;
+  const smallBalloons = [
+    { x: 382, y: 215 - floatY, col: '#fbbf24' },
+    { x: 422, y: 175 - floatY * 0.8, col: '#34d399' },
+    { x: 392, y: 118 - floatY * 0.6, col: '#f472b6' }
+  ];
+  smallBalloons.forEach((sb) => {
+    ctx.fillStyle = sb.col;
+    ctx.beginPath();
+    ctx.ellipse(sb.x, sb.y, 15, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(sb.x, sb.y + 18);
+    ctx.lineTo(sb.x, sb.y + 40);
+    ctx.stroke();
+  });
+
+  // --- THẺ THÔNG SỐ ĐỀ DẪN BÊN PHẢI (CHỮ SIÊU TO 17px / 16px) ---
+  drawRoundRect(ctx, 456, 54, 314, 232, 10, '#0f172a', '#ec4899', 2.2);
+  ctx.fillStyle = '#f472b6';
+  ctx.font = '800 17px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('THÔNG SỐ BƠM BÓNG HELIUM', 472, 82);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Bình khí He: V = 6 lít', 472, 112);
+  ctx.fillText('  Áp suất đầu: p = 5,00·10⁵ Pa', 472, 138);
+  ctx.fillText('• Mỗi bóng bay: V₀ = 2,0 lít', 472, 168);
+  ctx.fillText('  Áp suất bóng: p₀ = 1,25·10⁵ Pa', 472, 194);
+  ctx.fillText('• Số học sinh cần: 187 em', 472, 224);
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('• Quá trình đẳng nhiệt (T = const)', 472, 254);
+
+  ctx.restore();
+});
+
+    // --- MH-C2-37 ---
+VLXTModels.register('MH-C2-37', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản có chỉ số dưới chuẩn (vd: "V_{1}", "V_{2}", "k_{1}", "k_{2}", "p_{kq}")
+    const baseMainFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout chữ to mặc định, sắc nét, không tràn khung 780x305
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 20;
+        const padX = 11;
+        const padY = 7;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(44, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng với chỉ số dưới chuẩn xác
+    ctx.save();
+    const titleStr = 'THÍ NGHIỆM BƠM KHÍ VÀO BÌNH CỨNG (V_{1} = 0,6 lít → V_{2} = 5,0 lít; 29°C)';
+    const titleMFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 30, 15, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 23.5, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    const saw = (t * 0.25) % 1;
+    const isPush = saw >= 0.45; // Giai đoạn 1: hút khí (k1 mở, k2 đóng); Giai đoạn 2: đẩy khí (k1 đóng, k2 mở)
+
+    ctx.save();
+
+    // 2. Bình chứa khí cứng V2 = 5,0 lít bên phải
+    const bx = 330, by = 122, bw = 390, bh = 160;
+    drawRoundRect(ctx, bx, by, bw, bh, 8, 'rgba(15, 23, 42, 0.88)', '#cbd5e1', 3.2);
+
+    // Các chấm phân tử khí trong bình V2 (mật độ tăng theo saw)
+    ctx.fillStyle = '#38bdf8';
+    const dotCount = 34 + Math.round(saw * 24);
+    for (let i = 0; i < dotCount; i++) {
+        const dx = bx + 20 + ((i * 53) % (bw - 40));
+        const dy = by + 20 + ((i * 37) % (bh - 40));
+        ctx.beginPath();
+        ctx.arc(dx, dy, 2.3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Nhãn V2 = 5,0 lít cỡ chữ lớn ở giữa bình
+    drawRoundRect(ctx, bx + bw / 2 - 68, by + bh / 2 - 18, 136, 36, 7, '#0f172a', '#38bdf8', 2);
+    ctx.fillStyle = '#f8fafc';
+    drawRichText('V_{2} = 5,0 lít', bx + bw / 2, by + bh / 2, 'center', '800 16px "Be Vietnam Pro", system-ui, sans-serif', '800 12px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    // 3. Xilanh bơm V1 = 0,6 lít nối vào thành trái bình V2
+    const px = 148, py = 158, pw = 182, ph = 66;
+    // Xóa vách ngăn chỗ nối giữa V1 và V2 để thông nhau qua van k2
+    ctx.fillStyle = '#070d1c';
+    ctx.fillRect(px, py, pw + 2, ph);
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx, py);
+    ctx.moveTo(px, py + ph);
+    ctx.lineTo(bx, py + ph);
+    ctx.stroke();
+
+    // Pít-tông trong bơm V1
+    const pisX = isPush ? (px + 18 + ((saw - 0.45) / 0.55) * 95) : (px + 113 - (saw / 0.45) * 95);
+
+    // Hai nửa đầu pít-tông chừa khe hút khí ở giữa
+    drawRoundRect(ctx, pisX, py + 3, 18, 22, 2, '#64748b', '#f8fafc', 2);
+    drawRoundRect(ctx, pisX, py + ph - 25, 18, 22, 2, '#64748b', '#f8fafc', 2);
+
+    // Cán pít-tông & tay cầm kéo/đẩy bên trái
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(pisX, py + 22);
+    ctx.lineTo(pisX - 66, py + 22);
+    ctx.moveTo(pisX, py + ph - 22);
+    ctx.lineTo(pisX - 66, py + ph - 22);
+    ctx.stroke();
+    drawRoundRect(ctx, pisX - 78, py + 12, 12, ph - 24, 3, '#475569', '#cbd5e1', 2);
+
+    // Mũi tên chỉ chiều chuyển động của pít-tông
+    if (isPush) {
+        drawArrow(ctx, pisX - 58, py + ph / 2, pisX - 18, py + ph / 2, '#10b981', 2.4, 6);
+    } else {
+        drawArrow(ctx, pisX - 18, py + ph / 2, pisX - 58, py + ph / 2, '#38bdf8', 2.4, 6);
+    }
+
+    // Van một chiều k1 trên pít-tông
+    ctx.strokeStyle = isPush ? '#ef4444' : '#10b981';
+    ctx.lineWidth = 3.6;
+    ctx.beginPath();
+    ctx.moveTo(pisX + 18, py + 25);
+    if (isPush) ctx.lineTo(pisX + 18, py + ph - 25); // k1 đóng
+    else ctx.lineTo(pisX + 31, py + ph - 27); // k1 mở hút khí vào
+    ctx.stroke();
+
+    ctx.fillStyle = '#fbbf24';
+    drawRichText('k_{1}', pisX + 36, py + ph - 12, 'left', '800 16px "Be Vietnam Pro", system-ui, sans-serif', '800 11.5px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    // Van một chiều k2 tại cửa nối vào bình V2
+    ctx.strokeStyle = isPush ? '#10b981' : '#ef4444';
+    ctx.lineWidth = 3.6;
+    ctx.beginPath();
+    ctx.moveTo(bx, py + 6);
+    if (isPush) ctx.lineTo(bx + 15, py + ph - 10); // k2 mở đẩy khí vào bình V2
+    else ctx.lineTo(bx, py + ph - 6); // k2 đóng
+    ctx.stroke();
+
+    ctx.fillStyle = '#fbbf24';
+    drawRichText('k_{2}', bx + 20, py + ph - 12, 'left', '800 16px "Be Vietnam Pro", system-ui, sans-serif', '800 11.5px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    // Nhãn V1 = 0,6 lít chữ to phía trên xilanh
+    ctx.fillStyle = '#f8fafc';
+    drawRichText('V_{1} = 0,6 lít', px + pw / 2, py - 16, 'center', '800 16px "Be Vietnam Pro", system-ui, sans-serif', '800 12px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    // Chú thích trạng thái van k1, k2 phía dưới xilanh
+    drawLargeCallout(bx + 8, py + ph - 2, 134, 244, ['Van một chiều k_{1}, k_{2}'], '#fbbf24');
+
+    // 4. Áp kế đơn vị Bar gắn trên nắp bình V2
+    const gX = 446, gY = 76;
+    drawRoundRect(ctx, gX - 7, 106, 14, 18, 2, '#f59e0b', '#cbd5e1', 2);
+    const nAng = Math.PI * 0.8 + saw * Math.PI * 0.55;
+    drawPressureGauge(ctx, gX, gY, 30, nAng, 'bar', '', '#38bdf8');
+    drawLargeCallout(gX - 30, gY, 224, 52, ['Áp kế (Bar)', 'Chỉ 0 tại p_{kq}'], '#38bdf8');
+
+    // 5. Nhiệt kế điện tử hiện số 29°C cắm xuyên nắp bình V2
+    const tX = 602, tY = 54;
+    drawRoundRect(ctx, tX - 28, tY, 56, 54, 8, '#f59e0b', '#fef08a', 2.2);
+    drawRoundRect(ctx, tX - 22, tY + 12, 44, 24, 4, '#0f172a', '#10b981', 1.6);
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 15px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('29°C', tX, tY + 24);
+
+    // Que dò nhiệt độ cắm xuyên nắp bình vào trong
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(tX + 6, tY + 54);
+    ctx.lineTo(tX + 6, 178);
+    ctx.stroke();
+
+    drawLargeCallout(tX + 28, tY + 26, 652, 52, ['Nhiệt kế số', '29,0°C'], '#10b981');
+
+    ctx.restore();
+});
+
+    // --- MH-C2-38 ---
+VLXTModels.register('MH-C2-38', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản có chỉ số dưới chuẩn (vd: "p_{0}")
+    const baseMainFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout chữ lớn mặc định, rõ nét, không tràn khung 780x305
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 21;
+        const padX = 12;
+        const padY = 8;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = safeBy + boxH / 2;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleText = 'PHONG VŨ BIỂU THỦY NGÂN TORRICELLI (ỐNG DÀI 80–90 cm)';
+    ctx.font = '800 16px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleText).width + 30;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleText, 14 + titleW / 2, 24);
+    ctx.restore();
+
+    const pulse = Math.sin(t * 2.2) * 2;
+    const cupX = 225, cupY = 176, cupW = 246, cupH = 106;
+    const wallW = 3.4;
+    const surfY = cupY + 30; // Mặt thoáng thủy ngân trong chậu (~ y = 206)
+
+    ctx.save();
+
+    // 2. Vẽ chậu thủy ngân sáng rõ, không bị đen tối
+    const hgCupGrad = ctx.createLinearGradient(0, surfY, 0, cupY + cupH);
+    hgCupGrad.addColorStop(0, 'rgba(148, 163, 184, 0.65)');
+    hgCupGrad.addColorStop(1, 'rgba(71, 85, 105, 0.85)');
+    ctx.fillStyle = hgCupGrad;
+    ctx.fillRect(cupX + wallW / 2, surfY, cupW - wallW, cupY + cupH - surfY - wallW / 2);
+
+    // Mặt thoáng thủy ngân sáng bóng
+    ctx.strokeStyle = '#f1f5f9';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(cupX + wallW / 2, surfY);
+    ctx.lineTo(cupX + cupW - wallW / 2, surfY);
+    ctx.stroke();
+
+    // Thành chậu thủy tinh màu trắng bạc sắc nét
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = wallW;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cupX, cupY);
+    ctx.lineTo(cupX, cupY + cupH);
+    ctx.lineTo(cupX + cupW, cupY + cupH);
+    ctx.lineTo(cupX + cupW, cupY);
+    ctx.stroke();
+
+    // 3. Ống thủy tinh một đầu kín (trên), đầu hở dưới cắm NGẬP SÂU dưới mặt thoáng Hg
+    const tx = 348, tw = 34;
+    const tubeTopY = 56;
+    const tubeBotY = 254;
+    const hgTopY = 98 + pulse;
+
+    // Khoang chân không phía trên cột thủy ngân trong ống (tô nhẹ phân biệt rõ với nền)
+    ctx.fillStyle = 'rgba(226, 232, 240, 0.14)';
+    ctx.beginPath();
+    ctx.arc(tx, tubeTopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(tx + tw / 2, hgTopY);
+    ctx.lineTo(tx - tw / 2, hgTopY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cột thủy ngân dâng cao trong ống (ánh kim loại bạc rõ nét)
+    const hgGrad = ctx.createLinearGradient(tx - tw / 2, 0, tx + tw / 2, 0);
+    hgGrad.addColorStop(0, '#64748b');
+    hgGrad.addColorStop(0.45, '#e2e8f0');
+    hgGrad.addColorStop(1, '#475569');
+    ctx.fillStyle = hgGrad;
+    ctx.fillRect(tx - tw / 2 + 1.5, hgTopY, tw - 3, tubeBotY - hgTopY);
+
+    // Mặt khum lồi thủy ngân tại đỉnh cột Hg
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(tx - tw / 2 + 2, hgTopY);
+    ctx.quadraticCurveTo(tx, hgTopY - 4, tx + tw / 2 - 2, hgTopY);
+    ctx.stroke();
+
+    // Viền ống thủy tinh hở đáy
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tx - tw / 2, tubeBotY);
+    ctx.lineTo(tx - tw / 2, tubeTopY + tw / 2);
+    ctx.arc(tx, tubeTopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(tx + tw / 2, tubeBotY);
+    ctx.stroke();
+
+    // 4. Mũi tên áp suất khí quyển p0 ép xuống mặt thoáng thủy ngân trong chậu
+    drawArrow(ctx, 276, 146, 276, surfY - 3, '#fbbf24', 3.4, 9);
+    ctx.fillStyle = '#fbbf24';
+    drawRichText('p_{0}', 262, 166, 'right', 'italic 800 18.5px "Be Vietnam Pro", system-ui, sans-serif', '800 13.5px "Be Vietnam Pro", system-ui, sans-serif', 5);
+
+    // Đường gióng & mũi tên chỉ chiều cao cột thủy ngân h cỡ chữ lớn
+    ctx.strokeStyle = '#38bdf8';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(tx + tw / 2, hgTopY); ctx.lineTo(426, hgTopY);
+    ctx.moveTo(tx + tw / 2, surfY); ctx.lineTo(426, surfY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    drawArrow(ctx, 418, surfY, 418, hgTopY, '#38bdf8', 2.4, 7);
+    drawArrow(ctx, 418, hgTopY, 418, surfY, '#38bdf8', 2.4, 7);
+
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = 'italic 800 19px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('h', 428, (hgTopY + surfY) / 2);
+
+    // Nhãn Hg to rõ trong chậu
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Hg', 422, 246);
+
+    ctx.restore();
+
+    // 5. Chú thích callout chữ to, rõ ràng, không đè nét
+    drawLargeCallout(tx - tw / 2, 78, 16, 62, ['Khoảng chân không', 'Áp suất p ≈ 0'], '#94a3b8');
+    drawLargeCallout(tx + tw / 2, hgTopY, 488, 66, ['Đỉnh cột thủy ngân', 'Chiều cao h đo p_{0}'], '#38bdf8');
+    drawLargeCallout(tx + tw / 2, 242, 488, 198, ['Miệng ống ngập sâu', 'Dưới mặt thoáng Hg'], '#cbd5e1');
+});
+
+    // --- MH-C2-39 ---
+VLXTModels.register('MH-C2-39', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản có chỉ số dưới chuẩn (vd: "p_{0}", "h_{0}")
+    const baseMainFont = '800 17px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 12.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm tự vẽ chậu nước thủy tinh màu xanh sáng rõ (không bị đen thui)
+    function drawClearWaterTank(cx, cy, cw, ch, surfY) {
+        const wallW = 3.2;
+        // Khối nước trong chậu (màu xanh dương sáng rõ nét)
+        ctx.fillStyle = 'rgba(14, 165, 233, 0.34)';
+        ctx.fillRect(cx + wallW / 2, surfY, cw - wallW, cy + ch - surfY - wallW / 2);
+
+        // Đường mặt thoáng nước sáng rõ
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(cx + wallW / 2, surfY);
+        ctx.lineTo(cx + cw - wallW / 2, surfY);
+        ctx.stroke();
+
+        // Thành chậu thủy tinh màu trắng sáng (tránh bị đổi màu tối)
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = wallW;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy + ch);
+        ctx.lineTo(cx + cw, cy + ch);
+        ctx.lineTo(cx + cw, cy);
+        ctx.stroke();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'ỐNG THỦY TINH NHÚNG VÀO CHẬU NƯỚC (p_{0} = 9,8·10⁴ N/m²; d = 10⁴ N/m³; 27°C)';
+    const titleMFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 24, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    const cw = 250, ch = 156;
+
+    // =========================================================
+    // HÌNH (a): ĐẦU KÍN NGANG MẶT THOÁNG NƯỚC, CỘT KHÍ DÀI h0 = 20 cm
+    // =========================================================
+    const c1x = 86, c1y = 104;
+    const surf1Y = c1y + 28;
+
+    ctx.save();
+    drawClearWaterTank(c1x, c1y, cw, ch, surf1Y);
+
+    // Nhãn Mặt thoáng cỡ chữ to
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '800 15px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Mặt thoáng', c1x + cw - 10, surf1Y - 10);
+
+    // Ống thủy tinh hình (a)
+    const t1x = c1x + cw / 2 + 26, tw = 36;
+    const t1TopY = surf1Y;
+    const t1BotY = c1y + ch - 14;
+    const air1BotY = t1TopY + 72;
+
+    // Khoang khí trong ống (a) - màu xám xanh sáng nhẹ để thấy rõ cột khí
+    ctx.fillStyle = 'rgba(226, 232, 240, 0.16)';
+    ctx.beginPath();
+    ctx.arc(t1x, t1TopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(t1x + tw / 2, air1BotY);
+    ctx.lineTo(t1x - tw / 2, air1BotY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Nước dâng vào phần dưới ống (a)
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.72)';
+    ctx.fillRect(t1x - tw / 2 + 1.5, air1BotY, tw - 3, t1BotY - air1BotY);
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(t1x - tw / 2 + 2, air1BotY);
+    ctx.lineTo(t1x + tw / 2 - 2, air1BotY);
+    ctx.stroke();
+
+    // Viền ống thủy tinh (a)
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(t1x - tw / 2, t1BotY);
+    ctx.lineTo(t1x - tw / 2, t1TopY + tw / 2);
+    ctx.arc(t1x, t1TopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(t1x + tw / 2, t1BotY);
+    ctx.stroke();
+
+    // Đoạn kích thước h0 = 20 cm cỡ chữ thật to
+    const dim1X = t1x - tw / 2 - 14;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(dim1X - 6, t1TopY); ctx.lineTo(dim1X + 6, t1TopY);
+    ctx.moveTo(dim1X, t1TopY); ctx.lineTo(dim1X, air1BotY);
+    ctx.moveTo(dim1X - 6, air1BotY); ctx.lineTo(dim1X + 6, air1BotY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fde68a';
+    drawRichText('h_{0} = 20 cm', dim1X - 10, (t1TopY + air1BotY) / 2, 'right', '800 17.5px "Be Vietnam Pro", system-ui, sans-serif', '800 13px "Be Vietnam Pro", system-ui, sans-serif', 5);
+
+    // Nhãn Hình (a) to rõ
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 18.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Hình (a)', c1x + cw / 2, 286);
+
+    // =========================================================
+    // HÌNH (b): KÉO ỐNG LÊN CAO, MỰC NƯỚC TRONG ỐNG CAO HƠN NGOÀI ĐOẠN x
+    // =========================================================
+    const c2x = 440, c2y = 104;
+    const surf2Y = c2y + 28;
+
+    drawClearWaterTank(c2x, c2y, cw, ch, surf2Y);
+
+    // Nhãn Mặt thoáng cỡ chữ to
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '800 15px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Mặt thoáng', c2x + cw - 2, surf2Y - 15);
+
+    // Ống thủy tinh (b) kéo cao nhô khỏi mặt nước
+    const pullOsc = Math.sin(t * 1.4) * 2.5;
+    const t2x = c2x + cw / 2 + 16;
+    const t2TopY = 50 + pullOsc;
+    const t2BotY = surf2Y + 54 + pullOsc;
+    const waterIn2Y = surf2Y - 28 + pullOsc * 0.45;
+
+    // Khoang khí trong ống (b) - màu sáng nhẹ dễ phân biệt với nền
+    ctx.fillStyle = 'rgba(226, 232, 240, 0.16)';
+    ctx.beginPath();
+    ctx.arc(t2x, t2TopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(t2x + tw / 2, waterIn2Y);
+    ctx.lineTo(t2x - tw / 2, waterIn2Y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cột nước dâng cao trong ống (b)
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.72)';
+    ctx.fillRect(t2x - tw / 2 + 1.5, waterIn2Y, tw - 3, t2BotY - waterIn2Y);
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(t2x - tw / 2 + 2, waterIn2Y);
+    ctx.lineTo(t2x + tw / 2 - 2, waterIn2Y);
+    ctx.stroke();
+
+    // Viền ống thủy tinh (b)
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(t2x - tw / 2, t2BotY);
+    ctx.lineTo(t2x - tw / 2, t2TopY + tw / 2);
+    ctx.arc(t2x, t2TopY + tw / 2, tw / 2, Math.PI, 0, false);
+    ctx.lineTo(t2x + tw / 2, t2BotY);
+    ctx.stroke();
+
+    // Mũi tên chỉ chiều kéo ống lên cỡ chữ to
+    drawArrow(ctx, t2x + tw / 2 + 14, t2TopY + 36, t2x + tw / 2 + 14, t2TopY + 6, '#38bdf8', 2.6, 6.5);
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Kéo lên', t2x + tw / 2 + 20, t2TopY + 23);
+
+    // Đường gióng nét đứt từ mặt thoáng ngoài sang đoạn đo x
+    const dim2X = t2x - tw / 2 - 14;
+    ctx.strokeStyle = '#10b981';
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(dim2X - 4, surf2Y);
+    ctx.lineTo(t2x - tw / 2, surf2Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ký hiệu chênh lệch mực nước x cỡ chữ thật to
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(dim2X - 6, waterIn2Y); ctx.lineTo(dim2X + 6, waterIn2Y);
+    ctx.moveTo(dim2X, waterIn2Y); ctx.lineTo(dim2X, surf2Y);
+    ctx.moveTo(dim2X - 6, surf2Y); ctx.lineTo(dim2X + 6, surf2Y);
+    ctx.stroke();
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = 'italic 800 20px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('x', dim2X - 10, (waterIn2Y + surf2Y) / 2 + 1);
+
+    // Nhãn Hình (b) to rõ
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 18.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Hình (b)', c2x + cw / 2, 286);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-40 ---
+VLXTModels.register('MH-C2-40', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản cỡ lớn có chỉ số dưới chuẩn (vd: "p_{0}", "Δp_{max}")
+    const baseMainFont = '800 16.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 12px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout chữ thật to, rõ nét, không tràn khung và không dẫm đè
+    function drawHugeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 22;
+        const padX = 12;
+        const padY = 8;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.4);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề thật to ở trên cùng với chỉ số dưới chuẩn xác
+    ctx.save();
+    const titleStr = 'MÁY ĐO HUYẾT ÁP ĐIỆN TỬ & VÒNG BÍT (p_{0} = 760 mmHg; 27°C; 30 cm³/s)';
+    const titleMFont = '800 16px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 24.5, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    const saw = (t * 0.25) % 1; // Bơm khí vào vòng bít 1 chiều -> reset
+
+    ctx.save();
+
+    // 2. Thân máy đo huyết áp điện tử bên trái
+    const mx = 26, my = 56, mw = 194, mh = 232;
+    drawRoundRect(ctx, mx, my, mw, mh, 16, '#1e293b', '#94a3b8', 3);
+
+    // Màn hình LCD hiển thị kết quả đề dẫn cỡ chữ thật lớn
+    drawRoundRect(ctx, mx + 14, my + 16, mw - 28, 146, 8, '#070c18', '#38bdf8', 2.2);
+
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SYS (Tâm thu)', mx + 22, my + 36);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 30px "DM Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('118', mx + mw - 22, my + 65);
+
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('DIA (Tâm trương)', mx + 22, my + 96);
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 28px "DM Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('78', mx + mw - 22, my + 124);
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '800 15px "DM Mono", monospace';
+    ctx.fillText('mmHg', mx + mw - 22, my + 148);
+
+    // Nút START trên máy đo
+    drawRoundRect(ctx, mx + 40, my + 178, 114, 38, 9, '#0284c7', '#7dd3fc', 2.2);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 17.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('START', mx + mw / 2, my + 197);
+
+    // 3. Cánh tay & Vòng bít (Cuff) bên phải (hạ thấp xuống y=222 để 2 thẻ nhãn lớn tách rời hoàn toàn)
+    const armY = 222;
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.16)';
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(410, armY - 34);
+    ctx.lineTo(722, armY - 26);
+    ctx.arc(722, armY, 26, -Math.PI / 2, Math.PI / 2, false);
+    ctx.lineTo(410, armY + 34);
+    ctx.stroke();
+    ctx.fill();
+
+    // Vòng bít (Cuff) quấn quanh bắp tay
+    const inflate = saw * 5;
+    const cuffX = 468, cuffW = 152;
+    drawRoundRect(ctx, cuffX, armY - 42 - inflate, cuffW, 84 + inflate * 2, 12, 'rgba(14, 165, 233, 0.36)', '#38bdf8', 3.2);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Vòng bít khí', cuffX + cuffW / 2, armY - 10);
+
+    ctx.fillStyle = '#7dd3fc';
+    ctx.font = '800 16px "DM Mono", monospace';
+    ctx.fillText('120 → 380 cm³', cuffX + cuffW / 2, armY + 14);
+
+    // 4. Ống dẫn khí nối LIỀN MẠCH từ hông máy đo vào vòng bít
+    const p0x = mx + mw, p0y = 232;
+    const p1x = 305, p1y = 232;
+    const p2x = 365, p2y = 278;
+    const p3x = cuffX, p3y = 234;
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 6.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(p0x, p0y);
+    ctx.bezierCurveTo(p1x, p1y, p2x, p2y, p3x, p3y);
+    ctx.stroke();
+
+    // Mũi tên dòng khí bơm 30 cm³/s chạy đúng trên quỹ đạo cong của ống dẫn
+    const u = saw;
+    const invU = 1 - u;
+    const fx = invU * invU * invU * p0x + 3 * invU * invU * u * p1x + 3 * invU * u * u * p2x + u * u * u * p3x;
+    const fy = invU * invU * invU * p0y + 3 * invU * invU * u * p1y + 3 * invU * u * u * p2y + u * u * u * p3y;
+    drawArrow(ctx, fx - 12, fy, fx + 14, fy, '#38bdf8', 3.2, 7.5);
+
+    ctx.restore();
+
+    // 5. Hai thẻ chú thích chữ thật to (16.5px), tách hẳn 2 tầng trái/phải không chạm nhau
+    drawHugeCallout(338, 246, 232, 114, ['Ống dẫn khí nối kín', 'Lưu lượng: 30 cm³/s'], '#38bdf8');
+    drawHugeCallout(cuffX + cuffW - 14, armY - 42, 464, 48, ['Khí trong vòng bít (27°C)', 'p_{0} = 760 mmHg; Δp_{max} = 160 mmHg'], '#fbbf24');
+});
+
+    // --- MH-C2-41 ---
+VLXTModels.register('MH-C2-41', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'BÌNH KHÍ OXYGEN (O₂) NÉN Y TẾ (m_tổng = 18 kg; p₁ = 15 MPa; 27°C)');
+
+    const saw = (t * 0.25) % 1;
+
+    ctx.save();
+
+    // 1. Thân bình khí nén Oxygen y tế (màu xanh ngọc y tế chuẩn, tạo khối phẳng 2.5D sắc nét)
+    const bx = 188, by = 96, bw = 114, bh = 182;
+    const cx = bx + bw / 2;
+
+    drawRoundRect(ctx, bx, by, bw, bh, 36, '#0f766e', null, 0);
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(bx, by, bw, bh, 36);
+    ctx.clip();
+    ctx.fillStyle = '#14b8a6';
+    ctx.fillRect(bx, by, bw * 0.72, bh);
+    ctx.fillStyle = '#2dd4bf';
+    ctx.fillRect(bx + 14, by, 16, bh);
+    ctx.restore();
+
+    // Viền ngoài bình
+    drawRoundRect(ctx, bx, by, bw, bh, 36, null, '#99f6e4', 2.5);
+
+    // Đế bình
+    drawRoundRect(ctx, bx + 10, by + bh - 8, bw - 20, 14, 4, '#1e293b', '#64748b', 2);
+
+    // Chữ thập y tế & Ký hiệu O2 cực rõ trên thân bình
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(cx - 5, by + 26, 10, 26);
+    ctx.fillRect(cx - 13, by + 34, 26, 10);
+
+    ctx.font = '800 24px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('O₂', cx, by + 84);
+
+    // Vạch phân cách nhẹ
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx + 18, by + 96);
+    ctx.lineTo(bx + bw - 18, by + 96);
+    ctx.stroke();
+
+    // Thông số khắc nổi trực quan trên thân bình (chữ to, rõ nét)
+    ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillStyle = '#f0fdfa';
+    ctx.fillText('15 MPa', cx, by + 122);
+    ctx.fillText('27°C', cx, by + 148);
+
+    // 2. Cổ bình, Van khóa & Đồng hồ đo áp suất
+    drawRoundRect(ctx, cx - 14, by - 22, 28, 24, 3, '#64748b', '#cbd5e1', 2);
+    // Tay vặn van khóa trên đỉnh
+    drawRoundRect(ctx, cx - 24, by - 32, 48, 11, 4, '#f59e0b', '#fef08a', 2);
+
+    // Ống nhánh nối sang đồng hồ áp suất
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(cx + 14, by - 11);
+    ctx.lineTo(cx + 70, by - 11);
+    ctx.stroke();
+
+    // Đồng hồ đo áp suất gắn trên cổ bình (kim chỉ mức ban đầu 15 MPa)
+    drawPressureGauge(ctx, cx + 70, by - 37, 27, Math.PI * 1.45, 'MPa', '', '#14b8a6');
+
+    // Ống dẫn khí y tế đi ra bên phải & chuyển động dòng khí sinh động
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(cx + 70, by - 10);
+    ctx.quadraticCurveTo(cx + 95, by + 18, cx + 138, by + 18);
+    ctx.stroke();
+
+    // Mũi tên & hạt khí chuyển động dọc ống dẫn
+    const flowX = cx + 98 + saw * 26;
+    drawArrow(ctx, flowX, by + 18, flowX + 20, by + 18, '#38bdf8', 3, 7);
+    ctx.fillStyle = '#bae6fd';
+    ctx.beginPath();
+    ctx.arc(cx + 94 + ((saw + 0.5) % 1) * 34, by + 18, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Nhãn Callout chữ to, rõ ràng
+    ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    drawCallout(ctx, cx - 24, by - 27, 16, 66, ['Van khóa cổ bình'], '#f59e0b');
+    drawCallout(ctx, cx + 97, by - 37, 405, 58, ['Đồng hồ đo áp suất', 'Ban đầu chỉ: 15 MPa'], '#14b8a6');
+
+    // 4. Thẻ thông số đề dẫn (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 405, 130, 355, 152, 12, '#0f172a', '#14b8a6', 2.5);
+    ctx.fillStyle = '#134e4a';
+    ctx.beginPath();
+    ctx.roundRect(406.5, 131.5, 352, 38, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#5eead4';
+    ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ BÌNH KHÍ BAN ĐẦU', 422, 156);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Khối lượng tổng: 18 kg', 422, 194);
+    ctx.fillText('• Áp suất ban đầu: p₁ = 15 MPa', 422, 226);
+    ctx.fillText('• Nhiệt độ: 27°C | M(O₂) = 32 g/mol', 422, 258);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-42 ---
+VLXTModels.register('MH-C2-42', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'THỢ LẶN TỪ ĐỘ SÂU h = 30 m NỔI LÊN MẶT NƯỚC (p₀ = 1,013·10⁵ Pa)');
+
+    ctx.save();
+
+    // 1. Khối nước biển (từ y = 78 xuống đáy biển y = 288)
+    const surfY = 78, botY = 288;
+    const seaX = 32, seaW = 468;
+    const seaGrad = ctx.createLinearGradient(0, surfY, 0, botY);
+    seaGrad.addColorStop(0, '#0284c7');
+    seaGrad.addColorStop(0.55, '#0369a1');
+    seaGrad.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = seaGrad;
+    ctx.fillRect(seaX, surfY, seaW, botY - surfY);
+
+    // Tia sáng mặt trời khúc xạ xuống đáy nước (tạo chiều sâu trực quan phẳng)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(seaX, surfY, seaW, botY - surfY);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.08)';
+    ctx.beginPath();
+    ctx.moveTo(150, surfY); ctx.lineTo(240, surfY); ctx.lineTo(320, botY); ctx.lineTo(180, botY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(310, surfY); ctx.lineTo(390, surfY); ctx.lineTo(480, botY); ctx.lineTo(360, botY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Đáy biển cát & rạn đá phẳng
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(seaX, botY);
+    ctx.lineTo(seaX, botY - 12);
+    ctx.quadraticCurveTo(160, botY - 22, 280, botY - 10);
+    ctx.quadraticCurveTo(390, botY - 20, seaX + seaW, botY - 12);
+    ctx.lineTo(seaX + seaW, botY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mặt thoáng nước biển gợn sóng sắc nét
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let sx = seaX; sx <= seaX + seaW; sx += 6) {
+        const sy = surfY + Math.sin(sx * 0.08 + t * 3.5) * 1.6;
+        if (sx === seaX) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+
+    // Mũi tên áp suất khí quyển p0 tác dụng lên mặt thoáng
+    drawArrow(ctx, 130, 46, 130, surfY - 3, '#fbbf24', 3.2, 8);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('p₀ = 1,013·10⁵ Pa', 142, 62);
+
+    // 2. Thước đo độ sâu h = 30 m rõ nét bên trái
+    const dimX = 64, diverY = 242;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(dimX - 7, surfY); ctx.lineTo(dimX + 7, surfY);
+    ctx.moveTo(dimX, surfY); ctx.lineTo(dimX, diverY);
+    ctx.moveTo(dimX - 7, diverY); ctx.lineTo(dimX + 7, diverY);
+    ctx.stroke();
+
+    // Nhãn h = 30 m
+    drawRoundRect(ctx, dimX + 10, 145, 76, 28, 6, '#0f172a', '#38bdf8', 1.8);
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('h = 30 m', dimX + 48, 164);
+
+    // 3. Vẽ thợ lặn chi tiết, sinh động ở độ sâu h = 30 m
+    const dx = 228, dy = diverY;
+    const swimBob = Math.sin(t * 3) * 2.5; // Nhấp nhô nhẹ
+    const finKick = Math.sin(t * 7) * 5;  // Đạp chân nhái nhịp nhàng
+
+    ctx.save();
+    ctx.translate(dx, dy + swimBob);
+
+    // Ống thở từ bình khí vòng qua đầu tới miệng
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(14, -18);
+    ctx.quadraticCurveTo(32, -26, 46, -4);
+    ctx.stroke();
+
+    // Chân nhái (2 chân vẫy nhịp nhàng)
+    ctx.fillStyle = '#f97316';
+    ctx.strokeStyle = '#fed7aa';
+    ctx.lineWidth = 1.5;
+    // Chân trên
+    ctx.beginPath();
+    ctx.moveTo(-36, -4);
+    ctx.lineTo(-64, -14 + finKick);
+    ctx.lineTo(-60, -2 + finKick);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Chân dưới
+    ctx.beginPath();
+    ctx.moveTo(-36, 4);
+    ctx.lineTo(-62, 12 - finKick);
+    ctx.lineTo(-58, 2 - finKick);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Đùi & cẳng chân bộ đồ lặn
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-16, 0);
+    ctx.lineTo(-38, -2);
+    ctx.stroke();
+
+    // Thân bộ đồ lặn ôm gọn + sọc phản quang xanh ngọc
+    drawRoundRect(ctx, -20, -10, 48, 20, 10, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(-8, -3, 28, 4);
+
+    // Bình dưỡng khí màu vàng cam nổi bật trên lưng + đai giữ
+    drawRoundRect(ctx, -16, -22, 36, 11, 5, '#f59e0b', '#fef08a', 1.8);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(20, -19, 6, 5); // Van bình khí
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-6, -22, 4, 11);
+    ctx.fillRect(8, -22, 4, 11);
+
+    // Cánh tay vươn về phía trước
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 6.5;
+    ctx.beginPath();
+    ctx.moveTo(14, 6);
+    ctx.lineTo(30, 14);
+    ctx.lineTo(44, 10);
+    ctx.stroke();
+
+    // Đầu đội mũ lặn
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(38, -4, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Kính lặn (mặt nạ trong suốt) + ống ngậm thở
+    drawRoundRect(ctx, 41, -10, 8, 9, 3, '#7dd3fc', '#ffffff', 1.5);
+    drawRoundRect(ctx, 43, 1, 7, 5, 2, '#f59e0b', null, 0);
+
+    ctx.restore();
+
+    // 4. Các bọt khí Nitrogen (N2) thoát ra từ thợ lặn & NỞ TO DẦN khi nổi lên (định luật Boyle)
+    const startX = dx + 52, startY = dy - 6;
+    for (let i = 0; i < 6; i++) {
+        const p = (t * 0.24 + i / 6) % 1; // 0 (ở sâu 30m) -> 1 (sát mặt nước)
+        const bx = startX + p * 68 + Math.sin(p * 9 + i * 1.5) * 11;
+        const by = startY - p * (startY - surfY - 16);
+        // Áp suất giảm gần 4 lần -> thể tích tăng gần 4 lần -> bán kính tăng ~ 1.58 lần
+        const br = 5.5 + p * 9.5;
+
+        // Thân bọt khí
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.38)';
+        ctx.strokeStyle = '#e0f2fe';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(bx, by, br, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Điểm phản chiếu ánh sáng trên bọt khí
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(bx - br * 0.32, by - br * 0.32, br * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Nhãn trực quan chỉ bọt khí N2 nở to dần
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '800 14px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Bọt khí N₂', 376, 114);
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '700 13.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('nở to dần', 376, 132);
+    drawArrow(ctx, 412, 180, 412, 144, '#7dd3fc', 2.4, 6);
+
+    // 5. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 512, 74, 252, 214, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(513.5, 75.5, 249, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ ĐỀ DẪN', 528, 99);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Độ sâu lặn: h = 30 m', 528, 134);
+    ctx.fillText('• Khối lượng riêng nước:', 528, 162);
+    ctx.fillText('  ρ = 1000 kg/m³', 528, 184);
+    ctx.fillText('• Áp suất khí quyển:', 528, 212);
+    ctx.fillText('  p₀ = 1,013·10⁵ Pa; g = 9,8 m/s²', 528, 234);
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 14px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Nổi lên: p giảm → V_bọt N₂ tăng', 528, 266);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-43 ---
+VLXTModels.register('MH-C2-43', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'NGƯỜI NHÁI SỬA THÂN TÀU Ở ĐỘ SÂU 5 m (BÌNH KHÍ 150 atm; T = const)');
+
+    ctx.save();
+
+    // 1. Khối nước biển (từ y = 78 xuống đáy biển y = 288)
+    const surfY = 78, botY = 288;
+    const seaX = 28, seaW = 472;
+    const seaGrad = ctx.createLinearGradient(0, surfY, 0, botY);
+    seaGrad.addColorStop(0, '#0284c7');
+    seaGrad.addColorStop(0.55, '#0369a1');
+    seaGrad.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = seaGrad;
+    ctx.fillRect(seaX, surfY, seaW, botY - surfY);
+
+    // Tia sáng mặt trời khúc xạ xuống đáy nước (tạo chiều sâu trực quan phẳng)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(seaX, surfY, seaW, botY - surfY);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.08)';
+    ctx.beginPath();
+    ctx.moveTo(220, surfY); ctx.lineTo(300, surfY); ctx.lineTo(380, botY); ctx.lineTo(250, botY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(350, surfY); ctx.lineTo(430, surfY); ctx.lineTo(500, botY); ctx.lineTo(400, botY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Đáy biển cát & đá phẳng
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(seaX, botY);
+    ctx.lineTo(seaX, botY - 12);
+    ctx.quadraticCurveTo(180, botY - 22, 310, botY - 10);
+    ctx.quadraticCurveTo(420, botY - 20, seaX + seaW, botY - 12);
+    ctx.lineTo(seaX + seaW, botY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mặt thoáng nước biển gợn sóng sắc nét
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let sx = seaX; sx <= seaX + seaW; sx += 6) {
+        const sy = surfY + Math.sin(sx * 0.08 + t * 3.5) * 1.6;
+        if (sx === seaX) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+
+    // 2. Thân tàu biển ngâm một phần dưới mặt nước bên trái (thiết kế trực quan, sắc nét)
+    const shipTopY = 50, shipBotY = 236;
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(seaX, shipTopY);
+    ctx.lineTo(176, shipTopY);
+    ctx.lineTo(156, shipBotY);
+    ctx.lineTo(seaX, shipBotY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Phần đáy tàu sơn chống hà màu đỏ sẫm đặc trưng của tàu biển
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(seaX, shipTopY);
+    ctx.lineTo(176, shipTopY);
+    ctx.lineTo(156, shipBotY);
+    ctx.lineTo(seaX, shipBotY);
+    ctx.closePath();
+    ctx.clip();
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(seaX, 115, 160, shipBotY - 115);
+    // Đinh tán & đường hàn vỏ tàu
+    ctx.strokeStyle = 'rgba(248, 250, 252, 0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(seaX, 165); ctx.lineTo(170, 165);
+    ctx.moveTo(seaX, 115); ctx.lineTo(176, 115);
+    ctx.stroke();
+    // Cửa sổ tròn trên boong nổi
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath(); ctx.arc(72, 64, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(112, 64, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // Vị trí chỗ hỏng trên thân tàu ở độ sâu 5 m
+    const leakX = 158, leakY = 212;
+    const pulse = 0.5 + 0.5 * Math.sin(t * 6);
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(leakX, leakY, 7 + pulse * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Thước đo độ sâu h = 5 m trực quan
+    const dimX = 192;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(dimX - 7, surfY); ctx.lineTo(dimX + 7, surfY);
+    ctx.moveTo(dimX, surfY); ctx.lineTo(dimX, leakY);
+    ctx.moveTo(dimX - 7, leakY); ctx.lineTo(dimX + 7, leakY);
+    ctx.stroke();
+
+    drawRoundRect(ctx, dimX + 8, (surfY + leakY) / 2 - 14, 72, 28, 6, '#0f172a', '#fbbf24', 1.8);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('h = 5 m', dimX + 44, (surfY + leakY) / 2 + 5);
+
+    // 3. Vẽ người nhái chi tiết, sinh động đang quay mặt sang trái sửa thân tàu
+    const dx = 312, dy = 214;
+    const swimBob = Math.sin(t * 3) * 2.2;
+    const finKick = Math.sin(t * 7) * 5;
+    const armWork = Math.sin(t * 8) * 3;
+
+    ctx.save();
+    ctx.translate(dx, dy + swimBob);
+
+    // Ống thở từ bình khí vòng qua đầu tới miệng (hướng sang trái)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-14, -18);
+    ctx.quadraticCurveTo(-32, -26, -46, -4);
+    ctx.stroke();
+
+    // Chân nhái (2 chân vẫy nhịp nhàng bên phải)
+    ctx.fillStyle = '#f97316';
+    ctx.strokeStyle = '#fed7aa';
+    ctx.lineWidth = 1.5;
+    // Chân trên
+    ctx.beginPath();
+    ctx.moveTo(36, -4);
+    ctx.lineTo(64, -14 + finKick);
+    ctx.lineTo(60, -2 + finKick);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Chân dưới
+    ctx.beginPath();
+    ctx.moveTo(36, 4);
+    ctx.lineTo(62, 12 - finKick);
+    ctx.lineTo(58, 2 - finKick);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Đùi & cẳng chân bộ đồ lặn
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(16, 0);
+    ctx.lineTo(38, -2);
+    ctx.stroke();
+
+    // Thân bộ đồ lặn ôm gọn + sọc phản quang xanh ngọc lục bảo
+    drawRoundRect(ctx, -28, -10, 48, 20, 10, '#0f172a', '#10b981', 2.2);
+    ctx.fillStyle = '#10b981';
+    ctx.fillRect(-20, -3, 28, 4);
+
+    // Bình dưỡng khí màu xanh sáng nổi bật trên lưng + đai giữ
+    drawRoundRect(ctx, -20, -22, 36, 11, 5, '#38bdf8', '#e0f2fe', 1.8);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(-26, -19, 6, 5); // Van bình khí
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-12, -22, 4, 11);
+    ctx.fillRect(2, -22, 4, 11);
+
+    // Cánh tay vươn về phía thân tàu cầm cờ-lê sửa chỗ hỏng
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 6.5;
+    ctx.beginPath();
+    ctx.moveTo(-14, 6);
+    ctx.lineTo(-34, 12 + armWork);
+    ctx.lineTo(-56, 4 + armWork);
+    ctx.stroke();
+
+    // Cờ-lê sửa chữa chạm vào chỗ hỏng
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(-54, 4 + armWork);
+    ctx.lineTo(-74, -2 + armWork);
+    ctx.stroke();
+
+    // Đầu đội mũ lặn (quay mặt sang trái)
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(-38, -4, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Kính lặn (mặt nạ trong suốt) + ống ngậm thở
+    drawRoundRect(ctx, -49, -10, 8, 9, 3, '#7dd3fc', '#ffffff', 1.5);
+    drawRoundRect(ctx, -50, 1, 7, 5, 2, '#f59e0b', null, 0);
+
+    ctx.restore();
+
+    // 4. Bọt khí hình cầu thở ra từ người nhái nở to dần từ bán kính r0 khi nổi lên mặt thoáng
+    const startX = dx - 44, startY = dy - 16;
+    for (let i = 0; i < 5; i++) {
+        const p = (t * 0.25 + i / 5) % 1;
+        const bx = startX + p * 115 + Math.sin(p * 8 + i * 1.4) * 10;
+        const by = startY - p * (startY - surfY - 14);
+        const br = 5.5 + p * 7.5;
+
+        ctx.fillStyle = 'rgba(224, 242, 254, 0.38)';
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(bx, by, br, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Điểm phản chiếu ánh sáng trên bọt khí
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(bx - br * 0.32, by - br * 0.32, br * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Ký hiệu r0 tại vị trí bọt khí vừa thoát ra & nhãn trực quan
+    drawSubText(ctx, 'r', '0', startX - 10, startY + 6, { fontSize: 16, italic: true, color: '#fde047', align: 'right' });
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '800 14px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Bọt khí nở to', 385, 114);
+    drawArrow(ctx, 415, 165, 415, 128, '#7dd3fc', 2.4, 6);
+
+    // 5. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 512, 74, 252, 214, 12, '#0f172a', '#10b981', 2.4);
+    ctx.fillStyle = '#064e3b';
+    ctx.beginPath();
+    ctx.roundRect(513.5, 75.5, 249, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ LẶN SỬA TÀU', 528, 99);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Bình khí ban đầu: p₀ = 150 atm', 528, 134);
+    ctx.fillText('• Quan sát 8 phút → giảm 20%', 528, 162);
+    ctx.fillText('• Độ sâu chỗ hỏng: h = 5 m', 528, 190);
+    ctx.fillText('• Sửa chữa: tiêu thụ gấp 1,5 lần', 528, 218);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Nhiệt độ khí không đổi (T = const)', 528, 250);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-44 ---
+VLXTModels.register('MH-C2-44', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản cỡ lớn có chỉ số dưới chuẩn (vd: "T_{1}", "p_{0}")
+    const baseMainFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm tự vẽ ống trụ hở miệng trên (màu trắng sáng, sắc nét, không bị tối)
+    function drawGlassCylinder(cx, cy, cw, ch) {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 3.4;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy + ch);
+        ctx.lineTo(cx + cw, cy + ch);
+        ctx.lineTo(cx + cw, cy);
+        ctx.stroke();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng với chỉ số dưới chuẩn xác
+    ctx.save();
+    const titleStr = 'CYLINDER THẲNG ĐỨNG CAO 152 cm (BAN ĐẦU: 76 cm KHÍ + 76 cm Hg; T_{1} = 600 K)';
+    const titleMFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 24, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    const saw = (t * 0.22) % 1; // Tăng nhiệt độ 1 chiều -> pít-tông đi lên -> thủy ngân tràn ra
+
+    ctx.save();
+
+    // =========================================================
+    // BÊN TRÁI: TRẠNG THÁI BAN ĐẦU (76 cm KHÍ + 76 cm Hg)
+    // =========================================================
+    const c1x = 122, topY = 74, cylW = 100, cylH = 196;
+    const midY = topY + cylH / 2;
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('TRẠNG THÁI BAN ĐẦU', c1x + cylW / 2, 56);
+
+    // Nửa dưới 76 cm chứa khí lí tưởng (T1 = 600 K)
+    ctx.fillStyle = 'rgba(14, 165, 233, 0.28)';
+    ctx.fillRect(c1x, midY, cylW, cylH / 2);
+
+    // Pít-tông nhẹ không ma sát ở chính giữa
+    drawRoundRect(ctx, c1x + 2, midY - 6, cylW - 4, 12, 2, '#1e293b', '#f8fafc', 2.2);
+
+    // Nửa trên 76 cm chứa đầy thủy ngân Hg tới miệng trên
+    const hgGrad1 = ctx.createLinearGradient(c1x, 0, c1x + cylW, 0);
+    hgGrad1.addColorStop(0, 'rgba(100, 116, 139, 0.72)');
+    hgGrad1.addColorStop(0.5, 'rgba(203, 213, 225, 0.82)');
+    hgGrad1.addColorStop(1, 'rgba(71, 85, 105, 0.72)');
+    ctx.fillStyle = hgGrad1;
+    ctx.fillRect(c1x + 2, topY, cylW - 4, midY - 6 - topY);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('Hg', c1x + cylW / 2, topY + 42);
+
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '800 15px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('Khí (600 K)', c1x + cylW / 2, midY + 50);
+
+    // Thành xi-lanh hở miệng trên
+    drawGlassCylinder(c1x, topY, cylW, cylH);
+
+    // Thước kích thước 76 cm trên và 76 cm dưới cỡ chữ to
+    const dim1X = c1x - 14;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(dim1X - 6, topY); ctx.lineTo(dim1X + 6, topY);
+    ctx.moveTo(dim1X, topY); ctx.lineTo(dim1X, midY);
+    ctx.moveTo(dim1X - 6, midY); ctx.lineTo(dim1X + 6, midY);
+    ctx.moveTo(dim1X, midY); ctx.lineTo(dim1X, topY + cylH);
+    ctx.moveTo(dim1X - 6, topY + cylH); ctx.lineTo(dim1X + 6, topY + cylH);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fde68a';
+    ctx.font = '800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('76 cm', dim1X - 9, (topY + midY) / 2);
+    ctx.fillText('76 cm', dim1X - 9, (midY + topY + cylH) / 2);
+
+    // =========================================================
+    // BÊN PHẢI: KHI TĂNG NHIỆT ĐỘ -> PÍT-TÔNG ĐI LÊN ĐẨY THỦY NGÂN TRÀN RA
+    // =========================================================
+    const c2x = 328;
+    const risePx = saw * (cylH * 0.25); // Dịch chuyển 1 chiều lên trên (Zero Data Leakage: không dừng tại đáp án)
+    const pis2Y = midY - risePx;
+
+    ctx.fillStyle = '#fb923c';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('TĂNG NHIỆT ĐỘ (Hg TRÀN RA)', c2x + cylW / 2, 56);
+
+    // Khoang khí giãn nở bên dưới pít-tông
+    ctx.fillStyle = 'rgba(251, 146, 60, 0.3)';
+    ctx.fillRect(c2x, pis2Y, cylW, topY + cylH - pis2Y);
+
+    // Pít-tông đi lên
+    drawRoundRect(ctx, c2x + 2, pis2Y - 6, cylW - 4, 12, 2, '#1e293b', '#f8fafc', 2.2);
+
+    // Phần thủy ngân còn lại phía trên pít-tông tới miệng ống
+    ctx.fillStyle = hgGrad1;
+    ctx.fillRect(c2x + 2, topY, cylW - 4, pis2Y - 6 - topY);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 17.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('Hg', c2x + cylW / 2, topY + (pis2Y - 6 - topY) / 2);
+
+    // Dòng thủy ngân tràn qua 2 mép miệng trên xi-lanh
+    if (saw > 0.05) {
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 4.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(c2x, topY);
+        ctx.quadraticCurveTo(c2x - 15, topY + 6, c2x - 15, topY + 26 + saw * 44);
+        ctx.moveTo(c2x + cylW, topY);
+        ctx.quadraticCurveTo(c2x + cylW + 15, topY + 6, c2x + cylW + 15, topY + 26 + saw * 44);
+        ctx.stroke();
+    }
+
+    // Thành xi-lanh hở miệng trên
+    drawGlassCylinder(c2x, topY, cylW, cylH);
+
+    // Ngọn lửa cấp nhiệt dưới đáy xi-lanh phải
+    const fl = 13 + Math.sin(t * 14) * 3;
+    ctx.fillStyle = '#f97316';
+    ctx.beginPath();
+    ctx.moveTo(c2x + cylW / 2 - 12, topY + cylH + 22);
+    ctx.quadraticCurveTo(c2x + cylW / 2, topY + cylH + 22 - fl * 1.6, c2x + cylW / 2 + 12, topY + cylH + 22);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.moveTo(c2x + cylW / 2 - 6, topY + cylH + 22);
+    ctx.quadraticCurveTo(c2x + cylW / 2, topY + cylH + 22 - fl * 0.9, c2x + cylW / 2 + 6, topY + cylH + 22);
+    ctx.closePath();
+    ctx.fill();
+
+    // =========================================================
+    // THẺ THÔNG SỐ ĐỀ DẪN BÊN PHẢI CHỮ TO, RÕ NÉT (Zero Data Leakage)
+    // =========================================================
+    const cardX = 472, cardY = 66, cardW = 294, cardH = 206;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#fbbf24', 2.2);
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('THÔNG SỐ CYLINDER & THỦY NGÂN', cardX + 14, cardY + 26);
+
+    ctx.fillStyle = '#f8fafc';
+    const itemMFont = '700 15px "Be Vietnam Pro", system-ui, sans-serif';
+    const itemSFont = '700 11px "Be Vietnam Pro", system-ui, sans-serif';
+
+    drawRichText('• Chiều cao trụ: H = 152 cm', cardX + 14, cardY + 58, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Ban đầu: 76 cm khí + 76 cm Hg', cardX + 14, cardY + 88, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Nhiệt độ đầu: T_{1} = 600 K', cardX + 14, cardY + 118, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Áp suất khí quyển: p_{0} = 76 cmHg', cardX + 14, cardY + 148, 'left', itemMFont, itemSFont, 4.5);
+
+    ctx.fillStyle = '#fb923c';
+    drawRichText('• Nung nóng → 1/2 Hg tràn ra ngoài', cardX + 14, cardY + 180, 'left', '800 14.5px "Be Vietnam Pro", system-ui, sans-serif', '800 10.5px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-45 ---
+VLXTModels.register('MH-C2-45', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'CYLINDER KHÍ HYDROGEN CẤP NHIỆT CHẬM (Q = 119 J; p_lỏng = p₀/9)');
+
+    // Nhịp chuyển động tuần hoàn: giữ trạng thái ban đầu 1.5s để học sinh quan sát rõ tỉ lệ 2V : V : V, sau đó giãn nở và tràn lỏng
+    const cycle = (t * 0.2) % 1;
+    const saw = cycle < 0.2 ? 0 : (cycle - 0.2) / 0.8;
+
+    // Dời bình xi-lanh sang x = 250 để nhường khoảng trống hoàn toàn cho các thẻ chữ bên trái
+    const cx = 250, topY = 66, cylW = 112, cylH = 196;
+    const unitH = cylH / 4; // 49px ứng với mỗi phần thể tích V
+    const risePx = saw * (unitH * 2); // Pít-tông đi lên đẩy hết cột chất lỏng tràn ra miệng trên
+    const pisY = topY + unitH * 2 - risePx;
+    const liqTopY = Math.max(topY, pisY - unitH);
+
+    ctx.save();
+
+    // 1. Áp suất khí quyển p0 tác dụng xuống miệng hở xi-lanh
+    drawArrow(ctx, cx + cylW / 2, 34, cx + cylW / 2, topY - 3, '#fbbf24', 3, 8);
+    drawSubText(ctx, 'p', '0', cx + cylW / 2 + 12, 50, { fontSize: 17, italic: true, color: '#fbbf24' });
+
+    // 2. Khoang khí Hydrogen bên dưới pít-tông + các phân tử khí chuyển động nhiệt
+    const gasTop = pisY;
+    const gasBot = topY + cylH;
+    const gasH = gasBot - gasTop;
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.24)';
+    ctx.fillRect(cx + 2, gasTop, cylW - 4, gasH - 2);
+
+    ctx.fillStyle = 'rgba(125, 211, 252, 0.75)';
+    for (let i = 0; i < 14; i++) {
+        const mx = cx + 14 + ((Math.sin(t * 2.4 + i * 1.7) + 1) / 2) * (cylW - 28);
+        const my = gasTop + 12 + ((Math.cos(t * 2.1 + i * 2.3) + 1) / 2) * Math.max(8, gasH - 24);
+        ctx.beginPath();
+        ctx.arc(mx, my, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Nhãn khí Hydrogen to, rõ nét
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 18px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Khí H₂', cx + cylW / 2, gasTop + gasH / 2 + 6);
+
+    // 3. Pít-tông nhẹ cách nhiệt/chuyển động tự do
+    const pisH = 12;
+    drawRoundRect(ctx, cx + 2, pisY - pisH / 2, cylW - 4, pisH, 2, '#1e293b', '#f8fafc', 2.2);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (let px = cx + 12; px < cx + cylW - 10; px += 14) {
+        ctx.moveTo(px, pisY - pisH / 2 + 2);
+        ctx.lineTo(px - 6, pisY + pisH / 2 - 2);
+    }
+    ctx.stroke();
+
+    // 4. Cột chất lỏng phía trên pít-tông (gây áp suất phụ p0/9)
+    const liqBot = pisY - pisH / 2;
+    if (liqBot > liqTopY) {
+        ctx.fillStyle = 'rgba(20, 184, 166, 0.55)';
+        ctx.fillRect(cx + 2, liqTopY, cylW - 4, liqBot - liqTopY);
+
+        ctx.strokeStyle = '#5eead4';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(cx + 2, liqTopY);
+        ctx.lineTo(cx + cylW - 2, liqTopY);
+        ctx.stroke();
+    }
+
+    // Hiệu ứng chất lỏng tràn đều sang 2 bên miệng bình khi dâng tới miệng trên (saw > 0.45)
+    if (saw > 0.45) {
+        const ov = (saw - 0.45) / 0.55;
+        const dropLen = 20 + ov * 72;
+        ctx.strokeStyle = '#2dd4bf';
+        ctx.lineWidth = 4.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx, topY + 1);
+        ctx.quadraticCurveTo(cx - 14, topY + 6, cx - 14, topY + dropLen);
+        ctx.moveTo(cx + cylW, topY + 1);
+        ctx.quadraticCurveTo(cx + cylW + 14, topY + 6, cx + cylW + 14, topY + dropLen);
+        ctx.stroke();
+    }
+
+    // 5. Thành xi-lanh thẳng đứng hở miệng trên + vạch chia tỉ lệ 4 phần bằng nhau bên thành bình
+    drawOpenCup(ctx, cx, topY, cylW, cylH, 0, { wallColor: '#cbd5e1', wallWidth: 3.6 });
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.8;
+    for (let k = 1; k <= 3; k++) {
+        const tickY = topY + unitH * k;
+        ctx.beginPath();
+        ctx.moveTo(cx - 7, tickY);
+        ctx.lineTo(cx, tickY);
+        ctx.stroke();
+    }
+
+    // 6. Nguồn cấp nhiệt chậm Q = 119 J dưới đáy xi-lanh
+    const heatPulse = Math.sin(t * 6) * 2;
+    drawArrow(ctx, cx + cylW / 2, 296 + heatPulse, cx + cylW / 2, topY + cylH + 3, '#ef4444', 3.4, 8);
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Q = 119 J', cx + cylW / 2 + 12, 290);
+
+    // 7. Tự vẽ thẻ chú thích chữ thật to (15px) ở bên trái, tách biệt hoàn toàn với thành xi-lanh
+    const drawBigTag = (targetY, boxY, boxH, line1, line2, color) => {
+        const bx = 12, bw = 194;
+        const midY = boxY + boxH / 2;
+
+        // Đường nối từ thẻ sang thành bình
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(bx + bw, midY);
+        ctx.lineTo(cx - 4, targetY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(cx - 4, targetY, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hộp nền chữ
+        drawRoundRect(ctx, bx, boxY, bw, boxH, 8, '#0f172a', color, 2);
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+        if (line2) {
+            ctx.fillText(line1, bx + 11, boxY + 23);
+            ctx.fillStyle = color;
+            ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+            ctx.fillText(line2, bx + 11, boxY + 45);
+        } else {
+            ctx.fillText(line1, bx + 11, boxY + 26);
+        }
+    };
+
+    drawBigTag(topY + unitH * 0.5, 66, 40, 'Khoảng trống (V)', null, '#94a3b8');
+    drawBigTag(topY + unitH * 1.5, 122, 58, 'Chất lỏng (V)', 'Áp suất phụ p₀/9', '#5eead4');
+    drawBigTag(topY + unitH * 3.0, 198, 58, 'Khí Hidro (2V)', 'Cấp nhiệt giãn nở', '#38bdf8');
+
+    // 8. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 392, 66, 374, 222, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(393.5, 67.5, 371, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ BIẾN ĐỔI KHÍ HIDRO', 410, 91);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Ban đầu: V_lỏng = V_trống = ½ V_Hidro', 410, 126);
+    ctx.fillText('• Áp suất phụ cột lỏng: p_lỏng = p₀ / 9', 410, 154);
+    ctx.fillText('• Áp suất khí quyển: p₀ = 10⁵ N/m²', 410, 182);
+    ctx.fillText('• Nhiệt lượng cung cấp: Q = 119 J', 410, 210);
+    ctx.fillText('• Nội năng khí Hidro: U = (5/2)nRT', 410, 238);
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Toàn bộ chất lỏng bị đẩy tràn ra ngoài', 410, 268);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-46 ---
+VLXTModels.register('MH-C2-46', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản cỡ lớn có chỉ số dưới chuẩn (vd: "t_{0}", "p_{0}", "p_{trong}")
+    const baseMainFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout cỡ chữ lớn mặc định, sắc nét, tự giữ gọn trong khung 780x305
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 20;
+        const padX = 11;
+        const padY = 7;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(44, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng với chỉ số dưới chuẩn xác
+    ctx.save();
+    const titleStr = 'LỌ GIÁC HƠI ÚP TRÊN DA (t = 353°C → t_{0} = 27,0°C; p_{0} = 10⁵ Pa; S = 28,0 cm²)';
+    const titleMFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleSFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = measureRichText(titleStr, titleMFont, titleSFont) + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 30, 15, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    drawRichText(titleStr, 14 + titleW / 2, 23.5, 'center', titleMFont, titleSFont, 4.5);
+    ctx.restore();
+
+    const saw = (t * 0.22) % 1; // Khí trong lọ nguội dần -> áp suất giảm -> hút phồng nhẹ vùng da
+    const bulgeH = 4 + saw * 14;
+
+    ctx.save();
+
+    // 2. Bề mặt da lưng của người bệnh & phần da bị hút phồng bên trong miệng lọ
+    const skinY = 232;
+    const cx = 286;
+    const mouthHalf = 46;
+
+    ctx.fillStyle = 'rgba(251, 146, 60, 0.26)';
+    ctx.strokeStyle = '#fb923c';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(28, skinY);
+    ctx.lineTo(cx - mouthHalf, skinY);
+    ctx.quadraticCurveTo(cx, skinY - bulgeH * 2, cx + mouthHalf, skinY);
+    ctx.lineTo(426, skinY);
+    ctx.stroke();
+    ctx.lineTo(426, 282);
+    ctx.lineTo(28, 282);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3. Lọ giác hơi thủy tinh hình cầu úp ngược trên da (miệng lọ tại skinY)
+    const cupTopY = 82;
+    const rRed = Math.round(239 - saw * 183);
+    const rBlue = Math.round(68 + saw * 180);
+    const gasGrad = ctx.createRadialGradient(cx, 154, 10, cx, 154, 78);
+    gasGrad.addColorStop(0, `rgba(${rRed}, 130, ${rBlue}, 0.44)`);
+    gasGrad.addColorStop(1, `rgba(${rRed}, 110, ${rBlue}, 0.24)`);
+
+    ctx.fillStyle = gasGrad;
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - mouthHalf, skinY);
+    ctx.bezierCurveTo(cx - 86, 194, cx - 84, cupTopY, cx, cupTopY);
+    ctx.bezierCurveTo(cx + 84, cupTopY, cx + 86, 194, cx + mouthHalf, skinY);
+    ctx.stroke();
+    ctx.fill();
+
+    // Viền dày miệng lọ giác hơi áp sát da
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - mouthHalf - 3, skinY);
+    ctx.lineTo(cx - mouthHalf + 5, skinY);
+    ctx.moveTo(cx + mouthHalf - 5, skinY);
+    ctx.lineTo(cx + mouthHalf + 3, skinY);
+    ctx.stroke();
+
+    // 4. Các mũi tên áp suất khí quyển p0 ép bên ngoài lọ & lực đẩy vùng da phồng lên
+    drawArrow(ctx, cx - 94, 134, cx - 68, 148, '#fbbf24', 2.8, 7);
+    drawArrow(ctx, cx + 94, 134, cx + 68, 148, '#fbbf24', 2.8, 7);
+    ctx.fillStyle = '#fde68a';
+    drawRichText('p_{0}', cx + 98, 132, 'left', 'italic 800 17px "Be Vietnam Pro", system-ui, sans-serif', '800 12px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    drawArrow(ctx, cx, skinY + 28, cx, skinY - bulgeH + 2, '#ef4444', 3.2, 8);
+
+    // 5. Chú thích callout chữ to, rõ ràng, đặt gọn bên trái không đè lọ giác hơi
+    drawLargeCallout(cx - 66, 114, 14, 58, ['Lọ giác hơi thủy tinh', 'Úp kín lên bề mặt da'], '#cbd5e1');
+    drawLargeCallout(cx, skinY - bulgeH, 14, 158, ['Vùng da bị hút phồng', 'Chênh lệch áp suất Δp'], '#ef4444');
+
+    // 6. Thẻ thông số đề dẫn bên phải chữ to, rõ nét, chỉ số dưới chuẩn (Zero Data Leakage)
+    const cardX = 442, cardY = 64, cardW = 324, cardH = 216;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#fb923c', 2.2);
+
+    ctx.fillStyle = '#fb923c';
+    ctx.font = '800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('THÔNG SỐ LỌ GIÁC HƠI', cardX + 16, cardY + 26);
+
+    ctx.fillStyle = '#f8fafc';
+    const itemMFont = '700 15px "Be Vietnam Pro", system-ui, sans-serif';
+    const itemSFont = '700 11px "Be Vietnam Pro", system-ui, sans-serif';
+
+    drawRichText('• Nhiệt độ khí khi úp: t = 353°C', cardX + 16, cardY + 60, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Nhiệt độ môi trường: t_{0} = 27,0°C', cardX + 16, cardY + 90, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Áp suất khí quyển: p_{0} = 1,0·10⁵ Pa', cardX + 16, cardY + 120, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Diện tích miệng lọ: S = 28,0 cm²', cardX + 16, cardY + 150, 'left', itemMFont, itemSFont, 4.5);
+
+    ctx.fillStyle = '#6ee7b7';
+    drawRichText('• Nguội đi → p_{trong} giảm → hút da', cardX + 16, cardY + 184, 'left', '800 14.5px "Be Vietnam Pro", system-ui, sans-serif', '800 10.5px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-48 ---
+VLXTModels.register('MH-C2-48', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'TÀU NGẦM Ở ĐỘ SÂU 120 m MỞ BÌNH KHÍ (60 lít; 10 MPa; 27°C → 2°C)');
+
+    // Chu kỳ chuyển động: giữ trạng thái đầu 1s để quan sát bình khí 60L, sau đó giãn nở đẩy nước ra
+    const cycle = (t * 0.22) % 1;
+    const saw = cycle < 0.15 ? 0 : (cycle - 0.15) / 0.85;
+
+    ctx.save();
+
+    // 1. Khối nước biển (từ y = 74 xuống đáy y = 290)
+    const surfY = 74, botY = 290;
+    const seaX = 24, seaW = 468;
+    const seaGrad = ctx.createLinearGradient(0, surfY, 0, botY);
+    seaGrad.addColorStop(0, '#0284c7');
+    seaGrad.addColorStop(0.55, '#0369a1');
+    seaGrad.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = seaGrad;
+    ctx.fillRect(seaX, surfY, seaW, botY - surfY);
+
+    // Mặt thoáng nước biển gợn sóng sắc nét + ký hiệu áp suất khí quyển p0
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let sx = seaX; sx <= seaX + seaW; sx += 6) {
+        const sy = surfY + Math.sin(sx * 0.08 + t * 3.5) * 1.6;
+        if (sx === seaX) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+
+    drawArrow(ctx, 118, 46, 118, surfY - 3, '#fbbf24', 2.8, 7);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('p₀ = 1,013·10⁵ Pa', 128, 60);
+
+    // 2. Thước đo độ sâu h = 120 m rõ nét bên trái
+    const dimX = 48, subCenterY = 192;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(dimX - 7, surfY); ctx.lineTo(dimX + 7, surfY);
+    ctx.moveTo(dimX, surfY); ctx.lineTo(dimX, subCenterY);
+    ctx.moveTo(dimX - 7, subCenterY); ctx.lineTo(dimX + 7, subCenterY);
+    ctx.stroke();
+
+    drawRoundRect(ctx, 32, 112, 84, 28, 6, '#0f172a', '#fbbf24', 1.8);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('h = 120 m', 74, 131);
+
+    // 3. Thân tàu ngầm thiết kế trực quan 2 lớp vỏ (cắt lớp giữa để nhìn rõ thùng dằn)
+    const sx = 132, sy = 144, sw = 342, sh = 102;
+
+    // Chân vịt quay phía đuôi tàu (bên phải)
+    const propScale = Math.cos(t * 14);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(sx + sw - 2, subCenterY - 6, 10, 12);
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.ellipse(sx + sw + 10, subCenterY, 4.5, Math.max(4, Math.abs(propScale) * 24), 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cánh lái đuôi trên & dưới
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx + sw - 36, sy + 6);
+    ctx.lineTo(sx + sw - 12, sy - 14);
+    ctx.lineTo(sx + sw - 6, sy + 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Tháp chỉ huy tàu ngầm & kính tiềm vọng
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(sx + 168, sy - 30);
+    ctx.lineTo(sx + 168, sy - 44);
+    ctx.lineTo(sx + 156, sy - 44);
+    ctx.stroke();
+    drawRoundRect(ctx, sx + 132, sy - 30, 66, 32, 8, '#1e293b', '#94a3b8', 2.4);
+
+    // Vỏ ngoài tàu ngầm thuôn gọn
+    drawRoundRect(ctx, sx, sy, sw, sh, 48, '#0f172a', '#cbd5e1', 3);
+
+    // 4. Khoang thùng dằn (Ballast Tank) cắt lớp bên trong thân tàu
+    const bx = sx + 42, by = sy + 16, bw = 248, bh = 70;
+    drawRoundRect(ctx, bx, by, bw, bh, 12, '#1e293b', '#38bdf8', 2.2);
+
+    const tankLeft = bx + 48;
+    const tankRight = bx + bw - 2;
+    const splitX = tankLeft + saw * (tankRight - tankLeft - 24);
+
+    // Vùng khí giãn nở (t2 = 2°C)
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
+    ctx.fillRect(tankLeft, by + 2, splitX - tankLeft, bh - 4);
+
+    // Vùng nước biển còn lại trong thùng dằn
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+    ctx.fillRect(splitX, by + 2, tankRight - splitX, bh - 4);
+
+    // Vạch ranh giới khí - nước sắc nét
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(splitX, by + 2);
+    ctx.lineTo(splitX, by + bh - 2);
+    ctx.stroke();
+
+    // Bình khí nén cao áp 60 lít (10 MPa, 27°C) đặt ở khoang mũi tàu
+    drawRoundRect(ctx, bx + 6, by + 8, 36, 54, 8, '#f59e0b', '#fef08a', 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = '800 11.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('60 L', bx + 24, by + 33);
+    ctx.fillText('10MPa', bx + 24, by + 48);
+
+    // Van nối từ bình khí sang thùng dằn & mũi tên khí đẩy nước sang phải
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(bx + 42, by + 30, 8, 10);
+    drawArrow(ctx, Math.max(tankLeft + 8, splitX - 28), by + 35, splitX + 12, by + 35, '#fbbf24', 2.8, 7);
+
+    // Lỗ xả đáy thùng dằn & luồng nước biển bị đẩy phun ra dưới đáy tàu
+    const drainX = bx + bw - 20;
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(drainX - 6, by + bh - 2, 12, 18);
+    drawArrow(ctx, drainX, by + bh + 16, drainX, by + bh + 40, '#38bdf8', 3.2, 8);
+
+    // Nhãn chữ to, rõ nét bên trong thùng dằn (không đè lên nét vẽ)
+    ctx.fillStyle = '#fef08a';
+    ctx.font = '800 13.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Khí giãn nở (2°C)', tankLeft + 8, by + 21);
+
+    ctx.fillStyle = '#e0f2fe';
+    ctx.textAlign = 'right';
+    ctx.fillText('Nước biển', tankRight - 8, by + 58);
+
+    // Nhãn chỉ dòng nước bị đẩy ra bên dưới đáy tàu
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '800 13.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Nước bị đẩy ra ngoài', drainX - 12, by + bh + 34);
+
+    // 5. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 506, 70, 260, 220, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(507.5, 71.5, 257, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ TÀU NGẦM', 522, 95);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Độ sâu lặn: h = 120 m', 522, 130);
+    ctx.fillText('• Bình khí nén: V₁ = 60 lít', 522, 158);
+    ctx.fillText('  p₁ = 10 MPa; t₁ = 27°C', 522, 180);
+    ctx.fillText('• Sau giãn nở: t₂ = 2°C', 522, 208);
+    ctx.fillText('• Nước biển: ρ = 1030 kg/m³', 522, 236);
+    ctx.fillText('• p₀ = 1,013·10⁵ Pa; g = 9,81 m/s²', 522, 264);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-49 ---
+VLXTModels.register('MH-C2-49', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Hàm hỗ trợ đo và vẽ văn bản cỡ lớn có chỉ số dưới chuẩn (vd: "V_{chai}", "p_{kq}")
+    const baseMainFont = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const baseSubFont = '800 11px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+
+    function measureRichText(text, mFont = baseMainFont, sFont = baseSubFont) {
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let totalW = 0;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                ctx.font = mFont;
+                totalW += ctx.measureText(text.slice(lastIdx, match.index)).width;
+            }
+            ctx.font = sFont;
+            totalW += ctx.measureText(match[1]).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            ctx.font = mFont;
+            totalW += ctx.measureText(text.slice(lastIdx)).width;
+        }
+        return totalW;
+    }
+
+    function drawRichText(text, x, y, align = 'left', mFont = baseMainFont, sFont = baseSubFont, subOffset = 4.5) {
+        const totalW = measureRichText(text, mFont, sFont);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        const regex = /_\{([^}]+)\}/g;
+        let lastIdx = 0;
+        let match;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        while ((match = regex.exec(text)) !== null) {
+            if (match.index > lastIdx) {
+                const part = text.slice(lastIdx, match.index);
+                ctx.font = mFont;
+                ctx.fillText(part, curX, y);
+                curX += ctx.measureText(part).width;
+            }
+            const subPart = match[1];
+            ctx.font = sFont;
+            ctx.fillText(subPart, curX, y + subOffset);
+            curX += ctx.measureText(subPart).width;
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < text.length) {
+            const part = text.slice(lastIdx);
+            ctx.font = mFont;
+            ctx.fillText(part, curX, y);
+        }
+    }
+
+    // Hàm vẽ nhãn callout cỡ chữ lớn mặc định, rõ nét, không dẫm đè
+    function drawLargeCallout(px, py, bx, by, lines, color) {
+        ctx.save();
+        const lineH = 20;
+        const padX = 10;
+        const padY = 6;
+        let maxW = 0;
+        for (let i = 0; i < lines.length; i++) {
+            const lw = measureRichText(lines[i]);
+            if (lw > maxW) maxW = lw;
+        }
+        const boxW = maxW + padX * 2;
+        const boxH = lines.length * lineH + padY * 2;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(44, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+
+        ctx.fillStyle = '#f8fafc';
+        for (let i = 0; i < lines.length; i++) {
+            drawRichText(lines[i], safeBx + boxW / 2, safeBy + padY + lineH * (i + 0.5), 'center');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'MÔ HÌNH PHỔI TRONG HỆ HÔ HẤP (VỎ CHAI 1,0–1,5 lít & MÀNG CƠ HOÀNH)';
+    const titleFont = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    ctx.font = titleFont;
+    const titleW = ctx.measureText(titleStr).width + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleStr, 14 + titleW / 2, 24);
+    ctx.restore();
+
+    // Kéo chậm màng cao su (cơ hoành) xuống dưới 1 chiều sawtooth -> 2 quả bóng phình to
+    const saw = (t * 0.25) % 1;
+    const pullY = saw * 24;
+    const lungR = 17 + saw * 13;
+
+    ctx.save();
+
+    // 2. Vỏ chai nhựa trong suốt (lồng ngực) đặt cân đối để nhãn bên trái thật rộng thoáng
+    const cx = 302;
+    const bottleTop = 92, bottleBot = 232, bw = 136;
+
+    // Đổ bóng nền nhẹ bên trong vỏ chai
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.1)';
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, 68);
+    ctx.lineTo(cx - 22, bottleTop);
+    ctx.quadraticCurveTo(cx - bw / 2, bottleTop + 14, cx - bw / 2, bottleTop + 38);
+    ctx.lineTo(cx - bw / 2, bottleBot);
+    ctx.lineTo(cx + bw / 2, bottleBot);
+    ctx.lineTo(cx + bw / 2, bottleTop + 38);
+    ctx.quadraticCurveTo(cx + bw / 2, bottleTop + 14, cx + 22, bottleTop);
+    ctx.lineTo(cx + 22, 68);
+    ctx.closePath();
+    ctx.fill();
+
+    // Viền vỏ chai nhựa sắc nét
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, 68);
+    ctx.lineTo(cx - 22, bottleTop);
+    ctx.quadraticCurveTo(cx - bw / 2, bottleTop + 14, cx - bw / 2, bottleTop + 38);
+    ctx.lineTo(cx - bw / 2, bottleBot);
+    ctx.moveTo(cx + 22, 68);
+    ctx.lineTo(cx + 22, bottleTop);
+    ctx.quadraticCurveTo(cx + bw / 2, bottleTop + 14, cx + bw / 2, bottleTop + 38);
+    ctx.lineTo(cx + bw / 2, bottleBot);
+    ctx.stroke();
+
+    // Nút đậy kín cổ chai
+    drawRoundRect(ctx, cx - 25, 64, 50, 14, 4, '#475569', '#94a3b8', 2);
+
+    // 3. Ống hút chữ Y dẫn không khí từ bên ngoài vào 2 quả bóng bay
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 4.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx, 44);
+    ctx.lineTo(cx, 124);
+    ctx.lineTo(cx - 32, 148);
+    ctx.moveTo(cx, 124);
+    ctx.lineTo(cx + 32, 148);
+    ctx.stroke();
+
+    // Mũi tên không khí bên ngoài tràn qua ống hút vào 2 quả bóng
+    drawArrow(ctx, cx - 16, 40, cx - 16, 62, '#38bdf8', 2.8, 6.5);
+
+    // 4. 2 quả bóng bay (2 lá phổi) phình to bên trong chai
+    [-32, 32].forEach(dx => {
+        const lx = cx + dx;
+        const ly = 150 + lungR * 1.15;
+        ctx.fillStyle = 'rgba(244, 114, 182, 0.48)';
+        ctx.strokeStyle = '#f472b6';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.ellipse(lx, ly, lungR * 0.82, lungR * 1.15, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    });
+
+    // 5. Màng cao su (cơ hoành) bịt kín đáy chai & kéo xuống dưới
+    const diapY = bottleBot + pullY;
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.36)';
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - bw / 2, bottleBot);
+    ctx.quadraticCurveTo(cx, diapY + 12, cx + bw / 2, bottleBot);
+    ctx.stroke();
+    ctx.fill();
+
+    // Mũi tên lực kéo màng cao su xuống dưới
+    drawArrow(ctx, cx, diapY + 8, cx, diapY + 34, '#fbbf24', 3.2, 8);
+
+    // 6. Chú thích callout chữ to, rõ nét, có chỉ số dưới chuẩn, không dẫm đè
+    drawLargeCallout(cx, 102, 12, 54, ['Ống hút chữ Y', 'Dẫn khí từ ngoài vào'], '#f8fafc');
+    drawLargeCallout(cx - 32 - lungR * 0.72, 174, 12, 134, ['2 quả bóng bay (Phổi)', 'Phình to khi kéo màng'], '#f472b6');
+    drawLargeCallout(cx - bw / 2, bottleBot + 4, 12, 214, ['Màng cao su (Cơ hoành)', 'Kéo xuống → V_{chai} tăng'], '#f59e0b');
+
+    // 7. Thẻ giải thích cơ chế vật lý bên phải chữ to, rõ nét, có chỉ số dưới chuẩn
+    const cardX = 392, cardY = 64, cardW = 374, cardH = 220;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#f472b6', 2.2);
+
+    ctx.fillStyle = '#f472b6';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('NGUYÊN LÝ HÔ HẤP TRONG MÔ HÌNH', cardX + 14, cardY + 26);
+
+    ctx.fillStyle = '#f8fafc';
+    const itemMFont = '700 14.5px "Be Vietnam Pro", system-ui, sans-serif';
+    const itemSFont = '700 11px "Be Vietnam Pro", system-ui, sans-serif';
+
+    drawRichText('• Vỏ chai kín: Thể tích 1,0–1,5 lít', cardX + 14, cardY + 60, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('• Kéo chậm màng cao su xuống dưới:', cardX + 14, cardY + 92, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('  → Thể tích phần khí trong chai tăng', cardX + 14, cardY + 122, 'left', itemMFont, itemSFont, 4.5);
+    drawRichText('  → Áp suất khí trong chai giảm (< p_{kq})', cardX + 14, cardY + 152, 'left', itemMFont, itemSFont, 4.5);
+
+    ctx.fillStyle = '#6ee7b7';
+    drawRichText('  → Khí ngoài tràn vào làm phồng bóng', cardX + 14, cardY + 186, 'left', '800 14.5px "Be Vietnam Pro", system-ui, sans-serif', '800 11px "Be Vietnam Pro", system-ui, sans-serif', 4.5);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-50 ---
+VLXTModels.register('MH-C2-50', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'LỐP XE Ô TÔ VƯỢT SA MẠC (t₀ = 5,0°C; V = 1,2 m³; p₀ = 2,5 bar)');
+
+    ctx.save();
+
+    // 1. Mặt đường cát sa mạc nóng bên dưới bánh xe
+    const groundY = 278;
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(16, groundY, 376, 12);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(16, groundY);
+    ctx.lineTo(392, groundY);
+    ctx.stroke();
+
+    // Hạt cát li ti dưới nền sa mạc
+    ctx.fillStyle = '#fcd34d';
+    for (let sx = 28; sx < 385; sx += 26) {
+        ctx.fillRect(sx, groundY + 4, 4, 2);
+        ctx.fillRect(sx + 12, groundY + 8, 3, 2);
+    }
+
+    // 2. Mặt cắt lốp xe địa hình & La-zăng hợp kim bên trái (chạm mặt đường y = 278)
+    const cx = 258, cy = 186;
+    const rOuter = 92, rInner = 46;
+
+    // Gai lốp địa hình sắc nét quanh chu vi ngoài
+    ctx.fillStyle = '#334155';
+    const numTreads = 20;
+    for (let i = 0; i < numTreads; i++) {
+        const ang = (i * Math.PI * 2) / numTreads + t * 0.45;
+        ctx.save();
+        ctx.translate(cx + Math.cos(ang) * rOuter, cy + Math.sin(ang) * rOuter);
+        ctx.rotate(ang);
+        ctx.fillRect(-3, -6, 6, 12);
+        ctx.restore();
+    }
+
+    // Vành cao su lốp xe dày dặn
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Khoang khí nén bên trong lốp xe
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.24)';
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter - 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // La-zăng hợp kim ở tâm bánh xe
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rInner, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Các nan hoa la-zăng quay đều
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 4.5;
+    for (let k = 0; k < 5; k++) {
+        const ang = (k * Math.PI * 2) / 5 + t * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(ang) * 11, cy + Math.sin(ang) * 11);
+        ctx.lineTo(cx + Math.cos(ang) * (rInner - 2), cy + Math.sin(ang) * (rInner - 2));
+        ctx.stroke();
+    }
+    // Ổ trục trung tâm la-zăng
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Các phân tử khí chuyển động nhiệt va chạm thành trong của lốp gây áp suất
+    for (let i = 0; i < 18; i++) {
+        const ang = (i * Math.PI * 2) / 18 + t * 0.7;
+        const osc = Math.sin(t * 7.5 + i * 1.9) * 14;
+        const rad = (rInner + rOuter - 10) / 2 + osc;
+        const px = cx + Math.cos(ang) * rad;
+        const py = cy + Math.sin(ang) * rad;
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(px, py, 3.6, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Mũi tên áp suất khí tác dụng vuông góc lên thành trong của lốp
+    for (let i = 0; i < 6; i++) {
+        const ang = (i * Math.PI * 2) / 6 + Math.PI / 6;
+        drawArrow(ctx, cx + Math.cos(ang) * 53, cy + Math.sin(ang) * 53, cx + Math.cos(ang) * 79, cy + Math.sin(ang) * 79, '#fbbf24', 2.5, 6);
+    }
+
+    // 4. Thẻ chú thích chữ thật to (15px) ở góc trên trái, tách biệt hoàn toàn khỏi lốp xe
+    const tagX = 14, tagY = 66, tagW = 188, tagH = 62;
+    const hitX = cx - Math.cos(Math.PI / 4) * (rOuter - 10);
+    const hitY = cy - Math.sin(Math.PI / 4) * (rOuter - 10);
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(tagX + tagW, tagY + tagH / 2);
+    ctx.lineTo(hitX, hitY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(hitX, hitY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, tagX, tagY, tagW, tagH, 9, '#0f172a', '#fbbf24', 2.2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('Thành trong lốp xe', tagX + 11, tagY + 25);
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '700 14px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('Khí va chạm gây áp suất', tagX + 11, tagY + 48);
+
+    // 5. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to học sinh dễ đọc)
+    drawRoundRect(ctx, 404, 68, 362, 220, 12, '#0f172a', '#fbbf24', 2.4);
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.roundRect(405.5, 69.5, 359, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ LỐP Ô TÔ 4 BÁNH', 422, 93);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Nhiệt độ sáng sớm: t₀ = 5,0°C', 422, 128);
+    ctx.fillText('• Thể tích mỗi lốp: V = 1,2 m³', 422, 158);
+    ctx.fillText('• Áp suất ban đầu: p₀ = 2,5 bar', 422, 188);
+    ctx.fillText('  (1 bar = 10⁵ Pa)', 422, 212);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Bỏ qua sự dãn nở vì nhiệt của lốp', 422, 248);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-51 ---
+VLXTModels.register('MH-C2-51', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'LỐP XE BÁN TẢI CHẠY CAO TỐC MÙA HÈ (t = 27°C; V = 120 lít; p = 240 kPa)';
+    ctx.font = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleStr).width + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleStr, 14 + titleW / 2, 24);
+    ctx.restore();
+
+    const saw = (t * 0.22) % 1; // Nhiệt độ tăng 1 chiều -> áp suất trong lốp tăng đẳng tích
+
+    ctx.save();
+
+    // 2. Lốp xe bán tải bên trái
+    const cx = 192, cy = 166;
+    const rOuter = 94, rInner = 46;
+
+    // Nền đường nhựa nóng bức xạ nhiệt lên lốp
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(36, cy + rOuter, 316, 14);
+    // Vạch kẻ đường đứt đoạn tạo cảm giác xe đang chạy trên cao tốc
+    ctx.fillStyle = '#94a3b8';
+    const roadShift = (t * 75) % 48;
+    for (let rx = 44 - roadShift; rx < 340; rx += 48) {
+        if (rx + 22 > 36 && rx < 352) {
+            ctx.fillRect(Math.max(36, rx), cy + rOuter + 5, Math.min(22, 352 - rx), 4);
+        }
+    }
+
+    // Mũi tên nhiệt bức xạ từ mặt đường nóng bốc lên lốp
+    for (let i = 0; i < 4; i++) {
+        const hx = 118 + i * 50;
+        const hy = cy + rOuter - 4 - saw * 14;
+        drawArrow(ctx, hx, cy + rOuter, hx, hy, '#ef4444', 2.6, 6.5);
+    }
+
+    // Vỏ lốp xe cao su & gai lốp xoay nhẹ theo chuyển động chạy cao tốc
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Khoang khí nén bên trong lốp nóng lên dần (chuyển sắc ấm theo saw)
+    ctx.fillStyle = `rgba(239, 68, 68, ${(0.20 + saw * 0.28).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter - 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // La-zăng (mâm bánh xe hợp kim) & các nan hoa quay đều
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rInner, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    const wheelAng = t * 2.2;
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 3;
+    for (let s = 0; s < 5; s++) {
+        const a = wheelAng + (s * Math.PI * 2) / 5;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * 12, cy + Math.sin(a) * 12);
+        ctx.lineTo(cx + Math.cos(a) * (rInner - 3), cy + Math.sin(a) * (rInner - 3));
+        ctx.stroke();
+    }
+    ctx.fillStyle = '#475569';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Nhãn V = 120 lít rõ nét ngay trên khoang lốp
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 14.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('V = 120 lít', cx, cy - 66);
+
+    // 3. Đồng hồ đo áp suất lốp gắn bên cạnh
+    const gx = 342, gy = 108;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(cx + rOuter - 6, cy - 36);
+    ctx.lineTo(gx - 28, gy + 12);
+    ctx.stroke();
+    drawPressureGauge(ctx, gx, gy, 33, Math.PI * 0.95 + saw * Math.PI * 0.45, 'kPa', '', '#ef4444');
+
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 14.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Áp suất p', gx, gy + 48);
+
+    // 4. Thẻ thông số đề dẫn bên phải chữ to, rõ nét (Zero Data Leakage)
+    const cardX = 398, cardY = 64, cardW = 368, cardH = 220;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#ef4444', 2.2);
+
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('THÔNG SỐ LỐP XE BÁN TẢI', cardX + 16, cardY + 26);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 15px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('• Nhiệt độ sáng sớm: t = 27°C', cardX + 16, cardY + 60);
+    ctx.fillText('• Thể tích mỗi lốp: V = 120 lít', cardX + 16, cardY + 90);
+    ctx.fillText('• Áp suất ban đầu: p = 240 kPa', cardX + 16, cardY + 120);
+    ctx.fillText('• Hằng số Boltzmann: k = 1,38·10⁻²³ J/K', cardX + 16, cardY + 150);
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '800 14.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('• Nhiệt độ tăng → áp suất lốp tăng đẳng tích', cardX + 16, cardY + 184);
+
+    ctx.restore();
+});
+
+    // --- MH-C2-52 ---
+VLXTModels.register('MH-C2-52', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+    drawTitleBadge(ctx, 'SÚNG BẮN ĐINH KHÍ NÉN & BÌNH KHÍ (V = 10 lít; p = 12 atm; 27°C)');
+
+    const saw = (t * 0.36) % 1;
+
+    ctx.save();
+
+    // 1. Bình khí nén 10 lít (12 atm, 27°C) màu phẳng mịn, sạch sẽ
+    const tx = 36, ty = 104, tw = 108, th = 166;
+    const vx = tx + tw / 2;
+
+    // Đế bình
+    drawRoundRect(ctx, tx + 12, ty + th - 6, tw - 24, 12, 4, '#1e293b', '#64748b', 2);
+
+    // Thân bình khí nén phẳng 1 màu xanh chuẩn, không sọc
+    drawRoundRect(ctx, tx, ty, tw, th, 26, '#0284c7', '#bae6fd', 2.8);
+
+    // Nhãn thông số chữ thật to trên thân bình
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 17px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BÌNH KHÍ', vx, ty + 42);
+
+    ctx.font = '800 18px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillStyle = '#fde047';
+    ctx.fillText('10 lít', vx, ty + 76);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('12 atm', vx, ty + 106);
+    ctx.fillText('27°C', vx, ty + 136);
+
+    // 2. Cụm Rơ-le áp suất & Đồng hồ áp suất trên đỉnh bình khí nén
+    drawRoundRect(ctx, vx - 18, ty - 24, 36, 24, 5, '#1e293b', '#10b981', 2.4);
+    drawPressureGauge(ctx, vx - 34, ty - 34, 21, Math.PI * 1.4, '', '', '#10b981');
+
+    // Thẻ chú thích Rơ-le áp suất chữ thật to (16px)
+    const tagX = 168, tagY = 48, tagW = 282, tagH = 58;
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(vx + 18, ty - 14);
+    ctx.lineTo(tagX, tagY + tagH / 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(vx + 18, ty - 14, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRoundRect(ctx, tagX, tagY, tagW, tagH, 9, '#0f172a', '#10b981', 2.2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('Rơ-le áp suất tự động', tagX + 12, tagY + 24);
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '700 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('Đóng nạp lại khi p < 4 atm', tagX + 12, tagY + 47);
+
+    // 3. Dây dẫn khí nén nối từ bình sang tay cầm súng bắn đinh
+    const gx = 266, gy = 134;
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 5.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(vx + 18, ty - 8);
+    ctx.bezierCurveTo(205, ty - 8, 192, 266, gx + 24, gy + 114);
+    ctx.stroke();
+
+    drawArrow(ctx, 206, 232, 240, 246, '#fbbf24', 2.8, 7);
+
+    // 4. Súng bắn đinh khí nén thiết kế phẳng sạch sẽ, không sọc
+    // Tay cầm súng & cò súng
+    ctx.save();
+    ctx.translate(gx + 22, gy + 44);
+    ctx.rotate(0.14);
+    drawRoundRect(ctx, -14, 0, 28, 70, 6, '#334155', '#94a3b8', 2.4);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.2;
+    ctx.strokeRect(12, 4, 14, 22);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(14, 8, 6, 12);
+    ctx.restore();
+
+    // Băng đinh phẳng mịn (không kẻ sọc)
+    ctx.save();
+    ctx.translate(gx + 114, gy + 46);
+    ctx.rotate(-0.16);
+    drawRoundRect(ctx, -11, 0, 22, 62, 4, '#475569', '#cbd5e1', 2.2);
+    ctx.restore();
+
+    // Thân xi-lanh súng bắn đinh
+    drawRoundRect(ctx, gx, gy, 130, 48, 10, '#0284c7', '#e0f2fe', 2.6);
+    drawRoundRect(ctx, gx - 6, gy + 6, 12, 36, 4, '#f59e0b', '#fef08a', 2);
+
+    // Nòng súng
+    drawRoundRect(ctx, gx + 130, gy + 14, 18, 20, 3, '#94a3b8', '#f8fafc', 2);
+
+    // 5. Đinh sắt phóng thẳng vào khối gỗ
+    const nailLen = 26;
+    const maxTravel = 22;
+    const nailX = gx + 149 + (saw < 0.7 ? (saw / 0.7) * maxTravel : maxTravel);
+    const nailY = gy + 24;
+
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(nailX, nailY);
+    ctx.lineTo(nailX + nailLen, nailY);
+    ctx.stroke();
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(nailX - 2, nailY - 5, 4, 10);
+
+    // Khối gỗ nhận đinh (màu phẳng mịn, không kẻ sọc)
+    drawRoundRect(ctx, 444, 114, 34, 142, 6, '#78350f', '#d97706', 2.4);
+
+    // 6. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to 16px học sinh cực dễ đọc)
+    drawRoundRect(ctx, 492, 66, 276, 222, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(493.5, 67.5, 273, 38, [10, 10, 0, 0]);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 16.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THÔNG SỐ SÚNG BẮN ĐINH', 506, 92);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 16px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('• Bình: V = 10 lít; p = 12 atm', 506, 130);
+    ctx.fillText('• Nhiệt độ không đổi: t = 27°C', 506, 160);
+    ctx.fillText('• Rơ-le đóng nạp khi p < 4 atm', 506, 190);
+    ctx.fillText('• Mỗi lần bắn giải phóng:', 506, 222);
+
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 16.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText('  0,5 lít khí ở áp suất 1 atm', 506, 250);
+
+    ctx.restore();
+});
+
+    // --- MH-C3-53 ---
+VLXTModels.register('MH-C3-53', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'THÍ NGHIỆM CÂN TỪ TRƯỜNG (L = 5,0 cm; I = 5,0 A; g = 9,8 m/s²)';
+    ctx.font = '800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    const titleW = ctx.measureText(titleStr).width + 28;
+    drawRoundRect(ctx, 14, 8, titleW, 31, 15.5, '#0f172a', '#38bdf8', 2.2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(titleStr, 14 + titleW / 2, 24);
+    ctx.restore();
+
+    // Hàm chiếu phối cảnh trục đo (isometric) chuẩn hình học:
+    // +x: chéo lên-phải (hướng PQ), +y: chéo xuống-phải (hướng S -> N), +z: thẳng đứng lên trên
+    const ox = 368, oy = 182;
+    const uxX = 0.866, uxY = -0.5;
+    const uyX = 0.866, uyY = 0.5;
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    // Vẽ chữ dán phẳng lên mặt phẳng 3D song song với trục X - Z (như màn hình LCD và mặt cực S, N)
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        // Cạnh ngang theo vectơ (uxX, uxY), cạnh đứng giữ thẳng đứng (0, 1) đúng chuẩn phối cảnh trục đo
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Vẽ khối hộp 3D kín chuẩn góc nhìn:
+    // - Mặt trước-trái (x = x1)
+    // - Mặt trước-phải (y = y2)
+    // - Mặt trên (z = z2)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFrontLeft, cFrontRight, stroke = '#cbd5e1', lw = 2) {
+        const p000 = iso(x1, y1, z1), p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p000, p010, p011, p001], cFrontLeft, stroke, lw);
+        fillPoly([p010, p110, p111, p011], cFrontRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    function drawBigBadgeNote(bx, by, px, py, badge, label, color) {
+        ctx.save();
+        ctx.font = '800 15px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+        const fullText = `${badge} ${label}`;
+        const textW = ctx.measureText(fullText).width;
+        const boxW = textW + 22;
+        const boxH = 30;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 7, '#0f172a', color, 2.2);
+        ctx.fillStyle = '#f8fafc';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(fullText, safeBx + boxW / 2, safeBy + boxH / 2 + 0.5);
+        ctx.restore();
+    }
+
+    // Chuyển động đóng/ngắt mạch điện (sawtooth 1 chiều -> reset)
+    const cycle = (t * 0.28) % 1;
+    const isCurrentOn = cycle >= 0.32;
+    const transition = isCurrentOn ? Math.min(1, (cycle - 0.32) / 0.14) : 0;
+    const dipZ = transition * 2.2;
+
+    ctx.save();
+
+    // =========================================================
+    // LỚP 1 (XA NHẤT): GIÁ ĐỠ TRỤ SAU BÊN PHẢI (CỰC Q)
+    // =========================================================
+    const wireZ = 56;
+    drawBox(86, 134, -84, -44, -44, -28, '#475569', '#334155', '#1e293b', '#94a3b8', 1.8);
+    const pBackBot = iso(110, -64, -28), pBackTop = iso(110, -64, 96);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pBackBot.x, pBackBot.y);
+    ctx.lineTo(pBackTop.x, pBackTop.y);
+    ctx.stroke();
+
+    const armBack1 = iso(110, -64, wireZ), armBack2 = iso(110, 0, wireZ);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(armBack1.x, armBack1.y);
+    ctx.lineTo(armBack2.x, armBack2.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 2: CÂN ĐIỆN TỬ (3) KHỐI HỘP 3D KÍN + MÀN HÌNH SỐ CHUẨN PHỐI CẢNH 3D
+    // =========================================================
+    drawBox(-76, 76, -64, 84, -44, 0, '#334155', '#1e293b', '#0f172a', '#cbd5e1', 2.4);
+
+    // Khung màn hình LCD trên mặt trước-phải (y = 84)
+    const lcd1 = iso(-54, 84, -7), lcd2 = iso(54, 84, -7);
+    const lcd3 = iso(54, 84, -35), lcd4 = iso(-54, 84, -35);
+    fillPoly([lcd1, lcd2, lcd3, lcd4], '#050811', '#10b981', 2.2);
+
+    // Hiển thị số cân bằng phép biến đổi phẳng 3D khớp hoàn toàn với mặt khung LCD
+    drawIsoTextXZ(
+        isCurrentOn ? '002.20 g' : '000.00 g',
+        0, 84, -21,
+        '800 19px "DM Mono", monospace',
+        '#6ee7b7'
+    );
+
+    // Đĩa cân trên mặt cân
+    const panZ = 6 - dipZ;
+    drawBox(-58, 58, -48, 48, 0, panZ, '#475569', '#334155', '#1e293b', '#cbd5e1', 2);
+
+    // =========================================================
+    // LỚP 3: NAM CHÂM CHỮ U (2) - MÁ SAU CỰC S (MÀU XANH DƯƠNG) & ĐÁY CHỮ U
+    // =========================================================
+    const magLen = 40;
+    const zBase = panZ;
+    const zTop = panZ + 66;
+
+    drawBox(-magLen, magLen, -32, 32, zBase, zBase + 8, '#94a3b8', '#64748b', '#475569', '#cbd5e1', 1.8);
+    drawBox(-magLen, magLen, -32, -24, zBase + 8, zTop, '#cbd5e1', '#94a3b8', '#64748b', '#e2e8f0', 1.8);
+    drawBox(-magLen, magLen, -24, -18, zBase + 26, zTop, '#60a5fa', '#3b82f6', '#2563eb', '#93c5fd', 1.8);
+
+    // Chữ S dán đúng mặt phẳng 3D của cực từ S
+    drawIsoTextXZ('S', 0, -18, zBase + 46, '800 18px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // Đường gióng kích thước chiều dài L của nam châm
+    const dimA1 = iso(-magLen, -24, zTop + 2), dimA2 = iso(-magLen, -24, zTop + 26);
+    const dimB1 = iso(magLen, -24, zTop + 2), dimB2 = iso(magLen, -24, zTop + 26);
+    const dimL1 = iso(-magLen, -24, zTop + 18), dimL2 = iso(magLen, -24, zTop + 18);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(dimA1.x, dimA1.y); ctx.lineTo(dimA2.x, dimA2.y);
+    ctx.moveTo(dimB1.x, dimB1.y); ctx.lineTo(dimB2.x, dimB2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawArrow(ctx, dimL1.x, dimL1.y, dimL2.x, dimL2.y, '#fbbf24', 2, 5.5);
+    drawArrow(ctx, dimL2.x, dimL2.y, dimL1.x, dimL1.y, '#fbbf24', 2, 5.5);
+    const midL = iso(0, -24, zTop + 28);
+    ctx.fillStyle = '#fde68a';
+    ctx.font = 'italic 800 17px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('L', midL.x - 4, midL.y);
+
+    // =========================================================
+    // LỚP 4: ĐOẠN DÂY DẪN PQ (1) NẰM NGANG GIỮA KHE HAI CỰC S - N
+    // =========================================================
+    const wireP = iso(-110, 0, wireZ);
+    const wireQ = iso(110, 0, wireZ);
+
+    const wireQOut = iso(117, 0, wireZ);
+    const flexQ1 = iso(138, 0, wireZ - 10), flexQ2 = iso(168, 28, wireZ - 34);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(wireQOut.x, wireQOut.y);
+    ctx.quadraticCurveTo(flexQ1.x, flexQ1.y, flexQ2.x, flexQ2.y);
+    ctx.stroke();
+
+    // Thanh dẫn thẳng PQ xuyên qua lòng nam châm
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 4.8;
+    ctx.beginPath();
+    ctx.moveTo(wireP.x, wireP.y);
+    ctx.lineTo(wireQ.x, wireQ.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 5: MÁ TRƯỚC CỰC N (MÀU ĐỎ) CỦA NAM CHÂM CHỮ U
+    // =========================================================
+    drawBox(-magLen, magLen, 18, 24, zBase + 26, zTop, '#f87171', '#ef4444', '#dc2626', '#fca5a5', 1.8);
+    drawBox(-magLen, magLen, 24, 32, zBase + 8, zTop, '#e2e8f0', '#cbd5e1', '#94a3b8', '#f8fafc', 1.8);
+
+    // Chữ N dán đúng mặt phẳng 3D của má trước nam châm
+    drawIsoTextXZ('N', 0, 32, zBase + 46, '800 18px "Be Vietnam Pro", system-ui, sans-serif', '#0f172a');
+
+    // =========================================================
+    // LỚP 6 (GẦN NHẤT): GIÁ ĐỠ TRỤ TRƯỚC BÊN TRÁI (CỰC P) & HAI KHỐI KẸP 3D KÍN
+    // =========================================================
+    drawBox(103, 117, -7, 7, wireZ - 7, wireZ + 7, '#64748b', '#475569', '#334155', '#f8fafc', 1.8);
+
+    drawBox(-134, -86, 44, 84, -44, -28, '#475569', '#334155', '#1e293b', '#94a3b8', 1.8);
+    const pFrontBot = iso(-110, 64, -28), pFrontTop = iso(-110, 64, 96);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(pFrontBot.x, pFrontBot.y);
+    ctx.lineTo(pFrontTop.x, pFrontTop.y);
+    ctx.stroke();
+
+    drawBox(-117, -103, -7, 7, wireZ - 7, wireZ + 7, '#64748b', '#475569', '#334155', '#f8fafc', 1.8);
+
+    const armFront1 = iso(-110, 64, wireZ), armFront2 = iso(-110, 7, wireZ);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(armFront1.x, armFront1.y);
+    ctx.lineTo(armFront2.x, armFront2.y);
+    ctx.stroke();
+
+    const wirePOut = iso(-117, 0, wireZ);
+    const flexP1 = iso(-142, 0, wireZ - 14), flexP2 = iso(-174, 22, wireZ - 34);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(wirePOut.x, wirePOut.y);
+    ctx.quadraticCurveTo(flexP1.x, flexP1.y, flexP2.x, flexP2.y);
+    ctx.stroke();
+
+    // Nhãn P và Q cỡ chữ thật to, rõ nét
+    const lblP = iso(-92, 0, wireZ + 18);
+    const lblQ = iso(92, 0, wireZ + 18);
+    ctx.fillStyle = '#fde68a';
+    ctx.font = '800 18.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('P', lblP.x, lblP.y);
+    ctx.fillText('Q', lblQ.x, lblQ.y);
+
+    // =========================================================
+    // 7. TRẠNG THÁI MẠCH ĐIỆN & CÁC NHÃN CHÚ THÍCH (1), (2), (3) CHỮ TO
+    // =========================================================
+    const stateBg = isCurrentOn ? 'rgba(16, 185, 129, 0.2)' : 'rgba(148, 163, 184, 0.16)';
+    const stateColor = isCurrentOn ? '#6ee7b7' : '#cbd5e1';
+    drawRoundRect(ctx, 18, 52, 172, 32, 7, stateBg, stateColor, 2);
+    ctx.fillStyle = stateColor;
+    ctx.font = '800 15px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(isCurrentOn ? 'Mạch kín: I = 5,0 A' : 'Mạch hở: I = 0 A', 104, 68.5);
+
+    const ptWire = iso(-64, 0, wireZ);
+    const ptMag = iso(magLen, -24, zTop - 10);
+    const ptScale = iso(55, 84, -18);
+
+    drawBigBadgeNote(16, 102, ptWire.x, ptWire.y, '(1)', 'Đoạn dây PQ', '#fbbf24');
+    drawBigBadgeNote(556, 54, ptMag.x, ptMag.y, '(2)', 'Nam châm chữ U', '#ef4444');
+    drawBigBadgeNote(556, 224, ptScale.x, ptScale.y, '(3)', 'Cân điện tử', '#10b981');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-54 ---
+VLXTModels.register('MH-C3-54', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản có chỉ số dưới (subscript) tự động từ ký hiệu "A_{sub}" hoặc "L_dây"
+    // Tuyệt đối không hiển thị dấu "_" thô lên màn hình
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0;
+        let match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) {
+                segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            }
+            const subText = match[1] !== undefined ? match[1] : match[2];
+            segs.push({ text: subText, isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) {
+            segs.push({ text: str.slice(lastIdx), isSub: false });
+        }
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (hiển thị chỉ số dưới chuẩn cho L_dây và L_nam châm)
+    ctx.save();
+    const titleStr = 'ĐO CẢM ỨNG TỪ NAM CHÂM CHỮ U (L_{dây} = 15 cm; L_{nam châm} = 8,4 cm)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Hàm chiếu phối cảnh trục đo 3D (isometric) chuẩn hình học:
+    const ox = 368, oy = 190;
+    const uxX = 0.866, uxY = -0.5;
+    const uyX = 0.866, uyY = 0.5;
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    // Vẽ chữ dán phẳng lên mặt phẳng 3D song song với trục X - Z (màn hình LCD & mặt cực S, N)
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Vẽ khối hộp 3D kín chuẩn góc nhìn: Mặt trước-trái (x = x1) + Mặt trước-phải (y = y2) + Mặt trên (z = z2)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFrontLeft, cFrontRight, stroke = '#cbd5e1', lw = 2) {
+        const p000 = iso(x1, y1, z1), p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p000, p010, p011, p001], cFrontLeft, stroke, lw);
+        fillPoly([p010, p110, p111, p011], cFrontRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    // Hàm vẽ thẻ chú thích cỡ chữ thật to (16px - 15.5px) hỗ trợ chỉ số dưới chuẩn Vật lý
+    function drawBigBadgeNote(bx, by, px, py, badge, label, subLabel, color) {
+        ctx.save();
+        const fullText = `${badge} ${label}`;
+        const w1 = measureRichText(fullText, 16, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 15.5, '700') : 0;
+
+        const boxW = Math.max(w1, w2) + 24;
+        const boxH = subLabel ? 56 : 34;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(fullText, safeBx + 12, safeBy + 18, 16, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 12, safeBy + 40, 15.5, color, '700', 'left');
+        } else {
+            drawRichText(fullText, safeBx + 12, safeBy + boxH / 2, 16, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // Chuyển động đóng/ngắt dòng điện tuần hoàn
+    const cycle = (t * 0.28) % 1;
+    const isCurrentOn = cycle >= 0.32;
+    const transition = isCurrentOn ? Math.min(1, (cycle - 0.32) / 0.14) : 0;
+    const dipZ = transition * 2.2;
+
+    ctx.save();
+
+    // =========================================================
+    // LỚP 1 (XA NHẤT): GIÁ ĐỠ TRỤ SAU BÊN PHẢI & CỌC ĐẤU DÂY NGUỒN
+    // =========================================================
+    const wireZ = 56;
+    drawBox(88, 136, -84, -44, -44, -28, '#475569', '#334155', '#1e293b', '#94a3b8', 1.8);
+
+    // Hai cọc đấu dây nguồn (+/-) gắn trên đế sau và dây dẫn nguồn
+    drawBox(112, 126, -64, -50, -28, -14, '#f87171', '#ef4444', '#dc2626', '#fca5a5', 1.6);
+    drawBox(122, 136, -48, -34, -28, -14, '#60a5fa', '#3b82f6', '#2563eb', '#93c5fd', 1.6);
+
+    const pBackBot = iso(112, -64, -28), pBackTop = iso(112, -64, 78);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pBackBot.x, pBackBot.y);
+    ctx.lineTo(pBackTop.x, pBackTop.y);
+    ctx.stroke();
+
+    const armBack1 = iso(112, -64, wireZ), armBack2 = iso(112, 0, wireZ);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 4.2;
+    ctx.beginPath();
+    ctx.moveTo(armBack1.x, armBack1.y);
+    ctx.lineTo(armBack2.x, armBack2.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 2: CÂN ĐỒNG HỒ HIỆN SỐ (3) KHỐI HỘP 3D KÍN + SỐ CHỈ CHUẨN 3D
+    // =========================================================
+    drawBox(-78, 78, -64, 86, -44, 0, '#334155', '#1e293b', '#0f172a', '#cbd5e1', 2.4);
+
+    // Khung màn hình LCD trên mặt trước-phải (y = 86)
+    const lcd1 = iso(-56, 86, -7), lcd2 = iso(56, 86, -7);
+    const lcd3 = iso(56, 86, -35), lcd4 = iso(-56, 86, -35);
+    fillPoly([lcd1, lcd2, lcd3, lcd4], '#050811', '#38bdf8', 2.2);
+
+    // Hiển thị số chỉ của cân khớp hoàn toàn với mặt phẳng 3D của khung LCD
+    drawIsoTextXZ(
+        isCurrentOn ? '164.40 g' : '160.00 g',
+        0, 86, -21,
+        '800 19.5px "DM Mono", monospace',
+        '#38bdf8'
+    );
+
+    // Đĩa cân trên mặt cân
+    const panZ = 6 - dipZ;
+    drawBox(-60, 60, -48, 48, 0, panZ, '#475569', '#334155', '#1e293b', '#cbd5e1', 2);
+
+    // =========================================================
+    // LỚP 3: NAM CHÂM CHỮ U (2) - MÁ SAU CỰC S (MÀU XANH DƯƠNG) & ĐÁY CHỮ U
+    // =========================================================
+    const magLen = 44; // Chiều dài nam châm 8,4 cm (nhỏ hơn chiều dài dây 15 cm)
+    const zBase = panZ;
+    const zTop = panZ + 66;
+
+    drawBox(-magLen, magLen, -32, 32, zBase, zBase + 8, '#94a3b8', '#64748b', '#475569', '#cbd5e1', 1.8);
+    drawBox(-magLen, magLen, -32, -24, zBase + 8, zTop, '#cbd5e1', '#94a3b8', '#64748b', '#e2e8f0', 1.8);
+    drawBox(-magLen, magLen, -24, -18, zBase + 26, zTop, '#60a5fa', '#3b82f6', '#2563eb', '#93c5fd', 1.8);
+
+    // Chữ S dán đúng mặt phẳng 3D của cực từ S
+    drawIsoTextXZ('S', 0, -18, zBase + 46, '800 18.5px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // Đường gióng kích thước chiều dài nam châm (8,4 cm)
+    const dimA1 = iso(-magLen, -24, zTop + 2), dimA2 = iso(-magLen, -24, zTop + 26);
+    const dimB1 = iso(magLen, -24, zTop + 2), dimB2 = iso(magLen, -24, zTop + 26);
+    const dimL1 = iso(-magLen, -24, zTop + 18), dimL2 = iso(magLen, -24, zTop + 18);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(dimA1.x, dimA1.y); ctx.lineTo(dimA2.x, dimA2.y);
+    ctx.moveTo(dimB1.x, dimB1.y); ctx.lineTo(dimB2.x, dimB2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawArrow(ctx, dimL1.x, dimL1.y, dimL2.x, dimL2.y, '#fbbf24', 2.2, 5.5);
+    drawArrow(ctx, dimL2.x, dimL2.y, dimL1.x, dimL1.y, '#fbbf24', 2.2, 5.5);
+    const midL = iso(0, -24, zTop + 31);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('8,4 cm', midL.x - 6, midL.y);
+
+    // =========================================================
+    // LỚP 4: ĐOẠN DÂY DẪN (1) DÀI 15 cm NẰM NGANG GIỮA KHE HAI CỰC S - N
+    // =========================================================
+    const wireP = iso(-112, 0, wireZ);
+    const wireQ = iso(112, 0, wireZ);
+
+    // Dây cấp nguồn đỏ/xanh ở đầu sau
+    const wireQOut = iso(119, 0, wireZ);
+    const termRed = iso(122, -57, -14);
+    const termBlue = iso(132, -41, -14);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(wireQOut.x, wireQOut.y);
+    ctx.quadraticCurveTo(wireQOut.x + 22, wireQOut.y + 18, termRed.x, termRed.y);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#3b82f6';
+    ctx.beginPath();
+    ctx.moveTo(termBlue.x, termBlue.y);
+    ctx.lineTo(termBlue.x + 36, termBlue.y + 16);
+    ctx.stroke();
+
+    // Thanh dẫn thẳng (1) dài 15 cm xuyên qua lòng nam châm (không vẽ mũi tên chiều I)
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(wireP.x, wireP.y);
+    ctx.lineTo(wireQ.x, wireQ.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 5: MÁ TRƯỚC CỰC N (MÀU ĐỎ) CỦA NAM CHÂM CHỮ U
+    // =========================================================
+    drawBox(-magLen, magLen, 18, 24, zBase + 26, zTop, '#f87171', '#ef4444', '#dc2626', '#fca5a5', 1.8);
+    drawBox(-magLen, magLen, 24, 32, zBase + 8, zTop, '#e2e8f0', '#cbd5e1', '#94a3b8', '#f8fafc', 1.8);
+
+    // Chữ N dán đúng mặt phẳng 3D của má trước nam châm
+    drawIsoTextXZ('N', 0, 32, zBase + 46, '800 18.5px "Be Vietnam Pro", system-ui, sans-serif', '#0f172a');
+
+    // =========================================================
+    // LỚP 6 (GẦN NHẤT): GIÁ ĐỠ TRỤ TRƯỚC BÊN TRÁI & HAI KHỐI KẸP 3D KÍN
+    // =========================================================
+    drawBox(105, 119, -7, 7, wireZ - 7, wireZ + 7, '#64748b', '#475569', '#334155', '#f8fafc', 1.8);
+
+    drawBox(-136, -88, 44, 84, -44, -28, '#475569', '#334155', '#1e293b', '#94a3b8', 1.8);
+    const pFrontBot = iso(-112, 64, -28), pFrontTop = iso(-112, 64, 86);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5.5;
+    ctx.beginPath();
+    ctx.moveTo(pFrontBot.x, pFrontBot.y);
+    ctx.lineTo(pFrontTop.x, pFrontTop.y);
+    ctx.stroke();
+
+    // Khối kẹp dây 3D kín ở đầu trước
+    drawBox(-119, -105, -7, 7, wireZ - 7, wireZ + 7, '#64748b', '#475569', '#334155', '#f8fafc', 1.8);
+
+    const armFront1 = iso(-112, 64, wireZ), armFront2 = iso(-112, 7, wireZ);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 4.2;
+    ctx.beginPath();
+    ctx.moveTo(armFront1.x, armFront1.y);
+    ctx.lineTo(armFront2.x, armFront2.y);
+    ctx.stroke();
+
+    const wirePOut = iso(-119, 0, wireZ);
+    const flexP1 = iso(-144, 0, wireZ - 14), flexP2 = iso(-176, 22, wireZ - 34);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(wirePOut.x, wirePOut.y);
+    ctx.quadraticCurveTo(flexP1.x, flexP1.y, flexP2.x, flexP2.y);
+    ctx.stroke();
+
+    // =========================================================
+    // 7. TRẠNG THÁI MẠCH ĐIỆN & CÁC THẺ CHÚ THÍCH (1), (2), (3) CHỮ THẬT TO
+    // =========================================================
+    const stateBg = isCurrentOn ? 'rgba(16, 185, 129, 0.22)' : 'rgba(148, 163, 184, 0.16)';
+    const stateColor = isCurrentOn ? '#6ee7b7' : '#cbd5e1';
+    drawRoundRect(ctx, 14, 52, 198, 34, 8, stateBg, stateColor, 2.2);
+    ctx.fillStyle = stateColor;
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(isCurrentOn ? 'Đang có dòng điện I' : 'Chưa có dòng (I = 0)', 113, 69.5);
+
+    const ptWire = iso(-68, 0, wireZ);
+    const ptMag = iso(magLen, -24, zTop - 10);
+    const ptScale = iso(56, 86, -18);
+
+    drawBigBadgeNote(14, 102, ptWire.x, ptWire.y, '(1)', 'Đoạn dây dẫn', 'Dài L_{dây} = 15 cm', '#fbbf24');
+    drawBigBadgeNote(538, 52, ptMag.x, ptMag.y, '(2)', 'Nam châm chữ U', 'L_{nam châm} = 8,4 cm', '#ef4444');
+    drawBigBadgeNote(538, 214, ptScale.x, ptScale.y, '(3)', 'Cân đồng hồ số', 'Đo lực từ tác dụng', '#38bdf8');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-55 ---
+VLXTModels.register('MH-C3-55', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    // Tuyệt đối không để lộ dấu gạch dưới "_" thô trên màn hình
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0;
+        let match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) {
+                segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            }
+            const subText = match[1] !== undefined ? match[1] : match[2];
+            segs.push({ text: subText, isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) {
+            segs.push({ text: str.slice(lastIdx), isSub: false });
+        }
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ lớn 16px sắc nét)
+    ctx.save();
+    const titleStr = 'KHẢO SÁT LỰC TỪ TÁC DỤNG LÊN ĐOẠN DÂY AB TREO HAI LỰC KẾ';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Hàm chiếu phối cảnh trục đo 3D (isometric) đồng bộ chuẩn hình học:
+    // +x: chéo lên-phải (dọc theo đoạn dây BA), +y: chéo xuống-phải (từ cực S ra cực N), +z: thẳng đứng lên trên
+    const ox = 342, oy = 212;
+    const uxX = 0.866, uxY = -0.5;
+    const uyX = 0.866, uyY = 0.5;
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    // Vẽ chữ dán phẳng lên mặt phẳng 3D song song với trục X - Z (mặt cực S và cực N)
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Vẽ khối hộp 3D kín chuẩn góc nhìn: Mặt trước-trái (x = x1) + Mặt trước-phải (y = y2) + Mặt trên (z = z2)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFrontLeft, cFrontRight, stroke = '#cbd5e1', lw = 2) {
+        const p000 = iso(x1, y1, z1), p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p000, p010, p011, p001], cFrontLeft, stroke, lw);
+        fillPoly([p010, p110, p111, p011], cFrontRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    // Hàm vẽ lò xo lực kế 3D treo thẳng đứng từ thanh xà xuống hai đầu dây dẫn AB
+    function drawDynamometer3D(xPos, zTop, zWire) {
+        const pTop = iso(xPos, 0, zTop);
+        const pBot = iso(xPos, 0, zWire);
+        const sx = pTop.x;
+
+        // Móc treo cố định vào thanh xà trên
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(sx, pTop.y);
+        ctx.lineTo(sx, pTop.y + 8);
+        ctx.stroke();
+
+        // Vỏ lực kế ống trụ + vạch chia lực rõ nét
+        const bodyTop = pTop.y + 8;
+        const bodyH = 26;
+        drawRoundRect(ctx, sx - 9, bodyTop, 18, bodyH, 4, '#1e293b', '#38bdf8', 2);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
+        for (let k = 1; k <= 3; k++) {
+            const ty = bodyTop + k * 6.5;
+            ctx.beginPath();
+            ctx.moveTo(sx - 5, ty);
+            ctx.lineTo(sx + 5, ty);
+            ctx.stroke();
+        }
+
+        // Lò xo lực kế giãn theo lực từ F
+        const spTop = bodyTop + bodyH;
+        const spBot = pBot.y - 10;
+        const coils = 6;
+        const step = (spBot - spTop) / coils;
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 2.4;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(sx, spTop);
+        for (let i = 0; i < coils; i++) {
+            const yy = spTop + i * step;
+            ctx.lineTo(sx + (i % 2 === 0 ? -6.5 : 6.5), yy + step / 2);
+        }
+        ctx.lineTo(sx, spBot);
+        ctx.lineTo(sx, pBot.y);
+        ctx.stroke();
+
+        // Khuy tròn giữ đầu thanh dẫn AB
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(sx, pBot.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Hàm vẽ thẻ chú thích cỡ chữ thật to (16px - 15.5px) hỗ trợ chỉ số dưới
+    function drawBigBadgeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 16, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 15.5, '700') : 0;
+
+        const boxW = Math.max(w1, w2) + 24;
+        const boxH = subLabel ? 56 : 34;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 12, safeBy + 18, 16, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 12, safeBy + 40, 15.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 12, safeBy + boxH / 2, 16, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // Dao động kéo giãn lò xo khi lực từ F hướng thẳng đứng xuống dưới
+    const pull = 3 + Math.sin(t * 2.6) * 3.5;
+    const barZ = 142;
+    const wireZ = 66 - pull;
+
+    ctx.save();
+
+    // =========================================================
+    // LỚP 1 (XA NHẤT): CHÂN ĐẾ & TRỤ ĐỠ PHÍA PHẢI (ĐẦU A)
+    // =========================================================
+    drawBox(112, 156, -24, 24, -18, 0, '#475569', '#334155', '#1e293b', '#94a3b8', 2);
+    const postRightBot = iso(134, 0, 0), postRightTop = iso(134, 0, barZ);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(postRightBot.x, postRightBot.y);
+    ctx.lineTo(postRightTop.x, postRightTop.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 2: NAM CHÂM CHỮ U 3D - ĐÁY NAM CHÂM & MÁ SAU CỰC S (XANH DƯƠNG)
+    // =========================================================
+    const magLen = 46;
+    const zBase = -12;
+    const zTop = 82;
+
+    // Đế dưới nam châm chữ U
+    drawBox(-magLen, magLen, -34, 34, zBase, zBase + 12, '#94a3b8', '#64748b', '#475569', '#cbd5e1', 1.8);
+    // Thành sau và má cực từ S (màu xanh dương)
+    drawBox(-magLen, magLen, -34, -26, zBase + 12, zTop, '#cbd5e1', '#94a3b8', '#64748b', '#e2e8f0', 1.8);
+    drawBox(-magLen, magLen, -26, -18, zBase + 34, zTop, '#60a5fa', '#3b82f6', '#2563eb', '#93c5fd', 1.8);
+
+    // Ký hiệu cực S dán phẳng trên mặt 3D của cực S
+    drawIsoTextXZ('S', 0, -18, zBase + 58, '800 19px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // =========================================================
+    // LỚP 3: HAI LỰC KẾ LÒ XO & ĐOẠN DÂY DẪN AB TRONG KHE TỪ TRƯỜNG
+    // =========================================================
+    // Vectơ cảm ứng từ B hướng từ cực N (trước) sang cực S (sau)
+    const bStart = iso(-18, 15, wireZ + 6);
+    const bEnd = iso(-18, -15, wireZ + 6);
+    drawArrow(ctx, bStart.x, bStart.y, bEnd.x, bEnd.y, '#38bdf8', 3, 7);
+    drawSubText(ctx, 'B', '', bEnd.x - 14, bEnd.y - 4, { fontSize: 17, italic: true, color: '#38bdf8', vector: true });
+
+    // Hai lực kế treo tại x = -88 (đầu B) và x = +88 (đầu A)
+    drawDynamometer3D(-88, barZ, wireZ);
+    drawDynamometer3D(88, barZ, wireZ);
+
+    // Đoạn dây dẫn thẳng AB nằm ngang giữa hai cực nam châm
+    const ptB = iso(-94, 0, wireZ);
+    const ptA = iso(94, 0, wireZ);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 5.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(ptB.x, ptB.y);
+    ctx.lineTo(ptA.x, ptA.y);
+    ctx.stroke();
+
+    // Mũi tên chỉ chiều dòng điện I chạy dọc trên dây dẫn
+    const i1 = iso(-28, 0, wireZ);
+    const i2 = iso(28, 0, wireZ);
+    drawArrow(ctx, i1.x, i1.y, i2.x, i2.y, '#fef08a', 3.4, 8);
+
+    const lblI = iso(0, 0, wireZ + 18);
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 18px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('I', lblI.x, lblI.y);
+
+    // Nhãn hai đầu dây dẫn B (trái) và A (phải) chữ thật to
+    ctx.fillStyle = '#fde047';
+    ctx.font = '800 19px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('B', ptB.x - 16, ptB.y + 4);
+    ctx.fillText('A', ptA.x + 16, ptA.y - 2);
+
+    // =========================================================
+    // LỚP 4: MÁ TRƯỚC CỰC N (MÀU ĐỎ) CỦA NAM CHÂM CHỮ U
+    // =========================================================
+    drawBox(-magLen, magLen, 18, 26, zBase + 34, zTop, '#f87171', '#ef4444', '#dc2626', '#fca5a5', 1.8);
+    drawBox(-magLen, magLen, 26, 34, zBase + 12, zTop, '#e2e8f0', '#cbd5e1', '#94a3b8', '#f8fafc', 1.8);
+
+    // Ký hiệu cực N dán phẳng trên mặt 3D của má trước nam châm
+    drawIsoTextXZ('N', 0, 34, zBase + 58, '800 19px "Be Vietnam Pro", system-ui, sans-serif', '#0f172a');
+
+    // Vectơ lực từ F hướng thẳng đứng từ trên xuống dưới (vẽ nổi bật phía trước để học sinh dễ nhìn)
+    const fStart = iso(10, 0, wireZ);
+    const fEnd = iso(10, 0, wireZ - 64);
+    drawArrow(ctx, fStart.x, fStart.y, fEnd.x, fEnd.y, '#c084fc', 3.6, 9);
+    drawSubText(ctx, 'F', '', fEnd.x + 14, fEnd.y - 2, { fontSize: 18, italic: true, color: '#e9d5ff', vector: true });
+
+    // =========================================================
+    // LỚP 5 (GẦN NHẤT): CHÂN ĐẾ TRÁI (ĐẦU B) & THANH XÀ NGANG TRÊN
+    // =========================================================
+    drawBox(-156, -112, -24, 24, -18, 0, '#475569', '#334155', '#1e293b', '#94a3b8', 2);
+    const postLeftBot = iso(-134, 0, 0), postLeftTop = iso(-134, 0, barZ);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 5.5;
+    ctx.beginPath();
+    ctx.moveTo(postLeftBot.x, postLeftBot.y);
+    ctx.lineTo(postLeftTop.x, postLeftTop.y);
+    ctx.stroke();
+
+    // Thanh xà ngang nối đỉnh hai trụ đỡ
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(postLeftTop.x, postLeftTop.y);
+    ctx.lineTo(postRightTop.x, postRightTop.y);
+    ctx.stroke();
+
+    // Khớp nối 2 đầu thanh xà
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(postLeftTop.x, postLeftTop.y, 5, 0, Math.PI * 2);
+    ctx.arc(postRightTop.x, postRightTop.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // =========================================================
+    // 6. CÁC THẺ CHÚ THÍCH TRỰC QUAN CHỮ THẬT TO (16px)
+    // =========================================================
+    const spRightPt = iso(88, 0, barZ - 22);
+    drawBigBadgeNote(514, 56, spRightPt.x + 9, spRightPt.y, 'Hai lực kế giống nhau', 'Đo tổng lực P + F_{từ}', '#38bdf8');
+    drawBigBadgeNote(514, 198, fEnd.x, fEnd.y, 'Lực từ F_{từ} hướng xuống', 'Làm lò xo lực kế giãn thêm', '#c084fc');
+    drawBigBadgeNote(14, 62, ptB.x, ptB.y, 'Đoạn dây dẫn AB', 'Mang dòng điện I trong từ trường', '#fbbf24');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-56 ---
+VLXTModels.register('MH-C3-56', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0;
+        let match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) {
+                segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            }
+            const subText = match[1] !== undefined ? match[1] : match[2];
+            segs.push({ text: subText, isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) {
+            segs.push({ text: str.slice(lastIdx), isSub: false });
+        }
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ lớn 15.5px sắc nét)
+    ctx.save();
+    const titleStr = 'CÂN DÒNG ĐIỆN OERSTED (I = 2 A; l = 0,3 m; B = 0,08 T; x = 0,1 m; y = 0,4 m)';
+    const titleW = measureRichText(titleStr, 15.5, '800') + 32;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 15.5, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Hàm chiếu phối cảnh 3D đã xoay góc nhìn để toàn bộ nam châm + đòn cân nằm gọn trong khung 780x305:
+    // +x: dọc theo đòn cân sang phải (nghiêng rất nhẹ uxY = -0.14 để không dìm nam châm trái xuống đáy)
+    // +y: hướng ra phía trước-phải (dọc theo đoạn dây l = 0,3 m)
+    // +z: thẳng đứng lên trên
+    const ox = 345, oy = 152;
+    const uxX = 0.96, uxY = -0.14;
+    const uyX = 0.56, uyY = 0.44;
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    // Vẽ chữ dán phẳng lên mặt phẳng 3D song song với trục X - Z
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Vẽ khối hộp 3D kín chuẩn góc nhìn: Mặt trước-trái (x = x1) + Mặt trước-phải (y = y2) + Mặt trên (z = z2)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFrontLeft, cFrontRight, stroke = '#cbd5e1', lw = 2) {
+        const p000 = iso(x1, y1, z1), p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p000, p010, p011, p001], cFrontLeft, stroke, lw);
+        fillPoly([p010, p110, p111, p011], cFrontRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    // Hàm vẽ thẻ chú thích cỡ chữ thật to (15.5px - 14.5px) hỗ trợ chỉ số dưới
+    function drawBigBadgeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 52 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 17, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 37, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // Dao động cân bằng nhẹ của đòn cân quanh trục quay O
+    const tilt = Math.sin(t * 2.2) * 0.022;
+    function isoTilted(x, y, z) {
+        return iso(x, y, z + x * tilt);
+    }
+
+    ctx.save();
+
+    // =========================================================
+    // LỚP 1: NAM CHÂM CHỮ U NẰM NGANG Ở ĐẦU TRÁI (VỪA KHÍT TRONG KHUNG HÌNH)
+    // =========================================================
+    // 1a. Cực S màu xanh dương ở dưới (z = [-48, -28])
+    drawBox(-172, -104, -46, 46, -48, -28, '#60a5fa', '#2563eb', '#1d4ed8', '#93c5fd', 1.8);
+    drawIsoTextXZ('S', -138, 46, -38, '800 16.5px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // 1b. Thành nối phía sau-trái của chữ U (x = [-190, -172], z = [-48, 48])
+    drawBox(-190, -172, -46, 46, -48, 48, '#64748b', '#475569', '#334155', '#cbd5e1', 1.8);
+
+    // 1c. Các đường sức từ B hướng thẳng đứng từ cực N (trên) xuống cực S (dưới)
+    for (let vy = -24; vy <= 24; vy += 24) {
+        const bTop = iso(-152, vy, 26);
+        const bBot = iso(-152, vy, -26);
+        drawArrow(ctx, bTop.x, bTop.y, bBot.x, bBot.y, '#38bdf8', 2.2, 5.5);
+    }
+    const lblB = iso(-162, -24, 6);
+    drawSubText(ctx, 'B', '', lblB.x - 14, lblB.y, { fontSize: 16.5, italic: true, color: '#38bdf8', vector: true });
+
+    // =========================================================
+    // LỚP 2: GỐI ĐỠ TRỤC QUAY CỐ ĐỊNH TẠI x = 0
+    // =========================================================
+    drawBox(-22, 22, -52, 52, -48, -34, '#475569', '#334155', '#1e293b', '#94a3b8', 1.8);
+
+    // Hai trụ tam giác đỡ trục quay tại y = -34 (sau) và y = +34 (trước)
+    [-34, 34].forEach((py) => {
+        const topP = iso(0, py, 0);
+        const botL = iso(-14, py, -34);
+        const botR = iso(14, py, -34);
+        fillPoly([topP, botL, botR], '#f59e0b', '#fef08a', 2);
+    });
+
+    // Thanh trục quay đi qua tâm O
+    const ax1 = iso(0, -44, 0), ax2 = iso(0, 44, 0);
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3.8;
+    ctx.beginPath();
+    ctx.moveTo(ax1.x, ax1.y);
+    ctx.lineTo(ax2.x, ax2.y);
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 3: KHUNG DÂY DẪN CÂN DÒNG ĐIỆN & CÁNH TAY ĐÒN (QUAY QUANH TRỤC)
+    // =========================================================
+    const wBackPivot  = isoTilted(0, -34, 0);
+    const wBackLeft   = isoTilted(-132, -34, 0);
+    const wFrontLeft  = isoTilted(-132, 34, 0);
+    const wFrontPivot = isoTilted(0, 34, 0);
+
+    // Hai thanh đòn bên phải dài y = 0,4 m (ứng với x = +205)
+    const wBackRight  = isoTilted(205, -20, 0);
+    const wFrontRight = isoTilted(205, 20, 0);
+
+    // Vẽ khung đòn cân bên phải
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(wBackPivot.x, wBackPivot.y);
+    ctx.lineTo(wBackRight.x, wBackRight.y);
+    ctx.lineTo(wFrontRight.x, wFrontRight.y);
+    ctx.lineTo(wFrontPivot.x, wFrontPivot.y);
+    ctx.stroke();
+
+    // Vẽ khung dây dẫn điện bên trái (màu vàng đồng nổi bật)
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(wBackPivot.x, wBackPivot.y);
+    ctx.lineTo(wBackLeft.x, wBackLeft.y);
+    ctx.lineTo(wFrontLeft.x, wFrontLeft.y);
+    ctx.lineTo(wFrontPivot.x, wFrontPivot.y);
+    ctx.stroke();
+
+    // Mũi tên dòng điện I trên đoạn dây l = 0,3 m nằm trong từ trường
+    const iStart = isoTilted(-132, -20, 0);
+    const iEnd   = isoTilted(-132, 18, 0);
+    drawArrow(ctx, iStart.x, iStart.y, iEnd.x, iEnd.y, '#fef08a', 3, 7.5);
+    const lblI = isoTilted(-116, -2, 8);
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 17px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('I', lblI.x, lblI.y);
+
+    // Vectơ lực từ F_B hướng thẳng đứng xuống dưới tại trung điểm đoạn dây l (nằm gọn phía trên đáy khung)
+    const fbStart = isoTilted(-132, 0, 0);
+    const fbEnd   = isoTilted(-132, 0, -64);
+    drawArrow(ctx, fbStart.x, fbStart.y, fbEnd.x, fbEnd.y, '#ef4444', 3.5, 8.5);
+    drawSubText(ctx, 'F', 'B', fbEnd.x + 14, fbEnd.y - 2, { fontSize: 17.5, italic: true, color: '#fca5a5', vector: true });
+
+    // Kẹp giấy treo ở đầu phải cách trục quay đoạn y = 0,4 m (tại x = +195)
+    const clipTop = isoTilted(195, 0, 4);
+    const clipBot = isoTilted(195, 0, -22);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.roundRect(clipTop.x - 8, clipTop.y, 16, clipBot.y - clipTop.y, 7);
+    ctx.stroke();
+
+    // Vectơ trọng lực P của kẹp giấy hướng thẳng đứng xuống dưới
+    const pStart = isoTilted(195, 0, -22);
+    const pEnd   = isoTilted(195, 0, -82);
+    drawArrow(ctx, pStart.x, pStart.y, pEnd.x, pEnd.y, '#10b981', 3.5, 8.5);
+    drawSubText(ctx, 'P', '', pEnd.x + 14, pEnd.y - 2, { fontSize: 17.5, italic: true, color: '#6ee7b7', vector: true });
+
+    // =========================================================
+    // LỚP 4: CỰC N MÀU ĐỎ PHÍA TRÊN CỦA NAM CHÂM CHỮ U
+    // =========================================================
+    drawBox(-172, -104, -46, 46, 28, 48, '#f87171', '#ef4444', '#dc2626', '#fca5a5', 1.8);
+    drawIsoTextXZ('N', -138, 46, 38, '800 16.5px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // =========================================================
+    // 5. ĐƯỜNG GIÓNG KÍCH THƯỚC CÁNH TAY ĐÒN x = 0,1 m VÀ y = 0,4 m CAO THOÁNG (KHÔNG ĐÈ ĐÒN CÂN)
+    // =========================================================
+    // Gióng cánh tay đòn x = 0,1 m (đặt cao ở z = 34 phía trên đòn cân)
+    const dx1 = iso(-132, 34, 34), dx2 = iso(0, 34, 34);
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.5)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(wFrontLeft.x, wFrontLeft.y); ctx.lineTo(dx1.x, dx1.y);
+    ctx.moveTo(wFrontPivot.x, wFrontPivot.y); ctx.lineTo(dx2.x, dx2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawArrow(ctx, dx1.x, dx1.y, dx2.x, dx2.y, '#fbbf24', 2.2, 5.5);
+    drawArrow(ctx, dx2.x, dx2.y, dx1.x, dx1.y, '#fbbf24', 2.2, 5.5);
+    const midX = iso(-66, 34, 48);
+    drawRichText('x = 0,1 m', midX.x, midX.y, 15.5, '#fde047', '800', 'center');
+
+    // Gióng cánh tay đòn y = 0,4 m (đặt cao ở z = 34 phía trên đòn cân)
+    const dy1 = iso(0, 20, 34), dy2 = iso(195, 20, 34);
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.5)';
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(iso(0, 20, 0).x, iso(0, 20, 0).y); ctx.lineTo(dy1.x, dy1.y);
+    ctx.moveTo(wFrontRight.x, wFrontRight.y); ctx.lineTo(dy2.x, dy2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawArrow(ctx, dy1.x, dy1.y, dy2.x, dy2.y, '#10b981', 2.2, 5.5);
+    drawArrow(ctx, dy2.x, dy2.y, dy1.x, dy1.y, '#10b981', 2.2, 5.5);
+    const midY = iso(98, 20, 48);
+    drawRichText('y = 0,4 m', midY.x, midY.y, 15.5, '#6ee7b7', '800', 'center');
+
+    // =========================================================
+    // 6. CÁC THẺ CHÚ THÍCH TRỰC QUAN CHỮ THẬT TO (15.5px)
+    // =========================================================
+    drawBigBadgeNote(14, 48, wFrontLeft.x, wFrontLeft.y, 'Đoạn dây l = 0,3 m', 'Chịu lực từ F_{B} hướng xuống', '#ef4444');
+    drawBigBadgeNote(276, 236, iso(0, 34, -20).x, iso(0, 34, -20).y, 'Trục quay cố định', 'Cân bằng: F_{B} · x = P · y', '#f59e0b');
+    drawBigBadgeNote(514, 48, clipTop.x, clipTop.y, 'Kẹp giấy đối trọng (P)', 'Đặt cách trục y = 0,4 m', '#10b981');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-57 ---
+VLXTModels.register('MH-C3-57', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0;
+        let match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) {
+                segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            }
+            const subText = match[1] !== undefined ? match[1] : match[2];
+            segs.push({ text: subText, isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) {
+            segs.push({ text: str.slice(lastIdx), isSub: false });
+        }
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (y = 8..40)
+    ctx.save();
+    const titleStr = 'MÁY PHÁT ĐIỆN XOAY CHIỀU 1 PHA (N = 200 vòng; S = 0,02 m²; B = 0,5 T; f = 50 Hz)';
+    const titleW = measureRichText(titleStr, 15.5, '800') + 32;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 15.5, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Hàm chiếu phối cảnh 3D đặt gọn trong vùng x = [178..485], y = [92..285]:
+    // Đảm bảo tách biệt hoàn toàn với vùng đặt thẻ chữ ở trên và bên trái!
+    const ox = 334, oy = 176;
+    const uxX = 0.92, uxY = -0.14;
+    const uyX = -0.52, uyY = 0.42;
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    // Vẽ chữ dán phẳng lên mặt phẳng 3D song song với trục X - Z
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Vẽ khối hộp 3D kín chuẩn góc nhìn: Mặt trước (y = y2) + Mặt phải (x = x2) + Mặt trên (z = z2)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFront, cRight, stroke = '#cbd5e1', lw = 2) {
+        const p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1), p100 = iso(x2, y1, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p010, p110, p111, p011], cFront, stroke, lw);
+        fillPoly([p110, p100, p101, p111], cRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    // Hàm vẽ thẻ chú thích đặt ở vùng trống an toàn (không bao giờ đè lên hình vẽ)
+    function drawSafeNote(bx, by, px, py, text, color) {
+        ctx.save();
+        const boxW = measureRichText(text, 15, '800') + 22;
+        const boxH = 34;
+
+        const anchorX = px < bx ? bx : (px > bx + boxW ? bx + boxW : bx + boxW / 2);
+        const anchorY = py < by ? by : (py > by + boxH ? by + boxH : by + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, bx, by, boxW, boxH, 8, '#0f172a', color, 2.2);
+        drawRichText(text, bx + boxW / 2, by + boxH / 2, 15, '#f8fafc', '800', 'center');
+        ctx.restore();
+    }
+
+    const theta = t * 2.5;
+    const cosT = Math.cos(theta);
+    const sinT = Math.sin(theta);
+
+    ctx.save();
+
+    // =========================================================
+    // LỚP 1: CỰC TỪ BẮC N (ĐỎ - BÊN TRÁI: x từ 186 đến 265, y từ 108 đến 242)
+    // =========================================================
+    drawBox(-136, -80, -40, 40, -48, 48, '#f87171', '#ef4444', '#b91c1c', '#fca5a5', 2);
+    drawIsoTextXZ('N', -108, 40, 0, '800 23px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // Các đường sức từ B đều đặn hướng từ cực N sang cực S
+    for (let zLine = -28; zLine <= 28; zLine += 28) {
+        const pStart = iso(-76, 0, zLine);
+        const pEnd   = iso(76, 0, zLine);
+        drawArrow(ctx, pStart.x, pStart.y, pEnd.x, pEnd.y, 'rgba(56, 189, 248, 0.45)', 2.2, 6);
+    }
+    const lblB = iso(46, 0, 40);
+    drawSubText(ctx, 'B', '', lblB.x, lblB.y, { fontSize: 17, italic: true, color: '#38bdf8', vector: true });
+
+    // =========================================================
+    // LỚP 2: TRỤC QUAY Δ & KHUNG DÂY DẪN N = 200 VÒNG QUAY ĐỀU
+    // =========================================================
+    const axBack  = iso(0, -72, 0);
+    const axFront = iso(0, 118, 0);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(axBack.x, axBack.y);
+    ctx.lineTo(axFront.x, axFront.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Mũi tên chỉ chiều quay ω quanh trục ở đầu sau
+    const rotC = iso(0, -58, 0);
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(rotC.x, rotC.y, 12, -Math.PI * 0.75, Math.PI * 0.35);
+    ctx.stroke();
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('ω', rotC.x + 15, rotC.y - 10);
+
+    // Tọa độ 4 đỉnh khung dây chữ nhật quay đều quanh trục y
+    const rCoil = 46;
+    const yBack = -34, yFront = 34;
+    const xSide1 = -rCoil * cosT, zSide1 = rCoil * sinT;
+    const xSide2 =  rCoil * cosT, zSide2 = -rCoil * sinT;
+
+    const c1Back  = iso(xSide1, yBack, zSide1);
+    const c2Back  = iso(xSide2, yBack, zSide2);
+    const c2Front = iso(xSide2, yFront, zSide2);
+    const c1Front = iso(xSide1, yFront, zSide1);
+
+    fillPoly([c1Back, c2Back, c2Front, c1Front], 'rgba(251, 191, 36, 0.18)', '#f59e0b', 4.8);
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(c1Back.x, c1Back.y);
+    ctx.lineTo(c2Back.x, c2Back.y);
+    ctx.lineTo(c2Front.x, c2Front.y);
+    ctx.lineTo(c1Front.x, c1Front.y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // =========================================================
+    // LỚP 3: CỰC TỪ NAM S (XANH DƯƠNG - BÊN PHẢI)
+    // =========================================================
+    const sIn1 = iso(80, -40, -48), sIn2 = iso(80, 40, -48), sIn3 = iso(80, 40, 48), sIn4 = iso(80, -40, 48);
+    fillPoly([sIn1, sIn2, sIn3, sIn4], '#1d4ed8', '#93c5fd', 1.8);
+    drawBox(80, 136, -40, 40, -48, 48, '#60a5fa', '#3b82f6', '#2563eb', '#93c5fd', 2);
+    drawIsoTextXZ('S', 108, 40, 0, '800 23px "Be Vietnam Pro", system-ui, sans-serif', '#ffffff');
+
+    // =========================================================
+    // LỚP 4: HAI VÀNH KHUYÊN, CHỔI QUÉT & TẢI XOAY CHIỀU MẠCH NGOÀI
+    // =========================================================
+    const ring1Pos = iso(0, 68, 0);
+    const ring2Pos = iso(0, 96, 0);
+
+    // Hai dây dẫn từ 2 cạnh khung dây đi dọc theo trục ra 2 vành khuyên
+    const lead1Mid = iso(xSide1 * 0.25, yFront, zSide1 * 0.25);
+    const lead2Mid = iso(xSide2 * 0.25, yFront, zSide2 * 0.25);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(c1Front.x, c1Front.y);
+    ctx.lineTo(lead1Mid.x, lead1Mid.y);
+    ctx.lineTo(ring1Pos.x - 5, ring1Pos.y - 3);
+    ctx.moveTo(c2Front.x, c2Front.y);
+    ctx.lineTo(lead2Mid.x, lead2Mid.y);
+    ctx.lineTo(ring2Pos.x + 5, ring2Pos.y + 3);
+    ctx.stroke();
+
+    // Vẽ 2 vành khuyên kim loại
+    [ring1Pos, ring2Pos].forEach((rp) => {
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.28)';
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 3.8;
+        ctx.beginPath();
+        ctx.ellipse(rp.x, rp.y, 11, 16, -0.32, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    });
+
+    // Hai chổi quét tì sát bên phải 2 vành khuyên
+    const b1x = ring1Pos.x + 10, b1y = ring1Pos.y + 2;
+    const b2x = ring2Pos.x + 10, b2y = ring2Pos.y + 2;
+    drawRoundRect(ctx, b1x, b1y - 5, 13, 10, 2, '#334155', '#f8fafc', 1.8);
+    drawRoundRect(ctx, b2x, b2y - 5, 13, 10, 2, '#334155', '#f8fafc', 1.8);
+
+    // Mạch điện ngoài nối từ 2 chổi quét tới tải xoay chiều (~)
+    const loadX = 368, loadY = 268;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(b1x + 13, b1y);
+    ctx.lineTo(loadX, b1y);
+    ctx.lineTo(loadX, loadY - 14);
+    ctx.moveTo(b2x + 13, b2y);
+    ctx.lineTo(b2x + 34, b2y);
+    ctx.lineTo(b2x + 34, loadY);
+    ctx.lineTo(loadX - 14, loadY);
+    ctx.stroke();
+
+    const acAlpha = 0.25 + 0.75 * Math.abs(sinT);
+    ctx.fillStyle = `rgba(16, 185, 129, ${acAlpha * 0.35})`;
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(loadX, loadY, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = '800 19px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('~', loadX, loadY + 1);
+
+    // =========================================================
+    // 5. CÁC THẺ CHÚ THÍCH ĐẶT Ở VÙNG TRỐNG AN TOÀN (TUYỆT ĐỐI KHÔNG CHE MÔ HÌNH)
+    // =========================================================
+    // Thẻ 1 đặt ở dải trống phía trên (y = 48..82), chỉ thẳng vào đỉnh trên khung dây
+    const topCoilPt = zSide1 >= zSide2 ? c1Back : c2Back;
+    drawSafeNote(196, 48, topCoilPt.x, topCoilPt.y, 'Khung dây (N = 200 vòng)', '#fbbf24');
+
+    // Thẻ 2 đặt ở góc dưới bên trái (x = 14..216, y = 248..282), hoàn toàn dưới cực N và bên trái vành khuyên
+    drawSafeNote(14, 248, ring2Pos.x - 10, ring2Pos.y + 6, 'Vành khuyên & Chổi quét', '#f59e0b');
+
+    // 6. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - chữ thật to 15.5px)
+    drawRoundRect(ctx, 498, 62, 268, 224, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(499.5, 63.5, 265, 38, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ MÁY PHÁT', 514, 83, 16, '#38bdf8', '800', 'left');
+    drawRichText('• Số vòng dây: N = 200 vòng', 514, 122, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Diện tích vòng: S = 0,02 m²', 514, 154, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Cảm ứng từ: B = 0,5 T', 514, 186, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Tần số quay: f = 50 Hz', 514, 218, 15.5, '#fde047', '800', 'left');
+    drawRichText('• Đường sức từ B: N → S', 514, 254, 15.5, '#6ee7b7', '800', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-59 ---
+VLXTModels.register('MH-C3-59', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawBadge(x, y, text, bg, border, textColor, fontSize = 15.5) {
+        const padX = 11, padY = 6;
+        const tw = measureRichText(text, fontSize, '800');
+        const bw = tw + padX * 2, bh = fontSize + padY * 2;
+        drawRoundRect(ctx, x - bw / 2, y - bh / 2, bw, bh, 7, bg, border, 2);
+        drawRichText(text, x, y, fontSize, textColor, '800', 'center');
+    }
+
+    // --- HỆ TRỤC 3D ISOMETRIC CHUẨN HÌNH HỌC ---
+    const ox = 258, oy = 148;
+    const uxX = 0.866, uxY = -0.36; // Trục X: dọc theo trục quay OO' (từ trái-dưới lên phải-trên)
+    const uyX = 0.88,  uyY = 0.34;  // Trục Y: từ cực N (trái) sang cực S (phải)
+
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke && lw > 0) {
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = lw;
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+    }
+
+    // Đỉnh gần camera nhất là (x1, y2, z)
+    function drawBox(x1, x2, y1, y2, z1, z2, cTop, cFrontLeft, cFrontRight, stroke = '#cbd5e1', lw = 2) {
+        const p000 = iso(x1, y1, z1), p010 = iso(x1, y2, z1), p110 = iso(x2, y2, z1);
+        const p001 = iso(x1, y1, z2), p101 = iso(x2, y1, z2), p111 = iso(x2, y2, z2), p011 = iso(x1, y2, z2);
+        fillPoly([p000, p010, p011, p001], cFrontLeft, stroke, lw);
+        fillPoly([p010, p110, p111, p011], cFrontRight, stroke, lw);
+        fillPoly([p001, p101, p111, p011], cTop, stroke, lw);
+    }
+
+    // Chữ gắn phẳng lên mặt nghiêng XZ (mặt trước-phải y = const)
+    function drawIsoTextXZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uxX, uxY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // Chữ gắn phẳng lên mặt nghiêng YZ (mặt trước-trái x = const)
+    function drawIsoTextYZ(text, x, y, z, font, color) {
+        const pt = iso(x, y, z);
+        ctx.save();
+        ctx.transform(uyX, uyY, 0, 1, pt.x, pt.y);
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (16px, RÕ NÉT) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÔ HÌNH PHANH TÁI SINH Ô TÔ ĐIỆN (KHUNG DÂY VUÔNG ABCD CẠNH L)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. CỰC TỪ BẮC N (BÊN TRÁI - TRƯỚC) ---
+    drawBox(-46, 46, -158, -98, -40, 40, '#f87171', '#dc2626', '#b91c1c', '#fecaca', 2);
+    drawIsoTextXZ('N', 0, -98, 0, '800 30px "Be Vietnam Pro", "Inter", sans-serif', '#ffffff');
+    drawIsoTextYZ('N', -46, -128, 0, '800 22px "Be Vietnam Pro", "Inter", sans-serif', '#fee2e2');
+
+    // --- 3. ĐƯỜNG SỨC TỪ ĐỀU B (TỪ N SANG S) ---
+    ctx.save();
+    for (const xLine of [-30, 0, 30]) {
+        const pStart = iso(xLine, -96, 0);
+        const pEnd = iso(xLine, 94, 0);
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(pStart.x, pStart.y);
+        ctx.lineTo(pEnd.x, pEnd.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        drawArrow(ctx, pEnd.x - 14 * uyX, pEnd.y - 14 * uyY, pEnd.x, pEnd.y, '#fbbf24', 2, 7);
+    }
+    const pB = iso(34, -52, 26);
+    drawRichText('B', pB.x, pB.y, 16, '#fbbf24', '800', 'center');
+    drawArrow(ctx, pB.x - 7, pB.y - 11, pB.x + 8, pB.y - 11, '#fbbf24', 1.8, 5);
+    ctx.restore();
+
+    // --- 4. TRỤC QUAY OO' & KHUNG DÂY VUÔNG ABCD CẠNH L ---
+    const pO = iso(-118, 0, 0);
+    const pOPrime = iso(108, 0, 0);
+    ctx.save();
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(pO.x, pO.y);
+    ctx.lineTo(pOPrime.x, pOPrime.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    drawRichText('O', pO.x - 14, pO.y + 4, 15.5, '#e2e8f0', '800', 'center');
+    drawRichText("O'", pOPrime.x + 16, pOPrime.y - 4, 15.5, '#e2e8f0', '800', 'center');
+
+    // Góc quay thực tế của khung dây ABCD
+    const omega = 1.85;
+    const theta = t * omega;
+    const halfX = 48; // Nửa cạnh dọc trục OO'
+    const halfR = 54; // Nửa cạnh vuông góc trục OO'
+    const cy = halfR * Math.cos(theta);
+    const cz = halfR * Math.sin(theta);
+
+    // 4 đỉnh A, B, C, D trong không gian 3D
+    const pA = iso(-halfX, -cy, -cz);
+    const pB_pt = iso(halfX, -cy, -cz);
+    const pC = iso(halfX, cy, cz);
+    const pD = iso(-halfX, cy, cz);
+
+    // Hai đầu dây dẫn nối từ khung ra vành khuyên trên trục OO'
+    const pSlip1 = iso(-74, 0, 0);
+    const pSlip2 = iso(-94, 0, 0);
+    const pMidAD = iso(-halfX, 0, 0);
+
+    // Mặt phẳng mờ bên trong khung dây để nổi khối 3D
+    fillPoly([pA, pB_pt, pC, pD], 'rgba(56, 189, 248, 0.16)', null, 0);
+
+    // Vẽ 4 cạnh khung dây vuông ABCD sắc nét
+    ctx.save();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 4.2;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pA.x, pA.y);
+    ctx.lineTo(pB_pt.x, pB_pt.y);
+    ctx.lineTo(pC.x, pC.y);
+    ctx.lineTo(pD.x, pD.y);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Chốt giữ tại tâm hai cạnh AD và BC trên trục quay
+    for (const xPivot of [-halfX, halfX]) {
+        const ptPiv = iso(xPivot, 0, 0);
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.arc(ptPiv.x, ptPiv.y, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.restore();
+
+    // Nhãn 4 đỉnh A, B, C, D luôn dịch ra ngoài tâm khung để không đè lên cạnh
+    const centerFrame = iso(0, 0, 0);
+    function drawVertexLabel(txt, pt) {
+        const vx = pt.x - centerFrame.x;
+        const vy = pt.y - centerFrame.y;
+        const len = Math.hypot(vx, vy) || 1;
+        const lx = pt.x + (vx / len) * 16;
+        const ly = pt.y + (vy / len) * 15;
+        drawRichText(txt, lx, ly, 15.5, '#ffffff', '800', 'center');
+    }
+    drawVertexLabel('A', pA);
+    drawVertexLabel('B', pB_pt);
+    drawVertexLabel('C', pC);
+    drawVertexLabel('D', pD);
+
+    // Nhãn cạnh L trên cạnh BC
+    const midBC = { x: (pB_pt.x + pC.x) / 2, y: (pB_pt.y + pC.y) / 2 };
+    drawRichText('L', midBC.x + 15, midBC.y - 6, 15.5, '#7dd3fc', '800', 'center');
+
+    // Mũi tên cong chỉ chiều quay ω quanh trục OO'
+    const pRot = iso(82, 0, 0);
+    ctx.save();
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.ellipse(pRot.x, pRot.y, 13, 21, -0.32, -Math.PI * 0.75, Math.PI * 0.55);
+    ctx.stroke();
+    drawArrow(ctx, pRot.x + 5, pRot.y + 19, pRot.x - 4, pRot.y + 18, '#fbbf24', 2.6, 7);
+    drawRichText('ω', pRot.x + 18, pRot.y - 20, 16, '#fbbf24', '800', 'center');
+    ctx.restore();
+
+    // --- 5. VÀNH KHUYÊN, CHỔI QUÉT & BỘ TÍCH TRỮ ĐIỆN NĂNG ---
+    ctx.save();
+    for (const pSlip of [pSlip1, pSlip2]) {
+        ctx.fillStyle = '#f59e0b';
+        ctx.strokeStyle = '#fef3c7';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.ellipse(pSlip.x, pSlip.y, 6, 11, -0.35, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Chổi quét tiếp xúc dưới mỗi vành khuyên
+        ctx.fillStyle = '#64748b';
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(pSlip.x - 4, pSlip.y + 9, 8, 7);
+        ctx.strokeRect(pSlip.x - 4, pSlip.y + 9, 8, 7);
+    }
+
+    // Dây nối từ hai vành khuyên xuống Bộ tích trữ điện năng (ở vùng trống phía dưới)
+    const boxX = 165, boxY = 250, boxW = 226, boxH = 42;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pSlip1.x, pSlip1.y + 16);
+    ctx.lineTo(pSlip1.x, boxY + 13);
+    ctx.lineTo(boxX, boxY + 13);
+
+    ctx.moveTo(pSlip2.x, pSlip2.y + 16);
+    ctx.lineTo(pSlip2.x, boxY + 29);
+    ctx.lineTo(boxX, boxY + 29);
+    ctx.stroke();
+    ctx.restore();
+
+    // Hộp Bộ tích trữ điện năng (Pin / Siêu tụ điện)
+    drawRoundRect(ctx, boxX, boxY, boxW, boxH, 8, '#0f172a', '#10b981', 2.4);
+    drawRichText('BỘ TÍCH TRỮ ĐIỆN', boxX + boxW / 2, boxY + 21, 15.5, '#6ee7b7', '800', 'center');
+
+    // --- 6. CỰC TỪ NAM S (BÊN PHẢI - VẼ SAU ĐỂ ĐÚNG THỨ TỰ CHIỀU SÂU 3D) ---
+    drawBox(-46, 46, 98, 158, -40, 40, '#60a5fa', '#2563eb', '#1d4ed8', '#bfdbfe', 2);
+    drawIsoTextXZ('S', 0, 158, 0, '800 30px "Be Vietnam Pro", "Inter", sans-serif', '#ffffff');
+    drawIsoTextYZ('S', -46, 128, 0, '800 22px "Be Vietnam Pro", "Inter", sans-serif', '#dbeafe');
+
+    // --- 7. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN VỚI MÔ HÌNH) ---
+    const cardX = 468, cardY = 52, cardW = 298, cardH = 240;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+
+    drawRichText('THÔNG SỐ MÔ HÌNH ĐỀ DẪN', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const items = [
+        { text: '• Khung dây vuông: ABCD (1 vòng)', color: '#f8fafc' },
+        { text: '• Chiều dài mỗi cạnh khung: L', color: '#f8fafc' },
+        { text: '• Từ trường đều giữa 2 cực: B', color: '#fbbf24' },
+        { text: "• Tốc độ góc quanh OO': ω", color: '#fbbf24' },
+        { text: '• Chuyển hóa: Cơ năng → Điện năng', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < items.length; i++) {
+        drawRichText(items[i].text, cardX + 16, cardY + 62 + i * 37, 15.2, items[i].color, '700', 'left');
+    }
+});
+
+    // --- MH-C3-61 ---
+VLXTModels.register('MH-C3-61', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('THANH mn TRƯỢT TRÊN HAI RAY HỢP GÓC 45° (l_0 = 1 m; v = 2 m/s; B = 0,1 T)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. TỌA ĐỘ GỐC & ĐỘNG HỌC THANH mn ---
+    const ox = 86, oy = 250;
+    const x0 = ox + 124; // Vị trí ban đầu cách O một khoảng l_0 = 1 m
+    const saw = (t * 0.22) % 1;
+    const barX = x0 + saw * 136; // Thanh thẳng đứng mn tịnh tiến sang phải
+    const topIntersectY = oy - (barX - ox); // Góc 45° nên tan(45°) = 1 => y_m = oy - (x - ox)
+
+    ctx.save();
+
+    // --- 3. VÙNG TỪ TRƯỜNG ĐỀU B CHỈ NẰM BÊN TRONG KHUNG TAM GIÁC O-m-n ---
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(barX, oy);
+    ctx.lineTo(barX, topIntersectY);
+    ctx.closePath();
+
+    // Tô nền xanh nhẹ làm nổi bật vùng từ trường bên trong khung tam giác O-m-n
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+    ctx.fill();
+
+    // Cắt (clip) theo đúng tam giác O-m-n để các ký hiệu ⊗ chỉ xuất hiện bên trong khung tam giác
+    ctx.clip();
+    for (let gx = ox + 52; gx <= 436; gx += 38) {
+        for (let gy = 66; gy <= oy - 18; gy += 36) {
+            drawCrossB(ctx, gx, gy, 7, 'rgba(56, 189, 248, 0.65)');
+        }
+    }
+    ctx.restore();
+
+    // Thẻ chú thích vectơ cảm ứng từ B ở vùng trống phía trên-trái (không đè ray OB)
+    drawRoundRect(ctx, 74, 58, 56, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, 90, 74, 7.5, '#38bdf8');
+    drawVectorLabel('B', 113, 75, 16, '#38bdf8');
+
+    // --- 4. HAI THANH RAY OA (NGANG) VÀ OB (NGHIÊNG 45°) ---
+    const rayOAEndX = 446;
+    const rayOBLen = 258;
+    const rayOBEndX = ox + rayOBLen * Math.cos(Math.PI / 4);
+    const rayOBEndY = oy - rayOBLen * Math.sin(Math.PI / 4);
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(rayOAEndX, oy);
+    ctx.moveTo(ox, oy);
+    ctx.lineTo(rayOBEndX, rayOBEndY);
+    ctx.stroke();
+
+    // Chốt nối tại gốc O
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(ox, oy, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- 5. ĐIỆN TRỞ R = 2 Ω GẮN TRÊN NHÁNH OA ---
+    const resX = ox + 46, resY = oy - 10, resW = 54, resH = 20;
+    drawRoundRect(ctx, resX, resY, resW, resH, 4, '#1e293b', '#fbbf24', 2.2);
+    drawRichText('R', resX + resW / 2, oy + 24, 15.5, '#fbbf24', '800', 'center');
+
+    // --- 6. CUNG GÓC 45° TẠI O ---
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(ox, oy, 36, -Math.PI / 4, 0);
+    ctx.stroke();
+    drawRichText('45°', ox + 40, oy - 13, 15, '#fbbf24', '800', 'left');
+
+    // --- 7. ĐÁNH DẤU VỊ TRÍ BAN ĐẦU l_0 (NÉT ĐỨT THAM CHIẾU) ---
+    const y0Top = oy - (x0 - ox);
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.55)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0Top);
+    ctx.lineTo(x0, oy + 24);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Đoạn chỉ kích thước l_0 từ O đến vị trí ban đầu
+    const dimY = oy + 22;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy + 8);
+    ctx.lineTo(ox, dimY + 5);
+    ctx.moveTo(ox, dimY);
+    ctx.lineTo(x0, dimY);
+    ctx.stroke();
+    drawRichText('l_0', (ox + x0) / 2, dimY + 12, 15, '#cbd5e1', '800', 'center');
+
+    // --- 8. NHÃN ĐẦU MÚT O, A, B ---
+    drawRichText('O', ox - 16, oy + 2, 16, '#ffffff', '800', 'center');
+    drawRichText('A', rayOAEndX + 12, oy + 1, 16, '#ffffff', '800', 'center');
+    drawRichText('B', rayOBEndX + 12, rayOBEndY - 8, 16, '#ffffff', '800', 'center');
+
+    // --- 9. THANH KIM LOẠI THẲNG ĐỨNG mn & VECTƠ VẬN TỐC v ---
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth = 4.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(barX, topIntersectY - 24);
+    ctx.lineTo(barX, oy + 20);
+    ctx.stroke();
+
+    // Điểm tiếp xúc m (trên OB) và n (trên OA)
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#ea580c';
+    ctx.lineWidth = 2;
+    for (const py of [topIntersectY, oy]) {
+        ctx.beginPath();
+        ctx.arc(barX, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // Ký hiệu góc vuông tại n (thanh mn vuông góc với OA)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    ctx.strokeRect(barX - 10, oy - 10, 10, 10);
+
+    // Nhãn m, n rõ nét không đè thanh
+    drawRichText('m', barX - 13, topIntersectY - 24, 16, '#fdba74', '800', 'center');
+    drawRichText('n', barX - 13, oy + 22, 16, '#fdba74', '800', 'center');
+
+    // Vectơ vận tốc v hướng ngang sang phải từ trung điểm đoạn mn
+    const midBarY = (oy + topIntersectY) / 2;
+    drawArrow(ctx, barX + 4, midBarY, barX + 58, midBarY, '#10b981', 3.2, 8);
+    drawVectorLabel('v', barX + 31, midBarY - 14, 16, '#6ee7b7');
+
+    // --- 10. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 482, cardY = 48, cardW = 284, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ HỆ RAY OA–OB', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Góc giữa hai ray: α = 45°', color: '#f8fafc' },
+        { text: '• Vị trí ban đầu (t = 0): l_0 = 1 m', color: '#f8fafc' },
+        { text: '• Vận tốc thanh mn: v = 2 m/s', color: '#6ee7b7' },
+        { text: '• Cảm ứng từ đều: B = 0,1 T', color: '#38bdf8' },
+        { text: '• Điện trở mạch: R = 2 Ω', color: '#fbbf24' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 16, cardY + 63 + i * 37, 15.5, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+
+    // --- MH-C3-62 ---
+VLXTModels.register('MH-C3-62', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('THANH DẪN MN TRƯỢT TRÊN MẶT PHẲNG NGHIÊNG 30° (B = 0,5 T THẲNG ĐỨNG LÊN)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. KHỐI NÊM 3D RỘNG BỀ NGANG (TÁCH BIỆT HOÀN TOÀN HAI RAY KHỎI MÉP DỐC) ---
+    const saw = (t * 0.22) % 1;
+
+    ctx.save();
+
+    // Cạnh dốc gần (mặt trước của nêm) và chiều sâu mở rộng sang phải-lên để lòng dốc thật thoáng
+    const xTop = 44, yTop = 126;
+    const xBot = 368, yBot = 286;
+    const depthX = 88, depthY = -52; // Mở rộng mặt dốc gấp đôi để hai ray nằm lọt thỏm bên trong
+
+    const xBack = xTop + depthX;
+    const yBackBot = yBot + depthY;
+    const yBackTop = yTop + depthY;
+
+    // 3 cạnh khuất phía sau của khối nêm 3D (nét đứt)
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.52)';
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(xBack, yBackTop);
+    ctx.lineTo(xBack, yBackBot);
+    ctx.moveTo(xTop, yBot);
+    ctx.lineTo(xBack, yBackBot);
+    ctx.moveTo(xBack, yBackBot);
+    ctx.lineTo(xBot + depthX, yBackBot);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Mặt bên tam giác vuông phía trước của khối nêm
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.78)';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(xTop, yTop);
+    ctx.lineTo(xBot, yBot);
+    ctx.lineTo(xTop, yBot);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Mặt nghiêng rộng phía trên của khối nêm
+    ctx.fillStyle = 'rgba(51, 65, 85, 0.45)';
+    ctx.beginPath();
+    ctx.moveTo(xTop, yTop);
+    ctx.lineTo(xBack, yBackTop);
+    ctx.lineTo(xBot + depthX, yBackBot);
+    ctx.lineTo(xBot, yBot);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Ký hiệu góc vuông tại chân đường cao của nêm
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1.6;
+    ctx.strokeRect(xTop, yBot - 11, 11, 11);
+
+    // Cung góc α = 30° ở chân dốc
+    const slopeAngle = Math.atan2(yBot - yTop, xBot - xTop);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(xBot, yBot, 42, Math.PI, Math.PI + slopeAngle);
+    ctx.stroke();
+    drawRichText('α = 30°', xBot - 48, yBot - 13, 15, '#fbbf24', '800', 'right');
+
+    // --- 3. HAI THANH RAY SONG SONG NẰM GỌN TRONG LÒNG MẶT NGHIÊNG ---
+    // Đặt ray trên (A) ở mức 72% chiều sâu, ray dưới (B) ở mức 26% chiều sâu -> cách xa hoàn toàn 2 mép dốc!
+    const tA = 0.72, tB = 0.26;
+    const startSlope = 0.14; // Cách đỉnh trên của dốc một đoạn thoáng
+    const railSpan = 0.76;   // Chiều dài hai thanh ray dọc theo mặt nghiêng
+
+    const sDx = xBot - xTop, sDy = yBot - yTop;
+
+    const a1x = xTop + depthX * tA + sDx * startSlope;
+    const a1y = yTop + depthY * tA + sDy * startSlope;
+
+    const b1x = xTop + depthX * tB + sDx * startSlope;
+    const b1y = yTop + depthY * tB + sDy * startSlope;
+
+    const dx = sDx * railSpan;
+    const dy = sDy * railSpan;
+
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3.4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(a1x, a1y);
+    ctx.lineTo(a1x + dx, a1y + dy); // Ray trên (A)
+    ctx.moveTo(b1x, b1y);
+    ctx.lineTo(b1x + dx, b1y + dy); // Ray dưới (B)
+    ctx.moveTo(a1x, a1y);
+    ctx.lineTo(b1x, b1y); // Đoạn nối đầu trên AB
+    ctx.stroke();
+
+    // Chốt nối tại A và B
+    ctx.fillStyle = '#ffffff';
+    for (const [px, py] of [[a1x, a1y], [b1x, b1y]]) {
+        ctx.beginPath();
+        ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Điện trở R ở giữa đầu trên AB
+    const midABx = (a1x + b1x) / 2;
+    const midABy = (a1y + b1y) / 2;
+    drawRoundRect(ctx, midABx - 13, midABy - 13, 26, 26, 5, '#0f172a', '#ef4444', 2.2);
+    drawRichText('R', midABx, midABy, 15, '#fca5a5', '800', 'center');
+
+    // Nhãn đầu trên A, B tách khỏi mép dốc và ray
+    drawRichText('A', a1x - 10, a1y - 12, 15.5, '#ffffff', '800', 'center');
+    drawRichText('B', b1x - 14, b1y + 10, 15.5, '#ffffff', '800', 'center');
+
+    // --- 4. CÁC ĐƯỜNG SỨC TỪ ĐỀU B HƯỚNG THẲNG ĐỨNG TỪ DƯỚI LÊN ---
+    const bPositions = [
+        [208, 134],
+        [282, 170],
+        [356, 206]
+    ];
+    for (const [bx, by] of bPositions) {
+        drawArrow(ctx, bx, by + 26, bx, by - 46, '#38bdf8', 2.8, 8);
+    }
+    drawVectorLabel('B', bPositions[0][0] + 15, bPositions[0][1] - 38, 16, '#38bdf8');
+
+    // --- 5. THANH DẪN MN TRƯỢT XUỐNG DỌC HAI RAY ---
+    const slide = 0.22 + saw * 0.66;
+    const nx = a1x + dx * slide, ny = a1y + dy * slide;
+    const mx = b1x + dx * slide, my = b1y + dy * slide;
+
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth = 4.8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(nx, ny);
+    ctx.lineTo(mx, my);
+    ctx.stroke();
+
+    // Điểm tiếp xúc N (trên ray A) và M (trên ray B)
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#ea580c';
+    ctx.lineWidth = 2;
+    for (const [px, py] of [[nx, ny], [mx, my]]) {
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // Nhãn N (phía trên-trái ray A) và M (phía dưới-phải ray B) nằm gọn trong lòng dốc
+    drawRichText('N', nx - 8, ny - 14, 15.5, '#fdba74', '800', 'center');
+    drawRichText('M', mx + 8, my + 16, 15.5, '#fdba74', '800', 'center');
+
+    // Mũi tên chỉ chiều chuyển động trượt xuống dọc mặt nghiêng
+    const midMNx = (nx + mx) / 2;
+    const midMNy = (ny + my) / 2;
+    const lenSlope = Math.hypot(dx, dy);
+    const ux = dx / lenSlope, uy = dy / lenSlope;
+    drawArrow(ctx, midMNx + ux * 6, midMNy + uy * 6, midMNx + ux * 42, midMNy + uy * 42, '#10b981', 3, 7);
+
+    // --- 6. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 468, cardY = 48, cardW = 298, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ MẶT NGHIÊNG', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Góc nghiêng: α = 30°', color: '#f8fafc' },
+        { text: '• Từ trường B = 0,5 T (thẳng đứng lên)', color: '#38bdf8' },
+        { text: '• Điện trở đầu trên: R = 0,4 Ω', color: '#fca5a5' },
+        { text: '• Thanh MN: m = 50 g; MN = 20 cm', color: '#fdba74' },
+        { text: '• Trượt không ma sát trên hai ray', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-63 ---
+VLXTModels.register('MH-C3-63', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('BỐN THANH DẪN TẠO HÌNH VUÔNG MNPQ CHUYỂN ĐỘNG RA XA NHAU (TỐC ĐỘ v_0)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. THÔNG SỐ HÌNH HỌC & CHUYỂN ĐỘNG ---
+    const saw = (t * 0.22) % 1;
+    const cx = 236, cy = 169;
+    const half0 = 40;               // Nửa cạnh ban đầu (t = 0)
+    const half = half0 + saw * 26;  // Hình vuông mở rộng đều 4 phía
+    const over = 24;                // Phần đầu thanh dư ra ngoài tiếp điểm
+
+    ctx.save();
+
+    // --- 3. VÙNG TỪ TRƯỜNG ĐỀU B (CHỈ TRONG KHUNG THÍ NGHIỆM BÊN TRÁI) ---
+    const fieldX = 48, fieldY = 48, fieldW = 376, fieldH = 242;
+    drawRoundRect(ctx, fieldX, fieldY, fieldW, fieldH, 10, 'rgba(14, 165, 233, 0.05)', 'rgba(56, 189, 248, 0.25)', 1.5);
+
+    // Lưới ký hiệu ⊗ phân bố đều trong không gian từ trường
+    for (let gx = fieldX + 34; gx <= fieldX + fieldW - 30; gx += 46) {
+        for (let gy = fieldY + 30; gy <= fieldY + fieldH - 26; gy += 44) {
+            // Tránh vẽ đè lên thẻ B ở góc trên trái
+            if (gx < fieldX + 82 && gy < fieldY + 56) continue;
+            drawCrossB(ctx, gx, gy, 7, 'rgba(56, 189, 248, 0.42)');
+        }
+    }
+
+    // Thẻ vectơ cảm ứng từ B ở góc trên-trái vùng từ trường
+    drawRoundRect(ctx, fieldX + 12, fieldY + 10, 56, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, fieldX + 28, fieldY + 26, 7.5, '#38bdf8');
+    drawVectorLabel('B', fieldX + 51, fieldY + 27, 16, '#38bdf8');
+
+    // --- 4. KHUNG VUÔNG BAN ĐẦU CẠNH a (NÉT ĐỨT THAM CHIẾU) ---
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.5)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(cx - half0, cy - half0, half0 * 2, half0 * 2);
+    ctx.setLineDash([]);
+
+    // Tô sáng diện tích mạch kín MNPQ hiện tại
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.14)';
+    ctx.fillRect(cx - half, cy - half, half * 2, half * 2);
+
+    // --- 5. BỐN THANH VẬT DẪN THẲNG DÀI TẠO HÌNH VUÔNG MNPQ ---
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 3.8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    // Thanh trên (MN)
+    ctx.moveTo(cx - half - over, cy - half);
+    ctx.lineTo(cx + half + over, cy - half);
+    // Thanh dưới (QP)
+    ctx.moveTo(cx - half - over, cy + half);
+    ctx.lineTo(cx + half + over, cy + half);
+    // Thanh trái (MQ)
+    ctx.moveTo(cx - half, cy - half - over);
+    ctx.lineTo(cx - half, cy + half + over);
+    // Thanh phải (NP)
+    ctx.moveTo(cx + half, cy - half - over);
+    ctx.lineTo(cx + half, cy + half + over);
+    ctx.stroke();
+
+    // Chốt tiếp xúc điện tại 4 đỉnh M, N, P, Q
+    ctx.fillStyle = '#fbbf24';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.6;
+    for (const [vx, vy] of [
+        [cx - half, cy - half],
+        [cx + half, cy - half],
+        [cx + half, cy + half],
+        [cx - half, cy + half]
+    ]) {
+        ctx.beginPath();
+        ctx.arc(vx, vy, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // Nhãn 4 đỉnh M, N, P, Q nằm ở 4 góc chéo ngoài tiếp điểm (không bao giờ đè thanh)
+    drawRichText('M', cx - half - 13, cy - half - 13, 15.5, '#fbbf24', '800', 'center');
+    drawRichText('N', cx + half + 13, cy - half - 13, 15.5, '#fbbf24', '800', 'center');
+    drawRichText('P', cx + half + 13, cy + half + 15, 15.5, '#fbbf24', '800', 'center');
+    drawRichText('Q', cx - half - 13, cy + half + 15, 15.5, '#fbbf24', '800', 'center');
+
+    // Nhãn cạnh ban đầu a ở giữa tâm khung
+    drawRichText('a', cx, cy, 15.5, '#cbd5e1', '800', 'center');
+
+    // --- 6. BỐN VECTƠ VẬN TỐC v_0 HƯỚNG VUÔNG GÓC RA NGOÀI ---
+    const arrLen = 30;
+    // Trên
+    drawArrow(ctx, cx, cy - half, cx, cy - half - arrLen, '#10b981', 3, 7);
+    drawVectorLabel('v_0', cx + 16, cy - half - arrLen + 11, 15, '#6ee7b7');
+
+    // Dưới
+    drawArrow(ctx, cx, cy + half, cx, cy + half + arrLen, '#10b981', 3, 7);
+    drawVectorLabel('v_0', cx + 16, cy + half + arrLen - 9, 15, '#6ee7b7');
+
+    // Trái
+    drawArrow(ctx, cx - half, cy, cx - half - arrLen, cy, '#10b981', 3, 7);
+    drawVectorLabel('v_0', cx - half - arrLen / 2, cy - 15, 15, '#6ee7b7');
+
+    // Phải
+    drawArrow(ctx, cx + half, cy, cx + half + arrLen, cy, '#10b981', 3, 7);
+    drawVectorLabel('v_0', cx + half + arrLen / 2, cy - 15, 15, '#6ee7b7');
+
+    // --- 7. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 442, cardY = 48, cardW = 324, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ KHUNG DẪN MNPQ', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Độ dài cạnh ban đầu (t = 0): a', color: '#f8fafc' },
+        { text: '• Cảm ứng từ đều vuông góc: B', color: '#38bdf8' },
+        { text: '• 4 thanh tịnh tiến ra xa nhau', color: '#6ee7b7' },
+        { text: '  với cùng tốc độ không đổi: v_0', color: '#6ee7b7' },
+        { text: '• Điện trở trên 1 đơn vị dài: λ', color: '#fbbf24' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 16, cardY + 63 + i * 37, 15.2, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+
+    // --- MH-C3-64 ---
+VLXTModels.register('MH-C3-64', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('KÉO DÃN KHUNG DÂY VUÔNG THÀNH HÌNH THOI (l = 20 cm; B = 0,5 T; θ = 120°; R = 5 Ω)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    ctx.save();
+
+    // --- 2. VÙNG TỪ TRƯỜNG ĐỀU B (CHỈ BÊN TRONG KHUNG THÍ NGHIỆM BÊN TRÁI) ---
+    const fieldX = 18, fieldY = 48, fieldW = 472, fieldH = 242;
+    drawRoundRect(ctx, fieldX, fieldY, fieldW, fieldH, 10, 'rgba(14, 165, 233, 0.05)', 'rgba(56, 189, 248, 0.25)', 1.5);
+
+    // Lưới ký hiệu ⊗ phân bố đều trong không gian từ trường
+    for (let gx = fieldX + 36; gx <= fieldX + fieldW - 28; gx += 54) {
+        for (let gy = fieldY + 32; gy <= fieldY + fieldH - 24; gy += 52) {
+            if (gx < fieldX + 86 && gy < fieldY + 56) continue;
+            drawCrossB(ctx, gx, gy, 7, 'rgba(56, 189, 248, 0.36)');
+        }
+    }
+
+    // Thẻ vectơ cảm ứng từ B ở góc trên-trái vùng từ trường
+    drawRoundRect(ctx, fieldX + 12, fieldY + 10, 56, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, fieldX + 28, fieldY + 26, 7.5, '#38bdf8');
+    drawVectorLabel('B', fieldX + 51, fieldY + 27, 16, '#38bdf8');
+
+    // --- 3. TRẠNG THÁI 1 (TRÁI): KHUNG DÂY HÌNH VUÔNG BAN ĐẦU (t = 0) ---
+    const c1x = 114, c1y = 172;
+    const diag1 = 56; // Nửa đường chéo hình vuông (~ 79px cạnh)
+    const side = diag1 * Math.SQRT2;
+
+    // Tô nền xanh nhẹ bên trong khung vuông
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.14)';
+    ctx.beginPath();
+    ctx.moveTo(c1x, c1y - diag1);
+    ctx.lineTo(c1x + diag1, c1y);
+    ctx.lineTo(c1x, c1y + diag1);
+    ctx.lineTo(c1x - diag1, c1y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cạnh khung vuông sắc nét
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.6;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Ký hiệu góc vuông 90° ở đỉnh trái
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(c1x - diag1 + 10, c1y - 10);
+    ctx.lineTo(c1x - diag1 + 20, c1y);
+    ctx.lineTo(c1x - diag1 + 10, c1y + 10);
+    ctx.stroke();
+
+    // Nhãn cạnh l và nhãn trạng thái
+    drawRichText('l', c1x - diag1 / 2 - 11, c1y - diag1 / 2 - 8, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('l', c1x + diag1 / 2 + 11, c1y - diag1 / 2 - 8, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('Ban đầu (t = 0)', c1x, 268, 15, '#cbd5e1', '800', 'center');
+
+    // --- 4. MŨI TÊN CHUYỂN TRẠNG THÁI Δt = 0,05 s ---
+    drawArrow(ctx, 188, c1y, 232, c1y, '#94a3b8', 2.8, 7);
+    drawRichText('Δt', 210, c1y - 16, 15, '#cbd5e1', '800', 'center');
+
+    // --- 5. TRẠNG THÁI 2 (GIỮA): KHUNG DÂY BỊ KÉO DÃN THÀNH HÌNH THOI GÓC θ = 120° ---
+    // Chuyển động lặp nhịp nhàng từ hình vuông (90°) -> hình thoi (120°) -> giữ dừng 1.2s để học sinh quan sát rõ
+    const cycle = (t * 0.35) % 1;
+    const ease = cycle < 0.45 ? (cycle / 0.45) : (cycle < 0.85 ? 1 : 1 - (cycle - 0.85) / 0.15);
+    const halfAngle = (Math.PI / 4) + ease * (Math.PI / 3 - Math.PI / 4); // Từ 45° (đỉnh 90°) -> 60° (đỉnh 120°)
+
+    const c2x = 358, c2y = 172;
+    const halfA = side * Math.sin(halfAngle); // Nửa đường chéo ngang (dãn ra)
+    const halfB = side * Math.cos(halfAngle); // Nửa đường chéo đứng (co lại)
+
+    // Tô nền khung hình thoi
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+    ctx.beginPath();
+    ctx.moveTo(c2x, c2y - halfB);
+    ctx.lineTo(c2x + halfA, c2y);
+    ctx.lineTo(c2x, c2y + halfB);
+    ctx.lineTo(c2x - halfA, c2y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cạnh khung hình thoi sắc nét
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.6;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Hai đường chéo nét đứt tham chiếu hình học
+    ctx.strokeStyle = 'rgba(248, 113, 113, 0.72)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(c2x - halfA, c2y);
+    ctx.lineTo(c2x + halfA, c2y);
+    ctx.moveTo(c2x, c2y - halfB);
+    ctx.lineTo(c2x, c2y + halfB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Cung góc ở đỉnh trên của hình thoi (θ = 120°)
+    const arcStart = Math.PI / 2 - halfAngle;
+    const arcEnd = Math.PI / 2 + halfAngle;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y - halfB, 20, arcStart, arcEnd);
+    ctx.stroke();
+
+    // Nhãn góc θ = 120° đặt ở vùng trống phía trên-phải đỉnh thoi (không đè lên cạnh)
+    drawRichText('θ = 120°', c2x + 48, c2y - halfB - 14, 15, '#fbbf24', '800', 'center');
+
+    // Nhãn cạnh l không đổi trên hai cạnh trên
+    drawRichText('l', c2x - halfA / 2 - 11, c2y - halfB / 2 - 8, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('l', c2x + halfA / 2 + 12, c2y - halfB / 2 - 8, 15.5, '#f8fafc', '800', 'center');
+
+    // Hai mũi tên lực kéo dãn tại hai đỉnh đối diện trái - phải
+    drawArrow(ctx, c2x - halfA, c2y, c2x - halfA - 32, c2y, '#10b981', 3, 7);
+    drawArrow(ctx, c2x + halfA, c2y, c2x + halfA + 32, c2y, '#10b981', 3, 7);
+
+    drawRichText('Hình thoi (θ = 120°)', c2x, 268, 15, '#6ee7b7', '800', 'center');
+
+    // --- 6. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 504, cardY = 48, cardW = 262, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ KHUNG DÂY', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Cạnh hình vuông: l = 20 cm', color: '#f8fafc' },
+        { text: '• Cảm ứng từ đều: B = 0,5 T', color: '#38bdf8' },
+        { text: '• Thời gian kéo dãn: Δt = 0,05 s', color: '#cbd5e1' },
+        { text: '• Góc đỉnh hình thoi: θ = 120°', color: '#fbbf24' },
+        { text: '• Điện trở khung dây: R = 5 Ω', color: '#fca5a5' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15.2, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-65 ---
+VLXTModels.register('MH-C3-65', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('KHUNG DÂY VUÔNG CẠNH a NÉM NGANG TRONG TỪ TRƯỜNG B = B_0 + k·Z', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    ctx.save();
+
+    // --- 2. VÙNG TỪ TRƯỜNG B (CÁC KÝ HIỆU ⊗ ĐỒNG NHẤT KÍCH THƯỚC & ĐỘ ĐẬM, KHÔNG RỐI MẮT) ---
+    const fieldX = 24, fieldY = 48, fieldW = 428, fieldH = 242;
+    drawRoundRect(ctx, fieldX, fieldY, fieldW, fieldH, 10, 'rgba(14, 165, 233, 0.05)', 'rgba(56, 189, 248, 0.25)', 1.5);
+
+    // Lưới ký hiệu ⊗ đồng đều hoàn toàn về kích thước (r = 7) và độ sáng
+    for (let gx = 108; gx <= 418; gx += 62) {
+        for (let gy = 74; gy <= 226; gy += 50) {
+            if (gx > 350 && gy < 105) continue; // Tránh đè lên thẻ B
+            drawCrossB(ctx, gx, gy, 7, 'rgba(56, 189, 248, 0.45)');
+        }
+    }
+
+    // Thẻ vectơ cảm ứng từ B ở góc trên-phải vùng từ trường
+    drawRoundRect(ctx, 378, 56, 62, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, 395, 72, 7.5, '#38bdf8');
+    drawVectorLabel('B', 420, 73, 16, '#38bdf8');
+
+    // --- 3. HỆ TRỤC TỌA ĐỘ THẲNG ĐỨNG OXZ ---
+    const ox = 76, oy = 258;
+    drawArrow(ctx, ox, oy, 426, oy, '#cbd5e1', 2.8, 8); // Trục ngang OX
+    drawArrow(ctx, ox, oy, ox, 62, '#cbd5e1', 2.8, 8);  // Trục thẳng đứng OZ
+
+    // Chấm gốc O
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(ox, oy, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRichText('Z', ox - 16, 70, 16, '#f8fafc', '800', 'center');
+    drawRichText('O', ox - 15, oy + 4, 16, '#f8fafc', '800', 'center');
+    drawRichText('X', 436, oy, 16, '#f8fafc', '800', 'center');
+
+    // --- 4. ĐÁNH DẤU ĐỘ CAO BAN ĐẦU Z_0 & ĐƯỜNG QUỸ ĐẠO PARABOL ---
+    const side = 42;
+    const startX = 122, startY = 86;
+    const center0Y = startY + side / 2;
+
+    // Đường gióng nét đứt ngang sang trục OZ chỉ độ cao ban đầu Z_0
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)';
+    ctx.lineWidth = 1.8;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ox, center0Y);
+    ctx.lineTo(startX, center0Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(ox, center0Y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    drawRichText('Z_0', ox - 20, center0Y, 15.5, '#fbbf24', '800', 'center');
+
+    // Quỹ đạo parabol nét đứt của tâm khung dây
+    const spanX = 216, dropY = 120;
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.55)';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let p = 0; p <= 1.001; p += 0.05) {
+        const qx = startX + side / 2 + p * spanX;
+        const qy = center0Y + p * p * dropY;
+        if (p === 0) ctx.moveTo(qx, qy);
+        else ctx.lineTo(qx, qy);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // --- 5. KHUNG DÂY VUÔNG CẠNH a TỊNH TIẾN KHÔNG QUAY ---
+    const saw = (t * 0.24) % 1;
+    const fx = startX + saw * spanX;
+    const fy = startY + saw * saw * dropY;
+
+    drawRoundRect(ctx, fx, fy, side, side, 2, 'rgba(56, 189, 248, 0.18)', '#38bdf8', 3.4);
+
+    // Nhãn cạnh a phía trên khung dây
+    drawRichText('a', fx + side / 2, fy - 12, 15.5, '#f8fafc', '800', 'center');
+
+    // Vectơ vận tốc ngang ban đầu v_0
+    drawArrow(ctx, fx + side, fy + side / 2, fx + side + 44, fy + side / 2, '#10b981', 3, 8);
+    drawVectorLabel('v_0', fx + side + 22, fy + side / 2 - 14, 15.5, '#6ee7b7');
+
+    // Vectơ gia tốc trọng trường g hướng thẳng đứng xuống dưới ở góc trống bên trái
+    drawArrow(ctx, 118, 168, 118, 212, '#f97316', 2.8, 7);
+    drawVectorLabel('g', 133, 190, 15.5, '#fdba74');
+
+    // --- 6. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 468, cardY = 48, cardW = 298, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ KHUNG DÂY NÉM NGANG', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Khung vuông: cạnh a, khối lượng m', color: '#f8fafc' },
+        { text: '• Điện trở khung dây: R', color: '#f8fafc' },
+        { text: '• Ném ngang từ độ cao Z_0 với v_0', color: '#6ee7b7' },
+        { text: '• Từ trường: B = B_0 + k·Z (k > 0)', color: '#fbbf24' },
+        { text: '• Khung thẳng đứng, không quay (g)', color: '#fdba74' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-66 ---
+VLXTModels.register('MH-C3-66', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (y = 8..40)
+    ctx.save();
+    const titleStr = 'KHUNG DÂY ABCD (a = 10 cm; 200 vòng) CHUYỂN ĐỘNG QUA VÙNG TỪ TRƯỜNG B = 0,4 T';
+    const titleW = measureRichText(titleStr, 15.5, '800') + 32;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 15.5, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.22) % 1;
+
+    ctx.save();
+
+    // 2. Vùng từ trường đều hình chữ nhật A'B'C'D' (x = 225..405, y = 82..258)
+    const bx = 225, by = 82, bw = 180, bh = 176;
+    drawRoundRect(ctx, bx, by, bw, bh, 4, 'rgba(56, 189, 248, 0.12)', '#38bdf8', 2.6);
+
+    // Lưới 4 cột x 5 hàng ký hiệu từ trường đều ⊗ B phủ kín đều toàn bộ vùng A'B'C'D'
+    const cols = 4, rows = 5;
+    const padX = 24, padY = 20;
+    const stepX = (bw - 2 * padX) / (cols - 1);
+    const stepY = (bh - 2 * padY) / (rows - 1);
+    for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+            const cx = bx + padX + c * stepX;
+            const cy = by + padY + r * stepY;
+            drawCrossB(ctx, cx, cy, 7.5, 'rgba(56, 189, 248, 0.72)');
+        }
+    }
+    drawSubText(ctx, 'B', '', bx + padX + stepX * 0.5, by + padY + stepY * 0.5, { fontSize: 17.5, italic: true, color: '#38bdf8', vector: true });
+
+    // Nhãn 4 đỉnh vùng từ trường A', B', C', D' chữ thật to, rõ nét
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '800 16px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText("D'", bx - 13, by - 8);
+    ctx.fillText("C'", bx + bw + 13, by - 8);
+    ctx.fillText("A'", bx - 13, by + bh + 12);
+    ctx.fillText("B'", bx + bw + 13, by + bh + 12);
+
+    // 3. Khung dây hình vuông ABCD cạnh a = 10 cm chuyển động tịnh tiến đều
+    const side = 88;
+    const fx = 32 + saw * 340;
+    const fy = by + (bh - side) / 2;
+
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.08)';
+    ctx.fillRect(fx, fy, side, side);
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3.8;
+    ctx.strokeRect(fx, fy, side, side);
+
+    // Ký hiệu kích thước cạnh a = 10 cm
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 15.5px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    ctx.fillText('a', fx - 12, fy + side / 2);
+
+    // Nhãn 4 đỉnh A, B, C, D của khung dây
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '800 16px "Be Vietnam Pro", "Inter", system-ui, sans-serif';
+    ctx.fillText('D', fx - 12, fy - 9);
+    ctx.fillText('C', fx + side + 12, fy - 9);
+    ctx.fillText('A', fx - 12, fy + side + 11);
+    ctx.fillText('B', fx + side + 12, fy + side + 11);
+
+    // Vectơ vận tốc v = 0,2 m/s hướng ngang sang phải
+    const vStart = fx + side;
+    const vEnd = fx + side + 36;
+    drawArrow(ctx, vStart, fy + side / 2, vEnd, fy + side / 2, '#10b981', 3.2, 8);
+    drawSubText(ctx, 'v', '', vStart + 18, fy + side / 2 - 14, { fontSize: 16.5, italic: true, color: '#6ee7b7', vector: true });
+
+    // 4. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - tách biệt hoàn toàn, chữ thật to 15.5px)
+    drawRoundRect(ctx, 510, 62, 256, 224, 12, '#0f172a', '#fbbf24', 2.4);
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.roundRect(511.5, 63.5, 253, 38, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ KHUNG DÂY', 526, 83, 16, '#fde047', '800', 'left');
+    drawRichText('• Cạnh vuông: a = 10 cm', 526, 122, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Số vòng dây: N = 200', 526, 154, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Điện trở: R = 2,5 Ω', 526, 186, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Cảm ứng từ: B = 0,4 T', 526, 218, 15.5, '#38bdf8', '800', 'left');
+    drawRichText('• Vận tốc đều: v = 0,2 m/s', 526, 254, 15.5, '#6ee7b7', '800', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-67 ---
+VLXTModels.register('MH-C3-67', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('CẤU TẠO & NGUYÊN LÝ HOẠT ĐỘNG CÔNG TẮC ĐIỆN TỪ (RƠ-LE)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. CHU KỲ CHUYỂN ĐỘNG MƯỢT CỦA RƠ-LE ---
+    const saw = (t * 0.24) % 1;
+    const isClosed = saw >= 0.45 && saw < 0.92;
+    const armAngle = isClosed ? 0.056 : -0.055;
+
+    ctx.save();
+
+    // --- 3. KHUNG VÙNG SƠ ĐỒ THIẾT BỊ BÊN TRÁI (GỌN GÀNG ĐỂ DÀNH ĐỦ ĐỘ RỘNG CHO THẺ PHẢI) ---
+    drawRoundRect(ctx, 14, 48, 424, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    // Đế cách điện phía dưới
+    drawRoundRect(ctx, 34, 256, 384, 16, 4, '#78350f', '#d97706', 2);
+
+    // --- 4. LÕI SẮT NON & CUỘN DÂY ĐIỆN TỪ ---
+    const coilX = 208, coilY = 128, coilW = 72, coilH = 114;
+
+    // Lõi sắt non nhô trên & dưới cuộn dây
+    drawRoundRect(ctx, coilX + 14, coilY - 14, 44, 142, 4, '#64748b', '#cbd5e1', 2);
+
+    // Thân cuộn dây đồng phẳng mịn
+    const coilFill = isClosed ? '#d97706' : '#b45309';
+    const coilBorder = isClosed ? '#fde047' : '#f59e0b';
+    drawRoundRect(ctx, coilX, coilY, coilW, coilH, 6, coilFill, coilBorder, 2.2);
+    drawRichText('Cuộn dây', coilX + coilW / 2, coilY + coilH / 2 - 9, 14.5, '#ffffff', '800', 'center');
+    drawRichText('điện từ', coilX + coilW / 2, coilY + coilH / 2 + 10, 14.5, '#ffffff', '800', 'center');
+
+    // Dây dẫn cấp dòng điện sơ cấp (màu xanh dương)
+    ctx.strokeStyle = isClosed ? '#38bdf8' : '#0284c7';
+    ctx.lineWidth = 2.8;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(164, 256);
+    ctx.lineTo(164, 144);
+    ctx.lineTo(coilX, 144);
+    ctx.moveTo(184, 256);
+    ctx.lineTo(184, 224);
+    ctx.lineTo(coilX, 224);
+    ctx.stroke();
+
+    if (isClosed) {
+        drawArrow(ctx, 164, 206, 164, 178, '#38bdf8', 2.6, 6);
+        drawArrow(ctx, 184, 184, 184, 212, '#38bdf8', 2.6, 6);
+    }
+
+    drawRichText('Mạch 1 (Điều khiển)', 130, 281, 14.5, '#38bdf8', '800', 'center');
+
+    // --- 5. ĐIỂM TỰA TAM GIÁC & LÒ XO HỒI VỊ BÊN TRÁI ---
+    const pivX = 140, pivY = 98;
+
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(pivX, pivY + 14);
+    ctx.lineTo(pivX, 256);
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.strokeStyle = '#bae6fd';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(pivX, pivY);
+    ctx.lineTo(pivX - 10, pivY + 15);
+    ctx.lineTo(pivX + 10, pivY + 15);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Lò xo hồi vị bên trái
+    const leftEndX = 80;
+    const armPivotY = pivY - 7;
+    const leftArmY = armPivotY - (pivX - leftEndX) * Math.sin(armAngle);
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(leftEndX, 256);
+    ctx.lineTo(leftEndX, 246);
+    const coils = 10;
+    for (let i = 0; i <= coils; i++) {
+        const sy = 246 - i * ((246 - (leftArmY + 8)) / coils);
+        const sx = i === 0 || i === coils ? leftEndX : leftEndX + (i % 2 === 0 ? -7 : 7);
+        ctx.lineTo(sx, sy);
+    }
+    ctx.lineTo(leftEndX, leftArmY + 6);
+    ctx.stroke();
+
+    drawRichText('Lò xo', 50, 174, 15, '#cbd5e1', '800', 'center');
+
+    // --- 6. CÁNH TAY DI ĐỘNG & BỘ TIẾP ĐIỂM MẠCH THỨ CẤP ---
+    const armRightLen = 228;
+    const contactStaticX = pivX + armRightLen * Math.cos(0.056) - 6;
+    const contactStaticY = armPivotY + armRightLen * Math.sin(0.056) + 12;
+
+    drawRoundRect(ctx, contactStaticX - 10, contactStaticY, 20, 8, 2, '#fbbf24', '#fef08a', 1.6);
+    ctx.strokeStyle = isClosed ? '#22c55e' : '#ef4444';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(contactStaticX, contactStaticY + 8);
+    ctx.lineTo(contactStaticX, 256);
+    ctx.stroke();
+
+    if (isClosed) {
+        drawArrow(ctx, contactStaticX, 146, contactStaticX, 184, '#22c55e', 2.8, 7);
+    }
+    drawRichText('Mạch 2 (Tải)', 358, 281, 14.5, isClosed ? '#6ee7b7' : '#fca5a5', '800', 'center');
+
+    // Cánh tay di động
+    ctx.save();
+    ctx.translate(pivX, armPivotY);
+    ctx.rotate(armAngle);
+    drawRoundRect(ctx, -66, -7, 298, 14, 4, '#94a3b8', '#f8fafc', 2.2);
+    drawRoundRect(ctx, armRightLen - 16, 7, 20, 7, 2, '#fbbf24', '#fef08a', 1.6);
+    ctx.restore();
+
+    drawRichText('Cánh tay di động', 254, 65, 15, '#f8fafc', '800', 'center');
+
+    if (isClosed) {
+        drawArrow(ctx, coilX + coilW / 2, 92, coilX + coilW / 2, 112, '#38bdf8', 2.8, 6);
+    }
+
+    // --- 7. BẢNG TRẠNG THÁI & NGUYÊN LÝ BÊN PHẢI (MỞ RỘNG ĐỦ RỘNG, CHỮ NẰM GỌN BÊN TRONG) ---
+    const cardX = 450, cardY = 48, cardW = 316, cardH = 242;
+    const statusColor = isClosed ? '#10b981' : '#f59e0b';
+    const statusTextColor = isClosed ? '#6ee7b7' : '#fbbf24';
+
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', statusColor, 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', statusColor, 2);
+    drawRichText(
+        isClosed ? 'TRẠNG THÁI: ĐÓNG MẠCH 2' : 'TRẠNG THÁI: NGẮT MẠCH 2',
+        cardX + cardW / 2,
+        cardY + 19,
+        15.5,
+        statusTextColor,
+        '800',
+        'center'
+    );
+
+    const lines = [
+        { text: '• Cấp dòng mạch 1 → tạo từ trường', color: isClosed ? '#38bdf8' : '#cbd5e1' },
+        { text: '• Lõi sắt hút cánh tay di động xuống', color: isClosed ? '#38bdf8' : '#cbd5e1' },
+        { text: '• Tiếp điểm chạm nhau → đóng mạch 2', color: isClosed ? '#6ee7b7' : '#cbd5e1' },
+        { text: '• Ngắt dòng mạch 1 → mất từ trường', color: !isClosed ? '#fbbf24' : '#cbd5e1' },
+        { text: '• Lò xo kéo cánh tay lên → ngắt mạch 2', color: !isClosed ? '#fbbf24' : '#cbd5e1' }
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+        drawRichText(lines[i].text, cardX + 12, cardY + 63 + i * 37, 14.5, lines[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-68 ---
+VLXTModels.register('MH-C3-68', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm vẽ chữ có chỉ số dưới (subscript) chuẩn Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (y = 8..40)
+    ctx.save();
+    const titleStr = 'RƠ-LE ĐIỆN TỪ (HÌNH 1) & MẠCH BÁO CHÁY ĐIỆN TRỞ NHIỆT X (HÌNH 2)';
+    const titleW = measureRichText(titleStr, 15.5, '800') + 32;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 15.5, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.24) % 1;
+    const active = saw >= 0.48; // Trạng thái: Hình 1 đóng khóa S / Hình 2 nhiệt độ tăng cao -> rơ-le đóng tiếp điểm AB
+
+    ctx.save();
+
+    // =========================================================================
+    // HÌNH 1 (BÊN TRÁI: x = 22..386): CẤU TẠO & NGUYÊN LÝ RƠ-LE ĐIỆN TỪ
+    // =========================================================================
+    const h1X = 22, h1Y = 52, h1W = 364, h1H = 212;
+
+    // Vỏ hộp nét đứt bao quanh phần Rơ-le (tiếp điểm AB + thanh sắt non + cuộn dây)
+    ctx.strokeStyle = '#64748b';
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 2.2;
+    ctx.strokeRect(h1X, h1Y, h1W, 154);
+    ctx.setLineDash([]);
+
+    // 1.1 Cặp tiếp điểm đàn hồi A, B bên trái trên (mạch A - B)
+    const contactX = 132;
+    const yA = 80, yB = 104;
+    ctx.strokeStyle = active ? '#10b981' : '#f8fafc';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    // Thanh tiếp điểm A (trên)
+    ctx.moveTo(58, yA);
+    ctx.lineTo(contactX, active ? yA + 5 : yA);
+    // Thanh tiếp điểm B (dưới - được thanh sắt non đẩy lên chạm vào A khi đóng)
+    ctx.moveTo(58, yB);
+    ctx.lineTo(contactX, active ? yA + 7 : yB);
+    ctx.stroke();
+
+    // Chấm tiếp điểm kim loại tại đầu A và B
+    ctx.fillStyle = active ? '#6ee7b7' : '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(contactX, active ? yA + 5 : yA, 3.8, 0, Math.PI * 2);
+    ctx.arc(contactX, active ? yA + 8 : yB, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Đầu nối ra ngoài A, B và nhãn chữ thật to (16px)
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.arc(54, yA, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(54, yB, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    drawRichText('A', 38, yA, 16.5, '#38bdf8', '800', 'center');
+    drawRichText('B', 38, yB, 16.5, '#38bdf8', '800', 'center');
+
+    // Nhãn trạng thái mạch A-B (chữ 14.5px tách biệt hoàn toàn)
+    drawRichText(active ? 'Mạch A, B đóng' : 'Mạch A, B hở', 216, 72, 14.5, active ? '#6ee7b7' : '#94a3b8', '800', 'left');
+
+    // 1.2 Cuộn dây nam châm điện C - D nằm ngang
+    const coilX = 118, coilY = 148, coilW = 140, coilH = 38;
+    // Lõi sắt non bên trong cuộn dây
+    drawRoundRect(ctx, coilX - 8, coilY + 6, coilW + 16, coilH - 12, 3, '#475569', '#94a3b8', 2);
+    // Thân ống dây phẳng mịn
+    drawRoundRect(ctx, coilX, coilY, coilW, coilH, 5, active ? '#b45309' : '#1e293b', '#f59e0b', 2.4);
+
+    // Các vòng dây đồng quấn quanh lõi (vẽ gọn gàng, khoảng cách đều)
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.4;
+    for (let xx = coilX + 14; xx <= coilX + coilW - 14; xx += 16) {
+        ctx.beginPath();
+        ctx.moveTo(xx, coilY - 2);
+        ctx.lineTo(xx, coilY + coilH + 2);
+        ctx.stroke();
+    }
+
+    // 1.3 Thanh sắt non hình chữ L quay quanh trục O (góc phải trên cuộn dây)
+    const pivX = 294, pivY = 126;
+    ctx.save();
+    ctx.translate(pivX, pivY);
+    // Khi active = true: đầu dưới bị hút sát lõi nam châm, đầu trái nâng lên đóng tiếp điểm B chạm A
+    ctx.rotate(active ? 0.11 : -0.06);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 4.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-162, -16); // Đầu ngang bên trái nằm ngay dưới tiếp điểm B
+    ctx.lineTo(0, 0);      // Góc vuông tại trục quay
+    ctx.lineTo(0, 44);     // Đầu đứng bên phải đối diện lõi nam châm điện
+    ctx.stroke();
+    ctx.restore();
+
+    // Chốt trục quay cố định của thanh sắt non
+    ctx.fillStyle = '#f59e0b';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(pivX, pivY, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Mũi tên lực hút từ trường khi đóng khóa S
+    if (active) {
+        drawArrow(ctx, 290, 166, 272, 166, '#ef4444', 2.8, 7);
+    }
+
+    // 1.4 Mạch điều khiển phía dưới (C, D, Khóa S và Nguồn điện một chiều)
+    const botY = 236;
+    const cWireX = 132, dWireX = 244;
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    // Dây từ đầu C xuống
+    ctx.moveTo(cWireX, coilY + coilH);
+    ctx.lineTo(cWireX, botY);
+    ctx.lineTo(154, botY);
+    // Khóa S
+    ctx.moveTo(154, botY);
+    ctx.lineTo(182, active ? botY : botY - 14);
+    // Đoạn giữa khóa S và nguồn điện
+    ctx.moveTo(184, botY);
+    ctx.lineTo(206, botY);
+    // Dây từ cực âm nguồn điện về đầu D
+    ctx.moveTo(216, botY);
+    ctx.lineTo(dWireX, botY);
+    ctx.lineTo(dWireX, coilY + coilH);
+    ctx.stroke();
+
+    // Chốt tiếp điểm khóa S
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(154, botY, 3.5, 0, Math.PI * 2);
+    ctx.arc(184, botY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ký hiệu nguồn điện 1 chiều (bản dài +, bản ngắn -)
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(206, botY - 11); ctx.lineTo(206, botY + 11); // Cực dương (+)
+    ctx.moveTo(216, botY - 6);  ctx.lineTo(216, botY + 6);  // Cực âm (-)
+    ctx.stroke();
+
+    // Nhãn C, D, S cỡ chữ thật to (16px) đặt thoáng không đè nét vẽ
+    drawRichText('C', cWireX - 16, 222, 16, '#fbbf24', '800', 'center');
+    drawRichText('D', dWireX + 16, 222, 16, '#fbbf24', '800', 'center');
+    drawRichText('S', 168, botY - 22, 16, active ? '#6ee7b7' : '#f8fafc', '800', 'center');
+
+    // Nhãn Hình 1 dưới cùng
+    drawRichText('Hình 1: Cấu tạo Rơ-le điện từ', 204, 282, 16, '#f8fafc', '800', 'center');
+
+
+    // =========================================================================
+    // HÌNH 2 (BÊN PHẢI: x = 420..764): MẠCH BÁO CHÁY DÙNG ĐIỆN TRỞ NHIỆT X
+    // =========================================================================
+    const leftX = 454, midX = 562, rightX = 682;
+    const topY2 = 76, botY2 = 246;
+
+    // Khung dây mạch điện Hình 2
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    // Vòng ngoài (Nguồn U -> Nhánh chuông A-B)
+    ctx.moveTo(leftX, topY2);
+    ctx.lineTo(rightX, topY2);
+    ctx.lineTo(rightX, 186); // Tới tiếp điểm A
+    ctx.moveTo(rightX, 214); // Từ tiếp điểm B xuống đáy
+    ctx.lineTo(rightX, botY2);
+    ctx.lineTo(leftX, botY2);
+    ctx.lineTo(leftX, 174);  // Cực âm nguồn U
+    ctx.moveTo(leftX, 152);  // Cực dương nguồn U lên đỉnh
+    ctx.lineTo(leftX, topY2);
+    // Nhánh giữa (Điện trở nhiệt X nối nối tiếp cuộn dây C-D)
+    ctx.moveTo(midX, topY2);
+    ctx.lineTo(midX, botY2);
+    ctx.stroke();
+
+    // Nút nối ngã ba trên và dưới nhánh giữa
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(midX, topY2, 3.8, 0, Math.PI * 2);
+    ctx.arc(midX, botY2, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2.1 Nguồn điện hiệu điện thế U không đổi ở cạnh trái
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(leftX - 13, 152); ctx.lineTo(leftX + 13, 152); // bản dài (+)
+    ctx.moveTo(leftX - 7, 163);  ctx.lineTo(leftX + 7, 163);  // bản ngắn (-)
+    ctx.moveTo(leftX - 13, 169); ctx.lineTo(leftX + 13, 169);
+    ctx.moveTo(leftX - 7, 174);  ctx.lineTo(leftX + 7, 174);
+    ctx.stroke();
+    drawRichText('U', leftX - 24, 163, 16.5, '#fde047', '800', 'center');
+
+    // 2.2 Điện trở nhiệt X ở nửa trên nhánh giữa (kèm mũi tên chéo chuẩn ký hiệu Thermistor)
+    const rxW = 22, rxH = 44, rxY = 94;
+    drawRoundRect(ctx, midX - rxW / 2, rxY, rxW, rxH, 3, '#1e293b', active ? '#ef4444' : '#f87171', 2.4);
+    // Gạch chéo biến trở nhiệt chuẩn quốc tế
+    ctx.strokeStyle = active ? '#ef4444' : '#fca5a5';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(midX - 18, rxY + rxH + 4);
+    ctx.lineTo(midX + 16, rxY - 6);
+    ctx.lineTo(midX + 24, rxY - 6);
+    ctx.stroke();
+
+    drawRichText('X', midX - 26, rxY + rxH / 2, 16.5, '#fca5a5', '800', 'center');
+    // Nhãn trạng thái nhiệt độ bên trái điện trở X (chữ 14.5px gọn, không đè nét)
+    drawRichText(active ? 't° tăng → R_{X} giảm' : 'Nhiệt độ thường', midX - 18, 60, 14.5, active ? '#fca5a5' : '#94a3b8', '800', 'right');
+
+    // 2.3 Hộp nét đứt Rơ-le bao quanh cuộn dây C-D và tiếp điểm A-B
+    ctx.strokeStyle = '#38bdf8';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(midX - 30, 164, 176, 70);
+    ctx.setLineDash([]);
+
+    // Cuộn dây rơ-le C - D (hình chữ nhật gạch chéo chuẩn ký hiệu IEC)
+    const cdY = 178, cdH = 42;
+    drawRoundRect(ctx, midX - 12, cdY, 24, cdH, 3, active ? '#b45309' : '#1e293b', '#f59e0b', 2.2);
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(midX - 12, cdY + cdH);
+    ctx.lineTo(midX + 12, cdY);
+    ctx.stroke();
+
+    drawRichText('C', midX - 21, cdY + 4, 15.5, '#38bdf8', '800', 'center');
+    drawRichText('D', midX - 21, cdY + cdH - 4, 15.5, '#38bdf8', '800', 'center');
+
+    // Đường nét đứt liên kết cơ học từ cuộn dây C-D sang tiếp điểm A-B
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(midX + 12, 199);
+    ctx.lineTo(active ? rightX : rightX - 7, 199);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tiếp điểm A - B trên nhánh phải
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(rightX, 186, 3.6, 0, Math.PI * 2);
+    ctx.arc(rightX, 214, 3.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = active ? '#10b981' : '#f8fafc';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(rightX, 214);
+    ctx.lineTo(active ? rightX : rightX - 13, 187);
+    ctx.stroke();
+
+    drawRichText('A', rightX - 16, 183, 15.5, '#38bdf8', '800', 'center');
+    drawRichText('B', rightX - 16, 217, 15.5, '#38bdf8', '800', 'center');
+    drawRichText('Rơ-le', rightX + 36, 200, 15.5, '#38bdf8', '800', 'left');
+
+    // 2.4 Chuông báo động ở nhánh phải trên (phát sóng âm khi mạch A, B đóng)
+    const bellY = 122;
+    drawRoundRect(ctx, rightX - 12, bellY - 16, 24, 32, 7, active ? '#10b981' : '#334155', '#f8fafc', 2.2);
+    // Quả chuông bên trong
+    ctx.fillStyle = active ? '#fef08a' : '#94a3b8';
+    ctx.beginPath();
+    ctx.arc(rightX, bellY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sóng âm báo động khi chuông kêu (active = true)
+    if (active) {
+        const wave = (t * 4) % 1;
+        ctx.strokeStyle = `rgba(110, 231, 183, ${1 - wave * 0.7})`;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(rightX + 14, bellY, 7 + wave * 8, -0.7, 0.7);
+        ctx.stroke();
+    }
+    drawRichText(active ? 'Chuông kêu!' : 'Chuông', rightX + 36, bellY, 15.5, active ? '#6ee7b7' : '#f8fafc', '800', 'left');
+
+    // Nhãn Hình 2 dưới cùng
+    drawRichText('Hình 2: Mạch báo cháy tự động', 588, 282, 16, '#f8fafc', '800', 'center');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-69 ---
+VLXTModels.register('MH-C3-69', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÁY GIA TỐC HẠT CYCLOTRON (HAI HỘP CHỮ D: I & II · f_{đd} = 12 MHz · R = 53 cm)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    // --- 2. PHÉP CHIẾU 3D ĐỒNG DẠNG CỦA HỘP RỖNG CHỮ D ---
+    const cx = 228, cy = 192;
+    const tilt = 0.52;         // Độ nghiêng mặt phẳng tròn 3D (nén trục Y)
+    const R_dee = 142;         // Bán kính hộp chữ D
+    const depth = 26;          // Bề dày hộp rỗng chữ D (từ Z = 0 đến Z = depth)
+    const zMid = depth * 0.5;  // Mặt phẳng giữa lòng hộp (Z = depth/2) nơi hạt proton chuyển động
+    const phi = -0.34;         // Góc pháp tuyến của khe hở
+    const gap = 7.5;           // Nửa khoảng cách khe hở giữa 2 cực D
+
+    const nx = Math.cos(phi);
+    const ny = Math.sin(phi);
+
+    function project(X, Y, Z = 0) {
+        return {
+            x: cx + X,
+            y: cy + Y * tilt - Z
+        };
+    }
+
+    // --- 3. QUỸ ĐẠO XOẮN ỐC 3D & PHÓNG TIẾP TUYẾN 3D QUA CỬA SỔ THÀNH BÊN HỘP D ---
+    // Hạt xoắn ngược chiều kim đồng hồ trong mặt phẳng 3D, đến góc thoát (ở sườn trên-trái của hộp II)
+    // thì bay tiếp tuyến 3D chui đúng qua khe cửa sổ trên vách cong của hộp chữ D!
+    const turns = 2.66;
+    const maxTheta = turns * Math.PI * 2;
+    const endAngle = -Math.PI * 0.62;        // Góc thoát trên sườn hộp II để chùm tia bay chếch 3D qua đúng cửa sổ
+    const startAngle = endAngle + maxTheta;
+    const r0 = 12;
+    const rMax = 114;
+
+    function spiralPoint3D(theta) {
+        const r = r0 + (rMax - r0) * (theta / maxTheta);
+        const a = startAngle - theta;
+        return {
+            x: r * Math.cos(a),
+            y: r * Math.sin(a),
+            r: r,
+            a: a
+        };
+    }
+
+    // Véc-tơ tiếp tuyến thực trong không gian 3D tại điểm cuối vòng xoắn ốc (đạo hàm chính xác của đường xoắn ốc)
+    const endP3 = spiralPoint3D(maxTheta);
+    const preEndP3 = spiralPoint3D(maxTheta - 0.02);
+    const dtx = endP3.x - preEndP3.x;
+    const dty = endP3.y - preEndP3.y;
+    const dtLen = Math.hypot(dtx, dty) || 1;
+    const dirExitX = dtx / dtLen;
+    const dirExitY = dty / dtLen;
+
+    // Tính chính xác vị trí tia phóng cắt qua thành cong của hộp chữ D bên trái (hộp II)
+    const d2X = -gap * nx;
+    const d2Y = -gap * ny;
+    let sWindow = 60;
+    for (let s = 0; s <= 120; s += 0.5) {
+        const px = endP3.x + dirExitX * s;
+        const py = endP3.y + dirExitY * s;
+        if (Math.hypot(px - d2X, py - d2Y) >= R_dee) {
+            sWindow = s;
+            break;
+        }
+    }
+    const winP3 = {
+        x: endP3.x + dirExitX * sWindow,
+        y: endP3.y + dirExitY * sWindow
+    };
+    const winAngle = Math.atan2(winP3.y - d2Y, winP3.x - d2X);
+
+    const exitLen = sWindow + 44; // Bay xuyên qua cửa sổ hộp D thêm một đoạn rõ nét ra ngoài không gian 3D
+    const exitEndP3 = {
+        x: endP3.x + dirExitX * exitLen,
+        y: endP3.y + dirExitY * exitLen
+    };
+
+    // Hàm vẽ nửa dưới (đáy Z = 0 + thành trong phía sau) của hộp chữ D
+    function drawDeeBottom(isRight) {
+        const sign = isRight ? 1 : -1;
+        const dX = sign * gap * nx;
+        const dY = sign * gap * ny;
+        const startA = isRight ? (phi - Math.PI / 2) : (phi + Math.PI / 2);
+        const endA = isRight ? (phi + Math.PI / 2) : (phi + 3 * Math.PI / 2);
+        const steps = 60;
+
+        ctx.save();
+        // Mặt đáy hộp rỗng tại Z = 0
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.96)';
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        for (let i = 0; i <= steps; i++) {
+            const a = startA + (endA - startA) * (i / steps);
+            const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), 0);
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Thành cong phía sau (nhìn thấy mặt trong lòng hộp từ Z = 0 đến Z = depth)
+        ctx.fillStyle = 'rgba(30, 58, 95, 0.62)';
+        ctx.beginPath();
+        for (let i = 0; i <= steps; i++) {
+            const a = startA + (endA - startA) * (i / steps);
+            const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), depth);
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+        }
+        for (let i = steps; i >= 0; i--) {
+            const a = startA + (endA - startA) * (i / steps);
+            const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), 0);
+            ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // Nếu là hộp II (trái), vẽ khung cửa sổ thoát hạt nằm đúng trên thành đứng 3D tại winAngle
+        if (!isRight) {
+            const wHalf = 0.085;
+            const a1 = winAngle - wHalf, a2 = winAngle + wHalf;
+            const z1 = zMid - 6.5, z2 = zMid + 6.5;
+            const pW1 = project(dX + R_dee * Math.cos(a1), dY + R_dee * Math.sin(a1), z2);
+            const pW2 = project(dX + R_dee * Math.cos(a2), dY + R_dee * Math.sin(a2), z2);
+            const pW3 = project(dX + R_dee * Math.cos(a2), dY + R_dee * Math.sin(a2), z1);
+            const pW4 = project(dX + R_dee * Math.cos(a1), dY + R_dee * Math.sin(a1), z1);
+
+            ctx.fillStyle = '#090d16';
+            ctx.strokeStyle = '#7dd3fc';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(pW1.x, pW1.y);
+            ctx.lineTo(pW2.x, pW2.y);
+            ctx.lineTo(pW3.x, pW3.y);
+            ctx.lineTo(pW4.x, pW4.y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+    // Hàm vẽ thành trước và nắp trên trong suốt (X-ray) phủ lên trên quỹ đạo
+    function drawDeeTopAndFront(isRight) {
+        const sign = isRight ? 1 : -1;
+        const dX = sign * gap * nx;
+        const dY = sign * gap * ny;
+        const startA = isRight ? (phi - Math.PI / 2) : (phi + Math.PI / 2);
+        const endA = isRight ? (phi + Math.PI / 2) : (phi + 3 * Math.PI / 2);
+        const steps = 60;
+
+        ctx.save();
+        ctx.lineJoin = 'round';
+
+        const p1Top = project(dX + R_dee * Math.cos(startA), dY + R_dee * Math.sin(startA), depth);
+        const p2Top = project(dX + R_dee * Math.cos(endA), dY + R_dee * Math.sin(endA), depth);
+        const p1Bot = project(dX + R_dee * Math.cos(startA), dY + R_dee * Math.sin(startA), 0);
+        const p2Bot = project(dX + R_dee * Math.cos(endA), dY + R_dee * Math.sin(endA), 0);
+
+        if (isRight) {
+            ctx.fillStyle = 'rgba(30, 64, 115, 0.28)';
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.65)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(p1Top.x, p1Top.y);
+            ctx.lineTo(p2Top.x, p2Top.y);
+            ctx.lineTo(p2Bot.x, p2Bot.y);
+            ctx.lineTo(p1Bot.x, p1Bot.y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        } else {
+            // Cạnh đứng phía trước của khe hở hộp II
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(p1Top.x, p1Top.y);
+            ctx.lineTo(p1Bot.x, p1Bot.y);
+            ctx.stroke();
+        }
+
+        // Thành cong phía trước của hộp chữ D (phần hướng về phía người nhìn: sin(a) >= 0)
+        ctx.fillStyle = isRight ? 'rgba(30, 58, 95, 0.82)' : 'rgba(23, 37, 84, 0.82)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        const frontAngles = [];
+        for (let i = 0; i <= steps; i++) {
+            const a = startA + (endA - startA) * (i / steps);
+            if (Math.sin(a) >= -0.02) frontAngles.push(a);
+        }
+        if (frontAngles.length > 1) {
+            ctx.beginPath();
+            for (let i = 0; i < frontAngles.length; i++) {
+                const a = frontAngles[i];
+                const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), depth);
+                if (i === 0) ctx.moveTo(pt.x, pt.y);
+                else ctx.lineTo(pt.x, pt.y);
+            }
+            for (let i = frontAngles.length - 1; i >= 0; i--) {
+                const a = frontAngles[i];
+                const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), 0);
+                ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // Nắp trên bán trong suốt ở Z = depth phủ lên trên quỹ đạo
+        ctx.fillStyle = isRight ? 'rgba(56, 189, 248, 0.15)' : 'rgba(56, 189, 248, 0.13)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (let i = 0; i <= steps; i++) {
+            const a = startA + (endA - startA) * (i / steps);
+            const pt = project(dX + R_dee * Math.cos(a), dY + R_dee * Math.sin(a), depth);
+            if (i === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // BƯỚC 1: Vẽ đáy hộp, thành sau và cửa sổ thoát hạt ở mặt phẳng dưới
+    drawDeeBottom(true);
+    drawDeeBottom(false);
+
+    // BƯỚC 2: Vẽ quỹ đạo xoắn ốc 3D nét đứt trong lòng hộp (Z = zMid)
+    ctx.save();
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.3;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    const spiralSteps = 170;
+    for (let i = 0; i <= spiralSteps; i++) {
+        const th = (i / spiralSteps) * maxTheta;
+        const p3 = spiralPoint3D(th);
+        const pt = project(p3.x, p3.y, zMid);
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+    }
+    // Đoạn từ cuối vòng xoắn ốc đến đúng cửa sổ trên thành hộp D (vẫn nằm trong lòng hộp nên vẽ nét đứt)
+    const pWinCenter = project(winP3.x, winP3.y, zMid);
+    ctx.lineTo(pWinCenter.x, pWinCenter.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Nguồn phát proton S ở tâm giữa lòng hộp (Z = zMid)
+    const pSource = project(0, 0, zMid);
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(pSource.x, pSource.y, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    drawRichText('S', pSource.x + 14, pSource.y + 6, 15, '#fca5a5', '800', 'center');
+
+    // Tính vị trí hạt proton (+) đang chuyển động trong không gian 3D
+    const saw = (t * 0.20) % 1;
+    let curP3, nextP3;
+    if (saw < 0.80) {
+        const curTheta = (saw / 0.80) * maxTheta;
+        curP3 = spiralPoint3D(curTheta);
+        const dTh = 0.04;
+        if (curTheta + dTh <= maxTheta) {
+            nextP3 = spiralPoint3D(curTheta + dTh);
+        } else {
+            nextP3 = { x: endP3.x + dirExitX * 5, y: endP3.y + dirExitY * 5 };
+        }
+    } else {
+        const exitFrac = (saw - 0.80) / 0.20;
+        curP3 = {
+            x: endP3.x + dirExitX * exitLen * exitFrac,
+            y: endP3.y + dirExitY * exitLen * exitFrac
+        };
+        nextP3 = {
+            x: curP3.x + dirExitX * 5,
+            y: curP3.y + dirExitY * 5
+        };
+    }
+
+    const pProton = project(curP3.x, curP3.y, zMid);
+    const pNext = project(nextP3.x, nextP3.y, zMid);
+    const vx2D = pNext.x - pProton.x;
+    const vy2D = pNext.y - pProton.y;
+    const vLen = Math.hypot(vx2D, vy2D) || 1;
+    const ux = vx2D / vLen, uy = vy2D / vLen;
+
+    function drawProtonAndVelocity() {
+        drawArrow(ctx, pProton.x, pProton.y, pProton.x + ux * 32, pProton.y + uy * 32, '#10b981', 2.8, 7);
+        ctx.fillStyle = '#38bdf8';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(pProton.x, pProton.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        drawRichText('+', pProton.x, pProton.y - 0.5, 13.5, '#ffffff', '800', 'center');
+    }
+
+    // Nếu hạt đang nằm trong lòng hộp D thì vẽ hạt TRƯỚC khi đậy nắp trên để nắp hộp phủ lên hạt đúng chuẩn 3D!
+    const isOutsideWindow = (saw >= 0.80) && (((saw - 0.80) / 0.20) * exitLen > sWindow);
+    if (!isOutsideWindow) {
+        drawProtonAndVelocity();
+    }
+
+    // BƯỚC 3: Đậy nắp trên của hai hộp chữ D (Z = depth) lên trên lòng hộp
+    drawDeeTopAndFront(true);
+    drawDeeTopAndFront(false);
+
+    // BƯỚC 4: Vẽ phần tia phóng đã chui qua cửa sổ ra ngoài không gian (từ cửa sổ winP3 đến exitEndP3) bằng nét liền nổi bật!
+    const pExitEnd = project(exitEndP3.x, exitEndP3.y, zMid);
+    ctx.save();
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(pWinCenter.x, pWinCenter.y);
+    ctx.lineTo(pExitEnd.x, pExitEnd.y);
+    ctx.stroke();
+    drawArrow(
+        ctx,
+        pExitEnd.x - (pExitEnd.x - pWinCenter.x) * 0.35,
+        pExitEnd.y - (pExitEnd.y - pWinCenter.y) * 0.35,
+        pExitEnd.x,
+        pExitEnd.y,
+        '#fbbf24',
+        2.8,
+        8
+    );
+    ctx.restore();
+
+    // Nếu hạt đã chui qua cửa sổ ra ngoài hộp thì vẽ hạt ở lớp ngoài cùng
+    if (isOutsideWindow) {
+        drawProtonAndVelocity();
+    }
+
+    // Nhãn vectơ v vẽ rõ nét
+    drawVectorLabel('v', pProton.x + ux * 44, pProton.y + uy * 44, 15, '#6ee7b7');
+
+    // --- 4. HAI VECTƠ CẢM ỨNG TỪ B HƯỚNG THẲNG ĐỨNG TỪ TRÊN XUỐNG ---
+    const bArrows = [
+        { x: cx - 88, yTop: 54, yBot: 132 },
+        { x: cx + 98, yTop: 54, yBot: 132 }
+    ];
+    for (const arr of bArrows) {
+        drawArrow(ctx, arr.x, arr.yTop, arr.x, arr.yBot, '#f8fafc', 2.8, 8);
+        drawVectorLabel('B', arr.x + 15, arr.yTop + 14, 16, '#38bdf8');
+    }
+
+    // Nhãn hai hộp chữ D: II (trái) và I (phải)
+    drawRichText('II', cx - 110, cy + 12, 16, '#f8fafc', '800', 'center');
+    drawRichText('I', cx + 110, cy + 12, 16, '#f8fafc', '800', 'center');
+
+    // --- 5. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 432, cardY = 48, cardW = 334, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ MÁY CYCLOTRON', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Hạt proton: m = 1,67·10⁻²⁷ kg', color: '#f8fafc' },
+        { text: '• Điện tích proton: q = 1,6·10⁻¹⁹ C', color: '#f8fafc' },
+        { text: '• Tần số điện xoay chiều: f_{đd} = 12 MHz', color: '#38bdf8' },
+        { text: '• Bán kính hộp chữ D: R = 53 cm', color: '#fbbf24' },
+        { text: '• Công thức: R = mv/(Bq); qB = 2πmf_{đd}', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 14.8, params[i].color, '700', 'left');
+    }
+});
+
+    // --- MH-C3-70 ---
+VLXTModels.register('MH-C3-70', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÁY GIA TỐC HẠT LỚN LHC (CERN · B = 5 T; r = 0,4297 m; |e| = 1,60·10⁻¹⁹ C)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    ctx.save();
+
+    // --- 2. KHUNG VÙNG MÔ HÌNH BÊN TRÁI ---
+    drawRoundRect(ctx, 14, 48, 412, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    // --- 3. NAM CHÂM SIÊU DẪN CHỮ U BÊN TRÁI ---
+    const mx = 34, my = 86;
+    // Thân nam châm chữ U (mảng màu phẳng sắc nét)
+    drawRoundRect(ctx, mx, my, 86, 140, 14, '#1e293b', '#94a3b8', 2.4);
+    // Khoét rãnh chữ U ở giữa trên
+    drawRoundRect(ctx, mx + 31, my - 2, 24, 68, 4, '#0b1120', '#64748b', 1.8);
+
+    // Hai cực từ N (đỏ) và S (xanh dương)
+    drawRoundRect(ctx, mx + 4, my + 4, 27, 56, 5, '#dc2626', '#fca5a5', 1.8);
+    drawRoundRect(ctx, mx + 55, my + 4, 27, 56, 5, '#2563eb', '#93c5fd', 1.8);
+    drawRichText('N', mx + 17.5, my + 32, 16, '#ffffff', '800', 'center');
+    drawRichText('S', mx + 68.5, my + 32, 16, '#ffffff', '800', 'center');
+
+    // Nhãn thông số nam châm siêu dẫn phía dưới
+    drawRichText('Nam châm', mx + 43, my + 156, 14.5, '#cbd5e1', '800', 'center');
+    drawRichText('B = 5 T', mx + 43, my + 176, 15.5, '#38bdf8', '800', 'center');
+
+    // Dấu "+" kết hợp
+    drawRichText('+', 144, 168, 24, '#94a3b8', '800', 'center');
+
+    // --- 4. VÙNG TỪ TRƯỜNG ĐỀU & QUỸ ĐẠO TRÒN PROTON ---
+    const cx = 290, cy = 169, r = 74;
+
+    // Vùng từ trường vuông góc mặt phẳng quỹ đạo (ký hiệu ⊗ đồng đều)
+    for (let gx = 186; gx <= 394; gx += 52) {
+        for (let gy = 74; gy <= 264; gy += 48) {
+            if (gx > 335 && gy < 105) continue; // Tránh thẻ B
+            drawCrossB(ctx, gx, gy, 6.5, 'rgba(56, 189, 248, 0.32)');
+        }
+    }
+
+    // Thẻ vectơ cảm ứng từ B ở góc trên-phải vùng từ trường
+    drawRoundRect(ctx, 354, 56, 62, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, 371, 72, 7.5, '#38bdf8');
+    drawVectorLabel('B', 396, 73, 16, '#38bdf8');
+
+    // Đường quỹ đạo tròn bán kính r
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Tâm O và bán kính r nét đứt
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3.8, 0, Math.PI * 2);
+    ctx.fill();
+    drawRichText('O', cx - 12, cy + 2, 15, '#cbd5e1', '800', 'center');
+
+    ctx.strokeStyle = '#f59e0b';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawRichText('r', cx + r / 2, cy - 12, 15.5, '#fbbf24', '800', 'center');
+
+    // --- 5. HẠT PROTON CHUYỂN ĐỘNG TRÒN ĐỀU & CÁC VECTƠ F, v ---
+    // Hạt proton mang điện dương q > 0 chuyển động ngược chiều kim đồng hồ trong từ trường ⊗
+    const angle = -(t * 1.9) % (Math.PI * 2);
+    const px = cx + Math.cos(angle) * r;
+    const py = cy + Math.sin(angle) * r;
+
+    // Vectơ lực từ hướng tâm F (hướng vào tâm O)
+    const dirInX = -Math.cos(angle), dirInY = -Math.sin(angle);
+    drawArrow(ctx, px, py, px + dirInX * 36, py + dirInY * 36, '#ef4444', 2.8, 7);
+    drawVectorLabel('F', px + dirInX * 22 + dirInY * 14, py + dirInY * 22 - dirInX * 14, 15, '#fca5a5');
+
+    // Vectơ vận tốc tiếp tuyến v (ngược chiều kim đồng hồ: (sin θ, -cos θ))
+    const dirTanX = Math.sin(angle), dirTanY = -Math.cos(angle);
+    drawArrow(ctx, px, py, px + dirTanX * 38, py + dirTanY * 38, '#10b981', 2.8, 7);
+    drawVectorLabel('v', px + dirTanX * 48, py + dirTanY * 48, 15, '#6ee7b7');
+
+    // Hạt proton p⁺
+    ctx.fillStyle = '#fbbf24';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(px, py, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // --- 6. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 438, cardY = 48, cardW = 328, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ MÁY GIA TỐC LHC', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Chu vi đường hầm: 27 km', color: '#f8fafc' },
+        { text: '• Cảm ứng từ siêu dẫn: B = 5 T', color: '#38bdf8' },
+        { text: '• Bán kính quỹ đạo: r = 0,4297 m', color: '#fbbf24' },
+        { text: '• Proton: m = 1,67·10⁻²⁷ kg; q = +|e|', color: '#f8fafc' },
+        { text: '• Lực từ F = Bv|q| là lực hướng tâm', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-71 ---
+VLXTModels.register('MH-C3-71', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÁY QUANG PHỔ KHỐI ĐO KHỐI LƯỢNG ION (B = 80 mT; U = 1000 V)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.26) % 1;
+
+    ctx.save();
+
+    // --- 2. BUỒNG PHÂN TÁCH TỪ TRƯỜNG ĐỀU B (CHỈ BÊN TRONG BUỒNG BÊN TRÁI) ---
+    const bx = 56, by = 48, bw = 414, bh = 166;
+    const botY = by + bh; // y = 214
+    const entryX = 144;
+    const rArc = 108;
+    const arcCenterX = entryX + rArc; // 252
+    const hitX = entryX + 2 * rArc;   // 360
+
+    drawRoundRect(ctx, bx, by, bw, bh, 6, 'rgba(15, 23, 42, 0.75)', '#cbd5e1', 2.8);
+
+    // Chừa khe hở ở đáy buồng cho chùm ion +q đi vào
+    ctx.fillStyle = '#0b1120';
+    ctx.fillRect(entryX - 9, botY - 4, 18, 8);
+
+    // Lưới dấu chấm tròn từ trường đều ⊙ B hướng vuông góc ra ngoài mặt phẳng
+    for (let x = bx + 32; x <= bx + bw - 26; x += 52) {
+        for (let y = by + 26; y <= botY - 24; y += 44) {
+            if (x < bx + 84 && y < by + 56) continue; // Tránh thẻ B góc trên-trái
+            drawDotB(ctx, x, y, 7, 'rgba(56, 189, 248, 0.52)');
+        }
+    }
+
+    // Thẻ vectơ cảm ứng từ B ở góc trên-trái buồng phân tách
+    drawRoundRect(ctx, bx + 10, by + 10, 56, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawDotB(ctx, bx + 26, by + 26, 7.5, '#38bdf8');
+    drawVectorLabel('B', bx + 49, by + 27, 16, '#38bdf8');
+
+    // --- 3. NGUỒN ION S & NGUỒN ĐIỆN ÁP TĂNG TỐC U Ở PHÍA DƯỚI ---
+    const srcY = 256;
+    drawRoundRect(ctx, entryX - 20, srcY, 40, 32, 5, '#1e293b', '#f59e0b', 2.4);
+    drawRichText('S', entryX, srcY + 16, 16, '#fbbf24', '800', 'center');
+
+    // Mạch nguồn điện một chiều U tăng tốc hạt mang điện dương từ S lên khe vào
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(entryX - 20, srcY + 16);
+    ctx.lineTo(36, srcY + 16);
+    ctx.lineTo(36, 246);
+    ctx.moveTo(36, 234);
+    ctx.lineTo(36, botY);
+    ctx.lineTo(bx, botY);
+    // Hai bản cực nguồn điện U (bản dài trên nối buồng từ trường là cực âm -, bản ngắn dưới nối S là cực dương +)
+    ctx.moveTo(24, 234); ctx.lineTo(48, 234);
+    ctx.moveTo(29, 246); ctx.lineTo(43, 246);
+    ctx.stroke();
+
+    drawRichText('U', 20, 240, 15.5, '#f8fafc', '800', 'right');
+    drawRichText('+', 52, 248, 14, '#fca5a5', '800', 'center');
+    drawRichText('−', 52, 226, 15, '#7dd3fc', '800', 'center');
+
+    // --- 4. THANH CẢM BIẾN ION DỌC ĐÁY BUỒNG BÊN PHẢI ---
+    const sensorX = arcCenterX + 26;
+    const sensorW = 166;
+    drawRoundRect(ctx, sensorX, botY - 6, sensorW, 12, 3, '#059669', '#6ee7b7', 1.8);
+    drawRichText('Cảm biến ion', sensorX + sensorW / 2, botY - 19, 15, '#6ee7b7', '800', 'center');
+
+    // --- 5. QUỸ ĐẠO ION NÉT ĐỨT, BÁN KÍNH r VÀ ĐƯỜNG KÍNH x = 2r ---
+    ctx.strokeStyle = '#fbbf24';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(entryX, srcY);
+    ctx.lineTo(entryX, botY);
+    ctx.arc(arcCenterX, botY, rArc, Math.PI, 0, false);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tâm quỹ đạo nửa tròn & mũi tên bán kính r
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(arcCenterX, botY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    const rAng = -Math.PI * 0.62;
+    const rTipX = arcCenterX + rArc * Math.cos(rAng);
+    const rTipY = botY + rArc * Math.sin(rAng);
+    drawArrow(ctx, arcCenterX, botY, rTipX, rTipY, '#38bdf8', 2.2, 7);
+    drawRichText('r', (arcCenterX + rTipX) / 2 - 14, (botY + rTipY) / 2 - 4, 15.5, '#38bdf8', '800', 'center');
+
+    // Đoạn kích thước khoảng cách x = 2r ở phía dưới đáy buồng (tách biệt hẳn khỏi nguồn S)
+    const dimY = 266;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(hitX, botY + 6);
+    ctx.lineTo(hitX, dimY + 6);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.moveTo(entryX + 24, dimY);
+    ctx.lineTo(hitX, dimY);
+    ctx.stroke();
+    drawRichText('x = 2r', (entryX + 24 + hitX) / 2, dimY + 14, 15, '#f8fafc', '800', 'center');
+
+    // --- 6. HẠT ION DƯƠNG +q CHUYỂN ĐỘNG DỌC QUỸ ĐẠO ---
+    let ix, iy;
+    if (saw < 0.24) {
+        const p = saw / 0.24;
+        ix = entryX;
+        iy = srcY - p * (srcY - botY);
+    } else {
+        const p = (saw - 0.24) / 0.76;
+        const ang = Math.PI - p * Math.PI;
+        ix = arcCenterX + Math.cos(ang) * rArc;
+        iy = botY - Math.sin(ang) * rArc;
+    }
+
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(ix, iy, 6.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    drawRichText('+q', entryX + 20, 236, 15, '#fca5a5', '800', 'center');
+
+    // --- 7. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 484, cardY = 48, cardW = 282, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ QUANG PHỔ KHỐI', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Điện áp tăng tốc: U = 1000 V', color: '#f8fafc' },
+        { text: '• Cảm ứng từ đều: B = 80 mT (⊙)', color: '#38bdf8' },
+        { text: '• Ion dương: điện tích +q, khối lượng m', color: '#fca5a5' },
+        { text: '• Quỹ đạo nửa tròn: r = mv/(|q|B)', color: '#fbbf24' },
+        { text: '• Vị trí đập cảm biến: x = 2r', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-72 ---
+VLXTModels.register('MH-C3-72', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'TÁCH ĐỒNG VỊ URANIUM U-235 & U-238 (B = 0,25 T; v = 3·10⁵ m/s)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.24) % 1;
+
+    ctx.save();
+
+    // 2. Bể chân không chứa từ trường đều vuông góc mặt phẳng (x = 18..488, y = 50..292)
+    const bx = 18, by = 50, bw = 470, bh = 242;
+    drawRoundRect(ctx, bx, by, bw, bh, 8, 'rgba(15, 23, 42, 0.85)', '#cbd5e1', 2.8);
+
+    // Ký hiệu từ trường đều B phủ nhẹ góc trống bên phải bể chân không (không đè lên quỹ đạo và chữ)
+    const bMarks = [
+        [bx + bw - 34, by + 64], [bx + bw - 82, by + 64],
+        [bx + bw - 34, by + 114], [bx + bw - 34, by + 164],
+        [bx + bw - 34, by + 214], [bx + bw - 82, by + 214]
+    ];
+    for (const [mx, my] of bMarks) {
+        drawCrossB(ctx, mx, my, 7.5, 'rgba(56, 189, 248, 0.45)');
+    }
+
+    // Nhãn Bể chân không gọn gàng góc trên phải bên trong bể
+    drawRichText('Bể chân không (B = 0,25 T)', bx + bw - 16, by + 22, 15.5, '#38bdf8', '800', 'right');
+    drawSubText(ctx, 'B', '', bx + bw - 34, by + 44, { fontSize: 17, italic: true, color: '#38bdf8', vector: true });
+
+    // 3. Nguồn ion UCl₄ ở góc dưới bên trái
+    const srcX = bx + 14, srcY = by + bh - 62, srcW = 96, srcH = 48;
+    drawRoundRect(ctx, srcX, srcY, srcW, srcH, 6, '#1e293b', '#f59e0b', 2.4);
+    drawRichText('Nguồn ion', srcX + srcW / 2, srcY + 16, 15, '#fbbf24', '800', 'center');
+    drawRichText('UCl_{4}', srcX + srcW / 2, srcY + 35, 15.5, '#fde047', '800', 'center');
+
+    // Khe hẹp định hướng chùm ion bay ngang vào vùng từ trường
+    const slitX = bx + 142;
+    const slitY = srcY + srcH / 2;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(slitX, slitY - 26);
+    ctx.lineTo(slitX, slitY - 8);
+    ctx.moveTo(slitX, slitY + 8);
+    ctx.lineTo(slitX, slitY + 26);
+    ctx.stroke();
+
+    // 4. Hai hộp thu đồng vị phía trên & Quỹ đạo nửa đường tròn
+    const r235 = 58, r238 = 88;
+    const arcCenterX = slitX + 38;
+    const c235Y = slitY - r235;
+    const c238Y = slitY - r238;
+    const top235Y = slitY - 2 * r235;
+    const top238Y = slitY - 2 * r238;
+
+    function drawOpenCupU(x, y, wBox, hBox, col) {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 3.2;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x + wBox, y);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x, y + hBox);
+        ctx.lineTo(x + wBox, y + hBox);
+        ctx.stroke();
+    }
+
+    const cupX = slitX - 18;
+    const cupW = 26, cupH = 24;
+    drawOpenCupU(cupX, top238Y - cupH / 2, cupW, cupH, '#ef4444');
+    drawOpenCupU(cupX, top235Y - cupH / 2, cupW, cupH, '#10b981');
+
+    // Chùm ion ban đầu bay ngang từ nguồn qua khe hẹp
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(srcX + srcW, slitY);
+    ctx.lineTo(arcCenterX, slitY);
+    ctx.stroke();
+
+    // Quỹ đạo nửa đường tròn U-235 (bán kính nhỏ bên trong)
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(arcCenterX, c235Y, r235, Math.PI / 2, -Math.PI / 2, true);
+    ctx.lineTo(cupX + 6, top235Y);
+    ctx.stroke();
+
+    // Quỹ đạo nửa đường tròn U-238 (bán kính lớn bên ngoài)
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(arcCenterX, c238Y, r238, Math.PI / 2, -Math.PI / 2, true);
+    ctx.lineTo(cupX + 6, top238Y);
+    ctx.stroke();
+
+    // 5. Chuyển động 1 chiều đồng bộ từ nguồn -> khe -> vòng tròn -> vào 2 hộp thu
+    let p235X, p235Y, p238X, p238Y;
+    if (saw < 0.22) {
+        const u = saw / 0.22;
+        const curX = (srcX + srcW) + u * (arcCenterX - (srcX + srcW));
+        p235X = curX; p235Y = slitY;
+        p238X = curX; p238Y = slitY;
+    } else if (saw < 0.88) {
+        const u = (saw - 0.22) / 0.66;
+        const ang = Math.PI / 2 - u * Math.PI;
+        p235X = arcCenterX + Math.cos(ang) * r235;
+        p235Y = c235Y + Math.sin(ang) * r235;
+        p238X = arcCenterX + Math.cos(ang) * r238;
+        p238Y = c238Y + Math.sin(ang) * r238;
+    } else {
+        const u = (saw - 0.88) / 0.12;
+        const curX = arcCenterX - u * (arcCenterX - (cupX + 6));
+        p235X = curX; p235Y = top235Y;
+        p238X = curX; p238Y = top238Y;
+    }
+
+    // Vẽ 2 hạt ion chuyển động
+    ctx.fillStyle = '#6ee7b7';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(p235X, p235Y, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#fca5a5';
+    ctx.beginPath();
+    ctx.arc(p238X, p238Y, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 6. Các nhãn chú thích chữ thật to (15.5px - 16px) đặt ở vùng trống tách biệt hoàn toàn
+    drawRichText('U-238', cupX - 8, top238Y, 16, '#fca5a5', '800', 'right');
+    drawRichText('U-235', cupX - 8, top235Y, 16, '#6ee7b7', '800', 'right');
+
+    // Nhãn chùm ion bên phải quỹ đạo (không chạm đường cong)
+    drawRichText('Ion U-238', arcCenterX + r238 + 10, c238Y - 6, 15.5, '#fca5a5', '800', 'left');
+    drawRichText('Ion U-235', arcCenterX + r235 + 10, c235Y + 26, 15.5, '#6ee7b7', '800', 'left');
+
+    // Mũi tên chỉ chiều vận tốc ban đầu v
+    drawArrow(ctx, slitX + 4, slitY - 14, slitX + 36, slitY - 14, '#fde047', 2.4, 6.5);
+    drawSubText(ctx, 'v', '', slitX + 20, slitY - 26, { fontSize: 16, italic: true, color: '#fde047', vector: true });
+
+    // 7. Thẻ thông số đề dẫn bên phải (Zero Data Leakage - KHÔNG lộ 0,075 m, chữ thật to 16px)
+    drawRoundRect(ctx, 502, 60, 264, 228, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(503.5, 61.5, 261, 40, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ TÁCH ĐỒNG VỊ', 518, 82, 16.5, '#38bdf8', '800', 'left');
+    drawRichText('• Điện tích: q = 1,6·10⁻¹⁹ C', 518, 122, 16, '#f8fafc', '700', 'left');
+    drawRichText('• Vận tốc: v = 3·10⁵ m/s', 518, 154, 16, '#fde047', '800', 'left');
+    drawRichText('• Cảm ứng từ: B = 0,25 T', 518, 186, 16, '#38bdf8', '800', 'left');
+    drawRichText('• m(U-235) = 3,90·10⁻²⁵ kg', 518, 218, 15.5, '#6ee7b7', '700', 'left');
+    drawRichText('• m(U-238) = 3,95·10⁻²⁵ kg', 518, 250, 15.5, '#fca5a5', '700', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-73 ---
+VLXTModels.register('MH-C3-73', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawPointerTag(targetX, targetY, boxX, boxY, text, borderColor, textColor, fontSize = 15) {
+        const padX = 10, padY = 5;
+        const tw = measureRichText(text, fontSize, '800');
+        const bw = tw + padX * 2, bh = fontSize + padY * 2;
+        const cx = boxX + bw / 2, cy = boxY + bh / 2;
+
+        ctx.save();
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(targetX, targetY);
+        ctx.lineTo(cx, cy);
+        ctx.stroke();
+
+        ctx.fillStyle = borderColor;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawRoundRect(ctx, boxX, boxY, bw, bh, 6, '#0f172a', borderColor, 1.8);
+        drawRichText(text, cx, cy, fontSize, textColor, '800', 'center');
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('CẤU TẠO MICRO ĐIỆN ĐỘNG (N = 12 vòng; S = 40 cm²; ΔB/Δt = 5 T/s)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const vib = Math.sin(t * 6.5) * 6; // Màng rung & cuộn dây dao động dọc trục nam châm
+
+    ctx.save();
+
+    // --- 2. KHUNG VÙNG MÔ HÌNH THIẾT BỊ BÊN TRÁI (TÁCH BIỆT VỚI THẺ THÔNG SỐ BÊN PHẢI) ---
+    drawRoundRect(ctx, 14, 48, 452, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    // --- 3. SÓNG ÂM TRUYỀN TỪ TRÁI ĐẬP VÀO MÀNG RUNG ---
+    for (let i = 0; i < 3; i++) {
+        const sp = (t * 0.85 + i * 0.333) % 1;
+        const sx = 46 + sp * 96;
+        ctx.strokeStyle = `rgba(56, 189, 248, ${(0.95 - sp * 0.65).toFixed(2)})`;
+        ctx.lineWidth = 2.6;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(sx, 162, 16 + sp * 14, -Math.PI * 0.36, Math.PI * 0.36);
+        ctx.stroke();
+    }
+    drawRichText('Sóng âm', 84, 106, 15.5, '#38bdf8', '800', 'center');
+
+    // --- 4. NAM CHÂM VĨNH CỬU ĐẶT CỐ ĐỊNH (CỰC S XANH TRÁI, CỰC N ĐỎ PHẢI) ---
+    const magX = 248, magY = 141, magW = 198, magH = 42;
+    drawRoundRect(ctx, magX, magY, magW / 2, magH, 4, '#2563eb', '#93c5fd', 2.2);
+    drawRoundRect(ctx, magX + magW / 2, magY, magW / 2, magH, 4, '#dc2626', '#fca5a5', 2.2);
+    drawRichText('S', magX + 26, magY + magH / 2, 17, '#ffffff', '800', 'center');
+    drawRichText('N', magX + magW - 26, magY + magH / 2, 17, '#ffffff', '800', 'center');
+
+    // --- 5. MÀNG RUNG HÌNH PHỄU & ỐNG CUỘN DÂY 12 VÒNG DAO ĐỘNG DỌC TRỤC NAM CHÂM ---
+    const coneX = 166 + vib;
+    const coilStartX = coneX + 46;
+    const coilW = 74, coilH = 54, coilY = 135;
+
+    // Màng rung nón phẳng sắc nét
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.34)';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.8;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(coneX, 102);
+    ctx.lineTo(coilStartX, coilY);
+    ctx.lineTo(coilStartX, coilY + coilH);
+    ctx.lineTo(coneX, 222);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Ống trụ lồng qua đầu cực S của nam châm
+    drawRoundRect(ctx, coilStartX, coilY, coilW, coilH, 4, 'rgba(245, 158, 11, 0.22)', '#fbbf24', 2.2);
+
+    // Các vòng dây đồng quấn quanh ống trụ (sắc nét, đều đặn)
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    for (let k = 0; k < 7; k++) {
+        const wx = coilStartX + 10 + k * 9;
+        ctx.beginPath();
+        ctx.moveTo(wx, coilY - 3);
+        ctx.lineTo(wx, coilY + coilH + 3);
+        ctx.stroke();
+    }
+
+    // Hai đầu dây A, B đưa tín hiệu ra Mạch khuếch đại phía dưới
+    const wireAx = coilStartX + 10;
+    const wireBx = coilStartX + 64;
+    const termY = 232;
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(wireAx, coilY + coilH + 3);
+    ctx.lineTo(wireAx, termY);
+    ctx.moveTo(wireBx, coilY + coilH + 3);
+    ctx.lineTo(wireBx, termY);
+    ctx.stroke();
+
+    for (const wx of [wireAx, wireBx]) {
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(wx, termY, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    drawRichText('A', wireAx - 15, termY, 15, '#f8fafc', '800', 'center');
+    drawRichText('B', wireBx + 15, termY, 15, '#f8fafc', '800', 'center');
+
+    const midWireX = (wireAx + wireBx) / 2;
+    drawArrow(ctx, midWireX, termY + 4, midWireX, 260, '#fbbf24', 2.8, 7);
+    drawRichText('Mạch khuếch đại', midWireX, 276, 15, '#fbbf24', '800', 'center');
+
+    // --- 6. THẺ CHÚ THÍCH BỘ PHẬN GỌN GÀNG TRONG VÙNG TRỐNG ---
+    drawPointerTag(coneX + 6, 206, 24, 236, 'Màng rung', '#94a3b8', '#f8fafc', 14.5);
+    drawPointerTag(coilStartX + coilW / 2, coilY - 3, 188, 60, 'Cuộn dây (N = 12)', '#f59e0b', '#fde047', 14.5);
+    drawPointerTag(magX + magW - 22, magY, 326, 94, 'Nam châm cố định', '#ef4444', '#fca5a5', 14.5);
+
+    // --- 7. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 478, cardY = 48, cardW = 288, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ MICRO ĐIỆN ĐỘNG', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Số vòng cuộn dây: N = 12 vòng', color: '#fde047' },
+        { text: '• Diện tích mỗi vòng: S = 40 cm²', color: '#f8fafc' },
+        { text: '• Tốc độ biến thiên: ΔB/Δt = 5 T/s', color: '#38bdf8' },
+        { text: '• Nam châm vĩnh cửu đặt cố định', color: '#fca5a5' },
+        { text: '• Sóng âm làm màng & cuộn dây rung', color: '#6ee7b7' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-74 ---
+VLXTModels.register('MH-C3-74', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét đặt ở vùng trống an toàn (không bao giờ đè lên mô hình)
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 50 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 16, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 35, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'CẤU TẠO LOA ĐIỆN ĐỘNG (N = 20 vòng; d = 7,2 cm; B = 0,075 T; R = 5,8 Ω)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const vib = Math.sin(t * 7) * 4;
+
+    ctx.save();
+
+    // =========================================================================
+    // HÌNH a (BÊN TRÁI: x = 18..365): MẶT CẮT DỌC LOA ĐIỆN ĐỘNG
+    // =========================================================================
+    const m1x = 126, m1y = 152;
+
+    // 1.1 Khối nam châm chữ E mặt cắt dọc: Cực Nam S xanh bao ngoài (trên & dưới), cực Bắc N đỏ ở lõi giữa
+    // Cực S trên và dưới + gông từ phía sau
+    ctx.fillStyle = '#2563eb';
+    ctx.strokeStyle = '#93c5fd';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(m1x, m1y - 58);
+    ctx.lineTo(m1x + 56, m1y - 58);
+    ctx.lineTo(m1x + 56, m1y - 36);
+    ctx.lineTo(m1x + 22, m1y - 36);
+    ctx.lineTo(m1x + 22, m1y + 36);
+    ctx.lineTo(m1x + 56, m1y + 36);
+    ctx.lineTo(m1x + 56, m1y + 58);
+    ctx.lineTo(m1x, m1y + 58);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Trụ lõi cực Bắc N (màu đỏ) ở chính giữa khe từ trường
+    drawRoundRect(ctx, m1x + 22, m1y - 22, 36, 44, 3, '#ef4444', '#fca5a5', 2);
+
+    // Ký hiệu cực từ S và N chữ thật to, rõ nét
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('S', m1x + 39, m1y - 47);
+    ctx.fillText('S', m1x + 39, m1y + 47);
+    ctx.font = '800 17px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('N', m1x + 40, m1y);
+
+    // Đường sức từ hướng xuyên tâm trong khe hẹp (từ lõi N ra vành S trên/dưới)
+    drawArrow(ctx, m1x + 48, m1y - 23, m1x + 48, m1y - 35, '#38bdf8', 2, 4.5);
+    drawArrow(ctx, m1x + 48, m1y + 23, m1x + 48, m1y + 35, '#38bdf8', 2, 4.5);
+
+    // 1.2 Cuộn dây đồng & Nón loa dao động ngang theo tín hiệu điện I
+    const cx1 = m1x + 42 + vib;
+    drawRoundRect(ctx, cx1, m1y - 29, 24, 58, 3, 'rgba(245, 158, 11, 0.35)', '#fbbf24', 2.4);
+    // Mặt cắt các vòng dây đồng ở thành trên và thành dưới ống cuộn dây
+    ctx.fillStyle = '#fbbf24';
+    for (let dx = 5; dx <= 19; dx += 7) {
+        ctx.beginPath();
+        ctx.arc(cx1 + dx, m1y - 29, 2.3, 0, Math.PI * 2);
+        ctx.arc(cx1 + dx, m1y + 29, 2.3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Nón loa (màng loa) gắn liền với cuộn dây
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.8;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx1 + 24, m1y - 29);
+    ctx.lineTo(cx1 + 84, m1y - 76);
+    ctx.lineTo(cx1 + 84, m1y + 76);
+    ctx.lineTo(cx1 + 24, m1y + 29);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 1.3 Hai dây tín hiệu điện I đi vào cuộn dây (tách gọn ở góc dưới trái)
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(cx1 + 8, m1y + 29);
+    ctx.quadraticCurveTo(106, 212, 88, 224);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(cx1 + 16, m1y + 29);
+    ctx.quadraticCurveTo(118, 222, 102, 236);
+    ctx.stroke();
+
+    // Nhãn chú thích Hình a ở vùng trống an toàn (KHÔNG chạm vào nón loa hay nam châm)
+    drawSafeNote(16, 52, cx1 + 54, m1y - 52, 'Nón loa (màng loa)', null, '#38bdf8');
+    drawSafeNote(16, 226, 94, 230, 'Tín hiệu điện I', null, '#fbbf24');
+
+    // Nhãn Hình a dưới cùng
+    drawRichText('Hình a. Mặt cắt dọc loa điện động', 186, 286, 15.5, '#f8fafc', '800', 'center');
+
+    // Đường phân cách dọc nhẹ nhàng giữa Hình a và Hình b
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(366, 52);
+    ctx.lineTo(366, 292);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // =========================================================================
+    // HÌNH b (BÊN PHẢI: x = 380..766): BỐ TRÍ NAM CHÂM TRÒN & CUỘN DÂY
+    // =========================================================================
+    const c2x = 492, c2y = 152;
+
+    // 2.1 Vành cực Nam S (xanh dương) bao ngoài
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 22;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 76, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Viền sắc nét cho vành cực Nam S
+    ctx.strokeStyle = '#93c5fd';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 87, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 65, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 17px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('S', c2x - 76, c2y);
+    ctx.fillText('S', c2x + 76, c2y);
+
+    // 2.2 Cuộn dây tròn đường kính d = 7,2 cm nằm đồng tâm trong khe từ trường
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 49, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Các vòng dây đồng mịn
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 1.4;
+    for (let r = 44; r <= 54; r += 5) {
+        ctx.beginPath();
+        ctx.arc(c2x, c2y, r, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    // Hai đầu dây dẫn của cuộn dây tròn đi ra ở góc dưới trái
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(c2x - 36, c2y + 34);
+    ctx.lineTo(c2x - 78, c2y + 74);
+    ctx.moveTo(c2x - 28, c2y + 40);
+    ctx.lineTo(c2x - 68, c2y + 82);
+    ctx.stroke();
+
+    // 2.3 Trụ lõi cực Bắc N (màu đỏ) ở tâm
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#fca5a5';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 20px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('N', c2x, c2y + 1);
+
+    // 2.4 Các vectơ cảm ứng từ B xuyên tâm hướng từ lõi cực N ra vành cực S
+    const bAngles = [-Math.PI / 2, -Math.PI / 4, Math.PI / 4, Math.PI / 2];
+    for (const ang of bAngles) {
+        const x1 = c2x + Math.cos(ang) * 32;
+        const y1 = c2y + Math.sin(ang) * 32;
+        const x2 = c2x + Math.cos(ang) * 63;
+        const y2 = c2y + Math.sin(ang) * 63;
+        drawArrow(ctx, x1, y1, x2, y2, '#38bdf8', 2.2, 5.5);
+    }
+    drawSubText(ctx, 'B', '', c2x + 28, c2y - 34, { fontSize: 16, italic: true, color: '#38bdf8', vector: true });
+
+    // Mũi tên chiều dòng điện I trên cung trên của cuộn dây (tách biệt hẳn, không đè chữ)
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.arc(c2x, c2y, 49, -Math.PI * 0.68, -Math.PI * 0.32, false);
+    ctx.stroke();
+    const arrAng = -Math.PI * 0.32;
+    drawArrow(
+        ctx,
+        c2x + Math.cos(arrAng - 0.1) * 49,
+        c2y + Math.sin(arrAng - 0.1) * 49,
+        c2x + Math.cos(arrAng) * 49,
+        c2y + Math.sin(arrAng) * 49,
+        '#fde047', 2.6, 6.5
+    );
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('I', c2x, c2y - 38);
+
+    // 2.5 Thẻ chú thích & Thông số đề dẫn bên phải Hình b (x = 594..768, tách biệt hoàn toàn với hình tròn x = 405..579)
+    drawSafeNote(
+        594, 54,
+        c2x + Math.cos(-0.2) * 52, c2y + Math.sin(-0.2) * 52,
+        'Cuộn dây tròn',
+        'N = 20 vòng; d = 7,2 cm',
+        '#f59e0b'
+    );
+
+    drawRoundRect(ctx, 594, 122, 174, 134, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRichText('THÔNG SỐ LOA', 606, 142, 15.5, '#38bdf8', '800', 'left');
+    drawRichText('• Số vòng: N = 20', 606, 170, 15, '#f8fafc', '700', 'left');
+    drawRichText('• Đ.kính: d = 7,2 cm', 606, 196, 15, '#fde047', '800', 'left');
+    drawRichText('• Từ trường: 0,075 T', 606, 222, 15, '#f8fafc', '700', 'left');
+    drawRichText('• Điện trở: R = 5,8 Ω', 606, 246, 15, '#6ee7b7', '800', 'left');
+
+    // Nhãn Hình b dưới cùng
+    drawRichText('Hình b. Bố trí cuộn dây & nam châm', 575, 286, 15.5, '#f8fafc', '800', 'center');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-75 ---
+VLXTModels.register('MH-C3-75', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawPointerTag(targetX, targetY, boxX, boxY, text, borderColor, textColor, fontSize = 15.5) {
+        const padX = 11, padY = 6;
+        const tw = measureRichText(text, fontSize, '800');
+        const bw = tw + padX * 2, bh = fontSize + padY * 2;
+        const cy = boxY + bh / 2;
+
+        ctx.save();
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(targetX, targetY);
+        ctx.lineTo(boxX - 12, cy);
+        ctx.lineTo(boxX, cy);
+        ctx.stroke();
+
+        ctx.fillStyle = borderColor;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawRoundRect(ctx, boxX, boxY, bw, bh, 7, '#0f172a', borderColor, 2);
+        drawRichText(text, boxX + bw / 2, cy, fontSize, textColor, '800', 'center');
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (16px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('DYNAMO XE ĐẠP (BÁN KÍNH NÚM DẪN ĐỘNG R = 3 cm; Φ_{max} = 0,03 Wb)', w / 2, 24, 16, '#38bdf8', '800', 'center');
+
+    const rot = t * 3.4;
+
+    ctx.save();
+
+    // --- 2. KHUNG BÊN TRÁI: BÁNH XE ĐẠP TÌ NÚM DẪN ĐỘNG DYNAMO & ĐÈN PHA NHẤP NHÁY ---
+    drawRoundRect(ctx, 14, 48, 224, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const wx = 110, wy = 246, wr = 98;
+    const tireOuterR = wr + 5; // Bán kính mép ngoài cùng của lốp cao su = 103
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(16, 50, 220, 204);
+    ctx.clip();
+
+    // 16 nan hoa quay đồng bộ trọn vòng
+    const numSpokes = 16;
+    const stepSpoke = (Math.PI * 2) / numSpokes;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.8;
+    for (let k = 0; k < numSpokes; k++) {
+        const a = k * stepSpoke + rot * 0.24;
+        ctx.beginPath();
+        ctx.moveTo(wx, wy);
+        ctx.lineTo(wx + Math.cos(a) * (wr - 5), wy + Math.sin(a) * (wr - 5));
+        ctx.stroke();
+    }
+
+    // May-ơ tâm bánh xe
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(wx, wy, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Vành kim loại & lốp cao su xe đạp
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3.6;
+    ctx.beginPath();
+    ctx.arc(wx, wy, wr - 6, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.arc(wx, wy, wr, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Mũi tên cong chỉ chiều quay của bánh xe đạp
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(wx, wy, wr - 24, -Math.PI * 0.72, -Math.PI * 0.48);
+    ctx.stroke();
+    const arrWheelX = wx + Math.cos(-Math.PI * 0.48) * (wr - 24);
+    const arrWheelY = wy + Math.sin(-Math.PI * 0.48) * (wr - 24);
+    drawArrow(ctx, arrWheelX - 6, arrWheelY - 1, arrWheelX + 2, arrWheelY + 1, '#38bdf8', 2, 5);
+
+    // Dynamo hạ thấp xuống để phần núm dẫn động nằm đè tiếp xúc lên trên mặt lốp xe đạp!
+    const contactA = -0.68;
+    const rotDyn = contactA + Math.PI / 2;
+    const sinD = Math.sin(rotDyn);
+    const cosD = Math.cos(rotDyn);
+
+    // Tâm núm dẫn động hạ xuống nằm chồng tiếp xúc lên dải lốp (cách tâm bánh xe wr + 3 = 101, lốp rộng từ 93 đến 103)
+    const knobCenterDist = wr + 3;
+    const knobCx = wx + Math.cos(contactA) * knobCenterDist;
+    const knobCy = wy + Math.sin(contactA) * knobCenterDist;
+
+    // Gốc tọa độ (0, 0) của Dynamo nằm ngay dưới đáy núm (cách tâm núm +7.5 dọc theo trục +Y local)
+    const cxContact = knobCx - 7.5 * sinD;
+    const cyContact = knobCy + 7.5 * cosD;
+    const bodyLen = 38;
+
+    // Đuôi Dynamo tại tọa độ local (0, bodyLen) -> nút đấu dây màu cam
+    const tailX = cxContact - bodyLen * sinD;
+    const tailY = cyContact + bodyLen * cosD;
+
+    // Dây dẫn màu xanh nối trực tiếp từ nút cam ở đuôi Dynamo (tailX, tailY) vòng qua bên phải lên đèn pha
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.6;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(224, tailY);
+    ctx.lineTo(224, 110);
+    ctx.lineTo(95, 110);
+    ctx.lineTo(95, 96);
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(cxContact, cyContact);
+    ctx.rotate(rotDyn);
+
+    // Thân Dynamo (y = 0..bodyLen)
+    drawRoundRect(ctx, -14, 0, 28, bodyLen, 5, '#334155', '#94a3b8', 2.2);
+
+    // Nút đấu dây màu cam ở đuôi Dynamo (khớp 100% với đầu dây xanh)
+    ctx.fillStyle = '#f59e0b';
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(0, bodyLen, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Núm dẫn động nằm đè tiếp xúc lên trên lốp xe ở đầu trên (y = -15..0)
+    drawRoundRect(ctx, -9, -15, 18, 15, 3, '#f59e0b', '#fef08a', 2);
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2;
+    const knobShift = (rot * 4.5) % 6;
+    for (let kx = -6 + knobShift; kx <= 7; kx += 6) {
+        ctx.beginPath();
+        ctx.moveTo(kx, -13);
+        ctx.lineTo(kx, -2);
+        ctx.stroke();
+    }
+
+    // Mũi tên nhỏ chỉ chiều xoay của núm dẫn động
+    drawArrow(ctx, 13, -12, 13, -2, '#38bdf8', 1.8, 4.5);
+
+    ctx.restore();
+
+    // Đèn pha xe đạp phát sáng nhấp nháy theo tần số quay của dynamo
+    const pulse = Math.sin(rot) ** 2;
+    const bulbAlpha = (0.30 + 0.70 * pulse).toFixed(2);
+    const rayLen = 18 + pulse * 18;
+
+    drawRoundRect(ctx, 76, 70, 38, 26, 7, '#1e293b', '#cbd5e1', 2.2);
+    ctx.fillStyle = `rgba(254, 240, 138, ${bulbAlpha})`;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(116, 83, 10, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 3 tia sáng nhấp nháy
+    ctx.strokeStyle = `rgba(254, 240, 138, ${(0.25 + 0.75 * pulse).toFixed(2)})`;
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    const rayAngles = [-0.28, 0, 0.28];
+    for (const ra of rayAngles) {
+        const rStartX = 132;
+        const rStartY = 83 + ra * 14;
+        ctx.beginPath();
+        ctx.moveTo(rStartX, rStartY);
+        ctx.lineTo(rStartX + Math.cos(ra) * rayLen, rStartY + Math.sin(ra) * rayLen);
+        ctx.stroke();
+    }
+
+    drawRichText('Lắp đặt thực tế', 126, 274, 15.5, '#cbd5e1', '800', 'center');
+
+    // --- 3. KHUNG BÊN PHẢI: MÔ HÌNH 3D TRỰC QUAN CẤU TẠO DYNAMO ---
+    drawRoundRect(ctx, 250, 48, 516, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const dx = 414;
+
+    // --- 3A. LÕI SẮT NON CHỮ U 3D ĐẶT CỐ ĐỊNH BÊN DƯỚI ---
+    const coreW = 14, coreDepthX = 9, coreDepthY = -6;
+    const leftLegX = dx - 54, rightLegX = dx + 40;
+    const legTopY = 144, legBotY = 232;
+
+    function drawCoreBar3D(x, y, wBar, hBar) {
+        ctx.fillStyle = '#475569';
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.6;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x + wBar, y);
+        ctx.lineTo(x + wBar + coreDepthX, y + coreDepthY);
+        ctx.lineTo(x + wBar + coreDepthX, y + hBar + coreDepthY);
+        ctx.lineTo(x + wBar, y + hBar);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + coreDepthX, y + coreDepthY);
+        ctx.lineTo(x + wBar + coreDepthX, y + coreDepthY);
+        ctx.lineTo(x + wBar, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(x, y, wBar, hBar);
+        ctx.strokeRect(x, y, wBar, hBar);
+    }
+
+    drawCoreBar3D(leftLegX, legTopY, coreW, legBotY - legTopY);
+    drawCoreBar3D(rightLegX, legTopY, coreW, legBotY - legTopY);
+    drawCoreBar3D(leftLegX, legBotY, rightLegX - leftLegX + coreW, 14);
+
+    // --- 3B. CUỘN DÂY DẪN 3D QUẤN QUANH ĐÁY LÕI SẮT NON ---
+    const coilX = dx - 31, coilY = legBotY - 6, coilW = 62, coilH = 26;
+    ctx.fillStyle = '#92400e';
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(coilX, coilY);
+    ctx.lineTo(coilX + coreDepthX, coilY + coreDepthY);
+    ctx.lineTo(coilX + coilW + coreDepthX, coilY + coreDepthY);
+    ctx.lineTo(coilX + coilW + coreDepthX, coilY + coilH + coreDepthY);
+    ctx.lineTo(coilX + coilW, coilY + coilH);
+    ctx.lineTo(coilX, coilY + coilH);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    drawRoundRect(ctx, coilX, coilY, coilW, coilH, 4, '#b45309', '#fbbf24', 2);
+    drawRichText('Cuộn dây', dx + 4, 274, 15.5, '#fde047', '800', 'center');
+
+    // --- 3C. HỆ QUAY ĐỒNG TRỤC 3D: NÚM DẪN ĐỘNG + TRỤC QUAY + NAM CHÂM N-S ---
+    const shaftTopY = 82, shaftBotY = 148, shaftR = 5;
+    ctx.fillStyle = '#94a3b8';
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1.6;
+    ctx.fillRect(dx - shaftR, shaftTopY, shaftR * 2, shaftBotY - shaftTopY);
+    ctx.strokeRect(dx - shaftR, shaftTopY, shaftR * 2, shaftBotY - shaftTopY);
+
+    const shaftMarkX = dx + Math.sin(rot) * (shaftR - 1.2);
+    if (Math.cos(rot) > -0.2) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(shaftMarkX, shaftTopY + 3);
+        ctx.lineTo(shaftMarkX, shaftBotY - 2);
+        ctx.stroke();
+    }
+
+    // Núm dẫn động hình trụ 3D trên đỉnh
+    const knobTopY = 62, knobH = 19, knobRx = 24, knobRy = 6.5;
+    ctx.fillStyle = '#d97706';
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(dx - knobRx, knobTopY);
+    ctx.lineTo(dx - knobRx, knobTopY + knobH);
+    ctx.ellipse(dx, knobTopY + knobH, knobRx, knobRy, 0, Math.PI, 0, true);
+    ctx.lineTo(dx + knobRx, knobTopY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    const numGrooves = 8;
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2;
+    for (let g = 0; g < numGrooves; g++) {
+        const ga = rot + (g * Math.PI * 2) / numGrooves;
+        if (Math.sin(ga) > 0) {
+            const gx = dx + Math.cos(ga) * (knobRx - 1.5);
+            const gyOffset = Math.sin(ga) * knobRy;
+            ctx.beginPath();
+            ctx.moveTo(gx, knobTopY + gyOffset);
+            ctx.lineTo(gx, knobTopY + knobH + gyOffset);
+            ctx.stroke();
+        }
+    }
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.ellipse(dx, knobTopY, knobRx, knobRy, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(dx + Math.cos(rot) * (knobRx - 3), knobTopY + Math.sin(rot) * (knobRy - 1.5));
+    ctx.lineTo(dx - Math.cos(rot) * (knobRx - 3), knobTopY - Math.sin(rot) * (knobRy - 1.5));
+    ctx.stroke();
+
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.ellipse(dx, knobTopY - 3, 14, 4.5, 0, Math.PI * 0.15, Math.PI * 1.15);
+    ctx.stroke();
+    drawArrow(ctx, dx - 13, knobTopY - 5, dx - 9, knobTopY - 8, '#38bdf8', 2.2, 5);
+
+    // Thanh nam châm 3D N-S quay quanh trục thẳng đứng ở giữa hai nhánh lõi sắt
+    const magHalfL = 32;
+    const magHalfT = 7;
+    const magTopY = 148, magBotY = 184;
+    const tilt3D = 0.34;
+
+    function magPt(u, v, y) {
+        const X = u * Math.cos(rot) - v * Math.sin(rot);
+        const Z = u * Math.sin(rot) + v * Math.cos(rot);
+        return {
+            x: dx + X,
+            y: y + Z * tilt3D
+        };
+    }
+
+    function drawMagHalf3D(u1, u2, colorFront, colorTop, label) {
+        const p00T = magPt(u1, -magHalfT, magTopY);
+        const p10T = magPt(u2, -magHalfT, magTopY);
+        const p11T = magPt(u2,  magHalfT, magTopY);
+        const p01T = magPt(u1,  magHalfT, magTopY);
+
+        const p00B = magPt(u1, -magHalfT, magBotY);
+        const p10B = magPt(u2, -magHalfT, magBotY);
+        const p11B = magPt(u2,  magHalfT, magBotY);
+        const p01B = magPt(u1,  magHalfT, magBotY);
+
+        const faces = [
+            { pts: [p01T, p11T, p11B, p01B], nz: Math.cos(rot), color: colorFront },
+            { pts: [p00T, p10T, p10B, p00B], nz: -Math.cos(rot), color: colorFront },
+            { pts: [p10T, p11T, p11B, p10B], nz: Math.sin(rot), color: colorFront },
+            { pts: [p00T, p01T, p01B, p00B], nz: -Math.sin(rot), color: colorFront }
+        ];
+
+        ctx.save();
+        ctx.lineJoin = 'round';
+        for (const f of faces) {
+            if (f.nz > -0.05) {
+                ctx.fillStyle = f.color;
+                ctx.strokeStyle = '#f8fafc';
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(f.pts[0].x, f.pts[0].y);
+                for (let i = 1; i < 4; i++) ctx.lineTo(f.pts[i].x, f.pts[i].y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+
+        ctx.fillStyle = colorTop;
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(p00T.x, p00T.y);
+        ctx.lineTo(p10T.x, p10T.y);
+        ctx.lineTo(p11T.x, p11T.y);
+        ctx.lineTo(p01T.x, p01T.y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        const uMid = (u1 + u2) / 2;
+        const pLabel = magPt(uMid, 0, (magTopY + magBotY) / 2);
+        if (Math.abs(Math.cos(rot)) > 0.25) {
+            drawRichText(label, pLabel.x, pLabel.y, 15, '#ffffff', '800', 'center');
+        }
+        ctx.restore();
+    }
+
+    if (Math.sin(rot) >= 0) {
+        drawMagHalf3D(0, magHalfL, '#2563eb', '#60a5fa', 'S');
+        drawMagHalf3D(-magHalfL, 0, '#dc2626', '#f87171', 'N');
+    } else {
+        drawMagHalf3D(-magHalfL, 0, '#dc2626', '#f87171', 'N');
+        drawMagHalf3D(0, magHalfL, '#2563eb', '#60a5fa', 'S');
+    }
+
+    // --- 3D. BÓNG ĐÈN MẮC NỐI TIẾP VỚI CUỘN DÂY Ở BÊN TRÁI SƠ ĐỒ ---
+    const lx = 304, ly = 110;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(coilX, legBotY + 2);
+    ctx.lineTo(lx - 10, legBotY + 2);
+    ctx.lineTo(lx - 10, ly + 16);
+    ctx.moveTo(coilX, legBotY + 14);
+    ctx.lineTo(lx + 10, legBotY + 14);
+    ctx.lineTo(lx + 10, ly + 16);
+    ctx.stroke();
+
+    ctx.fillStyle = `rgba(254, 240, 138, ${bulbAlpha})`;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(lx, ly, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = `rgba(254, 240, 138, ${(0.20 + 0.80 * pulse).toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    for (let rIdx = 0; rIdx < 6; rIdx++) {
+        const ba = -Math.PI * 0.85 + rIdx * 0.34;
+        const r1 = 20;
+        const r2 = 24 + pulse * 6;
+        ctx.beginPath();
+        ctx.moveTo(lx + Math.cos(ba) * r1, ly + Math.sin(ba) * r1);
+        ctx.lineTo(lx + Math.cos(ba) * r2, ly + Math.sin(ba) * r2);
+        ctx.stroke();
+    }
+
+    ctx.strokeStyle = '#b45309';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lx - 7, ly - 7);
+    ctx.lineTo(lx + 7, ly + 7);
+    ctx.moveTo(lx + 7, ly - 7);
+    ctx.lineTo(lx - 7, ly + 7);
+    ctx.stroke();
+
+    drawRichText('Bóng đèn', lx, ly - 32, 15.5, '#fef08a', '800', 'center');
+
+    // --- 4. THẺ CHÚ THÍCH CÁC BỘ PHẬN BÊN PHẢI ---
+    drawPointerTag(dx + 24, 71, 496, 56, 'Núm dẫn động (R = 3 cm)', '#fbbf24', '#fef08a', 15.5);
+    drawPointerTag(dx + 34, 164, 496, 112, 'Nam châm quay (Phần cảm)', '#ef4444', '#fca5a5', 15.5);
+    drawPointerTag(rightLegX + coreW + coreDepthX, 198, 496, 168, 'Lõi sắt non hình chữ U', '#94a3b8', '#f8fafc', 15.5);
+    drawPointerTag(coilX + coilW + coreDepthX, 236, 496, 224, 'Cuộn dây dẫn (Phần ứng)', '#f59e0b', '#fde047', 15.5);
+
+    ctx.restore();
+});
+
+    // --- MH-C3-76 ---
+VLXTModels.register('MH-C3-76', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét tách biệt hoàn toàn bên phải
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 52 : 34;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 17, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 37, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'NGUYÊN LÝ BẾP ĐIỆN TỪ (CẢM ỨNG ĐIỆN TỪ & DÒNG FOUCAULT)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Hệ chiếu phối cảnh 3D Isometric chuẩn (chia 3 tầng rõ rệt: Cuộn dây -> Mặt kính -> Nồi)
+    const ox = 262, oy = 178;
+    const uxX = 0.88, uxY = -0.24;
+    const uyX = 0.88, uyY = 0.24;
+    const flatRatio = 0.32;
+
+    function iso(x, y, z) {
+        return {
+            x: ox + x * uxX + y * uyX,
+            y: oy + x * uxY + y * uyY - z
+        };
+    }
+
+    function isoCirclePt(r, ang, z) {
+        return {
+            x: ox + Math.cos(ang) * r,
+            y: oy + Math.sin(ang) * r * flatRatio - z
+        };
+    }
+
+    function fillPoly(pts, fill, stroke, lw = 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+        if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.lineJoin = 'round'; ctx.stroke(); }
+    }
+
+    function drawEllipseArc(cx, cy, r, startAng, endAng, color, lw = 2.4, alpha = 1.0, isDashed = false) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lw;
+        ctx.setLineDash(isDashed ? [5, 4] : []);
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, r, r * flatRatio, 0, startAng, endAng, false);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    const pulse = 0.5 + 0.5 * Math.sin(t * 6) ** 2;
+    const edRot = (t * 2.2) % (Math.PI * 2);
+
+    ctx.save();
+
+    // =========================================================================
+    // TẦNG 1 (DƯỚI CÙNG): MẠCH CAO TẦN & CUỘN DÂY CẢM ỨNG ĐỒNG PHẲNG
+    // (Đã xóa bỏ hoàn toàn khối đế vuông thừa thãi; tách hẳn xuống z = -54 để không chạm vào kính)
+    // =========================================================================
+    const coilZ = -54;
+    const coilRadii = [34, 54, 74, 94];
+
+    // Mâm đỡ tròn mỏng nhẹ dưới cuộn dây (đồng tâm với cuộn dây, không dùng hình vuông)
+    ctx.save();
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - (coilZ - 4), 102, 102 * flatRatio, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    drawEllipseArc(ox, oy - (coilZ - 4), 102, 0, Math.PI, '#475569', 2.0, 0.8, false);
+
+    // Các vòng dây đồng cảm ứng (Nằm hoàn toàn độc lập ở tầng dưới, nhìn thấy trọn vẹn 100% nét liền)
+    for (const r of coilRadii) {
+        drawEllipseArc(ox, oy - coilZ, r, Math.PI, Math.PI * 2, '#d97706', 2.2, 0.75, false);
+        drawEllipseArc(ox, oy - coilZ, r, 0, Math.PI, '#f59e0b', 2.8, 1.0, false);
+    }
+
+    // Mũi tên chỉ chiều dòng điện cao tần biến thiên chạy trên vòng dây ngoài cùng
+    const pI1 = isoCirclePt(94, 0.45, coilZ);
+    const pI2 = isoCirclePt(94, 0.82, coilZ);
+    drawArrow(ctx, pI1.x, pI1.y, pI2.x, pI2.y, '#fde047', 2.5, 6);
+
+    // Hộp Mạch cao tần bên trái nối 2 dây dẫn thẳng vào cuộn dây cảm ứng
+    drawRoundRect(ctx, 22, 238, 128, 34, 7, '#0f172a', '#38bdf8', 2.2);
+    drawRichText('Mạch cao tần', 86, 255, 15, '#38bdf8', '800', 'center');
+
+    const wireTarget1 = isoCirclePt(94, Math.PI * 0.82, coilZ);
+    const wireTarget2 = isoCirclePt(74, Math.PI * 0.88, coilZ);
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(150, 250);
+    ctx.lineTo(wireTarget1.x, 250);
+    ctx.lineTo(wireTarget1.x, wireTarget1.y);
+    ctx.moveTo(150, 260);
+    ctx.lineTo(wireTarget2.x, 260);
+    ctx.lineTo(wireTarget2.x, wireTarget2.y);
+    ctx.stroke();
+
+    // Đường sức từ biến thiên B (nửa dưới đi từ cuộn dây lên mặt dưới tấm kính)
+    for (const lx of [-42, 42]) {
+        const pBot = isoCirclePt(lx, 0, coilZ + 2);
+        const pGlassBot = isoCirclePt(lx, 0, -6);
+        ctx.save();
+        ctx.strokeStyle = `rgba(56, 189, 248, ${(0.55 + 0.4 * pulse).toFixed(2)})`;
+        ctx.setLineDash([4, 3]);
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(pBot.x, pBot.y);
+        ctx.lineTo(pGlassBot.x, pGlassBot.y);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // =========================================================================
+    // TẦNG 2 (GIỮA): TẤM KÍNH THỦY TINH CÁCH NHIỆT & CÁCH ĐIỆN
+    // (Đặt ở cao độ z = -6 đến z = 2, tách hẳn phía trên cuộn dây nên không cắt vào cuộn dây)
+    // =========================================================================
+    const gx1 = -114, gx2 = 114, gy1 = -114, gy2 = 114, gz1 = -6, gz2 = 2;
+    const g000 = iso(gx1, gy1, gz1), g010 = iso(gx1, gy2, gz1), g110 = iso(gx2, gy2, gz1);
+    const g001 = iso(gx1, gy1, gz2), g101 = iso(gx2, gy1, gz2), g111 = iso(gx2, gy2, gz2), g011 = iso(gx1, gy2, gz2);
+
+    // Mặt trên của tấm kính (màu xanh xám kính cường lực đặc trưng, che phần hậu cảnh đúng chuẩn 3D)
+    fillPoly([g001, g101, g111, g011], 'rgba(30, 41, 59, 0.82)', '#94a3b8', 2.0);
+    // Hai cạnh vát dày phía trước của tấm kính (Front-Left & Front-Right)
+    fillPoly([g000, g010, g011, g001], '#334155', '#cbd5e1', 2.0);
+    fillPoly([g010, g110, g111, g011], '#475569', '#cbd5e1', 2.0);
+
+    // =========================================================================
+    // TẦNG 3 (TRÊN CÙNG): NỒI KIM LOẠI NHIỄM TỪ & DÒNG FOUCAULT Ở ĐÁY NỒI
+    // =========================================================================
+    const potR = 80;
+    const potZ0 = 6;     // Đáy nồi đặt ngay trên mặt kính
+    const potZ1 = 78;    // Miệng nồi
+    const waterZ = 52;   // Mặt nước trong nồi
+
+    // 3.1. Tô khối đặc cho thân nồi để che hoàn toàn góc sau của tấm kính (g001) bị khuất sau lưng nồi
+    ctx.save();
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - potZ1, potR, potR * flatRatio, 0, Math.PI, Math.PI * 2, false);
+    ctx.lineTo(ox + potR, oy - potZ0);
+    ctx.ellipse(ox, oy - potZ0, potR, potR * flatRatio, 0, 0, Math.PI, false);
+    ctx.lineTo(ox - potR, oy - potZ1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Tô màu thành trong của nồi (nhìn qua miệng nồi)
+    ctx.save();
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - potZ1, potR, potR * flatRatio, 0, Math.PI, Math.PI * 2, false);
+    ctx.lineTo(ox + potR, oy - potZ0);
+    ctx.ellipse(ox, oy - potZ0, potR, potR * flatRatio, 0, 0, Math.PI, false);
+    ctx.lineTo(ox - potR, oy - potZ1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // 3.2. Đĩa đáy nồi nhiễm từ phát nhiệt đỏ cam (nằm ở đáy lòng nồi)
+    ctx.save();
+    ctx.fillStyle = `rgba(239, 68, 68, ${(0.48 + 0.38 * pulse).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - potZ0, potR - 1, (potR - 1) * flatRatio, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Nửa cung SAU của đáy nồi (khuất sau thành nồi -> NÉT ĐỨT)
+    drawEllipseArc(ox, oy - potZ0, potR, Math.PI, Math.PI * 2, '#f87171', 2.0, 0.6, true);
+
+    // 3.3. Vòng dòng điện xoáy Foucault sinh nhiệt dưới đáy nồi
+    const eddyR = 48;
+    const eddyZ = potZ0 + 3;
+    drawEllipseArc(ox, oy - eddyZ, eddyR, Math.PI, Math.PI * 2, '#fde047', 2.0, 0.55, true);
+    drawEllipseArc(ox, oy - eddyZ, eddyR, 0, Math.PI, '#fde047', 2.6, 1.0, false);
+
+    const aFront = 0.25 + (edRot % (Math.PI * 0.55));
+    const ep1 = isoCirclePt(eddyR, aFront, eddyZ);
+    const ep2 = isoCirclePt(eddyR, aFront + 0.36, eddyZ);
+    drawArrow(ctx, ep1.x, ep1.y, ep2.x, ep2.y, '#fde047', 2.5, 6);
+
+    // 3.4. Đường sức từ biến thiên B xuyên qua mặt kính lên đáy nồi (nửa trên)
+    for (const lx of [-42, 42]) {
+        const pGlassTop = isoCirclePt(lx, 0, 2);
+        const pMid = isoCirclePt(lx, 0, -24);
+        const pTop = isoCirclePt(lx, 0, 38);
+
+        ctx.save();
+        ctx.strokeStyle = `rgba(56, 189, 248, ${(0.65 + 0.35 * pulse).toFixed(2)})`;
+        ctx.setLineDash([4, 3]);
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(pGlassTop.x, pGlassTop.y);
+        ctx.lineTo(pTop.x, pTop.y);
+        ctx.stroke();
+        ctx.restore();
+        // Mũi tên từ trường B nằm ở khoảng không giữa cuộn dây và mặt kính cho thoáng mắt
+        drawArrow(ctx, pMid.x, pMid.y + 8, pMid.x, pMid.y - 7, '#38bdf8', 2.4, 6);
+    }
+    drawSubText(ctx, 'B', '', ox - 60, oy + 26, { fontSize: 16.5, italic: true, color: '#38bdf8', vector: true });
+
+    // 3.5. Mặt nước bên trong nồi (cung xa thấy trực tiếp qua miệng nồi -> nét liền; cung gần khuất sau thành trước -> nét đứt)
+    ctx.save();
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - waterZ, potR - 2, (potR - 2) * flatRatio, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    drawEllipseArc(ox, oy - waterZ, potR - 2, Math.PI, Math.PI * 2, '#38bdf8', 1.8, 0.8, false);
+    drawEllipseArc(ox, oy - waterZ, potR - 2, 0, Math.PI, '#38bdf8', 1.6, 0.45, true);
+
+    // 3.6. Dải đế đáy nồi nhiễm từ rực đỏ nhìn thấy từ mặt ngoài phía trước
+    ctx.save();
+    ctx.fillStyle = `rgba(239, 68, 68, ${(0.7 + 0.28 * pulse).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - (potZ0 + 8), potR, potR * flatRatio, 0, 0, Math.PI, false);
+    ctx.lineTo(ox - potR, oy - potZ0);
+    ctx.ellipse(ox, oy - potZ0, potR, potR * flatRatio, 0, Math.PI, 0, true);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // 3.7. CÁC ĐƯỜNG BAO THẤY CỦA NỒI (NÉT LIỀN 100%)
+    drawEllipseArc(ox, oy - potZ0, potR, 0, Math.PI, '#f87171', 2.8, 1.0, false);
+    drawEllipseArc(ox, oy - (potZ0 + 8), potR, 0, Math.PI, '#fb923c', 2.0, 0.9, false);
+
+    // Hai thành đứng của nồi
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2.8;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(ox - potR, oy - potZ0);
+    ctx.lineTo(ox - potR, oy - potZ1);
+    ctx.moveTo(ox + potR, oy - potZ0);
+    ctx.lineTo(ox + potR, oy - potZ1);
+    ctx.stroke();
+
+    // Toàn bộ vành miệng nồi trên cùng (Nét liền 360 độ)
+    drawEllipseArc(ox, oy - potZ1, potR, Math.PI, Math.PI * 2, '#cbd5e1', 2.5, 0.95, false);
+    drawEllipseArc(ox, oy - potZ1, potR, 0, Math.PI, '#f8fafc', 3.0, 1.0, false);
+
+    // Hai quai nồi trái và phải
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(ox - potR, oy - (potZ1 - 14));
+    ctx.lineTo(ox - potR - 14, oy - (potZ1 - 14));
+    ctx.lineTo(ox - potR - 14, oy - (potZ1 - 24));
+    ctx.lineTo(ox - potR, oy - (potZ1 - 24));
+
+    ctx.moveTo(ox + potR, oy - (potZ1 - 14));
+    ctx.lineTo(ox + potR + 14, oy - (potZ1 - 14));
+    ctx.lineTo(ox + potR + 14, oy - (potZ1 - 24));
+    ctx.lineTo(ox + potR, oy - (potZ1 - 24));
+    ctx.stroke();
+
+    // =========================================================================
+    // TẦNG 4: BA THẺ CHÚ THÍCH CỠ CHỮ TO (15.5px) Ở NGOÀI CÙNG BÊN PHẢI
+    // =========================================================================
+    drawSafeNote(
+        490, 58,
+        ox + potR - 4, oy - (potZ0 + 4),
+        'Đáy nồi có từ tính',
+        'Dòng Foucault sinh nhiệt',
+        '#fb923c'
+    );
+
+    const glassEdgePt = iso(114, 15, -2);
+    drawSafeNote(
+        490, 142,
+        glassEdgePt.x, glassEdgePt.y,
+        'Mặt bếp thủy tinh',
+        'Cách nhiệt & cách điện',
+        '#cbd5e1'
+    );
+
+    const coilEdgePt = isoCirclePt(94, 0.12, coilZ);
+    drawSafeNote(
+        490, 226,
+        coilEdgePt.x, coilEdgePt.y,
+        'Cuộn dây cảm ứng',
+        'Dòng điện cao tần biến thiên',
+        '#f59e0b'
+    );
+
+    ctx.restore();
+});
+
+    // --- MH-C3-77 ---
+VLXTModels.register('MH-C3-77', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawPointerTag(targetX, targetY, boxX, boxY, text, borderColor, textColor, fontSize = 15) {
+        const padX = 10, padY = 5;
+        const tw = measureRichText(text, fontSize, '800');
+        const bw = tw + padX * 2, bh = fontSize + padY * 2;
+        const cx = boxX + bw / 2, cy = boxY + bh / 2;
+
+        ctx.save();
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(targetX, targetY);
+        ctx.lineTo(cx, cy);
+        ctx.stroke();
+
+        ctx.fillStyle = borderColor;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawRoundRect(ctx, boxX, boxY, bw, bh, 7, '#0f172a', borderColor, 2);
+        drawRichText(text, cx, cy, fontSize, textColor, '800', 'center');
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (16px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('ĐÈN LẮC TAY KHÔNG DÙNG PIN (CẢM ỨNG ĐIỆN TỪ)', w / 2, 24, 16, '#38bdf8', '800', 'center');
+
+    // Dao động điều hòa của thanh nam châm dọc theo trục ống đèn
+    const omega = 4.2;
+    const osc = Math.sin(t * omega) * 74;
+    const velSign = Math.cos(t * omega); // Tốc độ biến thiên từ thông tỉ lệ với |cos(ωt)|
+
+    ctx.save();
+
+    // --- 2. THÂN ĐÈN LẮC TAY TRONG SUỐT & CÁC BỘ PHẬN BÊN TRONG ---
+    const bx = 48, by = 114, bw = 548, bh = 88;
+    const midY = by + bh / 2;
+
+    // Vỏ ống hình trụ trong suốt của thân đèn
+    drawRoundRect(ctx, bx, by, bw, bh, 18, 'rgba(15, 23, 42, 0.78)', '#94a3b8', 3);
+
+    // Hai đệm cao su đàn hồi ở hai đầu ống giới hạn hành trình nam châm
+    const padLeftX = bx + 12;
+    const padRightX = bx + bw - 114;
+    const padW = 16, padH = bh - 24;
+    drawRoundRect(ctx, padLeftX, by + 12, padW, padH, 4, '#475569', '#cbd5e1', 2);
+    drawRoundRect(ctx, padRightX, by + 12, padW, padH, 4, '#475569', '#cbd5e1', 2);
+
+    // Ống dẫn hướng trục nam châm bên trong (nét mảnh sắc nét)
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.32)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(padLeftX + padW, midY - 22);
+    ctx.lineTo(padRightX, midY - 22);
+    ctx.moveTo(padLeftX + padW, midY + 22);
+    ctx.lineTo(padRightX, midY + 22);
+    ctx.stroke();
+
+    // --- 3. THANH NAM CHÂM N-S TRƯỢT QUA LẠI XUYÊN QUA LÒNG CUỘN DÂY ---
+    const magCenterBase = (padLeftX + padW + padRightX) / 2; // x = 278
+    const magW = 94, magH = 42;
+    const magX = magCenterBase + osc - magW / 2;
+    const magY = midY - magH / 2;
+
+    drawRoundRect(ctx, magX, magY, magW / 2, magH, 4, '#2563eb', '#93c5fd', 2);
+    drawRoundRect(ctx, magX + magW / 2, magY, magW / 2, magH, 4, '#dc2626', '#fca5a5', 2);
+    drawRichText('S', magX + magW * 0.25, midY, 16.5, '#ffffff', '800', 'center');
+    drawRichText('N', magX + magW * 0.75, midY, 16.5, '#ffffff', '800', 'center');
+
+    // Mũi tên chỉ chiều chuyển động tức thời của nam châm
+    if (Math.abs(velSign) > 0.15) {
+        if (velSign > 0) {
+            drawArrow(ctx, magX + magW + 8, midY, magX + magW + 30, midY, '#38bdf8', 2.4, 6);
+        } else {
+            drawArrow(ctx, magX - 8, midY, magX - 30, midY, '#38bdf8', 2.4, 6);
+        }
+    }
+
+    // --- 4. CUỘN DÂY DẪN CỐ ĐỊNH Ở GIỮA THÂN ĐÈN (BÁN TRONG SUỐT ĐỂ THẤY NAM CHÂM XUYÊN QUA) ---
+    const coilW = 98;
+    const coilX = magCenterBase - coilW / 2;
+    drawRoundRect(ctx, coilX, by - 7, coilW, bh + 14, 6, 'rgba(245, 158, 11, 0.22)', '#f59e0b', 2.6);
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    for (let xx = coilX + 10; xx <= coilX + coilW - 10; xx += 11) {
+        ctx.beginPath();
+        ctx.moveTo(xx, by - 7);
+        ctx.lineTo(xx, by + bh + 7);
+        ctx.stroke();
+    }
+
+    // --- 5. DÂY DẪN TỪ CUỘN DÂY NỐI TỚI BÓNG ĐÈN LED Ở ĐẦU PHẢI ---
+    const ledCx = bx + bw - 48;
+    const ledR = 23;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(coilX + coilW, midY - 12);
+    ctx.lineTo(ledCx - ledR, midY - 12);
+    ctx.moveTo(coilX + coilW, midY + 12);
+    ctx.lineTo(ledCx - ledR, midY + 12);
+    ctx.stroke();
+
+    // Chóa phản xạ & Bóng đèn LED phát sáng khi nam châm chuyển động cắt qua cuộn dây
+    const ledBrightness = Math.abs(velSign);
+    const bulbAlpha = (0.28 + 0.72 * ledBrightness).toFixed(2);
+
+    // Chóa đèn hình thang ôm phía sau bóng LED
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ledCx - 16, midY - 16);
+    ctx.lineTo(ledCx + 10, midY - 28);
+    ctx.lineTo(ledCx + 10, midY + 28);
+    ctx.lineTo(ledCx - 16, midY + 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Bóng đèn LED
+    ctx.fillStyle = `rgba(254, 240, 138, ${bulbAlpha})`;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(ledCx + 4, midY, ledR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // 5 tia sáng phát ra bên phải đèn LED (tỉ lệ thuận với độ sáng tức thời)
+    const rayAlpha = (0.18 + 0.82 * ledBrightness).toFixed(2);
+    const rayLen = 24 + ledBrightness * 36;
+    const rayAngles = [-0.36, -0.18, 0, 0.18, 0.36];
+    for (const ra of rayAngles) {
+        const sx = bx + bw + 10;
+        const sy = midY + ra * 34;
+        const ex = sx + Math.cos(ra) * rayLen;
+        const ey = sy + Math.sin(ra) * rayLen;
+        drawArrow(ctx, sx, sy, ex, ey, `rgba(254, 240, 138, ${rayAlpha})`, 2.6, 7);
+    }
+
+    // --- 6. NHÃN CHÚ THÍCH BỘ PHẬN RÕ NÉT, KHÔNG CHE KHUẤT, KHÔNG TRÀN KHUNG ---
+    drawPointerTag(padLeftX + padW / 2, by + 12, 24, 52, 'Đệm cao su đàn hồi', '#94a3b8', '#f8fafc', 15);
+    drawPointerTag(magCenterBase, by - 7, 232, 52, 'Cuộn dây cố định', '#f59e0b', '#fde047', 15);
+    drawPointerTag(ledCx + 4, midY - ledR, 456, 52, 'Bóng đèn LED', '#fbbf24', '#fef08a', 15);
+
+    // Chú thích phía dưới cho nam châm trượt dọc trục (luôn bám theo tâm nam châm)
+    drawPointerTag(
+        magX + magW / 2,
+        magY + magH,
+        158,
+        244,
+        'Nam châm N–S trượt dọc trục (tạo từ thông biến thiên)',
+        '#ef4444',
+        '#fca5a5',
+        15
+    );
+
+    ctx.restore();
+});
+
+    // --- MH-C3-78 ---
+VLXTModels.register('MH-C3-78', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'ĐO THÀNH PHẦN NẰM NGANG TỪ TRƯỜNG TRÁI ĐẤT (N = 200 vòng; d = 18 cm; I = 25 mA)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const cx = 204, cy = 158, rLoop = 88, rCompass = 62;
+
+    ctx.save();
+
+    // =========================================================================
+    // BƯỚC 1 (PAINTER'S ALGORITHM): NỬA SAU KHUNG DÂY TRÒN ĐỨNG (BỊ LA BÀN CHE KHUẤT -> NÉT ĐỨT)
+    // =========================================================================
+    // Mặt phẳng khung dây trùng với mặt phẳng kinh tuyến từ Bắc - Nam (thẳng đứng trên hình chiếu)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 34, rLoop, 0, -Math.PI / 2, Math.PI / 2, false);
+    ctx.stroke();
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 2: ĐĨA LA BÀN ĐẶT NẰM NGANG Ở TÂM KHUNG DÂY (TÔ NỀN ĐẶC CHE KHUẤT NỬA SAU KHUNG)
+    // =========================================================================
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rCompass, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Vạch chia độ nhẹ trên mặt la bàn
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+    ctx.lineWidth = 1.4;
+    for (let deg = 0; deg < 360; deg += 30) {
+        const rad = (deg * Math.PI) / 180;
+        const rIn = (deg % 90 === 0) ? rCompass - 9 : rCompass - 5;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(rad) * rIn, cy + Math.sin(rad) * rIn);
+        ctx.lineTo(cx + Math.cos(rad) * rCompass, cy + Math.sin(rad) * rCompass);
+        ctx.stroke();
+    }
+
+    // Trục phương vị Bắc - Nam (dọc) và Đông - Tây (ngang) nét đứt mảnh
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - rCompass + 4);
+    ctx.lineTo(cx, cy + rCompass - 4);
+    ctx.moveTo(cx - rCompass + 4, cy);
+    ctx.lineTo(cx + rCompass - 4, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Nhãn 4 hướng Bắc - Nam - Tây - Đông chữ thật to (15.5px) đặt ngoài vành la bàn & khung dây
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Bắc', cx, cy - rLoop - 14);
+    ctx.fillText('Nam', cx - 34, cy + rLoop + 10);
+    ctx.fillText('Tây', cx - rCompass - 22, cy);
+    ctx.fillText('Đông', cx + rCompass + 26, cy);
+
+    // =========================================================================
+    // BƯỚC 3: KIM NAM CHÂM DAO ĐỘNG NHẸ QUANH VỊ TRÍ CÂN BẰNG LỆCH GÓC α = 45°
+    // =========================================================================
+    // Ban đầu khi I = 0 kim nằm dọc hướng Bắc-Nam; khi có dòng I, kim lệch góc α = 45°
+    const wobble = Math.sin(t * 4) * 0.035;
+    const needleAngle = -Math.PI / 4 + wobble; // Góc hợp với phương Bắc-Nam là 45° (và với phương Đông-Tây cũng 45°)
+
+    // Cung góc lệch α = 45° giữa trục Bắc-Nam (hoặc Đông-Tây) và kim nam châm
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 34, -Math.PI / 2, needleAngle, false);
+    ctx.stroke();
+
+    ctx.fillStyle = '#6ee7b7';
+    ctx.font = 'italic 800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('α', cx + 17, cy - 42);
+
+    // Vẽ kim nam châm (Cực Bắc N màu đỏ chỉ hướng Đông-Bắc, cực Nam S màu xanh)
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(needleAngle);
+
+    // Nửa kim cực Bắc (đỏ)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(46, 0);
+    ctx.lineTo(0, -6.5);
+    ctx.lineTo(0, 6.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Nửa kim cực Nam (xanh dương)
+    ctx.fillStyle = '#3b82f6';
+    ctx.beginPath();
+    ctx.moveTo(-46, 0);
+    ctx.lineTo(0, -6.5);
+    ctx.lineTo(0, 6.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Chốt trục quay kim nam châm ở tâm
+    ctx.fillStyle = '#fde047';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(0, 0, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 4: NỬA TRƯỚC KHUNG DÂY TRÒN ĐỨNG (NÉT LIỀN SẮC NÉT) & MẠCH ĐIỆN BÊN DƯỚI
+    // =========================================================================
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 4.6;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 34, rLoop, 0, Math.PI / 2, Math.PI * 1.5, false);
+    ctx.stroke();
+
+    // Mũi tên chỉ chiều dòng điện I chạy trên khung dây tròn
+    drawArrow(ctx, cx - 34, cy - 22, cx - 34, cy - 46, '#fde047', 2.6, 6.5);
+    ctx.fillStyle = '#fde047';
+    ctx.font = 'italic 800 16px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('I', cx - 46, cy - 34);
+
+    // Mạch điện gồm Ampe kế (A) và nguồn điện một chiều nối hai đầu khung dây ở phía dưới
+    const wireY1 = 266, wireY2 = 284;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    // Dây từ chân khung dây trái -> sang phải tới Ampe kế (A)
+    ctx.moveTo(cx - 6, cy + rLoop);
+    ctx.lineTo(cx - 6, wireY2);
+    ctx.lineTo(272, wireY2);
+    // Từ Ampe kế -> sang nguồn điện 1 chiều -> về chân khung dây phải
+    ctx.moveTo(304, wireY2);
+    ctx.lineTo(356, wireY2);
+    ctx.lineTo(356, wireY1);
+    ctx.lineTo(334, wireY1);
+
+    ctx.moveTo(324, wireY1);
+    ctx.lineTo(cx + 6, wireY1);
+    ctx.lineTo(cx + 6, cy + rLoop);
+    ctx.stroke();
+
+    // Ký hiệu Ampe kế (A)
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(288, wireY2, 15, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.fillText('A', 288, wireY2 + 0.5);
+
+    // Ký hiệu nguồn điện một chiều (bản dài +, bản ngắn -)
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(324, wireY1 - 9); ctx.lineTo(324, wireY1 + 9); // Cực dương (+)
+    ctx.moveTo(334, wireY1 - 5); ctx.lineTo(334, wireY1 + 5); // Cực âm (-)
+    ctx.stroke();
+
+    // =========================================================================
+    // BƯỚC 5: THẺ THÔNG SỐ ĐỀ DẪN BÊN PHẢI (CHỮ TO 15.5px - TÁCH BIỆT HOÀN TOÀN)
+    // =========================================================================
+    drawRoundRect(ctx, 404, 60, 362, 226, 12, '#0f172a', '#f59e0b', 2.4);
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.roundRect(405.5, 61.5, 359, 40, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ THÍ NGHIỆM', 420, 82, 16.5, '#fde047', '800', 'left');
+    drawRichText('• Khung dây tròn: N = 200 vòng', 420, 122, 16, '#f8fafc', '700', 'left');
+    drawRichText('• Đường kính khung: d = 18,0 cm', 420, 152, 16, '#f8fafc', '700', 'left');
+    drawRichText('• Cường độ dòng điện: I = 25,0 mA', 420, 182, 16, '#38bdf8', '800', 'left');
+    drawRichText('• Góc lệch kim nam châm: α = 45°', 420, 212, 16, '#6ee7b7', '800', 'left');
+    drawRichText('• Cảm ứng từ tâm khung: B = 2π·10⁻⁷·N·I / R', 420, 246, 15, '#fde047', '800', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-79 ---
+VLXTModels.register('MH-C3-79', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÁY ĐO LƯU LƯỢNG MÁU ĐIỆN TỪ (d = 22 mm; B = 0,05 T; U = 0,22 mV)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    ctx.save();
+
+    // --- 2. KHUNG VÙNG SƠ ĐỒ MẠCH MÁU & ĐỒNG HỒ ĐO BÊN TRÁI ---
+    drawRoundRect(ctx, 14, 48, 504, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    // Đoạn mạch máu hình trụ nằm ngang đường kính d = 22 mm
+    const vx = 52, vy = 132, vw = 310, vh = 78;
+    const midY = vy + vh / 2;
+
+    // Nền lòng mạch máu phẳng sắc nét
+    ctx.fillStyle = 'rgba(220, 38, 38, 0.20)';
+    ctx.fillRect(vx, vy + 2, vw, vh - 4);
+
+    // Hai thành mạch máu trên và dưới
+    ctx.strokeStyle = '#f87171';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(vx, vy);
+    ctx.lineTo(vx + vw, vy);
+    ctx.moveTo(vx, vy + vh);
+    ctx.lineTo(vx + vw, vy + vh);
+    ctx.stroke();
+
+    // Mũi tên chỉ chiều dòng máu chảy từ trái sang phải (v)
+    drawArrow(ctx, vx - 28, midY, vx - 4, midY, '#fca5a5', 2.6, 6);
+    drawVectorLabel('v', vx - 18, midY - 16, 15, '#fca5a5');
+
+    // Đường kích thước đường kính lòng mạch d = 22 mm ở đầu trái
+    const dimX = vx + 22;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(dimX, vy + 3);
+    ctx.lineTo(dimX, vy + vh - 3);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawRichText('d', dimX + 10, midY, 15.5, '#f8fafc', '800', 'center');
+
+    // Lưới dấu chéo từ trường đều ⊗ B vuông góc dòng chảy bên trong mạch máu
+    for (let x = vx + 68; x <= vx + vw - 36; x += 62) {
+        drawCrossB(ctx, x, midY, 7.5, 'rgba(56, 189, 248, 0.48)');
+    }
+
+    // Thẻ ký hiệu vectơ cảm ứng từ B ở góc trên-trái mạch máu
+    drawRoundRect(ctx, vx + 8, vy - 56, 62, 30, 6, '#0f172a', '#38bdf8', 1.8);
+    drawCrossB(ctx, vx + 25, vy - 41, 7, '#38bdf8');
+    drawVectorLabel('B', vx + 50, vy - 40, 15.5, '#38bdf8');
+
+    // --- 3. HAI ĐIỆN CỰC ĐO ĐỐI DIỆN THÀNH MẠCH & DÒNG ION (+) / (-) ---
+    const elX = vx + vw * 0.56; // x = 225.6
+    drawRoundRect(ctx, elX - 18, vy - 12, 36, 12, 3, '#fbbf24', '#fef08a', 2);
+    drawRoundRect(ctx, elX - 18, vy + vh, 36, 12, 3, '#38bdf8', '#bae6fd', 2);
+
+    // Ký hiệu cực tính trên hai điện cực
+    drawRichText('+', elX - 28, vy - 7, 15.5, '#fde047', '800', 'center');
+    drawRichText('−', elX - 28, vy + vh + 7, 16, '#7dd3fc', '800', 'center');
+
+    // Các ion dương (+) bị lực từ Lorentz đẩy lệch lên điện cực trên, ion âm (-) lệch xuống dưới
+    const numIons = 5;
+    for (let i = 0; i < numIons; i++) {
+        const p = (t * 0.42 + i / numIons) % 1;
+        const ix = vx + 44 + p * (vw - 68);
+        const shift = Math.sin(p * Math.PI) * 23;
+
+        // Ion dương (+) lệch lên trên
+        const posY = midY - shift;
+        ctx.fillStyle = '#ef4444';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(ix, posY, 6.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        drawRichText('+', ix, posY - 0.5, 12.5, '#ffffff', '800', 'center');
+
+        // Ion âm (-) lệch xuống dưới
+        const negX = ix + 15;
+        const negY = midY + shift;
+        if (negX < vx + vw - 14) {
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(negX, negY, 6.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            drawRichText('−', negX, negY - 0.5, 13.5, '#ffffff', '800', 'center');
+        }
+    }
+
+    // --- 4. DÂY NỐI HAI ĐIỆN CỰC RA ĐỒNG HỒ ĐO HIỆU ĐIỆN THẾ U = 0,22 mV ---
+    const meterX = 404, meterY = 122, meterW = 98, meterH = 98;
+    const meterMidX = meterX + meterW / 2;
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2.4;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    // Dây trên nối điện cực dương lên đỉnh đồng hồ
+    ctx.moveTo(elX, vy - 12);
+    ctx.lineTo(elX, 74);
+    ctx.lineTo(meterMidX, 74);
+    ctx.lineTo(meterMidX, meterY);
+    // Dây dưới nối điện cực âm xuống đáy đồng hồ
+    ctx.moveTo(elX, vy + vh + 12);
+    ctx.lineTo(elX, 266);
+    ctx.lineTo(meterMidX, 266);
+    ctx.lineTo(meterMidX, meterY + meterH);
+    ctx.stroke();
+
+    // Khung đồng hồ đo milivôn kế sắc nét
+    drawRoundRect(ctx, meterX, meterY, meterW, meterH, 10, '#0f172a', '#10b981', 2.4);
+    drawRoundRect(ctx, meterX + 8, meterY + 10, meterW - 16, 24, 5, '#064e3b', '#34d399', 1.4);
+    drawRichText('mV', meterMidX, meterY + 22, 14, '#6ee7b7', '800', 'center');
+    drawRichText('U = 0,22', meterMidX, meterY + 56, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('mV', meterMidX, meterY + 78, 15, '#6ee7b7', '800', 'center');
+
+    // Nhãn chú thích dưới mạch máu
+    drawRichText('Mạch máu (d = 22 mm)', 196, 266, 15, '#fca5a5', '800', 'center');
+
+    // --- 5. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 530, cardY = 48, cardW = 236, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('ĐO LƯU LƯỢNG MÁU', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Đường kính: d = 22 mm', color: '#fca5a5' },
+        { text: '• Cảm ứng từ: B = 0,05 T', color: '#38bdf8' },
+        { text: '• Hiệu điện thế: U = 0,22 mV', color: '#6ee7b7' },
+        { text: '• Lực từ tách ion (+), (−)', color: '#fde047' },
+        { text: '• Đo không xâm lấn mạch', color: '#f8fafc' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 12, cardY + 63 + i * 37, 14.8, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    // --- MH-C3-80 ---
+VLXTModels.register('MH-C3-80', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét đặt ở vùng trống tách biệt hoàn toàn
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 50 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 16, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 35, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'CẤU TẠO & NGUYÊN LÝ MÁY BIẾN ÁP (CUỘN SƠ CẤP N_{1} – CUỘN THỨ CẤP N_{2})';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Dao động xoay chiều điều hòa chuẩn Vật lý: omega = 2.6 rad/s
+    const acWave = Math.sin(t * 2.6);
+    const acAbs = Math.abs(acWave);
+    const acDir = acWave >= 0 ? 1 : -1;
+    // Vị trí dịch chuyển của đường sức từ dao động qua lại mượt mà theo hàm sin(omega*t)
+    const fluxPhase = Math.sin(t * 2.6) * 24;
+
+    ctx.save();
+
+    // Tọa độ khối lõi thép 3D (Oblique 3D chuẩn kỹ thuật)
+    const lx = 136, ly = 114, lw = 216, lh = 162;
+    const barW = 42, barH = 36;
+    const dx3d = 16, dy3d = -12; // Vector chiều sâu 3D của các lá thép ghép
+
+    // Thông số 2 cuộn dây
+    const pStart = ly + 44, pEnd = ly + lh - 44;
+    const pCount = 5; // N1 = 100 vòng (biểu diễn 5 vòng thưa rõ nét)
+    const pStep = (pEnd - pStart) / pCount;
+
+    const sStart = ly + 38, sEnd = ly + lh - 38;
+    const sCount = 10; // N2 = 200 vòng (gấp đôi N1 -> biểu diễn 10 vòng sít nhau)
+    const sStep = (sEnd - sStart) / sCount;
+
+    // =========================================================================
+    // BƯỚC 1: TAI VÒNG DÂY UỐN PHÍA SAU TRỤ THÉP (PAINTER'S ALGORITHM - LỚP ĐÁY)
+    // Vẽ phần dây vòng ra mặt lưng 3D của trụ trái và trụ phải trước khi đặt lõi thép lên
+    // =========================================================================
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Nửa vòng lưng của Cuộn sơ cấp N1 (ôm vòng ra phía sau trụ trái)
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 3.6;
+    for (let i = 0; i < pCount; i++) {
+        const yFrontRight = pStart + i * pStep + pStep * 0.45;
+        const yBackLeft = pStart + (i + 1) * pStep;
+        ctx.beginPath();
+        // Tai phải vòng ra sau lưng trụ trái
+        ctx.moveTo(lx + barW, yFrontRight);
+        ctx.quadraticCurveTo(lx + barW + dx3d + 7, yFrontRight + dy3d * 0.6, lx + barW + dx3d - 2, yFrontRight + dy3d);
+        // Tai trái từ sau lưng vòng ra mặt trước của vòng kế tiếp
+        ctx.moveTo(lx + 4, yBackLeft - 6);
+        ctx.quadraticCurveTo(lx - 8, yBackLeft - 4, lx, yBackLeft);
+        ctx.stroke();
+    }
+
+    // Nửa vòng lưng của Cuộn thứ cấp N2 (ôm vòng ra phía sau trụ phải)
+    ctx.strokeStyle = '#065f46';
+    ctx.lineWidth = 3.0;
+    for (let i = 0; i < sCount; i++) {
+        const yFrontLeft = sStart + i * sStep;
+        const yFrontRight = sStart + i * sStep + sStep * 0.45;
+        ctx.beginPath();
+        // Tai trái trong cửa sổ vòng ra mặt sau trụ phải
+        ctx.moveTo(lx + lw - barW, yFrontLeft);
+        ctx.quadraticCurveTo(lx + lw - barW - 7, yFrontLeft - 3, lx + lw - barW + 4, yFrontLeft - 5);
+        // Tai phải vòng ôm qua mép hông 3D của trụ phải
+        ctx.moveTo(lx + lw, yFrontRight);
+        ctx.quadraticCurveTo(lx + lw + dx3d + 6, yFrontRight + dy3d * 0.5, lx + lw + dx3d, yFrontRight + dy3d);
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 2: KHỐI LÕI THÉP KỸ THUẬT 3D (CÓ ĐỦ MẶT HÔNG NGOÀI & VÁCH TRONG CỬA SỔ)
+    // =========================================================================
+    // 2.1. Mặt hông 3D BÊN TRONG cửa sổ lõi thép (Vách phải của trụ trái & Vách dưới của gông trên)
+    const winX = lx + barW, winY = ly + barH;
+    const winW = lw - 2 * barW, winH = lh - 2 * barH;
+
+    // Nền tối của lỗ cửa sổ ở giữa
+    ctx.fillStyle = '#060b19';
+    ctx.fillRect(winX, winY, winW, winH);
+
+    // Vách hông 3D bên trong của trụ trái (nhìn thấy từ góc chếch phải)
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(winX, winY);
+    ctx.lineTo(winX + dx3d, winY + dy3d);
+    ctx.lineTo(winX + dx3d, winY + winH + dy3d);
+    ctx.lineTo(winX, winY + winH);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Vách đáy 3D bên trong của gông dưới (nhìn thấy ở đáy cửa sổ)
+    ctx.fillStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(winX, winY + winH);
+    ctx.lineTo(winX + dx3d, winY + winH + dy3d);
+    ctx.lineTo(winX + winW, winY + winH + dy3d);
+    ctx.lineTo(winX + winW, winY + winH);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Các đường ghép lá sắt non bên trong vách cửa sổ
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+    ctx.lineWidth = 1;
+    for (let k = 1; k <= 3; k++) {
+        const sx = (dx3d * k) / 4, sy = (dy3d * k) / 4;
+        ctx.beginPath();
+        ctx.moveTo(winX + sx, winY + Math.max(0, -sy));
+        ctx.lineTo(winX + sx, winY + winH + sy);
+        ctx.lineTo(winX + winW, winY + winH + sy);
+        ctx.stroke();
+    }
+
+    // 2.2. Mặt hông 3D BÊN NGOÀI (Mặt đỉnh gông trên & Mặt phải trụ phải)
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lx, ly);
+    ctx.lineTo(lx + dx3d, ly + dy3d);
+    ctx.lineTo(lx + lw + dx3d, ly + dy3d);
+    ctx.lineTo(lx + lw, ly);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(lx + lw, ly);
+    ctx.lineTo(lx + lw + dx3d, ly + dy3d);
+    ctx.lineTo(lx + lw + dx3d, ly + lh + dy3d);
+    ctx.lineTo(lx + lw, ly + lh);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Các đường kẻ phân lớp lá thép kỹ thuật (Laminated Silicon Steel) ở mặt trên và mặt phải
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+    ctx.lineWidth = 1.1;
+    for (let k = 1; k <= 3; k++) {
+        const sx = (dx3d * k) / 4, sy = (dy3d * k) / 4;
+        ctx.beginPath();
+        ctx.moveTo(lx + sx, ly + sy);
+        ctx.lineTo(lx + lw + sx, ly + sy);
+        ctx.lineTo(lx + lw + sx, ly + lh + sy);
+        ctx.stroke();
+    }
+
+    // 2.3. Mặt tiền chính diện của lõi thép (dùng Even-Odd rule khoét rỗng cửa sổ chuẩn xác)
+    ctx.save();
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.roundRect(lx, ly, lw, lh, 4);
+    ctx.roundRect(winX, winY, winW, winH, 2);
+    ctx.fill('evenodd');
+    ctx.stroke();
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 3: NỬA VÒNG DÂY KHUẤT PHÍA SAU TRỤ THÉP (NÉT ĐỨT ĐÚNG HÌNH HỌC HỌA HÌNH)
+    // =========================================================================
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 2.0;
+
+    // Nét đứt mặt sau của cuộn sơ cấp N1 nối từ mép phải vòng lên mép trái vòng tiếp theo
+    ctx.strokeStyle = 'rgba(248, 113, 113, 0.42)';
+    for (let i = 0; i < pCount; i++) {
+        const yFrontRight = pStart + i * pStep + pStep * 0.45;
+        const yNextLeft = pStart + (i + 1) * pStep;
+        ctx.beginPath();
+        ctx.moveTo(lx + barW, yFrontRight);
+        ctx.lineTo(lx, yNextLeft);
+        ctx.stroke();
+    }
+
+    // Nét đứt mặt sau của cuộn thứ cấp N2
+    ctx.strokeStyle = 'rgba(52, 211, 153, 0.42)';
+    for (let i = 0; i < sCount; i++) {
+        const yFrontRight = sStart + i * sStep + sStep * 0.45;
+        const yNextLeft = sStart + (i + 1) * sStep;
+        ctx.beginPath();
+        ctx.moveTo(lx + lw, yFrontRight);
+        ctx.lineTo(lx + lw - barW, yNextLeft);
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 4: ĐƯỜNG SỨC TỪ BIẾN THIÊN XOAY CHIỀU Φ(t) TRONG LÕI THÉP
+    // Đảo chiều tuần hoàn theo hàm sin(omega*t) đúng bản chất dòng điện xoay chiều
+    // =========================================================================
+    const fx = lx + barW / 2, fy = ly + barH / 2;
+    const fw = lw - barW, fh = lh - barH;
+
+    ctx.save();
+    ctx.strokeStyle = `rgba(56, 189, 248, ${(0.35 + 0.6 * acAbs).toFixed(2)})`;
+    ctx.setLineDash([9, 6]);
+    ctx.lineDashOffset = -fluxPhase;
+    ctx.lineWidth = 2.4;
+    drawRoundRect(ctx, fx, fy, fw, fh, 6, null, ctx.strokeStyle, 2.4);
+    ctx.restore();
+
+    // Mũi tên chỉ chiều từ thông biến thiên Φ ở cả gông trên và gông dưới (đảo chiều khi acWave đổi dấu)
+    const arrowAlpha = Math.max(0.35, acAbs);
+    ctx.save();
+    ctx.globalAlpha = arrowAlpha;
+    const midX = lx + lw / 2;
+    if (acDir > 0) {
+        drawArrow(ctx, midX - 14, fy, midX + 14, fy, '#38bdf8', 2.4, 6);
+        drawArrow(ctx, midX + 14, fy + fh, midX - 14, fy + fh, '#38bdf8', 2.4, 6);
+    } else {
+        drawArrow(ctx, midX + 14, fy, midX - 14, fy, '#38bdf8', 2.4, 6);
+        drawArrow(ctx, midX - 14, fy + fh, midX + 14, fy + fh, '#38bdf8', 2.4, 6);
+    }
+    ctx.restore();
+    drawRichText('Φ(t)', midX, fy + 16, 15, '#38bdf8', '800', 'center');
+
+    // =========================================================================
+    // BƯỚC 5: CÁC VÒNG DÂY MẶT TRƯỚC ÔM TRỌN TRỤ THÉP & MẠCH NGOÀI U₁, U₂
+    // =========================================================================
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 5.1. Cuộn sơ cấp N1 (trụ trái - 5 vòng dây đồng đỏ cam có tai ôm hai mép trụ)
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3.8;
+    for (let i = 0; i < pCount; i++) {
+        const yL = pStart + i * pStep;
+        const yR = yL + pStep * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(lx - 4, yL - 1);
+        ctx.quadraticCurveTo(lx - 6, yL + 1, lx, yL + 2);
+        ctx.lineTo(lx + barW, yR);
+        ctx.quadraticCurveTo(lx + barW + 5, yR + 1, lx + barW + 3, yR - 2);
+        ctx.stroke();
+    }
+
+    // Dây dẫn nối nguồn xoay chiều U1~ bên trái
+    const u1TopY = pStart - 1;
+    const u1BotY = pStart + (pCount - 1) * pStep + pStep * 0.45;
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    // Đầu trên nối thẳng ra cực trên
+    ctx.moveTo(lx - 4, u1TopY);
+    ctx.lineTo(68, u1TopY);
+    // Đầu dưới từ vòng cuối vòng ra cực dưới
+    ctx.moveTo(lx + barW, u1BotY);
+    ctx.lineTo(lx + barW, pEnd + 6);
+    ctx.lineTo(68, pEnd + 6);
+    ctx.stroke();
+
+    // Cực nguồn xoay chiều U1~ kèm mũi tên dòng sơ cấp i1(t)
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(64, u1TopY, 4, 0, Math.PI * 2);
+    ctx.arc(64, pEnd + 6, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    if (acDir > 0) {
+        drawArrow(ctx, 88, u1TopY, 114, u1TopY, '#fca5a5', 2.2, 5.5);
+    } else {
+        drawArrow(ctx, 114, u1TopY, 88, u1TopY, '#fca5a5', 2.2, 5.5);
+    }
+    drawRichText('i_{1}', 101, u1TopY - 11, 14, '#fca5a5', '800', 'center');
+    drawRichText('U_{1} ~', 38, (u1TopY + pEnd + 6) / 2, 16.5, '#fca5a5', '800', 'center');
+
+    // 5.2. Cuộn thứ cấp N2 (trụ phải - 10 vòng dây xanh ngọc ôm sát cả bề rộng trụ 3D)
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 3.2;
+    for (let i = 0; i < sCount; i++) {
+        const yL = sStart + i * sStep;
+        const yR = yL + sStep * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(lx + lw - barW - 3, yL - 1);
+        ctx.lineTo(lx + lw, yR);
+        // Đoạn dây tiếp tục ôm qua mặt hông 3D bên phải của trụ phải
+        ctx.lineTo(lx + lw + dx3d, yR + dy3d * 0.85);
+        ctx.stroke();
+    }
+
+    // Hai đầu dây ra tải tiêu thụ U2 bên phải
+    const u2TopY = sStart + sStep * 0.45 + dy3d * 0.85;
+    const u2BotY = sStart + (sCount - 1) * sStep + sStep * 0.45 + dy3d * 0.85;
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(lx + lw + dx3d, u2TopY);
+    ctx.lineTo(426, u2TopY);
+    ctx.moveTo(lx + lw + dx3d, u2BotY);
+    ctx.lineTo(426, u2BotY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(430, u2TopY, 4, 0, Math.PI * 2);
+    ctx.arc(430, u2BotY, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    if (acDir > 0) {
+        drawArrow(ctx, 382, u2TopY, 410, u2TopY, '#6ee7b7', 2.2, 5.5);
+    } else {
+        drawArrow(ctx, 410, u2TopY, 382, u2TopY, '#6ee7b7', 2.2, 5.5);
+    }
+    drawRichText('i_{2}', 396, u2TopY - 11, 14, '#6ee7b7', '800', 'center');
+    drawRichText('U_{2} ~', 458, (u2TopY + u2BotY) / 2, 16.5, '#6ee7b7', '800', 'center');
+    ctx.restore();
+
+    // =========================================================================
+    // BƯỚC 6: CÁC THẺ CHÚ THÍCH & THÔNG SỐ ĐỀ DẪN (TÁCH BIỆT HOÀN TOÀN - ZERO OVERLAP)
+    // =========================================================================
+    // Chú thích lõi lá sắt non cách điện đặt gọn phía trên lõi thép
+    drawSafeNote(
+        22, 48,
+        lx + 54, ly + dy3d / 2,
+        'Lõi lá sắt non cách điện',
+        'Giảm hao phí dòng Foucault',
+        '#94a3b8'
+    );
+
+    // Chú thích Cuộn sơ cấp N1 ở góc dưới trái
+    drawSafeNote(
+        22, 250,
+        lx - 2, pStart + 3 * pStep,
+        'Cuộn sơ cấp N_{1}',
+        null,
+        '#ef4444'
+    );
+
+    // Chú thích Cuộn thứ cấp N2 ở góc trên phải (chỉ thẳng vào vòng dây trên của trụ phải, không cắt qua bảng)
+    drawSafeNote(
+        492, 52,
+        lx + lw + dx3d, sStart + 1.5 * sStep + dy3d * 0.5,
+        'Cuộn thứ cấp N_{2}',
+        'Cảm ứng điện từ',
+        '#10b981'
+    );
+
+    // Thẻ thông số đề dẫn bên phải dưới (x = 492..768, y = 132..286 - Zero Data Leakage)
+    drawRoundRect(ctx, 492, 132, 276, 154, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(493.5, 133.5, 273, 36, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('MÁY BIẾN ÁP LÍ TƯỞNG', 508, 152, 16, '#38bdf8', '800', 'left');
+    drawRichText('• Số vòng: N_{1} = 100; N_{2} = 200', 508, 190, 15.5, '#fde047', '800', 'left');
+    drawRichText('• Biến đổi điện áp xoay chiều', 508, 224, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Giữ nguyên tần số dòng điện', 508, 258, 15.5, '#6ee7b7', '700', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-81 ---
+VLXTModels.register('MH-C3-81', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm tính điểm trên đường cong Bezier bậc hai B(u) = (1-u)^2 P0 + 2(1-u)u P1 + u^2 P2
+    function quadBez(p0, p1, p2, u) {
+        const inv = 1 - u;
+        return {
+            x: inv * inv * p0.x + 2 * inv * u * p1.x + u * u * p2.x,
+            y: inv * inv * p0.y + 2 * inv * u * p1.y + u * u * p2.y
+        };
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('HỆ THỐNG TRUYỀN TẢI ĐIỆN NĂNG ĐI XA (P = 20 MW; 25 kV → 500 kV; L = 248 km)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.34) % 1;
+
+    ctx.save();
+
+    // --- 2. KHUNG NỀN SƠ ĐỒ TRUYỀN TẢI ĐIỆN ---
+    drawRoundRect(ctx, 14, 48, 752, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    // Đường mặt đất ngang bên dưới toàn hệ thống
+    const groundY = 236;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(26, groundY);
+    ctx.lineTo(754, groundY);
+    ctx.stroke();
+
+    // --- 3. NHÀ MÁY PHÁT ĐIỆN (P = 20 MW, U = 25 kV) BÊN TRÁI ---
+    const plantX = 24, plantY = 126, plantW = 114, plantH = 110;
+    drawRoundRect(ctx, plantX, plantY, plantW, plantH, 8, '#1e293b', '#f59e0b', 2.4);
+
+    // Ống khói / Tháp giải nhiệt nhà máy phía trên bên trái
+    drawRoundRect(ctx, plantX + 16, plantY - 22, 18, 22, 3, '#334155', '#f59e0b', 2);
+    drawRoundRect(ctx, plantX + 42, plantY - 14, 16, 14, 3, '#334155', '#f59e0b', 2);
+
+    drawRichText('NHÀ MÁY', plantX + plantW / 2, plantY + 26, 15, '#fbbf24', '800', 'center');
+    drawRichText('ĐIỆN', plantX + plantW / 2, plantY + 46, 15, '#fbbf24', '800', 'center');
+
+    // Khung thông số đề dẫn của nhà máy
+    drawRoundRect(ctx, plantX + 8, plantY + 64, plantW - 16, 36, 5, '#0f172a', '#d97706', 1.6);
+    drawRichText('P = 20 MW', plantX + plantW / 2, plantY + 75, 13.5, '#f8fafc', '800', 'center');
+    drawRichText('U = 25 kV', plantX + plantW / 2, plantY + 91, 13.5, '#fde047', '800', 'center');
+
+    // --- 4. MÁY BIẾN THẾ 1 (TĂNG ÁP 25 → 500 kV) ---
+    const mbt1X = 166, mbt1Y = 140, mbt1W = 96, mbt1H = 96;
+    drawRoundRect(ctx, mbt1X, mbt1Y, mbt1W, mbt1H, 8, '#0f172a', '#ef4444', 2.4);
+
+    // Ký hiệu 2 cuộn dây biến áp ở phần trên thẻ MBT 1
+    const c1X = mbt1X + mbt1W / 2, c1Y = mbt1Y + 22;
+    ctx.strokeStyle = '#fca5a5';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(c1X - 8, c1Y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(c1X + 8, c1Y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+
+    drawRichText('MBT 1', c1X, mbt1Y + 48, 15, '#fca5a5', '800', 'center');
+    drawRichText('Tăng áp', c1X, mbt1Y + 67, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('25 → 500 kV', c1X, mbt1Y + 84, 12.5, '#fde047', '800', 'center');
+
+    // Đường dây nối Nhà máy điện → MBT 1
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(plantX + plantW, 184);
+    ctx.lineTo(mbt1X, 184);
+    ctx.stroke();
+    drawArrow(ctx, plantX + plantW + 3, 184, mbt1X - 2, 184, '#fbbf24', 2.8, 6);
+
+    // --- 5. ĐƯỜNG DÂY TẢI ĐIỆN CAO THẾ 500 kV (L = 248 km) & HAI CỘT ĐIỆN CAO THẾ ---
+    const lineStartX = mbt1X + mbt1W; // 262
+    const lineEndX = 486;
+    const tower1X = 324, tower2X = 424;
+    const towerTopY = 104, armY = 128;
+
+    // Vẽ 2 cột điện cao thế giàn thép sắc nét
+    [tower1X, tower2X].forEach(px => {
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2.2;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(px - 15, groundY);
+        ctx.lineTo(px, towerTopY);
+        ctx.lineTo(px + 15, groundY);
+        ctx.moveTo(px - 22, armY);
+        ctx.lineTo(px + 22, armY);
+        ctx.moveTo(px - 11, 200);
+        ctx.lineTo(px + 8, 166);
+        ctx.moveTo(px + 11, 200);
+        ctx.lineTo(px - 8, 166);
+        ctx.stroke();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(px - 20, armY, 4, 9);
+        ctx.fillRect(px + 16, armY, 4, 9);
+    });
+
+    // Hai dây dẫn cao thế 500 kV võng tự nhiên qua đỉnh sứ của 2 cột điện
+    const wire1Start = { x: lineStartX, y: 164 };
+    const wire1End = { x: lineEndX, y: 164 };
+    const t1Ins = { x: tower1X, y: armY + 9 };
+    const t2Ins = { x: tower2X, y: armY + 9 };
+
+    const c1Top = { x: (lineStartX + tower1X) / 2, y: 162 };
+    const cMidTop = { x: (tower1X + tower2X) / 2, y: 152 };
+    const c2Top = { x: (tower2X + lineEndX) / 2, y: 162 };
+
+    const dyWire = 18;
+    const wire2Start = { x: lineStartX, y: wire1Start.y + dyWire };
+    const wire2End = { x: lineEndX, y: wire1End.y + dyWire };
+    const t1Ins2 = { x: t1Ins.x, y: t1Ins.y + dyWire };
+    const t2Ins2 = { x: t2Ins.x, y: t2Ins.y + dyWire };
+    const c1Bot = { x: c1Top.x, y: c1Top.y + dyWire };
+    const cMidBot = { x: cMidTop.x, y: cMidTop.y + dyWire };
+    const c2Bot = { x: c2Top.x, y: c2Top.y + dyWire };
+
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(wire1Start.x, wire1Start.y);
+    ctx.quadraticCurveTo(c1Top.x, c1Top.y, t1Ins.x, t1Ins.y);
+    ctx.quadraticCurveTo(cMidTop.x, cMidTop.y, t2Ins.x, t2Ins.y);
+    ctx.quadraticCurveTo(c2Top.x, c2Top.y, wire1End.x, wire1End.y);
+
+    ctx.moveTo(wire2Start.x, wire2Start.y);
+    ctx.quadraticCurveTo(c1Bot.x, c1Bot.y, t1Ins2.x, t1Ins2.y);
+    ctx.quadraticCurveTo(cMidBot.x, cMidBot.y, t2Ins2.x, t2Ins2.y);
+    ctx.quadraticCurveTo(c2Bot.x, c2Bot.y, wire2End.x, wire2End.y);
+    ctx.stroke();
+
+    // Hạt xung điện năng chạy bám chính xác dọc theo đường cong võng của dây cao thế 500 kV
+    function getWirePt(u, isBottom) {
+        const s = isBottom ? wire2Start : wire1Start;
+        const i1 = isBottom ? t1Ins2 : t1Ins;
+        const i2 = isBottom ? t2Ins2 : t2Ins;
+        const e = isBottom ? wire2End : wire1End;
+        const ca = isBottom ? c1Bot : c1Top;
+        const cm = isBottom ? cMidBot : cMidTop;
+        const cb = isBottom ? c2Bot : c2Top;
+
+        if (u < 0.30) return quadBez(s, ca, i1, u / 0.30);
+        if (u < 0.70) return quadBez(i1, cm, i2, (u - 0.30) / 0.40);
+        return quadBez(i2, cb, e, (u - 0.70) / 0.30);
+    }
+
+    for (let k = 0; k < 2; k++) {
+        const u1 = (saw + k * 0.5) % 1;
+        const pTop = getWirePt(u1, false);
+        ctx.fillStyle = '#fbbf24';
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(pTop.x, pTop.y, 4.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        const u2 = (saw + 0.25 + k * 0.5) % 1;
+        const pBot = getWirePt(u2, true);
+        ctx.beginPath();
+        ctx.arc(pBot.x, pBot.y, 4.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // Hộp nhãn đường dây cao thế phía trên (tự động tính chiều rộng + lề đệm rộng để không bao giờ tràn chữ!)
+    const lineLabel = 'Đường dây 500 kV (L = 248 km)';
+    const lineBoxW = Math.ceil(measureRichText(lineLabel, 15, '800')) + 28;
+    const lineCenterX = (lineStartX + lineEndX) / 2;
+    drawRoundRect(ctx, lineCenterX - lineBoxW / 2, 58, lineBoxW, 32, 7, '#0f172a', '#38bdf8', 1.8);
+    drawRichText(lineLabel, lineCenterX, 74, 15, '#38bdf8', '800', 'center');
+
+    // --- 6. TRẠM BIẾN ÁP HẠ ÁP (MBT 2, 3, 4) ---
+    const mbt2X = lineEndX, mbt2Y = 140, mbt2W = 108, mbt2H = 96;
+    drawRoundRect(ctx, mbt2X, mbt2Y, mbt2W, mbt2H, 8, '#0f172a', '#10b981', 2.4);
+
+    const c2X = mbt2X + mbt2W / 2, c2Y = mbt2Y + 22;
+    ctx.strokeStyle = '#6ee7b7';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.arc(c2X - 8, c2Y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(c2X + 8, c2Y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+
+    drawRichText('MBT 2, 3, 4', c2X, mbt2Y + 48, 14.5, '#6ee7b7', '800', 'center');
+    drawRichText('Hạ áp', c2X, mbt2Y + 67, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('500 kV → 220 V', c2X, mbt2Y + 84, 12.2, '#fde047', '800', 'center');
+
+    // --- 7. THÀNH PHỐ X (NƠI TIÊU THỤ ĐIỆN) BÊN PHẢI ---
+    const cityX = 622, cityY = 126, cityW = 132, cityH = 110;
+
+    // Đường dây nối MBT 2, 3, 4 → Thành phố X
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(mbt2X + mbt2W, 184);
+    ctx.lineTo(cityX, 184);
+    ctx.stroke();
+    drawArrow(ctx, mbt2X + mbt2W + 3, 184, cityX - 2, 184, '#10b981', 2.8, 6);
+
+    drawRoundRect(ctx, cityX, cityY, cityW, cityH, 8, '#1e293b', '#38bdf8', 2.4);
+
+    // Hình bóng các tòa nhà đô thị phía trên thẻ Thành phố X
+    drawRoundRect(ctx, cityX + 18, cityY - 24, 22, 24, 3, '#334155', '#38bdf8', 1.8);
+    drawRoundRect(ctx, cityX + 46, cityY - 32, 26, 32, 3, '#334155', '#38bdf8', 1.8);
+    drawRoundRect(ctx, cityX + 78, cityY - 18, 22, 18, 3, '#334155', '#38bdf8', 1.8);
+
+    drawRichText('THÀNH PHỐ X', cityX + cityW / 2, cityY + 28, 15, '#f8fafc', '800', 'center');
+    drawRichText('Nơi tiêu thụ', cityX + cityW / 2, cityY + 52, 14.5, '#38bdf8', '800', 'center');
+    drawRichText('điện năng', cityX + cityW / 2, cityY + 72, 14.5, '#38bdf8', '800', 'center');
+
+    // Chú thích phía dưới trục truyền tải
+    drawRichText('Sơ đồ nguyên lý truyền tải điện năng đi xa bằng dòng xoay chiều', w / 2, 264, 15, '#cbd5e1', '800', 'center');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-82 ---
+VLXTModels.register('MH-C3-82', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét đặt ở vùng trống tách biệt hoàn toàn
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 50 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 16, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 35, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'MÁY IN PHUN MỰC BINARY-DEFLECTION (L = 2 cm; v_{0} = 20 m/s; E = 4·10⁶ V/m)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.34) % 1;
+    const midY = 172;
+
+    ctx.save();
+
+    // =========================================================================
+    // 2. VÒI PHUN & BỘ NẠP ĐIỆN CỰC BÊN TRÁI (x = 18..162)
+    // =========================================================================
+    // Vòi phun mực
+    drawRoundRect(ctx, 18, midY - 17, 74, 34, 6, '#334155', '#cbd5e1', 2.4);
+    drawRichText('Vòi phun', 55, midY, 15, '#f8fafc', '800', 'center');
+
+    // Bộ nạp điện cực (2 bản cực trên và dưới khe bay)
+    const chX = 122, chW = 34;
+    drawRoundRect(ctx, chX, midY - 34, chW, 20, 4, '#1e293b', '#fbbf24', 2.2);
+    drawRoundRect(ctx, chX, midY + 14, chW, 20, 4, '#1e293b', '#fbbf24', 2.2);
+    drawRichText('Cực nạp', chX + chW / 2, midY - 48, 15, '#fbbf24', '800', 'center');
+
+    // Vectơ vận tốc ban đầu v0 tại khe ra của bộ nạp điện cực
+    drawArrow(ctx, 162, midY - 12, 194, midY - 12, '#6ee7b7', 2.4, 6);
+    drawRichText('v_{0}', 178, midY - 25, 15.5, '#6ee7b7', '800', 'center');
+
+    // =========================================================================
+    // 3. HAI BẢN LÁI TIA PHẲNG DÀI L = 2 cm (Bản dương + trên, Bản âm - dưới -> E hướng xuống)
+    // =========================================================================
+    const pX = 204, pW = 196, pTopY = 104, pBotY = 236;
+    drawRoundRect(ctx, pX, pTopY, pW, 13, 3, '#ef4444', '#fca5a5', 2);
+    drawRoundRect(ctx, pX, pBotY, pW, 13, 3, '#3b82f6', '#93c5fd', 2);
+
+    // Ký hiệu điện tích trên hai bản cực
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '800 15.5px "Be Vietnam Pro", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+   +   +   +   +', pX + pW / 2, pTopY - 11);
+
+    ctx.fillStyle = '#93c5fd';
+    ctx.fillText('–   –   –   –   –', pX + pW / 2, pBotY + 26);
+
+    // Ký hiệu chiều dài L = 2 cm dưới bản âm
+    const dimY = pBotY + 46;
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(pX, pBotY + 34); ctx.lineTo(pX, dimY + 5);
+    ctx.moveTo(pX + pW, pBotY + 34); ctx.lineTo(pX + pW, dimY + 5);
+    ctx.moveTo(pX, dimY); ctx.lineTo(pX + pW, dimY);
+    ctx.stroke();
+    drawRichText('L = 2 cm', pX + pW / 2, dimY + 12, 15, '#e2e8f0', '800', 'center');
+
+    // Các đường sức điện trường đều E hướng thẳng đứng từ trên xuống
+    for (let x = pX + 34; x <= pX + pW - 34; x += 64) {
+        drawArrow(ctx, x, pTopY + 17, x, pBotY - 5, 'rgba(56, 189, 248, 0.36)', 1.8, 6);
+    }
+    drawSubText(ctx, 'E', '', pX + pW - 14, pTopY + 32, { fontSize: 16.5, italic: true, color: '#38bdf8', vector: true });
+
+    // =========================================================================
+    // 4. QUỸ ĐẠO GIỌT MỰC C (q = 0, BAY THẲNG) & GIỌT MỰC A (q < 0, LỆCH LÊN VÀO MÁNG CHẶN)
+    // =========================================================================
+    const paperX = 636;
+    const gutterX = 486, gutterY = 104, gutterW = 48, gutterH = 44;
+
+    // 4.1 Quỹ đạo giọt mực loại C (không tích điện -> bay thẳng ngang tới Bề mặt giấy)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(92, midY);
+    ctx.lineTo(paperX, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 4.2 Quỹ đạo giọt mực loại A (tích điện âm -> lệch parabol lên trên trong điện trường, sau đó bay thẳng tiếp tuyến vào Máng chặn)
+    const exitPlateX = pX + pW;
+    const deflectPlateY = 26; // Độ lệch lên tại mép ra bản tụ
+    const exitPlateY = midY - deflectPlateY;
+    const targetGutterX = gutterX + 4;
+    const targetGutterY = gutterY + gutterH / 2;
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.8;
+    ctx.beginPath();
+    ctx.moveTo(92, midY);
+    ctx.lineTo(pX, midY);
+    // Cung parabol trong vùng điện trường đều (từ pX đến exitPlateX)
+    ctx.quadraticCurveTo(pX + pW * 0.5, midY, exitPlateX, exitPlateY);
+    // Đoạn thẳng tiếp tuyến ngoài điện trường bay thẳng vào máng chặn
+    ctx.lineTo(targetGutterX, targetGutterY);
+    ctx.stroke();
+
+    // 4.3 Máng chặn mực thu hồi giọt loại A (đặt gọn ở x = 486..534, y = 104..148)
+    drawRoundRect(ctx, gutterX, gutterY, gutterW, gutterH, 6, '#1e293b', '#fbbf24', 2.4);
+    // Khe hở miệng máng bên trái để giọt mực bay vào
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(gutterX - 2, gutterY + 8, 6, gutterH - 16);
+    drawRichText('Máng chặn', gutterX + gutterW / 2, gutterY - 14, 15, '#fbbf24', '800', 'center');
+
+    // 4.4 Bề mặt giấy in bên phải (x = 636..654)
+    drawRoundRect(ctx, paperX, 74, 18, 196, 3, '#f8fafc', '#94a3b8', 2.2);
+    drawRichText('Bề mặt giấy', paperX + 26, midY, 15.5, '#f8fafc', '800', 'left');
+
+    // =========================================================================
+    // 5. CHUYỂN ĐỘNG 1 CHIỀU CỦA HAI GIỌT MỰC A VÀ C
+    // =========================================================================
+    const totalDistC = paperX - 92;
+    const dropX = 92 + saw * totalDistC;
+
+    // Giọt C (không mang điện q = 0 -> bay thẳng tới giấy)
+    ctx.fillStyle = '#38bdf8';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(dropX, midY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Giọt A (mang điện âm q < 0 -> lệch lên vào máng chặn)
+    if (dropX <= targetGutterX) {
+        let dropAY = midY;
+        if (dropX > pX && dropX <= exitPlateX) {
+            const u = (dropX - pX) / pW;
+            dropAY = midY - u * u * deflectPlateY;
+        } else if (dropX > exitPlateX) {
+            const vFrac = (dropX - exitPlateX) / (targetGutterX - exitPlateX);
+            dropAY = exitPlateY + vFrac * (targetGutterY - exitPlateY);
+        }
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(dropX, dropAY, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // =========================================================================
+    // 6. HAI THẺ CHÚ THÍCH CỠ CHỮ TO (15.5px) Ở VÙNG TRỐNG - KHÔNG CHE MÔ HÌNH
+    // =========================================================================
+    drawSafeNote(
+        418, 48,
+        444, 136,
+        'Giọt mực loại A (q < 0)',
+        null,
+        '#fbbf24'
+    );
+
+    drawSafeNote(
+        438, 226,
+        520, midY,
+        'Giọt mực loại C (q = 0)',
+        null,
+        '#38bdf8'
+    );
+
+    ctx.restore();
+});
+
+    // --- MH-C3-83 ---
+VLXTModels.register('MH-C3-83', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'THÍ NGHIỆM TƯƠNG TÁC TỪ GIỮA HAI DÒNG ĐIỆN THẲNG SONG SONG (NGUỒN 12 V)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Chuyển động dao động nhẹ nhàng 1 chiều sawtooth / tuần hoàn của hai thanh đồng mảnh (4), (5)
+    // Hình a (cùng chiều): hai thanh hút lại gần nhau
+    // Hình b (ngược chiều): hai thanh đẩy ra xa nhau
+    const cycle = 0.5 - 0.5 * Math.cos(t * 2.2); // Chuyển động mượt từ 0 -> 1 -> 0
+    const shift = cycle * 14;
+
+    ctx.save();
+
+    function drawSetup(offsetX, sameDir, labelTitle) {
+        const boardW = 348, boardH = 206, boardY = 52;
+
+        // 1. Bảng nhựa cách điện (3) có viền bo góc sắc nét
+        drawRoundRect(ctx, offsetX, boardY, boardW, boardH, 10, '#1e293b', '#64748b', 2.4);
+
+        // Bốn chân vít cố định ở 4 góc bảng nhựa
+        ctx.fillStyle = '#475569';
+        const pad = 12;
+        [
+            [offsetX + pad, boardY + pad],
+            [offsetX + boardW - pad, boardY + pad],
+            [offsetX + pad, boardY + boardH - pad],
+            [offsetX + boardW - pad, boardY + boardH - pad]
+        ].forEach(([vx, vy]) => {
+            ctx.beginPath();
+            ctx.arc(vx, vy, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 2. Hai thanh đồng cố định nằm ngang (1) trên và (2) dưới
+        const y1 = 104, y2 = 204;
+        const barLeft = offsetX + 46, barRight = offsetX + boardW - 32;
+
+        // Đế kẹp cách điện giữ hai thanh đồng (1) và (2)
+        drawRoundRect(ctx, barLeft - 6, y1 - 6, 12, 12, 2, '#334155', '#94a3b8', 1.6);
+        drawRoundRect(ctx, barRight - 6, y1 - 6, 12, 12, 2, '#334155', '#94a3b8', 1.6);
+        drawRoundRect(ctx, barLeft - 6, y2 - 6, 12, 12, 2, '#334155', '#94a3b8', 1.6);
+        drawRoundRect(ctx, barRight - 6, y2 - 6, 12, 12, 2, '#334155', '#94a3b8', 1.6);
+
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 5.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(barLeft, y1);
+        ctx.lineTo(barRight, y1);
+        ctx.moveTo(barLeft, y2);
+        ctx.lineTo(barRight, y2);
+        ctx.stroke();
+
+        // Nhãn (1), (2) và bảng (3) cỡ chữ thật to 15.5px
+        drawRichText('(1)', offsetX + 24, y1, 15.5, '#fbbf24', '800', 'center');
+        drawRichText('(2)', offsetX + 24, y2, 15.5, '#fbbf24', '800', 'center');
+        drawRichText('(3)', offsetX + boardW - 22, boardY + 20, 15, '#94a3b8', '800', 'center');
+
+        // 3. Dây nối nguồn 12 V cấp dòng điện qua hai thanh (1), (2)
+        const srcX = offsetX + 76, srcY = y2 + 30;
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        // Dây cực dương (+) màu đỏ nối lên thanh (1) hoặc (2)
+        ctx.moveTo(barLeft + 14, y2);
+        ctx.lineTo(barLeft + 14, srcY);
+        ctx.lineTo(srcX - 18, srcY);
+        // Dây cực âm (-) nối lên thanh (1) ở mép trái
+        ctx.moveTo(srcX + 18, srcY);
+        ctx.lineTo(offsetX + 34, srcY);
+        ctx.lineTo(offsetX + 34, y1);
+        ctx.lineTo(barLeft, y1);
+        ctx.stroke();
+
+        // Ký hiệu nguồn 12 V
+        drawRoundRect(ctx, srcX - 18, srcY - 12, 36, 24, 5, '#0f172a', '#38bdf8', 2);
+        drawRichText('12 V', srcX, srcY, 14, '#38bdf8', '800', 'center');
+        drawRichText('Nguồn điện một chiều', srcX + 26, srcY, 14.5, '#93c5fd', '700', 'left');
+
+        // 4. Hai thanh đồng mảnh (4) trái và (5) phải đặt gác lên hai thanh (1), (2)
+        const baseMid = offsetX + 186;
+        const baseGap = 42;
+        const x4 = sameDir ? (baseMid - baseGap + shift) : (baseMid - baseGap - shift);
+        const x5 = sameDir ? (baseMid + baseGap - shift) : (baseMid + baseGap + shift);
+
+        // Vẽ vị trí ban đầu mờ nét đứt để thấy rõ độ dịch chuyển tương tác
+        ctx.save();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(baseMid - baseGap, y1 - 14);
+        ctx.lineTo(baseMid - baseGap, y2 + 14);
+        ctx.moveTo(baseMid + baseGap, y1 - 14);
+        ctx.lineTo(baseMid + baseGap, y2 + 14);
+        ctx.stroke();
+        ctx.restore();
+
+        // Hai thanh đồng mảnh (4) và (5)
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x4, y1 - 14);
+        ctx.lineTo(x4, y2 + 14);
+        ctx.moveTo(x5, y1 - 14);
+        ctx.lineTo(x5, y2 + 14);
+        ctx.stroke();
+
+        // Điểm tiếp xúc điện giữa thanh mảnh (4), (5) với hai thanh (1), (2)
+        ctx.fillStyle = '#fde047';
+        [
+            [x4, y1], [x4, y2],
+            [x5, y1], [x5, y2]
+        ].forEach(([cx, cy]) => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 3.6, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Nhãn (4) và (5) di chuyển đồng bộ trên đầu thanh đồng mảnh
+        drawRichText('(4)', x4, y1 - 26, 15.5, '#38bdf8', '800', 'center');
+        drawRichText('(5)', x5, y1 - 26, 15.5, '#38bdf8', '800', 'center');
+
+        // 5. Mũi tên chiều dòng điện I trên thanh (4) và (5)
+        const midY = (y1 + y2) / 2;
+        // Thanh (4): dòng điện hướng từ dưới lên trên
+        drawArrow(ctx, x4, y2 - 18, x4, y1 + 18, '#ef4444', 2.8, 7.5);
+        drawRichText('I_{1}', x4 - 14, midY, 15.5, '#fca5a5', '800', 'center');
+
+        if (sameDir) {
+            // Hình a: dòng điện trên (5) cùng chiều từ dưới lên trên
+            drawArrow(ctx, x5, y2 - 18, x5, y1 + 18, '#ef4444', 2.8, 7.5);
+            drawRichText('I_{2}', x5 + 15, midY, 15.5, '#fca5a5', '800', 'center');
+        } else {
+            // Hình b: dòng điện trên (5) ngược chiều từ trên xuống dưới
+            drawArrow(ctx, x5, y1 + 18, x5, y2 - 18, '#ef4444', 2.8, 7.5);
+            drawRichText('I_{2}', x5 + 15, midY, 15.5, '#fca5a5', '800', 'center');
+        }
+
+        // 6. Tiêu đề Hình a / Hình b phía dưới cùng (cỡ chữ 16px sắc nét)
+        drawRichText(labelTitle, offsetX + boardW / 2, 282, 16, '#f8fafc', '800', 'center');
+    }
+
+    drawSetup(24, true, 'Hình a. Hai dòng điện cùng chiều');
+    drawSetup(408, false, 'Hình b. Hai dòng điện ngược chiều');
+
+    ctx.restore();
+});
+
+    // --- MH-C3-84 ---
+VLXTModels.register('MH-C3-84', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawVectorLabel(str, x, y, baseSize, color) {
+        const tw = measureRichText(str, baseSize, '800');
+        drawRichText(str, x, y, baseSize, color, '800', 'center');
+        drawArrow(ctx, x - tw * 0.45, y - baseSize * 0.72, x + tw * 0.55, y - baseSize * 0.72, color, 1.8, 5);
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('ỐNG TIA ĐIỆN TỬ KHẢO SÁT CHÙM ELECTRON (U = 2,70 kV)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.34) % 1;
+
+    ctx.save();
+
+    // --- 2. HÌNH a (BÊN TRÁI): QUỸ ĐẠO PARABOL TRONG ĐIỆN TRƯỜNG ĐỀU E ---
+    drawRoundRect(ctx, 14, 48, 368, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const ox1 = 68, oy1 = 86, gw = 236, gh = 160;
+
+    // Vùng điện trường đều E (Zero Data Leakage: KHÔNG vẽ sẵn chiều mũi tên vectơ E)
+    drawRoundRect(ctx, ox1 + 10, oy1 + 10, 198, 134, 6, 'rgba(245, 158, 11, 0.12)', 'rgba(245, 158, 11, 0.42)', 1.6);
+    drawRoundRect(ctx, ox1 + 174, oy1 + 18, 28, 28, 5, '#0f172a', '#fbbf24', 1.6);
+    drawVectorLabel('E', ox1 + 188, oy1 + 33, 15.5, '#fbbf24');
+
+    // Hệ trục tọa độ Oxy
+    drawArrow(ctx, ox1, oy1, ox1 + gw, oy1, '#cbd5e1', 2.4, 7);
+    drawArrow(ctx, ox1, oy1, ox1, oy1 + gh, '#cbd5e1', 2.4, 7);
+
+    drawRichText('O', ox1 - 12, oy1 - 4, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('x (mm)', ox1 + gw + 6, oy1, 14, '#f8fafc', '800', 'left');
+    drawRichText('y (mm)', ox1 - 24, oy1 + gh + 10, 14, '#f8fafc', '800', 'center');
+
+    // Súng phóng electron tại gốc O (vectơ vận tốc ban đầu v0 dọc theo Ox)
+    drawArrow(ctx, ox1 - 36, oy1, ox1 - 6, oy1, '#38bdf8', 2.4, 6);
+    drawRichText('e⁻', ox1 - 24, oy1 - 14, 14.5, '#38bdf8', '800', 'center');
+
+    // Quỹ đạo parabol đi qua điểm (x = 30 mm; y = 81 mm)
+    const p1X = ox1 + 132, p1Y = oy1 + 124;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(ox1, oy1);
+    for (let u = 0; u <= 1.07; u += 0.035) {
+        const qx = ox1 + u * 132;
+        const qy = oy1 + u * u * 124;
+        ctx.lineTo(qx, qy);
+    }
+    ctx.stroke();
+
+    // Đường gióng tọa độ (30 mm; 81 mm)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(p1X, oy1);
+    ctx.lineTo(p1X, p1Y);
+    ctx.moveTo(ox1, p1Y);
+    ctx.lineTo(p1X, p1Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Điểm mốc tọa độ & nhãn số liệu đề dẫn rõ nét
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(p1X, p1Y, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    drawRichText('30', p1X, oy1 - 13, 14.5, '#fde047', '800', 'center');
+    drawRichText('81', ox1 - 16, p1Y, 14.5, '#fde047', '800', 'center');
+
+    // Hạt electron chuyển động 1 chiều dọc quỹ đạo parabol
+    const e1X = ox1 + saw * 132;
+    const e1Y = oy1 + saw * saw * 124;
+    ctx.fillStyle = '#6ee7b7';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(e1X, e1Y, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    drawRichText('Hình a: Trong điện trường đều E', 198, 274, 15, '#f8fafc', '800', 'center');
+
+    // --- 3. HÌNH b (BÊN PHẢI): QUỸ ĐẠO CUNG TRÒN TRONG TỪ TRƯỜNG ĐỀU B ---
+    drawRoundRect(ctx, 398, 48, 368, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const ox2 = 452, oy2 = 86;
+
+    // Vùng từ trường đều B (Zero Data Leakage: KHÔNG vẽ sẵn ký hiệu chấm ⊙ hay nhân ⊗)
+    drawRoundRect(ctx, ox2 + 10, oy2 + 10, 198, 134, 6, 'rgba(56, 189, 248, 0.12)', 'rgba(56, 189, 248, 0.42)', 1.6);
+    drawRoundRect(ctx, ox2 + 174, oy2 + 18, 28, 28, 5, '#0f172a', '#38bdf8', 1.6);
+    drawVectorLabel('B', ox2 + 188, oy2 + 33, 15.5, '#38bdf8');
+
+    // Hệ trục tọa độ Oxy
+    drawArrow(ctx, ox2, oy2, ox2 + gw, oy2, '#cbd5e1', 2.4, 7);
+    drawArrow(ctx, ox2, oy2, ox2, oy2 + gh, '#cbd5e1', 2.4, 7);
+
+    drawRichText('O', ox2 - 12, oy2 - 4, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('x (mm)', ox2 + gw + 6, oy2, 14, '#f8fafc', '800', 'left');
+    drawRichText('y (mm)', ox2 - 24, oy2 + gh + 10, 14, '#f8fafc', '800', 'center');
+
+    // Súng phóng electron tại gốc O
+    drawArrow(ctx, ox2 - 36, oy2, ox2 - 6, oy2, '#10b981', 2.4, 6);
+    drawRichText('e⁻', ox2 - 24, oy2 - 14, 14.5, '#10b981', '800', 'center');
+
+    // Quỹ đạo cung tròn tâm (ox2, oy2 + R) đi qua điểm (x = 45 mm; y = 30 mm)
+    // Với R = (45^2 + 30^2) / (2 * 30) = 48.75 mm -> scale 1 mm = 3.2 px => Rpx = 156 px
+    const scale = 3.2;
+    const Rpx = 48.75 * scale;
+    const p2X = ox2 + 45 * scale;
+    const p2Y = oy2 + 30 * scale;
+    const maxAng = Math.asin((45 * scale) / Rpx);
+
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.arc(ox2, oy2 + Rpx, Rpx, -Math.PI / 2, -Math.PI / 2 + maxAng * 1.12, false);
+    ctx.stroke();
+
+    // Đường gióng tọa độ (45 mm; 30 mm)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(p2X, oy2);
+    ctx.lineTo(p2X, p2Y);
+    ctx.moveTo(ox2, p2Y);
+    ctx.lineTo(p2X, p2Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Điểm mốc tọa độ & nhãn số liệu đề dẫn rõ nét
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(p2X, p2Y, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    drawRichText('45', p2X, oy2 - 13, 14.5, '#6ee7b7', '800', 'center');
+    drawRichText('30', ox2 - 16, p2Y, 14.5, '#6ee7b7', '800', 'center');
+
+    // Hạt electron chuyển động 1 chiều dọc cung tròn
+    const curA = -Math.PI / 2 + saw * maxAng;
+    const e2X = ox2 + Math.cos(curA) * Rpx;
+    const e2Y = oy2 + Rpx + Math.sin(curA) * Rpx;
+    ctx.fillStyle = '#fbbf24';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(e2X, e2Y, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    drawRichText('Hình b: Trong từ trường đều B', 582, 274, 15, '#f8fafc', '800', 'center');
+
+    ctx.restore();
+});
+
+    // --- MH-C4-85 ---
+VLXTModels.register('MH-C4-85', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét đặt ở vùng trống an toàn (không bao giờ đè lên mô hình)
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15.5, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14.5, '700') : 0;
+        const boxW = Math.max(w1, w2) + 22;
+        const boxH = subLabel ? 50 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 11, safeBy + 16, 15.5, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 11, safeBy + 35, 14.5, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 11, safeBy + boxH / 2, 15.5, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'THÍ NGHIỆM TÁN XẠ HẠT ALPHA CỦA RUTHERFORD (1911) — LÁ VÀNG MỎNG';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.34) % 1;
+    const foilX = 286, foilY = 178, screenR = 96;
+
+    ctx.save();
+
+    // =========================================================================
+    // 2. HỘP CHÌ CHỨA NGUỒN PHÁT HẠT ALPHA (x = 18..116, y = 148..208)
+    // =========================================================================
+    drawRoundRect(ctx, 18, foilY - 30, 88, 60, 6, '#334155', '#94a3b8', 2.8);
+    // Khe chuẩn trực hẹp bên phải hộp chì
+    ctx.fillStyle = '#060b19';
+    ctx.fillRect(82, foilY - 8, 26, 16);
+
+    // Nguồn phóng xạ alpha (2 proton + 2 neutron) bên trong hốc chì
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(62, foilY, 11, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Màn chắn chuẩn trực phụ tạo chùm hạt alpha mảnh song song
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(142, foilY - 26, 7, 19);
+    ctx.fillRect(142, foilY + 7, 7, 19);
+
+    // =========================================================================
+    // 3. MÀN HUỲNH QUANG ZnS HÌNH VÒNG CUNG LỚN & KÍNH HIỂN VI QUAN SÁT
+    // =========================================================================
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 6.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(foilX, foilY, screenR, -Math.PI * 0.78, Math.PI * 0.78, false);
+    ctx.stroke();
+
+    // Kính hiển vi quan sát đặt ngoài màn huỳnh quang ở góc dưới phải (không chạm thẻ chú thích trên)
+    const scopeAng = 0.64;
+    const scX = foilX + Math.cos(scopeAng) * (screenR + 5);
+    const scY = foilY + Math.sin(scopeAng) * (screenR + 5);
+    ctx.save();
+    ctx.translate(scX, scY);
+    ctx.rotate(scopeAng);
+    drawRoundRect(ctx, 0, -10, 42, 20, 4, '#1e293b', '#10b981', 2.4);
+    ctx.fillStyle = '#10b981';
+    ctx.fillRect(42, -6, 8, 12); // Thị kính
+    ctx.restore();
+
+    // =========================================================================
+    // 4. LÁ VÀNG SIÊU MỎNG ĐẶT THẲNG ĐỨNG TẠI TÂM (foilX, foilY)
+    // =========================================================================
+    ctx.fillStyle = '#fbbf24';
+    ctx.strokeStyle = '#fef08a';
+    ctx.lineWidth = 1.2;
+    ctx.fillRect(foilX - 3, foilY - 46, 6, 92);
+    ctx.strokeRect(foilX - 3, foilY - 46, 6, 92);
+
+    // =========================================================================
+    // 5. QUỸ ĐẠO CHÙM HẠT ALPHA (ĐI THẲNG, LỆCH GÓC NHỎ, BẬT NGƯỢC > 90°)
+    // =========================================================================
+    // Chùm tia tới từ nguồn qua khe chuẩn trực đến lá vàng
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(96, foilY);
+    ctx.lineTo(foilX + screenR - 4, foilY); // Tia đi thẳng (đa số)
+    ctx.stroke();
+
+    // Hai tia lệch góc nhọn
+    const angUp = -0.66, angDown = 0.64;
+    const hitUpX = foilX + Math.cos(angUp) * (screenR - 4);
+    const hitUpY = foilY + Math.sin(angUp) * (screenR - 4);
+    const hitDownX = foilX + Math.cos(angDown) * (screenR - 4);
+    const hitDownY = foilY + Math.sin(angDown) * (screenR - 4);
+
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.72)';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(foilX, foilY);
+    ctx.lineTo(hitUpX, hitUpY);
+    ctx.moveTo(foilX, foilY);
+    ctx.lineTo(hitDownX, hitDownY);
+    ctx.stroke();
+
+    // Tia bật ngược góc > 90° (rất ít, tỉ lệ ~1/10^4)
+    const angBack = -2.26;
+    const hitBackX = foilX + Math.cos(angBack) * (screenR - 4);
+    const hitBackY = foilY + Math.sin(angBack) * (screenR - 4);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(foilX, foilY);
+    ctx.lineTo(hitBackX, hitBackY);
+    ctx.stroke();
+
+    // Các chấm sáng nhấp nháy trên màn huỳnh quang ZnS tại điểm va chạm
+    const flashPoints = [
+        [foilX + screenR - 4, foilY, '#fde047'],
+        [hitUpX, hitUpY, '#fde047'],
+        [hitDownX, hitDownY, '#6ee7b7'],
+        [hitBackX, hitBackY, '#fca5a5']
+    ];
+    for (const [fx, fy, col] of flashPoints) {
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Chuyển động 1 chiều sawtooth của hạt alpha từ nguồn -> lá vàng -> tán xạ
+    const startX = 96;
+    const hitFoilFrac = (foilX - startX) / (foilX + screenR - 4 - startX);
+    let ax = startX, ay = foilY;
+    if (saw <= hitFoilFrac) {
+        const u = saw / hitFoilFrac;
+        ax = startX + u * (foilX - startX);
+        ay = foilY;
+    } else {
+        const u = (saw - hitFoilFrac) / (1 - hitFoilFrac);
+        // Hạt chính xuyên thẳng tới màn ZnS
+        ax = foilX + u * (screenR - 4);
+        ay = foilY;
+        // Kèm 1 hạt tán xạ lệch góc trên để học sinh thấy đồng thời hiện tượng tán xạ
+        const sx2 = foilX + u * (hitUpX - foilX);
+        const sy2 = foilY + u * (hitUpY - foilY);
+        drawAlphaCluster(ctx, sx2, sy2, 3.6);
+    }
+    drawAlphaCluster(ctx, ax, ay, 4.2);
+
+    // =========================================================================
+    // 6. CÁC THẺ CHÚ THÍCH CỠ CHỮ TO (15.5px) Ở VÙNG TRỐNG - KHÔNG CHE MÔ HÌNH
+    // =========================================================================
+    drawSafeNote(
+        14, 52,
+        62, foilY - 30,
+        'Nguồn hạt α (He-4)',
+        'Đặt trong hộp chì',
+        '#f59e0b'
+    );
+
+    drawSafeNote(
+        214, 52,
+        foilX, foilY - 46,
+        'Lá vàng siêu mỏng',
+        null,
+        '#fbbf24'
+    );
+
+    drawSafeNote(
+        452, 52,
+        foilX + Math.cos(-0.62) * screenR, foilY + Math.sin(-0.62) * screenR,
+        'Màn ZnS & Kính hiển vi',
+        'Quan sát chấm sáng nhấp nháy',
+        '#10b981'
+    );
+
+    // =========================================================================
+    // 7. THẺ KẾT QUẢ THÍ NGHIỆM BÊN PHẢI (x = 452..768, y = 128..288)
+    // =========================================================================
+    drawRoundRect(ctx, 452, 128, 316, 160, 12, '#0f172a', '#38bdf8', 2.4);
+    ctx.fillStyle = '#0c4a6e';
+    ctx.beginPath();
+    ctx.roundRect(453.5, 129.5, 313, 38, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('KẾT QUẢ THÍ NGHIỆM RUTHERFORD', 468, 149, 15.5, '#38bdf8', '800', 'left');
+    drawRichText('• Hầu hết hạt α xuyên thẳng qua lá vàng', 468, 188, 15, '#f8fafc', '700', 'left');
+    drawRichText('• Một số ít bị lệch hướng góc nhỏ', 468, 220, 15, '#fde047', '700', 'left');
+    drawRichText('• Tỉ lệ ~1/10⁴ bật ngược (> 90°)', 468, 254, 15, '#fca5a5', '800', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C4-86 ---
+VLXTModels.register('MH-C4-86', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('MÔ HÌNH TÁN XẠ HẠT ALPHA: VĨ MÔ (HÌNH a) & VI MÔ HẠT NHÂN VÀNG (HÌNH b)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.34) % 1;
+
+    ctx.save();
+
+    // --- 2. HÌNH a (BÊN TRÁI): CHÙM HẠT ALPHA BẮN QUA LÁ VÀNG MỎNG ---
+    drawRoundRect(ctx, 14, 48, 344, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const f1X = 196, f1Y = 162;
+
+    // Nguồn phát hạt alpha bọc chì (có khe chuẩn trực bên phải)
+    drawRoundRect(ctx, 32, f1Y - 22, 56, 44, 5, '#334155', '#94a3b8', 2.4);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(74, f1Y - 8, 16, 16);
+    drawRichText('Nguồn α', 60, f1Y - 34, 15, '#fbbf24', '800', 'center');
+
+    // Màn chắn huỳnh quang hình vòng cung bao quanh lá vàng
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(f1X, f1Y, 92, -Math.PI * 0.72, Math.PI * 0.72, false);
+    ctx.stroke();
+    drawRichText('Màn huỳnh quang', 284, 72, 14.5, '#38bdf8', '800', 'center');
+
+    // Lá vàng mỏng đặt ở tâm màn chắn
+    drawRoundRect(ctx, f1X - 3, f1Y - 56, 6, 112, 2, '#fbbf24', '#fef08a', 1.2);
+    drawRichText('Lá vàng', f1X, f1Y - 68, 15, '#fde047', '800', 'center');
+
+    // Các quỹ đạo tia alpha: đa số xuyên thẳng, một số lệch góc nhỏ, rất ít bật ngược lại
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+    ctx.lineWidth = 2.2;
+    [-18, 0, 18].forEach(dy => {
+        ctx.beginPath();
+        ctx.moveTo(88, f1Y + dy);
+        ctx.lineTo(f1X + 88, f1Y + dy);
+        ctx.stroke();
+    });
+
+    // Tia lệch góc nhọn
+    ctx.beginPath();
+    ctx.moveTo(f1X, f1Y - 10);
+    ctx.lineTo(f1X + 68, f1Y - 58);
+    ctx.moveTo(f1X, f1Y + 10);
+    ctx.lineTo(f1X + 68, f1Y + 58);
+    ctx.stroke();
+
+    // Tia bật ngược lại (tán xạ góc lớn)
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(f1X, f1Y - 4);
+    ctx.lineTo(f1X - 58, f1Y - 64);
+    ctx.stroke();
+
+    // Hạt alpha chuyển động trong chùm tia tới
+    const p1X = 88 + saw * (f1X + 86 - 88);
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(p1X, f1Y, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawRichText('Hình a. Bố trí thí nghiệm', 186, 274, 15, '#f8fafc', '800', 'center');
+
+    // --- 3. HÌNH b (BÊN PHẢI): TƯƠNG TÁC VI MÔ HẠT ALPHA VỚI HẠT NHÂN VÀNG ---
+    drawRoundRect(ctx, 372, 48, 394, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const auX = 594, auY = 160;
+
+    // Vùng vỏ nguyên tử vàng (vòng tròn nét đứt mảnh, tách biệt hoàn toàn không đụng chữ)
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.28)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(auX, auY, 86, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Hạt nhân vàng mang điện dương lớn ở tâm (+Q_n)
+    ctx.fillStyle = '#dc2626';
+    ctx.strokeStyle = '#fca5a5';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.arc(auX, auY, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    drawRichText('+Q_n', auX, auY, 14.5, '#ffffff', '800', 'center');
+
+    // 1. Hạt ở xa đi thẳng qua khoảng trống nguyên tử
+    drawArrow(ctx, 392, auY - 64, 738, auY - 64, '#10b981', 2.4, 7);
+    drawArrow(ctx, 392, auY + 64, 738, auY + 64, '#10b981', 2.4, 7);
+
+    // 2. Hạt bay gần hạt nhân bị lực đẩy Coulomb bẻ cong quỹ đạo
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(392, auY - 26);
+    ctx.quadraticCurveTo(auX - 22, auY - 26, auX + 86, auY - 92);
+    ctx.stroke();
+    drawArrow(ctx, auX + 58, auY - 73, auX + 90, auY - 95, '#fbbf24', 2.6, 7);
+
+    // 3. Hạt va chạm xuyên tâm tiến đến khoảng cách gần nhất x rồi bật ngược lại
+    const stopX = auX - 46; // Khoảng cách từ tâm hạt nhân auX tới điểm dừng stopX là 46px
+    ctx.strokeStyle = '#ef4444';
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(392, auY);
+    ctx.lineTo(stopX, auY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Hạt alpha (cụm 2p + 2n) tiến đến điểm dừng cách tâm hạt nhân đoạn x rồi bật ngược lại
+    let hx;
+    if (saw < 0.5) {
+        hx = 392 + (saw / 0.5) * (stopX - 392);
+    } else {
+        hx = stopX - ((saw - 0.5) / 0.5) * (stopX - 392);
+    }
+    drawAlphaCluster(ctx, hx, auY, 4.2);
+    drawRichText('α', 404, auY - 14, 15, '#fca5a5', '800', 'center');
+
+    // Đoạn khoảng cách gần nhất x (từ tâm hạt nhân đến điểm dừng gần nhất)
+    const dimY = auY + 26;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(stopX, auY + 4);
+    ctx.lineTo(stopX, dimY + 4);
+    ctx.moveTo(auX, auY + 20);
+    ctx.lineTo(auX, dimY + 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.moveTo(stopX, dimY);
+    ctx.lineTo(auX, dimY);
+    ctx.stroke();
+    drawRichText('x', (stopX + auX) / 2, dimY + 13, 15.5, '#38bdf8', '800', 'center');
+
+    drawRichText('Hình b. Va chạm xuyên tâm với hạt nhân vàng', 569, 274, 15, '#f8fafc', '800', 'center');
+
+    ctx.restore();
+});
+
+    // --- MH-C4-87 ---
+VLXTModels.register('MH-C4-87', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'ĐỒNG VỊ PHÓNG XẠ STRONTIUM Sr-90 (T = 28,79 năm · PHÓNG XẠ β⁻)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.26) % 1;
+
+    ctx.save();
+
+    // =========================================================================
+    // 2. SƠ ĐỒ XÂM NHẬP BỤI PHÓNG XẠ Sr-90 VÀO XƯƠNG NGƯỜI (BÊN TRÁI: x = 18..406)
+    // =========================================================================
+    // Thẻ nguồn bụi phóng xạ Sr-90 (x = 18..176, y = 60..146)
+    drawRoundRect(ctx, 18, 60, 158, 86, 10, '#1e293b', '#f59e0b', 2.4);
+    drawNuclide(ctx, '90', '38', 'Sr', 44, 103, { fontSize: 18, color: '#fbbf24' });
+    drawRichText('Bụi phóng xạ', 76, 88, 15, '#f8fafc', '800', 'left');
+    drawRichText('T = 28,79 năm', 76, 114, 14.5, '#fde047', '700', 'left');
+
+    // Mũi tên xâm nhập qua chuỗi thức ăn (cỏ/sữa) vào xương người
+    drawArrow(ctx, 180, 103, 214, 103, '#fbbf24', 2.8, 7.5);
+
+    // Khung mẫu xương tích tụ Sr-90 phát tia β⁻ (x = 218..406, y = 54..152)
+    drawRoundRect(ctx, 218, 54, 188, 98, 10, '#0f172a', '#ef4444', 2.4);
+
+    // Hình xương giải phẫu cách điệu phẳng sắc nét
+    const boneY = 92;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(256, boneY);
+    ctx.lineTo(368, boneY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#e2e8f0';
+    [256, 368].forEach(bx => {
+        ctx.beginPath();
+        ctx.arc(bx, boneY - 6, 7.5, 0, Math.PI * 2);
+        ctx.arc(bx, boneY + 6, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Chấm hạt nhân Sr-90 tích tụ bên trong tủy xương
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(312, boneY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tia beta- (electron) phóng ra từ xương theo chuyển động 1 chiều sawtooth
+    const bX = 312 + saw * 62;
+    const bY = boneY - saw * 26;
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.45)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(312, boneY);
+    ctx.lineTo(374, boneY - 26);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#10b981';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(bX, bY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    drawRichText('β⁻', bX + 12, bY - 4, 14.5, '#6ee7b7', '800', 'left');
+
+    drawRichText('Tia β⁻ phá hủy tủy xương', 312, 134, 14.5, '#fca5a5', '800', 'center');
+
+    // =========================================================================
+    // 3. THẺ THÔNG SỐ ĐỀ DẪN GÓC DƯỚI TRÁI (x = 18..406, y = 166..288)
+    // =========================================================================
+    drawRoundRect(ctx, 18, 166, 388, 122, 12, '#0f172a', '#fbbf24', 2.4);
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.roundRect(19.5, 167.5, 385, 34, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ ĐỒNG VỊ STRONTIUM-90', 34, 185, 15.5, '#fde047', '800', 'left');
+    drawRichText('• Hạt nhân mẹ: ⁹⁰₃₈Sr (T = 28,79 năm)', 34, 222, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Phương trình phân rã: ⁹⁰₃₈Sr → X + ⁰₋₁e', 34, 256, 15.5, '#6ee7b7', '800', 'left');
+
+    // =========================================================================
+    // 4. ĐỒ THỊ ĐƯỜNG CONG PHÂN RÃ PHÓNG XẠ N(t) THEO THỜI GIAN (BÊN PHẢI: x = 424..768)
+    // =========================================================================
+    drawRoundRect(ctx, 424, 54, 344, 234, 12, '#0f172a', '#334155', 2);
+
+    const ox = 482, oy = 248, gxW = 258, gyH = 166;
+    drawArrow(ctx, ox, oy, ox + gxW, oy, '#cbd5e1', 2.4, 7);
+    drawArrow(ctx, ox, oy, ox, oy - gyH, '#cbd5e1', 2.4, 7);
+
+    // Nhãn trục tọa độ N(t) và t (năm) cỡ chữ thật to (15.5px)
+    drawRichText('N(t)', ox - 10, oy - gyH - 12, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('t (năm)', ox + gxW - 22, oy + 22, 15, '#f8fafc', '800', 'center');
+    drawRichText('O', ox - 12, oy + 14, 15, '#94a3b8', '800', 'center');
+
+    const n0Y = oy - 138;
+    const halfY = oy - 69;
+    const t1X = ox + 105;
+    const t2X = ox + 210;
+
+    drawRichText('N_{0}', ox - 10, n0Y, 15.5, '#38bdf8', '800', 'right');
+    drawRichText('N_{0}/2', ox - 10, halfY, 15, '#fde047', '800', 'right');
+
+    // Đường cong phân rã mũ N(t) = N0 * 2^(-t/T)
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    for (let u = 0; u <= 1; u += 0.025) {
+        const px = ox + u * 232;
+        const py = oy - 138 * Math.pow(0.5, (u * 232) / 105);
+        if (u === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Đường gióng nét đứt tại chu kỳ bán rã t = T = 28,79 năm
+    ctx.save();
+    ctx.strokeStyle = '#64748b';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(ox, halfY);
+    ctx.lineTo(t1X, halfY);
+    ctx.lineTo(t1X, oy);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(t1X, halfY, 4.2, 0, Math.PI * 2);
+    ctx.fill();
+    drawRichText('T = 28,79', t1X, oy + 18, 15, '#fbbf24', '800', 'center');
+
+    // Điểm chạy động dọc theo đường cong phân rã minh họa sự giảm số hạt nhân theo thời gian
+    const curGraphX = ox + saw * 224;
+    const curGraphY = oy - 138 * Math.pow(0.5, (saw * 224) / 105);
+    ctx.fillStyle = '#38bdf8';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(curGraphX, curGraphY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+});
+
+    // --- MH-C4-88 ---
+VLXTModels.register('MH-C4-88', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm tự vẽ ký hiệu hạt nhân A/Z X sắc nét không phụ thuộc thư viện ngoài
+    function drawIsotope(A, Z, sym, xRightSym, yCenter, symSize, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textBaseline = 'middle';
+
+        ctx.font = `800 ${symSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+        ctx.textAlign = 'left';
+        const symW = ctx.measureText(sym).width;
+
+        const numSize = Math.round(symSize * 0.62);
+        ctx.font = `800 ${numSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+        ctx.textAlign = 'right';
+        const aW = ctx.measureText(A).width;
+        const zW = ctx.measureText(Z).width;
+        const leftPad = Math.max(aW, zW);
+
+        const symX = xRightSym + leftPad + 2;
+        ctx.fillText(A, symX - 2, yCenter - symSize * 0.36);
+        ctx.fillText(Z, symX - 2, yCenter + symSize * 0.38);
+
+        ctx.font = `800 ${symSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.fillText(sym, symX, yCenter);
+        ctx.restore();
+        return symX + symW;
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('PHÂN RÃ IODINE I-131 TRONG SỮA BÒ (H_{0} = 2850 Bq/lít → H_{an toàn} = 100 Bq/lít)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.24) % 1;
+
+    ctx.save();
+
+    // --- 2. KHUNG BÊN TRÁI TRÊN: PHƯƠNG TRÌNH PHÂN RÃ BETA TRỪ CỦA I-131 ---
+    const leftX = 14, leftW = 354;
+    drawRoundRect(ctx, leftX, 48, leftW, 92, 10, '#0f172a', '#38bdf8', 2);
+    drawRichText('PHƯƠNG TRÌNH PHÂN RÃ PHÓNG XẠ β⁻', leftX + leftW / 2, 66, 14.5, '#38bdf8', '800', 'center');
+
+    const eqY = 106;
+    const endI = drawIsotope('131', '53', 'I', 34, eqY, 22, '#fbbf24');
+    drawArrow(ctx, endI + 12, eqY, endI + 58, eqY, '#38bdf8', 2.8, 7);
+    const endXe = drawIsotope('131', '54', 'Xe', endI + 70, eqY, 22, '#6ee7b7');
+    drawRichText('+', endXe + 14, eqY, 19, '#f8fafc', '800', 'center');
+    const endE = drawIsotope('0', '−1', 'e', endXe + 28, eqY, 21, '#ef4444');
+    drawRichText('+ ν̃', endE + 8, eqY, 16, '#94a3b8', '700', 'left');
+
+    // --- 3. KHUNG BÊN TRÁI DƯỚI: THÔNG SỐ ĐỀ DẪN MẪU SỮA BÒ ---
+    drawRoundRect(ctx, leftX, 150, leftW, 140, 10, '#0f172a', '#10b981', 2);
+    drawRoundRect(ctx, leftX, 150, leftW, 34, 10, '#1e293b', '#10b981', 1.8);
+    drawRichText('THÔNG SỐ MẪU SỮA BÒ TẠI TRANG TRẠI', leftX + leftW / 2, 167, 14.5, '#6ee7b7', '800', 'center');
+
+    const infoLines = [
+        { text: '• Chu kì bán rã I-131: T = 8,02 ngày', color: '#f8fafc' },
+        { text: '• Độ phóng xạ ban đầu: H_{0} = 2850 Bq/lít', color: '#38bdf8' },
+        { text: '• Ngưỡng an toàn cho phép: 100 Bq/lít', color: '#fbbf24' }
+    ];
+    for (let i = 0; i < infoLines.length; i++) {
+        drawRichText(infoLines[i].text, leftX + 14, 206 + i * 32, 14.8, infoLines[i].color, '700', 'left');
+    }
+
+    // --- 4. KHUNG BÊN PHẢI: ĐỒ THỊ SUY GIẢM ĐỘ PHÓNG XẠ H(t) ---
+    const rightX = 380, rightW = 386;
+    drawRoundRect(ctx, rightX, 48, rightW, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const ox = 446, oy = 252, gxW = 292, gyH = 166;
+    const hMaxPx = 144;
+    const hSafePx = Math.round(hMaxPx * (100 / 2850)) + 14; // Nâng nhẹ tỉ lệ hiển thị ngưỡng 100 Bq/lít để dễ quan sát trực quan
+
+    // Vùng dưới ngưỡng an toàn (H <= 100 Bq/lít) tô màu xanh dịu phẳng sắc nét
+    ctx.fillStyle = 'rgba(16, 185, 129, 0.14)';
+    ctx.fillRect(ox + 1, oy - hSafePx, gxW - 24, hSafePx - 1);
+
+    // Đường ngưỡng an toàn nét đứt màu xanh lá tại H = 100 Bq/lít
+    ctx.strokeStyle = '#10b981';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ox, oy - hSafePx);
+    ctx.lineTo(ox + gxW - 22, oy - hSafePx);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Hai trục tọa độ O-t và O-H
+    drawArrow(ctx, ox, oy, ox + gxW, oy, '#cbd5e1', 2.4, 7);
+    drawArrow(ctx, ox, oy, ox, oy - gyH, '#cbd5e1', 2.4, 7);
+
+    // Nhãn trục & giá trị đề dẫn (Zero Data Leakage: KHÔNG ghi giá trị thời gian đáp án t = 38,7 ngày lên trục Ot)
+    drawRichText('H (Bq/lít)', ox - 4, oy - gyH - 12, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('t (ngày)', ox + gxW - 22, oy + 18, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('O', ox - 12, oy + 12, 14.5, '#cbd5e1', '800', 'center');
+
+    drawRichText('2850', ox - 8, oy - hMaxPx, 14, '#38bdf8', '800', 'right');
+    drawRichText('100', ox - 8, oy - hSafePx, 14, '#6ee7b7', '800', 'right');
+    drawRichText('Ngưỡng an toàn', ox + gxW - 30, oy - hSafePx - 12, 13.5, '#6ee7b7', '800', 'right');
+
+    // Đường cong phân rã phóng xạ H(t) = H0 * 2^(-t/T)
+    const curveSpanX = 258;
+    const totalHalfLives = 5.4; // Quét qua 5,4 chu kì bán rã để cắt ngang ngưỡng an toàn 100 Bq/lít
+    function decayY(u) {
+        // Nội suy mượt từ hMaxPx về dưới hSafePx theo hàm mũ 2^(-k*u)
+        const val = Math.pow(0.5, u * totalHalfLives);
+        // Ánh xạ sao cho tại mức 100/2850 = 0.0351 thì y khớp đúng oy - hSafePx
+        const mapped = Math.pow(val, 0.72);
+        return oy - hMaxPx * mapped;
+    }
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    for (let u = 0; u <= 1; u += 0.02) {
+        const px = ox + u * curveSpanX;
+        const py = decayY(u);
+        if (u === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Điểm mẫu sữa bò chạy 1 chiều dọc theo đường cong phân rã H(t)
+    const dotX = ox + saw * curveSpanX;
+    const dotY = decayY(saw);
+    const isSafeNow = dotY >= oy - hSafePx;
+
+    // Đường gióng nét đứt mờ từ điểm mẫu tới trục tung H
+    ctx.strokeStyle = 'rgba(248, 250, 252, 0.32)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox, dotY);
+    ctx.lineTo(dotX, dotY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = isSafeNow ? '#10b981' : '#ef4444';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+});
+
+    // --- MH-C4-89 ---
+VLXTModels.register('MH-C4-89', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số trên/dưới chuẩn Vật lý hạt nhân
+    function parseRichSegments(str) {
+        const regex = /\^\{([^}]+)\}|_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), type: 'normal' });
+            if (match[1] !== undefined) {
+                segs.push({ text: match[1], type: 'sup' });
+            } else {
+                segs.push({ text: match[2] !== undefined ? match[2] : match[3], type: 'sub' });
+            }
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), type: 'normal' });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const scriptSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.type !== 'normal' ? scriptSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const scriptSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.type !== 'normal' ? scriptSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            const dy = s.type === 'sup' ? -baseSize * 0.28 : (s.type === 'sub' ? baseSize * 0.24 : 0);
+            ctx.fillText(s.text, curX, y + dy);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // Hàm vẽ thẻ chú thích phẳng sắc nét tách biệt hoàn toàn (Zero Overlap)
+    function drawSafeNote(bx, by, px, py, title, subLabel, color) {
+        ctx.save();
+        const w1 = measureRichText(title, 15, '800');
+        const w2 = subLabel ? measureRichText(subLabel, 14, '700') : 0;
+        const boxW = Math.max(w1, w2) + 20;
+        const boxH = subLabel ? 48 : 32;
+
+        const safeBx = Math.max(8, Math.min(w - boxW - 8, bx));
+        const safeBy = Math.max(46, Math.min(h - boxH - 8, by));
+        const anchorX = px < safeBx ? safeBx : (px > safeBx + boxW ? safeBx + boxW : safeBx + boxW / 2);
+        const anchorY = py < safeBy ? safeBy : (py > safeBy + boxH ? safeBy + boxH : safeBy + boxH / 2);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(anchorX, anchorY);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundRect(ctx, safeBx, safeBy, boxW, boxH, 8, '#0f172a', color, 2.2);
+        if (subLabel) {
+            drawRichText(title, safeBx + 10, safeBy + 15, 15, '#f8fafc', '800', 'left');
+            drawRichText(subLabel, safeBx + 10, safeBy + 34, 14, color, '700', 'left');
+        } else {
+            drawRichText(title, safeBx + 10, safeBy + boxH / 2, 15, '#f8fafc', '800', 'left');
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng
+    ctx.save();
+    const titleStr = 'CHỤP CẮT LỚP PHÁT XẠ POSITRON (PET) — ĐỒNG VỊ ^{18}_{9}F (T = 11/6 giờ)';
+    const titleW = measureRichText(titleStr, 15.5, '800') + 32;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 15.5, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    // Chu kỳ 2 giai đoạn chuẩn Vật lý:
+    // Giai đoạn 1 (phase 0.0 -> 0.35): Hạt positron e+ (đỏ) và electron e- (xanh) tiến lại gần nhau và va chạm hủy cặp
+    // Giai đoạn 2 (phase 0.35 -> 1.0): Phát 2 photon gamma (511 keV) bay ngược chiều 180 độ tới đập đồng thời vào 2 đầu dò đối diện
+    const cycle = (t * 0.45) % 1;
+    const isAnnihilated = cycle >= 0.32;
+    const approachFrac = Math.min(1, cycle / 0.32);
+    const gammaFrac = isAnnihilated ? (cycle - 0.32) / 0.68 : 0;
+
+    ctx.save();
+
+    // =========================================================================
+    // BƯỚC 1: VÒNG ĐẦU DÒ MÁY QUÉT PET 3D & MẶT CẮT CƠ THỂ BỆNH NHÂN (X = 20..405)
+    // =========================================================================
+    const cx = 252, cy = 158;
+    const rOuter = 98, rInner = 80;
+    const angGamma = -Math.PI / 5; // Góc phát 2 tia gamma ngược chiều (180 độ)
+    const detIdx1 = 14; // Khối đầu dò hứng tia gamma 1 (góc ~ -36 độ)
+    const detIdx2 = 6;  // Khối đầu dò đối diện hứng tia gamma 2 (góc ~ +144 độ)
+    const hitDetector = gammaFrac >= 0.86;
+
+    // Đế máy quét PET phía dưới tạo khối 3D vững chãi
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 76, cy + 82);
+    ctx.lineTo(cx + 76, cy + 82);
+    ctx.lineTo(cx + 94, cy + 106);
+    ctx.lineTo(cx - 94, cy + 106);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Bàn nằm bệnh nhân và mặt cắt ngang cơ thể ở tâm lồng quét
+    drawRoundRect(ctx, cx - 54, cy + 28, 108, 10, 4, '#334155', '#94a3b8', 1.8);
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 4, 48, 32, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Vòng vỏ máy quét PET (Gantry 3D)
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rOuter + 5, 0, Math.PI * 2);
+    ctx.arc(cx, cy, rInner - 2, 0, Math.PI * 2, true);
+    ctx.fill('evenodd');
+    ctx.stroke();
+
+    // 16 khối tinh thể nhấp nháy (Scintillation Detectors) chia đều quanh vòng PET
+    const numDet = 16;
+    for (let i = 0; i < numDet; i++) {
+        const a1 = (i * Math.PI * 2) / numDet - Math.PI / numDet + 0.025;
+        const a2 = ((i + 1) * Math.PI * 2) / numDet - Math.PI / numDet - 0.025;
+        const isHit = hitDetector && (i === detIdx1 || i === detIdx2);
+
+        ctx.fillStyle = isHit ? '#fbbf24' : '#0284c7';
+        ctx.strokeStyle = isHit ? '#fef08a' : '#7dd3fc';
+        ctx.lineWidth = isHit ? 2.4 : 1.6;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, rOuter, a1, a2, false);
+        ctx.arc(cx, cy, rInner, a2, a1, true);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // =========================================================================
+    // BƯỚC 2: MÔ KHỐI U HẤP THỤ FDG & QUÁ TRÌNH HỦY CẶP (e+ + e- -> 2 GAMMA)
+    // =========================================================================
+    // Khối u ác tính tích tụ dược chất phóng xạ F-18-FDG
+    const tx = cx + 8, ty = cy - 2;
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.28)';
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(tx, ty, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Đường thẳng trùng phùng LOR (Line of Response - 180 độ) nét đứt mảnh
+    const rTarget = rInner - 2;
+    const gx1End = tx + Math.cos(angGamma) * (rTarget - 6);
+    const gy1End = ty + Math.sin(angGamma) * (rTarget - 4);
+    const gx2End = tx - Math.cos(angGamma) * (rTarget + 6);
+    const gy2End = ty - Math.sin(angGamma) * (rTarget + 4);
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(gx1End, gy1End);
+    ctx.lineTo(gx2End, gy2End);
+    ctx.stroke();
+    ctx.restore();
+
+    if (!isAnnihilated) {
+        // Giai đoạn 1: Hạt Positron (e+) từ hạt nhân F-18 gặp Electron (e-) trong mô
+        const dist = (1 - approachFrac) * 14;
+        const ePosX = tx - dist, ePosY = ty - dist * 0.4;
+        const eNegX = tx + dist, eNegY = ty + dist * 0.4;
+
+        ctx.fillStyle = '#ef4444';
+        ctx.strokeStyle = '#fca5a5';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(ePosX, ePosY, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        drawRichText('e^{+}', ePosX - 8, ePosY - 12, 13.5, '#fca5a5', '800', 'center');
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.strokeStyle = '#bae6fd';
+        ctx.beginPath();
+        ctx.arc(eNegX, eNegY, 6.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        drawRichText('e^{-}', eNegX + 10, eNegY + 12, 13.5, '#bae6fd', '800', 'center');
+    } else {
+        // Giai đoạn 2: Điểm chớp hủy cặp ở tâm khối u và 2 photon gamma bay ngược chiều 180 độ
+        ctx.fillStyle = '#fef08a';
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(tx, ty, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        const curX1 = tx + (gx1End - tx) * gammaFrac;
+        const curY1 = ty + (gy1End - ty) * gammaFrac;
+        const curX2 = tx + (gx2End - tx) * gammaFrac;
+        const curY2 = ty + (gy2End - ty) * gammaFrac;
+
+        drawGammaRay(ctx, tx, ty, curX1, curY1, '#fbbf24');
+        drawGammaRay(ctx, tx, ty, curX2, curY2, '#fbbf24');
+
+        drawRichText('γ', tx + 38, ty - 38, 15.5, '#fef08a', '800', 'center');
+        drawRichText('γ', tx - 44, ty + 20, 15.5, '#fef08a', '800', 'center');
+    }
+
+    // =========================================================================
+    // BƯỚC 3: THẺ CHÚ THÍCH TRỰC QUAN TÁCH BIỆT HOÀN TOÀN (ZERO OVERLAP)
+    // =========================================================================
+    // Chú thích Vòng đầu dò PET góc trên trái (không đè lên vòng tròn)
+    const topDetX = cx + Math.cos(-Math.PI * 0.72) * rOuter;
+    const topDetY = cy + Math.sin(-Math.PI * 0.72) * rOuter;
+    drawSafeNote(
+        12, 50,
+        topDetX, topDetY,
+        'Vòng đầu dò PET',
+        'Thu cặp tia γ đối diện',
+        '#38bdf8'
+    );
+
+    // Chú thích Hủy cặp tại khối u góc dưới trái
+    drawSafeNote(
+        12, 242,
+        tx - 10, ty + 18,
+        'Hủy cặp e^{+} + e^{-} → 2γ',
+        'Tại khối u hấp thụ FDG',
+        '#ef4444'
+    );
+
+    // =========================================================================
+    // BƯỚC 4: BẢNG PHƯƠNG TRÌNH HẠT NHÂN & THÔNG SỐ ĐỀ DẪN BÊN PHẢI (X = 416..766)
+    // =========================================================================
+    const bx = 416, by = 52, bw = 350, bh = 238;
+    drawRoundRect(ctx, bx, by, bw, bh, 12, '#0f172a', '#fbbf24', 2.4);
+
+    // Thanh tiêu đề bảng bên phải
+    ctx.fillStyle = '#451a03';
+    ctx.beginPath();
+    ctx.roundRect(bx + 1.5, by + 1.5, bw - 3, 36, [10, 10, 0, 0]);
+    ctx.fill();
+    drawRichText('PHÂN RÃ POSITRON (β^{+}) CỦA FLUORINE-18', bx + bw / 2, by + 20, 15, '#fbbf24', '800', 'center');
+
+    // Khung phương trình phản ứng hạt nhân chuẩn xác
+    drawRoundRect(ctx, bx + 14, by + 48, bw - 28, 56, 8, '#1e293b', '#475569', 1.8);
+
+    const eqY = by + 76;
+    drawNuclide(ctx, '18', '9', 'F', bx + 42, eqY, { fontSize: 19, color: '#38bdf8' });
+    drawArrow(ctx, bx + 84, eqY, bx + 128, eqY, '#38bdf8', 2.6, 6.5);
+    drawNuclide(ctx, '18', '8', 'O', bx + 146, eqY, { fontSize: 19, color: '#6ee7b7' });
+    drawRichText('+', bx + 196, eqY, 17, '#f8fafc', '800', 'center');
+    drawNuclide(ctx, '0', '+1', 'e', bx + 220, eqY, { fontSize: 18, color: '#ef4444' });
+    drawRichText('+  ν_{e}', bx + 268, eqY, 16.5, '#fde047', '800', 'left');
+
+    // Các thông số vật lý đề dẫn (Cỡ chữ lớn 15px, rõ nét, Zero Data Leakage)
+    drawRichText('• Chu kì bán rã: T = 11/6 giờ (110 phút)', bx + 16, by + 130, 15, '#f8fafc', '700', 'left');
+    drawRichText('• Dược chất phóng xạ: ^{18}F-FDG (Glucose)', bx + 16, by + 162, 15, '#6ee7b7', '700', 'left');
+    drawRichText('• Hủy cặp: e^{+} + e^{-} → 2γ (ngược chiều 180°)', bx + 16, by + 194, 15, '#fca5a5', '700', 'left');
+    drawRichText('• Định vị khối u nhờ trùng phùng 2 tia γ', bx + 16, by + 222, 14.5, '#38bdf8', '700', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C4-90 ---
+VLXTModels.register('MH-C4-90', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // Bộ hàm đo và vẽ văn bản hỗ trợ chỉ số dưới (subscript) chuẩn công thức Vật lý
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    // 1. Tiêu đề lớn ở trên cùng (cỡ chữ 16px sắc nét)
+    ctx.save();
+    const titleStr = 'ĐIỀU TRỊ UNG THƯ TUYẾN GIÁP BẰNG IODINE-131 (m_{0} = 9,2 μg; T = 8,0 ngày)';
+    const titleW = measureRichText(titleStr, 16, '800') + 34;
+    drawRoundRect(ctx, 14, 8, titleW, 32, 16, '#0f172a', '#38bdf8', 2.2);
+    drawRichText(titleStr, 14 + titleW / 2, 24, 16, '#38bdf8', '800', 'center');
+    ctx.restore();
+
+    const saw = (t * 0.28) % 1;
+
+    ctx.save();
+
+    // =========================================================================
+    // 2. VIÊN NANG DƯỢC CHẤT PHÓNG XẠ I-131 BÊN TRÁI (x = 24..134, y = 128..174)
+    // =========================================================================
+    const capX = 24, capY = 128, capW = 110, capH = 46, capR = capH / 2;
+
+    // Nửa trái viên nang (xanh dương)
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.roundRect(capX, capY, capW / 2 + 4, capH, [capR, 0, 0, capR]);
+    ctx.fill();
+
+    // Nửa phải viên nang (đỏ cam)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.roundRect(capX + capW / 2, capY, capW / 2, capH, [0, capR, capR, 0]);
+    ctx.fill();
+
+    // Đường viền phẳng sắc nét & vệt sáng phản chiếu nhẹ trên thân viên nang
+    ctx.strokeStyle = '#e0f2fe';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.roundRect(capX, capY, capW, capH, capR);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(capX + 20, capY + 9);
+    ctx.lineTo(capX + capW - 20, capY + 9);
+    ctx.stroke();
+
+    // Nhãn hạt nhân ¹³¹₅₃I và khối lượng liều dùng trên & dưới viên nang (chữ to 15.5px)
+    drawRichText('Dược chất ¹³¹₅₃I', capX + capW / 2, capY - 20, 15.5, '#fde047', '800', 'center');
+    drawRichText('m_{0} = 9,2 μg', capX + capW / 2, capY + capH + 22, 15.5, '#f8fafc', '800', 'center');
+
+    // Mũi tên hấp thụ từ viên nang vào tuyến giáp
+    drawArrow(ctx, capX + capW + 10, capY + capH / 2, 198, capY + capH / 2, '#fbbf24', 3, 8.5);
+
+    // =========================================================================
+    // 3. TUYẾN GIÁP HÌNH CÁNH BƯỚM HẤP THỤ I-131 PHÁT TIA β⁻ (x = 205..385)
+    // =========================================================================
+    const tx = 294, ty = 152;
+
+    // Ống khí quản mờ phía sau để tạo bối cảnh giải phẫu tự nhiên, không rối mắt
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.14)';
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.32)';
+    ctx.lineWidth = 1.8;
+    drawRoundRect(ctx, tx - 14, ty - 74, 28, 136, 8, 'rgba(148, 163, 184, 0.12)', 'rgba(148, 163, 184, 0.3)', 1.8);
+
+    // Hai thùy tuyến giáp & eo tuyến giáp hình cánh bướm liền khối
+    ctx.fillStyle = 'rgba(244, 114, 182, 0.28)';
+    ctx.strokeStyle = '#f472b6';
+    ctx.lineWidth = 3;
+
+    // Eo tuyến giáp ở giữa
+    drawRoundRect(ctx, tx - 16, ty - 11, 32, 24, 5, 'rgba(244, 114, 182, 0.32)', '#f472b6', 2.4);
+
+    // Thùy trái
+    ctx.beginPath();
+    ctx.ellipse(tx - 30, ty, 24, 52, -0.16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Thùy phải
+    ctx.beginPath();
+    ctx.ellipse(tx + 30, ty, 24, 52, 0.16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Các hạt nhân I-131 tập trung tại hai thùy tuyến giáp phát tia β⁻ tầm ngắn
+    const centers = [
+        [tx - 30, ty - 14],
+        [tx - 28, ty + 16],
+        [tx + 30, ty - 14],
+        [tx + 28, ty + 16]
+    ];
+
+    for (let cIdx = 0; cIdx < centers.length; cIdx++) {
+        const [cx0, cy0] = centers[cIdx];
+        // Chấm đồng vị I-131 tích tụ trong mô tuyến giáp
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(cx0, cy0, 3.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hai tia beta- phóng tầm ngắn tiêu diệt tế bào u quanh hạt nhân
+        for (let k = 0; k < 2; k++) {
+            const ang = (cIdx * 1.1) + k * Math.PI + 0.45;
+            const dist = saw * 22;
+            const bx = cx0 + Math.cos(ang) * dist;
+            const by = cy0 + Math.sin(ang) * dist;
+
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(bx, by, 3.6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // Nhãn tuyến giáp & chú thích bức xạ beta- phía dưới (tách biệt hẳn, chữ to 15.5px)
+    drawRichText('Tuyến giáp hấp thụ ¹³¹₅₃I', tx, 232, 15.5, '#f8fafc', '800', 'center');
+    drawRichText('Bức xạ β⁻ tầm ngắn diệt tế bào u', tx, 256, 14.5, '#6ee7b7', '800', 'center');
+
+    // =========================================================================
+    // 4. THẺ THÔNG SỐ ĐỀ DẪN BÊN PHẢI (x = 404..768, y = 58..286 - ZERO DATA LEAKAGE)
+    // =========================================================================
+    drawRoundRect(ctx, 404, 58, 364, 228, 12, '#0f172a', '#f472b6', 2.4);
+    ctx.fillStyle = '#831843';
+    ctx.beginPath();
+    ctx.roundRect(405.5, 59.5, 361, 40, [10, 10, 0, 0]);
+    ctx.fill();
+
+    drawRichText('THÔNG SỐ LIỀU XẠ TRỊ IODINE-131', 420, 80, 16, '#fbcfe8', '800', 'left');
+    drawRichText('• Đồng vị sử dụng: ¹³¹₅₃I (phóng xạ β⁻)', 420, 120, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Chu kì bán rã: T = 8,0 ngày', 420, 152, 15.5, '#fde047', '800', 'left');
+    drawRichText('• Liều lượng dùng 1 lần: m_{0} = 9,2 μg', 420, 184, 15.5, '#38bdf8', '800', 'left');
+    drawRichText('• Khối lượng mol: M = 131 g/mol', 420, 216, 15.5, '#f8fafc', '700', 'left');
+    drawRichText('• Tia β⁻ tầm ngắn diệt tế bào bất thường', 420, 250, 15.5, '#6ee7b7', '800', 'left');
+
+    ctx.restore();
+});
+
+    // --- MH-C4-91 ---
+VLXTModels.register('MH-C4-91', function(ctx, w, h, t) {
+    clearCanvas(ctx, w, h);
+
+    // --- BỘ HÀM VẼ CHỮ CÓ CHỈ SỐ DƯỚI (SUBSCRIPT) CHUẨN VẬT LÝ ---
+    function parseRichSegments(str) {
+        const regex = /_\{([^}]+)\}|_([^\s;)=,]+)/g;
+        const segs = [];
+        let lastIdx = 0, match;
+        while ((match = regex.exec(str)) !== null) {
+            if (match.index > lastIdx) segs.push({ text: str.slice(lastIdx, match.index), isSub: false });
+            segs.push({ text: match[1] !== undefined ? match[1] : match[2], isSub: true });
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < str.length) segs.push({ text: str.slice(lastIdx), isSub: false });
+        return segs;
+    }
+
+    function measureRichText(str, baseSize, weight = '800') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        let totalW = 0;
+        ctx.save();
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            totalW += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+        return totalW;
+    }
+
+    function drawRichText(str, x, y, baseSize, color, weight = '800', align = 'left') {
+        const segs = parseRichSegments(str);
+        const subSize = Math.round(baseSize * 0.76);
+        const totalW = measureRichText(str, baseSize, weight);
+        let curX = align === 'center' ? x - totalW / 2 : (align === 'right' ? x - totalW : x);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        for (const s of segs) {
+            ctx.font = `${weight} ${s.isSub ? subSize : baseSize}px "Be Vietnam Pro", "Inter", system-ui, sans-serif`;
+            ctx.fillText(s.text, curX, s.isSub ? y + baseSize * 0.24 : y);
+            curX += ctx.measureText(s.text).width;
+        }
+        ctx.restore();
+    }
+
+    function drawPointerTag(targetX, targetY, boxX, boxY, text, borderColor, textColor, fontSize = 15) {
+        const padX = 10, padY = 5;
+        const tw = measureRichText(text, fontSize, '800');
+        const bw = tw + padX * 2, bh = fontSize + padY * 2;
+        const cy = boxY + bh / 2;
+
+        ctx.save();
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(targetX, targetY);
+        ctx.lineTo(boxX, cy);
+        ctx.stroke();
+
+        ctx.fillStyle = borderColor;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawRoundRect(ctx, boxX, boxY, bw, bh, 7, '#0f172a', borderColor, 2);
+        drawRichText(text, boxX + bw / 2, cy, fontSize, textColor, '800', 'center');
+    }
+
+    // --- 1. TIÊU ĐỀ TRÊN CÙNG (15.8px, SẮC NÉT, KHÔNG TRÀN) ---
+    drawRoundRect(ctx, 14, 8, 752, 32, 8, '#0f172a', '#334155', 1.8);
+    drawRichText('THEO DÕI ĐỘ PHÓNG XẠ XUẤT VIỆN (H_{0} = 36,0 mCi → H_{xuất viện} = 30,0 mCi)', w / 2, 24, 15.8, '#38bdf8', '800', 'center');
+
+    const saw = (t * 0.25) % 1;
+
+    ctx.save();
+
+    // --- 2. KHUNG ĐỒ THỊ SUY GIẢM HOẠT ĐỘ PHÓNG XẠ BÊN TRÁI ---
+    drawRoundRect(ctx, 14, 48, 434, 242, 10, 'rgba(15, 23, 42, 0.45)', '#1e293b', 1.5);
+
+    const ox = 76, oy = 250, gxW = 342, gyH = 166;
+    const h36Px = 142;
+    const h30Px = Math.round(h36Px * (30.0 / 36.0)); // 118 px (tỉ lệ chính xác 30/36 = 5/6)
+    const y36 = oy - h36Px;
+    const y30 = oy - h30Px;
+
+    // Giao điểm chính xác trên đường cong H(t) = 36 * 2^(-t/T) tại mức 30,0 mCi:
+    // 2^(-u) = 30/36 => u = log2(1.2) ≈ 0.26303
+    const curveSpanX = 306;
+    const uOut = Math.log(36 / 30) / Math.LN2;
+    const xOut = ox + uOut * curveSpanX;
+
+    // Vùng an toàn xuất viện (H <= 30,0 mCi) tô nền xanh dịu sắc nét
+    ctx.fillStyle = 'rgba(16, 185, 129, 0.14)';
+    ctx.fillRect(ox + 1, y30, gxW - 22, h30Px - 1);
+
+    // Đường ngưỡng xuất viện 30,0 mCi nét đứt màu xanh lá
+    ctx.strokeStyle = '#10b981';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ox, y30);
+    ctx.lineTo(xOut, y30);
+    ctx.lineTo(xOut, oy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Hai trục tọa độ O-t và O-H
+    drawArrow(ctx, ox, oy, ox + gxW, oy, '#cbd5e1', 2.4, 7);
+    drawArrow(ctx, ox, oy, ox, oy - gyH, '#cbd5e1', 2.4, 7);
+
+    // Nhãn trục và giá trị đề dẫn (Zero Data Leakage: KHÔNG ghi giá trị thời gian đáp án t_xuất viện lên trục Ot)
+    drawRichText('H (mCi)', ox - 6, oy - gyH - 12, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('t (ngày)', ox + gxW - 24, oy + 18, 14.5, '#f8fafc', '800', 'center');
+    drawRichText('O', ox - 12, oy + 12, 14.5, '#cbd5e1', '800', 'center');
+
+    drawRichText('36,0', ox - 8, y36, 14.5, '#38bdf8', '800', 'right');
+    drawRichText('30,0', ox - 8, y30, 14.5, '#6ee7b7', '800', 'right');
+
+    // Đường cong phân rã H(t) = 36,0 * 2^(-t/T)
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    for (let u = 0; u <= 1; u += 0.02) {
+        const px = ox + u * curveSpanX;
+        const py = oy - h36Px * Math.pow(0.5, u);
+        if (u === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Thẻ chú thích ngưỡng xuất viện trỏ đúng điểm giao (xOut, y30)
+    drawPointerTag(xOut, y30, 206, 78, 'Ngưỡng xuất viện: 30,0 mCi', '#10b981', '#6ee7b7', 14.5);
+
+    // Điểm theo dõi bệnh nhân chạy 1 chiều dọc theo đường cong phân rã
+    const uCur = saw * 0.88;
+    const dotX = ox + uCur * curveSpanX;
+    const dotY = oy - h36Px * Math.pow(0.5, uCur);
+    const canDischarge = dotY >= y30;
+
+    ctx.strokeStyle = 'rgba(248, 250, 252, 0.32)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(ox, dotY);
+    ctx.lineTo(dotX, dotY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = canDischarge ? '#10b981' : '#fbbf24';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // --- 3. BẢNG THÔNG SỐ ĐỀ DẪN BÊN PHẢI (TÁCH BIỆT HOÀN TOÀN, ZERO OVERLAP) ---
+    const cardX = 460, cardY = 48, cardW = 306, cardH = 242;
+    drawRoundRect(ctx, cardX, cardY, cardW, cardH, 10, '#0f172a', '#38bdf8', 2.2);
+    drawRoundRect(ctx, cardX, cardY, cardW, 38, 10, '#1e293b', '#38bdf8', 2);
+    drawRichText('THÔNG SỐ ĐIỀU TRỊ I-131', cardX + cardW / 2, cardY + 19, 15.5, '#38bdf8', '800', 'center');
+
+    const params = [
+        { text: '• Chu kì bán rã: T = 8 ngày đêm', color: '#f8fafc' },
+        { text: '• Độ phóng xạ đầu: H_{0} = 36,0 mCi', color: '#38bdf8' },
+        { text: '• Ngưỡng xuất viện: H = 30,0 mCi', color: '#6ee7b7' },
+        { text: '• Bỏ qua sự bài tiết sinh học', color: '#cbd5e1' },
+        { text: '• Phân rã β⁻: ¹³¹I → ¹³¹Xe + e⁻', color: '#fbbf24' }
+    ];
+
+    for (let i = 0; i < params.length; i++) {
+        drawRichText(params[i].text, cardX + 14, cardY + 63 + i * 37, 15, params[i].color, '700', 'left');
+    }
+
+    ctx.restore();
+});
+
+    })();
+
+
     // ══════════════════════════════════════════════════════════════════════════
     // HỆ THỐNG ĐỒNG BỘ MÔ HÌNH THỜI GIAN THỰC (REALTIME & CLOUD OVERRIDES)
     // Cho phép Thầy tinh chỉnh trên Studio và tự động cập nhật Ngân Hàng Đề / Cloud
