@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Nạp gói 50 câu hỏi Staging Chuẩn 5 Chủ đề thiếu Chương 2 & 3 -->
+    <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
+    <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261117-staging50"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
@@ -793,7 +795,54 @@
         }
         .btn-del-question:hover { background: #b91c1c; }
 
-    </style>
+    
+        /* ══════════════════════════════════════════════════════════════════
+           PHÒNG DUYỆT CÂU HỎI & XEM TRƯỚC BẢN PREVIEW TOÀN DIỆN (VLXT EDTECH)
+           Bảng số liệu thực nghiệm, Mệnh đề Đúng/Sai, Trả lời ngắn, KaTeX
+        ══════════════════════════════════════════════════════════════════ */
+        .vstep-data-panel { margin: 14px 0 16px; background: rgba(255,255,255,0.02); border: 1px solid #334155; border-radius: 8px; padding: 12px 14px; overflow-x: auto; }
+        .vstep-data-title { font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px; }
+        .vstep-data-table { width: 100%; border-collapse: collapse; font-size: 13px; color: #e2e8f0; text-align: center; }
+        .vstep-data-table th, .vstep-data-table td { border: 1px solid rgba(255,255,255,0.12); padding: 7px 10px; }
+        .vstep-data-table th { background: rgba(255,255,255,0.06); font-weight: 700; color: #94a3b8; font-size: 12px; }
+        .vstep-data-table tbody tr { background: rgba(255,255,255,0.015); }
+        .vstep-data-table tbody tr:hover { background: rgba(255,255,255,0.035); }
+        .vstep-data-table td.text-left { text-align: left; font-weight: 600; }
+        .pq-sub-list { margin: 8px 0 12px 20px; padding: 0; font-size: 13px; line-height: 1.6; color: #cbd5e1; }
+        .pq-sub-list li { margin-bottom: 6px; }
+
+        /* Mệnh đề Đúng / Sai */
+        .ds-statements-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+        .ds-stmt-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); font-size: 13.5px; line-height: 1.6; }
+        .ds-stmt-row:hover { background: rgba(255,255,255,0.035); }
+        .ds-stmt-left { display: flex; gap: 10px; flex: 1; align-items: flex-start; }
+        .ds-stmt-label { font-weight: 800; color: #38bdf8; min-width: 20px; }
+        .ds-stmt-text { color: #f1f5f9; flex: 1; }
+        .ds-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 800; flex-shrink: 0; }
+        .ds-badge.true { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+        .ds-badge.false { background: #450a0a; color: #f87171; border: 1px solid #dc2626; }
+
+        /* Trả lời ngắn (TLN) */
+        .tln-input-preview-box { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0; padding: 14px 18px; border-radius: 8px; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; flex-wrap: wrap; }
+        .tln-input-group { display: flex; align-items: center; gap: 10px; }
+        .tln-input-box { display: flex; align-items: center; gap: 8px; background: #0f172a; border: 1.5px solid #0284c7; border-radius: 6px; padding: 6px 14px; }
+        .tln-input-box input { background: transparent; border: none; outline: none; color: #38bdf8; font-weight: 800; font-size: 16px; width: 120px; text-align: center; }
+        .tln-input-unit { font-weight: 700; color: #94a3b8; font-size: 14px; }
+        .tln-correct-info { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+        .tln-correct-badge { display: inline-flex; align-items: center; gap: 6px; color: #34d399; font-weight: 800; font-size: 14px; background: rgba(6, 78, 59, 0.4); border: 1px solid #059669; padding: 4px 12px; border-radius: 6px; }
+
+        /* Lời giải chi tiết */
+        .exp-stmt-item { margin-bottom: 8px; padding: 8px 12px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 13px; line-height: 1.6; }
+        .exp-key-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; margin-right: 8px; }
+        .exp-key-badge.true { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+        .exp-key-badge.false { background: #450a0a; color: #f87171; border: 1px solid #dc2626; }
+
+        /* Tabs trong Model Mode Editor */
+        .model-editor-tabs { display: flex; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--bg2); }
+        .model-tab-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .model-tab-btn.active { background: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); color: #38bdf8; }
+        .model-tab-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.04); color: var(--text-light); }
+</style>
 </head>
 <body>
 
@@ -885,6 +934,33 @@
                 </div>
 
                 <!-- Standard Notice -->
+                <!-- Thẻ Câu Hỏi Hoàn Chỉnh Của Mô Hình Đang Chọn (Chuẩn Đúng/Sai Thực Nghiệm) -->
+                <div id="model-question-preview" class="staging-qcard" style="margin-top: 14px;">
+                    <div class="staging-qcard-header">
+                        <div class="staging-badges">
+                            <span id="mq-badge-id" class="badge-stage-id">VLXT-G12-C1-MH-01</span>
+                            <span id="mq-badge-type" class="badge-stage-type">ĐÚNG / SAI 4 Ý</span>
+                            <span id="mq-badge-level" class="badge-stage-level">THÔNG HIỂU (TH)</span>
+                            <span class="badge-stage-status approved"><i class="fa-solid fa-circle-check"></i> ĐẠT CHUẨN TINH</span>
+                        </div>
+                        <div id="mq-subtopic" style="font-size: 12px; color: var(--text-dim); font-weight: 600;">DS-C1.1 – Truyền nhiệt & Cân bằng nhiệt trong thực tế</div>
+                    </div>
+                    <div id="mq-question-text" class="staging-qtext" style="font-size: 14px; line-height: 1.7; color: var(--text-light);">
+                        <!-- Đề bài và bảng số liệu thực nghiệm -->
+                    </div>
+                    <div id="mq-statements-container" class="ds-statements-list">
+                        <!-- 4 mệnh đề a, b, c, d có badge Đúng/Sai -->
+                    </div>
+                    <div id="mq-explain-box" class="staging-explain-box" style="margin-top: 16px;">
+                        <div class="staging-explain-title" style="color: #38bdf8; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết của Thầy
+                        </div>
+                        <div id="mq-explain-text" class="staging-explain-text">
+                            <!-- Lời giải chi tiết KaTeX -->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="rules-card">
                     <b>💡 10 Quy Tắc Vàng VLXT:</b> Zero Data Leakage (không hiện số liệu ẩn của câu hỏi trên hình) • Khung logic cố định 780x305 • Tỉ lệ sắc nét 100% không mờ nhòe • Thiết kế phẳng EdTech không hào quang nhòe.
                 </div>
@@ -940,19 +1016,37 @@
         <!-- CHẾ ĐỘ 2: PHÒNG DUYỆT & SOẠN CÂU HỎI STAGING (MỞ RỘNG PHẦN 1, 2, 3) -->
         <div id="view-staging-mode" style="display: none;">
             
-            <!-- Staging Ribbon -->
+            <!-- Staging Ribbon: Kho dữ liệu, Bộ lọc & Điều hướng -->
             <section class="controls-ribbon">
                 <div class="selector-group">
-                    <select id="st-filter-topic" class="studio-select" onchange="onStagingFilterChange()">
-                        <option value="ALL">🎯 Tất cả 5 Chủ đề thiếu (50 câu)</option>
-                        <option value="CD07">CD07 – Định luật Boyle & Đẳng nhiệt (10 câu)</option>
-                        <option value="CD08">CD08 – Đẳng áp Charles & Đẳng tích (10 câu)</option>
-                        <option value="CD10">CD10 – Nguồn gốc từ trường & Đường sức (10 câu)</option>
-                        <option value="CD11">CD11 – Cảm ứng từ & Lực từ (10 câu)</option>
-                        <option value="CD12">CD12 – Từ thông & Cảm ứng điện từ Lenz (10 câu)</option>
+                    <!-- Chọn Kho Câu Hỏi -->
+                    <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:240px;">
+                        <option value="ALL">📂 Tất Cả Kho Chờ Duyệt (514 Câu)</option>
+                        <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu)</option>
+                        <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu)</option>
+                        <option value="TN">📘 Trắc Nghiệm ABCD (50 Câu Staging C2-C3)</option>
                     </select>
 
-                    <select id="st-select-question" class="studio-select" onchange="onStagingQuestionSelect(this.value)" style="min-width: 320px; max-width: 520px;">
+                    <!-- Lọc theo Chương -->
+                    <select id="st-filter-chapter" class="studio-select" onchange="onStagingFilterChange()">
+                        <option value="ALL">Tất cả 4 chương</option>
+                        <option value="C1">Chương 1 – Vật lý nhiệt</option>
+                        <option value="C2">Chương 2 – Khí lý tưởng</option>
+                        <option value="C3">Chương 3 – Từ trường</option>
+                        <option value="C4">Chương 4 – Hạt nhân</option>
+                    </select>
+
+                    <!-- Lọc theo Mức độ -->
+                    <select id="st-filter-level" class="studio-select" onchange="onStagingFilterChange()">
+                        <option value="ALL">Mọi mức độ</option>
+                        <option value="NB">Nhận biết (NB)</option>
+                        <option value="TH">Thông hiểu (TH)</option>
+                        <option value="VD">Vận dụng (VD)</option>
+                        <option value="VDC">Vận dụng cao (VDC)</option>
+                    </select>
+
+                    <!-- Chọn Câu Hỏi Trong Kho -->
+                    <select id="st-select-question" class="studio-select" onchange="onStagingQuestionSelect(this.value)" style="min-width: 280px; max-width: 480px;">
                         <!-- Render dynamic options -->
                     </select>
 
@@ -962,7 +1056,7 @@
 
                 <div class="playback-group">
                     <span style="font-size:12.5px;color:#94a3b8;font-weight:600">
-                        Tiến độ: <b id="st-progress-text" style="color:#10b981">0/50</b>
+                        Đang xem: <b id="st-progress-text" style="color:#10b981">Câu 1/514</b>
                     </span>
                     <button class="nav-btn" onclick="addNewStagingQuestion()" title="Thêm một câu hỏi mới vào Staging"><i class="fa-solid fa-plus"></i> Thêm câu</button>
                     <button class="nav-btn" onclick="importStagingJson()" title="Nạp thêm câu hỏi từ file JSON"><i class="fa-solid fa-file-import"></i> Nhập JSON</button>
@@ -976,161 +1070,248 @@
                 <!-- CỘT TRÁI: LIVE PREVIEW CÂU HỎI & MÔ HÌNH -->
                 <div class="stage-card">
                     <div class="stage-header">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="model-id-badge" id="st-preview-id">VLXT-STAGE-C2-CD08-259</span>
-                            <div class="caption-text" id="st-preview-badge-status">
-                                <span class="st-badge st-badge-status-pending">⏳ Chờ duyệt</span>
-                            </div>
+                        <div class="caption-text">
+                            <span class="model-badge" id="st-disp-model-id" style="background:#0f766e;color:#5eead4;">PREVIEW</span>
+                            <span id="st-disp-caption" style="font-size:14px;font-weight:700;color:var(--text-light)">Bản Xem Trước Câu Hỏi Chuẩn EdTech</span>
                         </div>
-                        <div style="font-size:12px;color:#64748b" id="st-preview-counts-text">Câu 1 / 50</div>
                     </div>
 
-                    <!-- Canvas Stage của câu này (nếu có gắn modelId) -->
-                    <div class="canvas-screen-box" id="st-canvas-box">
-                        <canvas id="staging-canvas" width="1560" height="610" style="width:100%;max-width:780px;aspect-ratio:780/305;background:#060b19;border-radius:6px;border:1px solid #1e293b"></canvas>
+                    <!-- Vùng Vẽ Canvas (Nếu câu hỏi có gắn mã mô hình) -->
+                    <div id="st-canvas-container" style="display:none; flex-direction:column; width:100%;">
+                        <div class="canvas-screen-box">
+                            <canvas id="st-canvas" width="780" height="305"></canvas>
+                        </div>
                         <div class="metrics-bar">
-                            <div class="metric-item">Mô hình: <span id="st-disp-model-name">MH-C2-28</span></div>
-                            <div class="metric-item">Khung: <span>780 x 305</span> (2x)</div>
-                            <div class="metric-item" style="cursor: pointer; color: #38bdf8;" onclick="jumpToModelEditorFromStaging()">🛠️ Sửa code mô hình này</div>
+                            <div class="metric-item">Khung: <b>780 × 305</b> (DPR 2x)</div>
+                            <div class="metric-item">FPS: <b id="st-fps-val" style="color:#10b981">60</b></div>
+                            <div class="metric-item">Thời gian t: <b id="st-time-val">0.00s</b></div>
+                            <button class="nav-btn" onclick="resetStagingTime()" style="padding:2px 8px;font-size:11px">↺ Reset t=0</button>
                         </div>
                     </div>
 
-                    <!-- Thông báo nếu câu không có Canvas -->
-                    <div id="st-no-canvas-box" style="display:none;background:#090d16;border:1px dashed #334155;border-radius:8px;padding:16px;text-align:center;color:#94a3b8;font-size:13px">
-                        <i class="fa-solid fa-font"></i> Câu hỏi lý thuyết thuần túy (Không gắn mô hình Canvas). Thầy có thể gắn mô hình ở cột bên phải nếu cần.
+                    <!-- Khung Thông Báo Khi Không Có Canvas -->
+                    <div id="st-no-canvas-box" style="display:none; padding:16px 20px; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border); font-size:13px; color:var(--text-dim); align-items:center; gap:10px;">
+                        <i class="fa-solid fa-circle-info" style="color:#38bdf8;font-size:16px"></i>
+                        <span>Câu hỏi lý thuyết / tính toán không yêu cầu đồ họa chuyển động Canvas (hoặc chưa gắn Model ID).</span>
                     </div>
 
-                    <!-- Thẻ Câu Hỏi Xem Trước Chuẩn EdTech -->
-                    <div class="staging-qcard" id="st-qcard-box">
+                    <!-- Thẻ Câu Hỏi Live Preview Hoàn Chỉnh -->
+                    <div class="staging-qcard" id="st-qcard">
                         <div class="staging-qcard-header">
                             <div class="staging-badges">
-                                <span class="st-badge st-badge-type" id="st-card-type">Phần I · Trắc nghiệm ABCD</span>
-                                <span class="st-badge st-badge-topic" id="st-card-topic">CD08 – Đẳng áp & Đẳng tích</span>
-                                <span class="st-badge st-badge-mucdo" id="st-card-mucdo">Thông hiểu</span>
+                                <span id="st-preview-id" class="badge-stage-id">VLXT-STAGE-001</span>
+                                <span id="st-preview-type" class="badge-stage-type">TRẮC NGHIỆM</span>
+                                <span id="st-preview-level" class="badge-stage-level">THÔNG HIỂU (TH)</span>
+                                <span id="st-preview-status" class="badge-stage-status pending"><i class="fa-regular fa-clock"></i> CHƯA DUYỆT</span>
+                            </div>
+                            <div id="st-preview-counts-text" style="font-size: 12px; color: var(--text-dim); font-weight: 600;">Câu 1 / 514</div>
+                        </div>
+
+                        <!-- Đề bài chung (dành cho nhóm câu hoặc TLN nếu có) -->
+                        <div id="st-preview-debaichung" style="display:none; padding:10px 14px; margin-bottom:12px; border-radius:6px; background:rgba(14, 165, 233, 0.08); border-left:3px solid #0284c7; font-size:13.5px; line-height:1.6; color:#e0f2fe;">
+                        </div>
+
+                        <!-- Nội dung Đề bài chính & Bảng số liệu thực nghiệm -->
+                        <div id="st-preview-question" class="staging-qtext" style="font-size: 14px; line-height: 1.7; color: var(--text-light);">
+                            <!-- Đề bài câu hỏi KaTeX -->
+                        </div>
+
+                        <!-- 1. Vùng Trắc Nghiệm ABCD (Hiển thị khi loai == 'TN') -->
+                        <div id="st-preview-options" class="staging-options-list" style="display:none;">
+                            <!-- 4 Phương án A, B, C, D có highlight đáp án đúng -->
+                        </div>
+
+                        <!-- 2. Vùng Đúng / Sai 4 Ý (Hiển thị khi loai == 'DS') -->
+                        <div id="st-preview-ds" class="ds-statements-list" style="display:none;">
+                            <!-- 4 mệnh đề a, b, c, d kèm badge Đúng/Sai -->
+                        </div>
+
+                        <!-- 3. Vùng Trả Lời Ngắn (Hiển thị khi loai == 'TLN') -->
+                        <div id="st-preview-tln" class="tln-input-preview-box" style="display:none;">
+                            <div class="tln-input-group">
+                                <span style="font-weight:700; color:#94a3b8; font-size:13px;">Đáp án học sinh điền:</span>
+                                <div class="tln-input-box">
+                                    <input type="text" id="st-tln-mock-input" placeholder="?" readonly>
+                                </div>
+                                <span id="st-tln-mock-unit" class="tln-input-unit">đơn vị</span>
+                            </div>
+                            <div class="tln-correct-info">
+                                <span style="color:#94a3b8; font-size:12px;">Đáp án chuẩn của Thầy:</span>
+                                <span id="st-tln-correct-val" class="tln-correct-badge">
+                                    <i class="fa-solid fa-check"></i> <span id="st-tln-correct-text">--</span>
+                                </span>
                             </div>
                         </div>
 
-                        <!-- Đề bài -->
-                        <div class="staging-qtext" id="st-card-question">
-                            Nội dung câu hỏi đang được nạp...
-                        </div>
-
-                        <!-- 4 Phương án ABCD -->
-                        <div class="staging-options-list" id="st-card-options">
-                            <!-- Render dynamic A, B, C, D -->
-                        </div>
-
-                        <!-- Lời giải -->
-                        <div class="staging-explain-box" id="st-card-explain">
-                            <b>Lời giải chi tiết:</b> <span id="st-card-explain-text">...</span>
+                        <!-- Hộp Lời Giải Chi Tiết Của Thầy -->
+                        <div id="st-preview-explain-box" class="staging-explain-box" style="margin-top:16px;">
+                            <div class="staging-explain-title" style="color:#38bdf8; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                                <i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết của Thầy
+                            </div>
+                            <div id="st-preview-explain" class="staging-explain-text">
+                                <!-- Lời giải KaTeX -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CỘT PHẢI: FORM BIÊN TẬP TƯƠNG TÁC (LIVE EDITOR) -->
+                <!-- CỘT PHẢI: TRÌNH BIÊN TẬP TRỰC TIẾP (LIVE QUESTION EDITOR) -->
                 <div class="editor-card">
-                    <div class="editor-toolbar" style="border-bottom:1px solid #1e293b;padding-bottom:12px">
-                        <button type="button" class="btn-bank-commit" onclick="saveStagingQuestionToBank()" title="Lưu câu hỏi này vào Ngân Hàng Đề và Cloud — Đồng bộ tức thì!">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> 💾 Lưu & Đẩy vào Ngân Hàng Đề
+                    <div class="editor-toolbar">
+                        <button class="nav-btn primary" onclick="saveStagingQuestionToBank()" style="background:#0f766e;border-color:#0d9488" title="Lưu câu hỏi này vào Ngân Hàng Đề và Cloud">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu vào Ngân Hàng Đề &amp; Cloud
                         </button>
-
-                        <button type="button" class="btn-mark-approved" onclick="markStagingApproved()" title="Đánh dấu câu này đã đạt chuẩn và chuyển câu tiếp">
-                            <i class="fa-solid fa-check"></i> Đã Duyệt & Sang Câu Sau
+                        <button class="nav-btn" onclick="markStagingApproved()" style="background:rgba(16,185,129,0.1);color:#34d399;border-color:rgba(16,185,129,0.3)">
+                            <i class="fa-solid fa-check"></i> Đánh dấu Tinh
                         </button>
-
-                        <button type="button" class="btn-del-question" onclick="deleteCurrentStagingQuestion()" title="Xóa câu hỏi này khỏi danh sách chờ duyệt">
-                            <i class="fa-solid fa-trash"></i> Xóa câu
+                        <button class="nav-btn" onclick="resetStagingCurrentQuestion()">
+                            <i class="fa-solid fa-rotate-left"></i> Hoàn tác
                         </button>
                     </div>
 
-                    <!-- Form Inputs -->
-                    <div style="display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:75vh;padding-right:4px">
+                    <div style="padding: 16px; overflow-y: auto; flex: 1;">
                         
+                        <!-- Hàng 1: Mã, Loại câu, Mức độ -->
                         <div class="staging-form-row">
-                            <div class="staging-form-group">
-                                <label class="staging-label">Mã câu hỏi (ID):</label>
-                                <input type="text" id="st-input-id" class="staging-input" oninput="onStagingFieldChange('id', this.value)">
+                            <div class="staging-form-group" style="flex:1.2">
+                                <label class="staging-form-label">Mã câu hỏi (ID)</label>
+                                <input type="text" id="st-inp-id" class="staging-input" oninput="onStagingFieldChange('id', this.value)">
                             </div>
-                            <div class="staging-form-group">
-                                <label class="staging-label">Loại câu hỏi:</label>
-                                <select id="st-input-loai" class="staging-select" onchange="onStagingFieldChange('loai', this.value)">
-                                    <option value="TN">Trắc nghiệm (Phần I - ABCD)</option>
-                                    <option value="DS">Đúng / Sai (Phần II - 4 ý)</option>
+                            <div class="staging-form-group" style="flex:1">
+                                <label class="staging-form-label">Loại câu hỏi</label>
+                                <select id="st-inp-loai" class="staging-select" onchange="onStagingLoaiChange(this.value)">
+                                    <option value="TN">Trắc nghiệm ABCD (Phần I)</option>
+                                    <option value="DS">Đúng / Sai 4 ý (Phần II)</option>
                                     <option value="TLN">Trả lời ngắn (Phần III)</option>
                                 </select>
                             </div>
+                            <div class="staging-form-group" style="flex:1">
+                                <label class="staging-form-label">Mức độ nhận thức</label>
+                                <select id="st-inp-mucdo" class="staging-select" onchange="onStagingFieldChange('mucDo', this.value)">
+                                    <option value="NB">Nhận biết (NB)</option>
+                                    <option value="TH">Thông hiểu (TH)</option>
+                                    <option value="VD">Vận dụng (VD)</option>
+                                    <option value="VDC">Vận dụng cao (VDC)</option>
+                                </select>
+                            </div>
                         </div>
 
+                        <!-- Hàng 2: Chương & Bài học & Model ID -->
                         <div class="staging-form-row">
-                            <div class="staging-form-group">
-                                <label class="staging-label">Chủ đề lớn (16 Chủ đề chuẩn Bộ):</label>
-                                <select id="st-input-subtopic" class="staging-select" onchange="onStagingFieldChange('subTopic', this.value)">
-                                    <option value="CD07 – Quá trình đẳng nhiệt & Định luật Boyle">CD07 – Đẳng nhiệt & Định luật Boyle</option>
-                                    <option value="CD08 – Quá trình đẳng áp (Charles) & Quá trình đẳng tích (Gay-Lussac)">CD08 – Đẳng áp (Charles) & Đẳng tích (Gay-Lussac)</option>
-                                    <option value="CD10 – Tương tác từ, Nguồn gốc từ trường, Đường sức & Từ trường Trái Đất">CD10 – Tương tác từ & Đường sức từ</option>
-                                    <option value="CD11 – Cảm ứng từ (Tesla), Lực từ đoạn dây & Lực Lorentz">CD11 – Cảm ứng từ & Lực từ (Lorentz)</option>
-                                    <option value="CD12 – Từ thông (Weber), Cảm ứng điện từ, Định luật Lenz & Faraday">CD12 – Từ thông & Cảm ứng điện từ (Lenz)</option>
-                                    <option value="CD01 – Cấu trúc chất, Lực tương tác phân tử & 3 thể Rắn–Lỏng–Khí">CD01 – Cấu trúc chất & 3 thể</option>
-                                    <option value="CD02 – Sự chuyển thể (Nóng chảy, Đông đặc, Hóa hơi, Sôi, Ngưng tụ)">CD02 – Sự chuyển thể</option>
-                                    <option value="CD03 – Nhiệt độ, Sự truyền nhiệt, Nhiệt kế & Thang đo nhiệt độ">CD03 – Nhiệt độ & Truyền nhiệt</option>
-                                    <option value="CD04 – Nhiệt dung riêng, Nhiệt nóng chảy riêng, Hóa hơi riêng & Thí nghiệm">CD04 – Nhiệt dung riêng & Thí nghiệm</option>
-                                    <option value="CD05 – Nội năng, Định luật I NĐLH (ΔU = A + Q) & Động cơ nhiệt">CD05 – Nội năng & Định luật I NĐLH</option>
-                                    <option value="CD06 – Mô hình ĐHPT chất khí, Áp suất thành bình & Động năng phân tử">CD06 – Mô hình ĐHPT chất khí</option>
-                                    <option value="CD09 – PT trạng thái, Clapeyron, Đồ thị & Công/Nội năng chất khí">CD09 – PT trạng thái & Đồ thị khí</option>
-                                    <option value="CD13 – Dòng xoay chiều, Máy phát, Biến áp, Foucault & Sóng điện từ">CD13 – Dòng xoay chiều & Sóng điện từ</option>
-                                    <option value="CD14 – Thí nghiệm Rutherford, Cấu tạo hạt nhân (Z, N, A), Đồng vị & amu">CD14 – Cấu tạo hạt nhân & Rutherford</option>
-                                    <option value="CD15 – Lực hạt nhân, Độ hụt khối, Năng lượng liên kết & Độ bền vững hạt nhân">CD15 – Năng lượng liên kết hạt nhân</option>
-                                    <option value="CD16 – Phản ứng hạt nhân, Phóng xạ, Ứng dụng & An toàn bức xạ">CD16 – Phóng xạ & An toàn bức xạ</option>
+                            <div class="staging-form-group" style="flex:1.5">
+                                <label class="staging-form-label">Chương học</label>
+                                <select id="st-inp-chuong" class="staging-select" onchange="onStagingFieldChange('chuong', this.value)">
+                                    <option value="CHƯƠNG 1 – VẬT LÝ NHIỆT">Chương 1 – Vật lý nhiệt</option>
+                                    <option value="CHƯƠNG 2 – KHÍ LÝ TƯỞNG">Chương 2 – Khí lý tưởng</option>
+                                    <option value="CHƯƠNG 3 – TỪ TRƯỜNG">Chương 3 – Từ trường</option>
+                                    <option value="CHƯƠNG 4 – VẬT LÝ HẠT NHÂN">Chương 4 – Vật lý hạt nhân</option>
                                 </select>
                             </div>
-                            <div class="staging-form-group">
-                                <label class="staging-label">Mô hình Canvas liên kết:</label>
-                                <select id="st-input-model" class="staging-select" onchange="onStagingFieldChange('modelId', this.value)">
-                                    <option value="">[Không gắn mô hình Canvas]</option>
-                                    <!-- Dynamic model options -->
-                                </select>
+                            <div class="staging-form-group" style="flex:1.5">
+                                <label class="staging-form-label">Tên bài học</label>
+                                <input type="text" id="st-inp-baihoc" class="staging-input" oninput="onStagingFieldChange('baiHoc', this.value)">
+                            </div>
+                            <div class="staging-form-group" style="flex:1">
+                                <label class="staging-form-label">Mô hình Canvas</label>
+                                <input type="text" id="st-inp-modelid" class="staging-input" placeholder="MH-C... (nếu có)" oninput="onStagingFieldChange('modelId', this.value)">
                             </div>
                         </div>
 
-                        <!-- Đề bài câu hỏi -->
+                        <!-- Chủ đề lớn -->
                         <div class="staging-form-group">
-                            <label class="staging-label">Nội dung câu hỏi (hỗ trợ KaTeX $...$):</label>
-                            <textarea id="st-input-question" class="staging-textarea" style="min-height:90px" oninput="onStagingFieldChange('question', this.value)"></textarea>
+                            <label class="staging-form-label">Chủ đề lớn (16 CĐ chuẩn Bộ)</label>
+                            <input type="text" id="st-inp-subtopic" class="staging-input" oninput="onStagingFieldChange('subTopic', this.value)">
                         </div>
 
-                        <!-- 4 Phương án ABCD -->
+                        <!-- Đề bài chung (nếu có) -->
+                        <div class="staging-form-group" id="st-group-debaichung" style="display:none;">
+                            <label class="staging-form-label">Đề bài chung (Ngữ cảnh / Bối cảnh chung)</label>
+                            <textarea id="st-inp-debaichung" class="staging-textarea" style="height:70px;" oninput="onStagingFieldChange('deBaiChung', this.value)"></textarea>
+                        </div>
+
+                        <!-- Đề bài chính -->
                         <div class="staging-form-group">
-                            <label class="staging-label">4 Phương án & Đáp án đúng (chọn nút tròn):</label>
-                            
-                            <div class="staging-opt-row">
-                                <input type="radio" name="st-correct-radio" id="st-rad-A" value="A" class="staging-radio-btn" onchange="onStagingFieldChange('correct', 'A')">
-                                <b style="color:#38bdf8;width:20px">A.</b>
-                                <input type="text" id="st-input-optA" class="staging-input" oninput="onStagingFieldChange('optA', this.value)">
-                            </div>
-                            
-                            <div class="staging-opt-row">
-                                <input type="radio" name="st-correct-radio" id="st-rad-B" value="B" class="staging-radio-btn" onchange="onStagingFieldChange('correct', 'B')">
-                                <b style="color:#38bdf8;width:20px">B.</b>
-                                <input type="text" id="st-input-optB" class="staging-input" oninput="onStagingFieldChange('optB', this.value)">
-                            </div>
+                            <label class="staging-form-label">Nội dung câu hỏi &amp; Bảng thực nghiệm (Hỗ trợ HTML / KaTeX $...$)</label>
+                            <textarea id="st-inp-question" class="staging-textarea" style="height:110px;" oninput="onStagingFieldChange('question', this.value)"></textarea>
+                        </div>
 
-                            <div class="staging-opt-row">
-                                <input type="radio" name="st-correct-radio" id="st-rad-C" value="C" class="staging-radio-btn" onchange="onStagingFieldChange('correct', 'C')">
-                                <b style="color:#38bdf8;width:20px">C.</b>
-                                <input type="text" id="st-input-optC" class="staging-input" oninput="onStagingFieldChange('optC', this.value)">
-                            </div>
-
-                            <div class="staging-opt-row">
-                                <input type="radio" name="st-correct-radio" id="st-rad-D" value="D" class="staging-radio-btn" onchange="onStagingFieldChange('correct', 'D')">
-                                <b style="color:#38bdf8;width:20px">D.</b>
-                                <input type="text" id="st-input-optD" class="staging-input" oninput="onStagingFieldChange('optD', this.value)">
+                        <!-- 1. BIÊN TẬP TRẮC NGHIỆM ABCD -->
+                        <div id="st-editor-tn-section">
+                            <label class="staging-form-label">4 Phương án trả lời (chọn nút tròn để đánh dấu đáp án đúng)</label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div class="staging-opt-row">
+                                    <input type="radio" name="st-correct-radio" id="st-rad-a" value="A" onchange="onStagingFieldChange('correct', 'A')">
+                                    <span class="staging-opt-letter">A</span>
+                                    <input type="text" id="st-inp-opta" class="staging-input" oninput="onStagingFieldChange('optA', this.value)">
+                                </div>
+                                <div class="staging-opt-row">
+                                    <input type="radio" name="st-correct-radio" id="st-rad-b" value="B" onchange="onStagingFieldChange('correct', 'B')">
+                                    <span class="staging-opt-letter">B</span>
+                                    <input type="text" id="st-inp-optb" class="staging-input" oninput="onStagingFieldChange('optB', this.value)">
+                                </div>
+                                <div class="staging-opt-row">
+                                    <input type="radio" name="st-correct-radio" id="st-rad-c" value="C" onchange="onStagingFieldChange('correct', 'C')">
+                                    <span class="staging-opt-letter">C</span>
+                                    <input type="text" id="st-inp-optc" class="staging-input" oninput="onStagingFieldChange('optC', this.value)">
+                                </div>
+                                <div class="staging-opt-row">
+                                    <input type="radio" name="st-correct-radio" id="st-rad-d" value="D" onchange="onStagingFieldChange('correct', 'D')">
+                                    <span class="staging-opt-letter">D</span>
+                                    <input type="text" id="st-inp-optd" class="staging-input" oninput="onStagingFieldChange('optD', this.value)">
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Lời giải thích -->
-                        <div class="staging-form-group">
-                            <label class="staging-label">Lời giải thích chi tiết (KaTeX $...$):</label>
-                            <textarea id="st-input-explain" class="staging-textarea" style="min-height:80px" oninput="onStagingFieldChange('giaiThich', this.value)"></textarea>
+                        <!-- 2. BIÊN TẬP ĐÚNG / SAI 4 Ý -->
+                        <div id="st-editor-ds-section" style="display:none;">
+                            <label class="staging-form-label">4 Mệnh đề Đúng / Sai (Bấm nút để đổi Đúng / Sai)</label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div class="staging-opt-row">
+                                    <span class="staging-opt-letter">a</span>
+                                    <input type="text" id="st-inp-ds-a" class="staging-input" oninput="onStagingDsFieldChange('a', this.value)">
+                                    <button type="button" id="st-btn-ds-a" class="ds-badge true" onclick="toggleStagingDsTf('a')">✓ Đúng</button>
+                                </div>
+                                <div class="staging-opt-row">
+                                    <span class="staging-opt-letter">b</span>
+                                    <input type="text" id="st-inp-ds-b" class="staging-input" oninput="onStagingDsFieldChange('b', this.value)">
+                                    <button type="button" id="st-btn-ds-b" class="ds-badge false" onclick="toggleStagingDsTf('b')">✗ Sai</button>
+                                </div>
+                                <div class="staging-opt-row">
+                                    <span class="staging-opt-letter">c</span>
+                                    <input type="text" id="st-inp-ds-c" class="staging-input" oninput="onStagingDsFieldChange('c', this.value)">
+                                    <button type="button" id="st-btn-ds-c" class="ds-badge true" onclick="toggleStagingDsTf('c')">✓ Đúng</button>
+                                </div>
+                                <div class="staging-opt-row">
+                                    <span class="staging-opt-letter">d</span>
+                                    <input type="text" id="st-inp-ds-d" class="staging-input" oninput="onStagingDsFieldChange('d', this.value)">
+                                    <button type="button" id="st-btn-ds-d" class="ds-badge true" onclick="toggleStagingDsTf('d')">✓ Đúng</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. BIÊN TẬP TRẢ LỜI NGẮN -->
+                        <div id="st-editor-tln-section" style="display:none;">
+                            <label class="staging-form-label">Thông số Trả Lời Ngắn</label>
+                            <div class="staging-form-row">
+                                <div class="staging-form-group" style="flex:1">
+                                    <label class="staging-form-label">Đáp án đúng chuẩn</label>
+                                    <input type="text" id="st-inp-tln-correct" class="staging-input" style="font-weight:700; color:#38bdf8;" placeholder="Ví dụ: 0,12" oninput="onStagingFieldChange('correct', this.value)">
+                                </div>
+                                <div class="staging-form-group" style="flex:1">
+                                    <label class="staging-form-label">Đơn vị đo</label>
+                                    <input type="text" id="st-inp-tln-unit" class="staging-input" placeholder="kJ, N, V, m/s..." oninput="onStagingFieldChange('donVi', this.value)">
+                                </div>
+                                <div class="staging-form-group" style="flex:1">
+                                    <label class="staging-form-label">Dung sai cho phép</label>
+                                    <input type="number" step="0.01" id="st-inp-tln-tolerance" class="staging-input" placeholder="0.01" oninput="onStagingFieldChange('tolerance', parseFloat(this.value)||0)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lời giải chi tiết -->
+                        <div class="staging-form-group" style="margin-top: 14px;">
+                            <label class="staging-form-label">Lời giải chi tiết (KaTeX $...$ / HTML)</label>
+                            <textarea id="st-inp-giaiThich" class="staging-textarea" style="height: 120px;" oninput="onStagingFieldChange('giaiThich', this.value)"></textarea>
                         </div>
 
                     </div>
@@ -1140,8 +1321,7 @@
 
         </div>
         <!-- HẾT CHẾ ĐỘ 2: STAGING MODE -->
-
-    </main>
+</main>
 
     <!-- Global Toast -->
     <div id="studio-toast"></div>
@@ -1249,8 +1429,7 @@
             'MH-C4-98': 'Ba đồng vị Potassium trong chuối (³⁹₁₉K, ⁴⁰₁₉K, ⁴¹₁₉K) và thông số phân rã phóng xạ ⁴⁰₁₉K',
             'MH-C4-99': 'Con đường khí phóng xạ tự nhiên Radon ²²²₈₆Rn thấm từ đất đá tích tụ vào bên trong ngôi nhà',
             'MH-C4-100': 'Cấu tạo Pin nguyên tử Plutonium-238 (2,5 Ci · T = 87,7 năm) chuyển nhiệt phân rã alpha thành điện năng'
-        };
-
+        }
     // Model list metadata
     let ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
     let currentModelId = 'MH-C1-01';
@@ -1265,51 +1444,43 @@
 
     const cv = document.getElementById('studio-canvas');
     const ctx = cv.getContext('2d');
-    const dpr = 2.0; // Retina 2x chuẩn
-    cv.width = 780 * dpr;
-    cv.height = 305 * dpr;
-    ctx.scale(dpr, dpr);
 
-    // Khởi tạo Studio
-    window.addEventListener('DOMContentLoaded', () => {
-        updateOverridesCountBadge();
-        populateModelDropdown();
-        loadModel(currentModelId);
-        requestAnimationFrame(renderLoop);
-    });
+    // Tab state in Model Editor
+    let currentModelEditorTab = 'CODE'; // 'CODE' or 'QUESTION'
 
-    function populateModelDropdown() {
-        const filter = document.getElementById('sel-chapter').value;
+    // ══════════════════════════════════════════════════════════════════
+    // KHỞI TẠO & ĐIỀU KHIỂN CHẾ ĐỘ 1: TINH CHỈNH MÔ HÌNH (94 CÂU ĐÚNG/SAI)
+    // ══════════════════════════════════════════════════════════════════
+
+    function populateModelDropdown(filterChapter = 'ALL') {
         const sel = document.getElementById('sel-model');
         sel.innerHTML = '';
 
-        ALL_MODEL_IDS.forEach(id => {
-            const ch = id.slice(3, 5); // C1, C2, C3, C4
-            if (filter === 'ALL' || filter === ch) {
-                const opt = document.createElement('option');
-                opt.value = id;
-                const cap = MODEL_CAPTIONS[id] || id;
-                opt.textContent = `${id} — ${cap.slice(0, 48)}${cap.length > 48 ? '...' : ''}`;
-                sel.appendChild(opt);
-            }
+        let filteredIds = ALL_MODEL_IDS;
+        if (filterChapter !== 'ALL') {
+            filteredIds = ALL_MODEL_IDS.filter(id => id.includes(`-${filterChapter}-`));
+        }
+
+        filteredIds.forEach(id => {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.textContent = `${id} — ${MODEL_CAPTIONS[id] || id}`;
+            sel.appendChild(opt);
         });
 
-        if (sel.querySelector(`option[value="${currentModelId}"]`)) {
-            sel.value = currentModelId;
-        } else if (sel.options.length > 0) {
-            sel.selectedIndex = 0;
-            currentModelId = sel.value;
+        if (filteredIds.length > 0) {
+            if (!filteredIds.includes(currentModelId)) {
+                loadModel(filteredIds[0]);
+            } else {
+                sel.value = currentModelId;
+            }
         }
         updateNavButtons();
     }
 
     function onChapterFilterChange() {
-        updateOverridesCountBadge();
-        populateModelDropdown();
-        const sel = document.getElementById('sel-model');
-        if (sel.value) {
-            loadModel(sel.value);
-        }
+        const ch = document.getElementById('sel-chapter').value;
+        populateModelDropdown(ch);
     }
 
     function onModelSelect(id) {
@@ -1339,7 +1510,7 @@
         document.getElementById('sel-model').value = id;
         updateNavButtons();
 
-        // Lấy hàm vẽ từ VLXTModels._canvasRegistry
+        // 1. Lấy hàm vẽ từ VLXTModels._canvasRegistry
         let fn = null;
         if (window.VLXTModels && window.VLXTModels._canvasRegistry) {
             fn = window.VLXTModels._canvasRegistry[id];
@@ -1354,49 +1525,195 @@
             const overrides = getLocalOverrides();
             if (overrides[id]) {
                 document.getElementById('code-editor').value = overrides[id];
-                setEditorStatus('hot', '⭐ Đang chạy bản tinh chỉnh của Thầy (Đã đồng bộ Cloud & Ngân Hàng)');
+                setEditorStatus(`Đang dùng mã đã tinh chỉnh (${id})`, 'info');
             } else {
                 document.getElementById('code-editor').value = fullSnippet;
-                setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
+                setEditorStatus(`Đang chạy code gốc từ thư viện chính thức`, 'success');
             }
         } else {
-            document.getElementById('code-editor').value = `// Chưa tìm thấy hàm vẽ Canvas cho ${id}`;
-            setEditorStatus('error', '🔴 Chưa có hàm vẽ Canvas cho mô hình này');
+            activeDrawFn = null;
+            document.getElementById('code-editor').value = `// Chưa có hàm vẽ cho mô hình ${id}`;
+            setEditorStatus(`Chưa tìm thấy hàm vẽ cho ${id}`, 'warn');
+        }
+
+        simTime = 0.0;
+
+        // 2. Nạp câu hỏi hoàn chỉnh của mô hình vào vùng Preview & Question Editor
+        renderModelQuestionDetails(id);
+    }
+
+    function switchModelEditorTab(tab) {
+        currentModelEditorTab = tab;
+        const btnCode = document.getElementById('tab-btn-code');
+        const btnQuestion = document.getElementById('tab-btn-question');
+        const boxCode = document.getElementById('code-editor-container');
+        const boxQuestion = document.getElementById('model-qeditor-container');
+
+        if (tab === 'CODE') {
+            btnCode.classList.add('active');
+            btnQuestion.classList.remove('active');
+            boxCode.style.display = 'flex';
+            boxQuestion.style.display = 'none';
+        } else {
+            btnQuestion.classList.add('active');
+            btnCode.classList.remove('active');
+            boxCode.style.display = 'none';
+            boxQuestion.style.display = 'block';
         }
     }
 
-    // Animation Loop
-    function renderLoop(timestamp) {
-        if (!lastTimestamp) lastTimestamp = timestamp;
-        const delta = Math.min((timestamp - lastTimestamp) / 1000, 0.1);
-        lastTimestamp = timestamp;
+    function renderModelQuestionDetails(id) {
+        const dsList = window.DS_94_QUESTIONS || [];
+        const q = dsList.find(item => item.modelId === id || item.id === id);
 
-        if (isPlaying) {
-            simTime += delta * playSpeed;
+        const card = document.getElementById('model-question-preview');
+        if (!card) return;
+
+        if (!q) {
+            card.style.display = 'none';
+            return;
         }
 
-        // FPS calculation
+        card.style.display = 'flex';
+
+        // Badges
+        document.getElementById('mq-badge-id').textContent = q.id || id;
+        document.getElementById('mq-badge-type').textContent = 'ĐÚNG / SAI 4 Ý (PHẦN II)';
+        document.getElementById('mq-badge-level').textContent = (q.mucDo === 'VD' ? 'VẬN DỤNG (VD)' : (q.mucDo === 'VDC' ? 'VẬN DỤNG CAO (VDC)' : 'THÔNG HIỂU (TH)'));
+        document.getElementById('mq-subtopic').textContent = q.subTopic || (q.chuong + ' · ' + (q.baiHoc || ''));
+
+        // Đề bài & Bảng số liệu
+        document.getElementById('mq-question-text').innerHTML = renderMathTextToHtml(q.question || '');
+
+        // 4 mệnh đề a, b, c, d
+        const correctStr = String(q.correct || 'ĐĐĐĐ').toUpperCase();
+        const statements = [
+            { key: 'a', text: q.optA || (q.subItems && q.subItems[0] ? q.subItems[0].statement : ''), isTrue: correctStr[0] === 'Đ' || correctStr[0] === 'T' || correctStr[0] === '1' },
+            { key: 'b', text: q.optB || (q.subItems && q.subItems[1] ? q.subItems[1].statement : ''), isTrue: correctStr[1] === 'Đ' || correctStr[1] === 'T' || correctStr[1] === '1' },
+            { key: 'c', text: q.optC || (q.subItems && q.subItems[2] ? q.subItems[2].statement : ''), isTrue: correctStr[2] === 'Đ' || correctStr[2] === 'T' || correctStr[2] === '1' },
+            { key: 'd', text: q.optD || (q.subItems && q.subItems[3] ? q.subItems[3].statement : ''), isTrue: correctStr[3] === 'Đ' || correctStr[3] === 'T' || correctStr[3] === '1' }
+        ];
+
+        const stmtContainer = document.getElementById('mq-statements-container');
+        stmtContainer.innerHTML = statements.map(s => `
+            <div class="ds-stmt-row">
+                <div class="ds-stmt-left">
+                    <span class="ds-stmt-label">${s.key})</span>
+                    <span class="ds-stmt-text">${renderMathTextToHtml(s.text)}</span>
+                </div>
+                <span class="ds-badge ${s.isTrue ? 'true' : 'false'}">
+                    ${s.isTrue ? '<i class="fa-solid fa-check"></i> Đúng' : '<i class="fa-solid fa-xmark"></i> Sai'}
+                </span>
+            </div>
+        `).join('');
+
+        // Lời giải chi tiết
+        document.getElementById('mq-explain-text').innerHTML = renderMathTextToHtml(q.giaiThich || '<p>Đang cập nhật lời giải chi tiết...</p>');
+
+        // Điền vào Editor câu hỏi ở Tab 2
+        document.getElementById('mq-inp-id').value = q.id || '';
+        document.getElementById('mq-inp-level').value = q.mucDo || 'TH';
+        document.getElementById('mq-inp-bai').value = (q.chuong || '') + ' — ' + (q.baiHoc || '');
+        document.getElementById('mq-inp-question').value = q.question || '';
+        document.getElementById('mq-inp-opta').value = q.optA || '';
+        document.getElementById('mq-inp-optb').value = q.optB || '';
+        document.getElementById('mq-inp-optc').value = q.optC || '';
+        document.getElementById('mq-inp-optd').value = q.optD || '';
+        document.getElementById('mq-inp-explain').value = q.giaiThich || '';
+
+        updateModelQuestionTfButtons(correctStr);
+
+        // Render KaTeX nếu có
+        if (window.renderMathInElement) {
+            try {
+                window.renderMathInElement(card, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            } catch(e) {}
+        }
+    }
+
+    function updateModelQuestionTfButtons(correctStr) {
+        const keys = ['a', 'b', 'c', 'd'];
+        keys.forEach((k, idx) => {
+            const btn = document.getElementById('mq-btn-tf-' + k);
+            if (!btn) return;
+            const isTrue = correctStr[idx] === 'Đ' || correctStr[idx] === 'T' || correctStr[idx] === '1';
+            btn.className = 'ds-badge ' + (isTrue ? 'true' : 'false');
+            btn.innerHTML = isTrue ? '✓ Đúng' : '✗ Sai';
+        });
+    }
+
+    function toggleModelQuestionTf(key) {
+        const dsList = window.DS_94_QUESTIONS || [];
+        const q = dsList.find(item => item.modelId === currentModelId || item.id === currentModelId);
+        if (!q) return;
+
+        let cur = (q.correct || 'ĐĐĐĐ').split('');
+        while (cur.length < 4) cur.push('Đ');
+        const idxMap = { a: 0, b: 1, c: 2, d: 3 };
+        const idx = idxMap[key];
+        cur[idx] = (cur[idx] === 'Đ') ? 'S' : 'Đ';
+        q.correct = cur.join('');
+
+        updateModelQuestionTfButtons(q.correct);
+        renderModelQuestionDetails(currentModelId);
+    }
+
+    function onModelQuestionFieldChange() {
+        const dsList = window.DS_94_QUESTIONS || [];
+        const q = dsList.find(item => item.modelId === currentModelId || item.id === currentModelId);
+        if (!q) return;
+
+        q.mucDo = document.getElementById('mq-inp-level').value;
+        q.question = document.getElementById('mq-inp-question').value;
+        q.optA = document.getElementById('mq-inp-opta').value;
+        q.optB = document.getElementById('mq-inp-optb').value;
+        q.optC = document.getElementById('mq-inp-optc').value;
+        q.optD = document.getElementById('mq-inp-optd').value;
+        q.giaiThich = document.getElementById('mq-inp-explain').value;
+
+        renderModelQuestionDetails(currentModelId);
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // VÒNG LẶP ANIMATION CANVAS MODE 1
+    // ══════════════════════════════════════════════════════════════════
+
+    function renderLoop(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const dt = (timestamp - lastTimestamp) / 1000.0;
+        lastTimestamp = timestamp;
+
+        if (isPlaying && dt > 0 && dt < 0.2) {
+            simTime += dt * playSpeed;
+        }
+
+        // Đo FPS
         frameCount++;
-        if (timestamp - lastFpsUpdate > 500) {
+        if (timestamp - lastFpsUpdate >= 500) {
             const fps = Math.round((frameCount * 1000) / (timestamp - lastFpsUpdate));
-            document.getElementById('disp-fps').textContent = fps;
+            document.getElementById('fps-val').textContent = fps;
             frameCount = 0;
             lastFpsUpdate = timestamp;
         }
-        document.getElementById('disp-time').textContent = simTime.toFixed(2) + 's';
 
-        // Vẽ frame
-        if (typeof activeDrawFn === 'function') {
+        document.getElementById('time-val').textContent = simTime.toFixed(2) + 's';
+
+        // Vẽ Canvas
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        if (activeDrawFn) {
             try {
-                ctx.save();
-                activeDrawFn(ctx, 780, 305, simTime);
-                ctx.restore();
+                activeDrawFn(ctx, cv.width, cv.height, simTime);
             } catch (err) {
-                console.error("Lỗi khi vẽ frame:", err);
-                // Vẽ thông báo lỗi lên canvas
+                console.error('Lỗi khi vẽ Canvas:', err);
                 ctx.fillStyle = '#ef4444';
-                ctx.font = '14px "DM Mono", monospace';
-                ctx.fillText(`Lỗi render: ${err.message}`, 20, 30);
+                ctx.font = '14px sans-serif';
+                ctx.fillText('Lỗi khi vẽ hàm: ' + err.message, 20, 40);
             }
         }
 
@@ -1405,342 +1722,256 @@
 
     function togglePlayback() {
         isPlaying = !isPlaying;
-        document.getElementById('play-icon').textContent = isPlaying ? '⏸' : '▶';
-        document.getElementById('play-text').textContent = isPlaying ? 'Tạm dừng' : 'Tiếp tục';
+        const btn = document.getElementById('btn-play');
+        if (isPlaying) {
+            btn.innerHTML = '<i class="fa-solid fa-pause"></i> Tạm dừng';
+            btn.classList.add('primary');
+        } else {
+            btn.innerHTML = '<i class="fa-solid fa-play"></i> Tiếp tục';
+            btn.classList.remove('primary');
+        }
     }
 
-    function setSpeed(speed, btn) {
-        playSpeed = speed;
-        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
+    function setSpeed(sp) {
+        playSpeed = sp;
+        document.querySelectorAll('.speed-pill button').forEach(b => {
+            b.classList.toggle('active', parseFloat(b.dataset.speed) === sp);
+        });
     }
 
     function resetTime() {
         simTime = 0.0;
-        showToast('↺ Đã đặt lại thời gian t = 0s');
     }
 
     function captureCanvasPNG() {
         const link = document.createElement('a');
-        link.download = `${currentModelId}-frame-${simTime.toFixed(1)}s.png`;
+        link.download = `${currentModelId}_snapshot.png`;
         link.href = cv.toDataURL('image/png');
         link.click();
-        showToast(`📸 Đã tải ảnh PNG của ${currentModelId}`);
+        showToast(`Đã tải ảnh chụp màn hình ${currentModelId}`, 'success');
     }
 
-    // 1-Click Copy Prompt for Gemini Web
     function copyPromptForGemini() {
+        const id = currentModelId;
         const code = document.getElementById('code-editor').value;
-        const cap = MODEL_CAPTIONS[currentModelId] || currentModelId;
+        const caption = MODEL_CAPTIONS[id] || id;
 
-        const promptText = `Đây là mã nguồn HTML5 Canvas 2D của mô hình vật lý "${currentModelId}: ${cap}" (khung logic chuẩn 780 x 305, biến t là thời gian giây tạo chuyển động).
+        const promptText = `Bạn là Chuyên gia Đồ họa Canvas 2D Giáo dục chuẩn Vật Lý Xuân Trường (VLXT).
+Tôi cần bạn tinh chỉnh hoặc nâng cấp hàm vẽ Canvas cho Mô hình: ${id} — "${caption}".
 
-Mã nguồn hiện tại:
+MÃ NGUỒN HIỆN TẠI:
 \`\`\`javascript
 ${code}
 \`\`\`
 
-YÊU CẦU CHỈNH SỬA:
-1. [Thầy hãy nhập yêu cầu cần sửa vào đây: ví dụ: làm bình nước màu xanh đậm hơn, điều chỉnh bọt khí bay chậm lại 50%, làm rõ các thông số...]
-2. Giữ nguyên kích thước chuẩn logic: w = 780, h = 305.
-3. Thiết kế phẳng sắc nét theo chuẩn EdTech quốc tế, TUYỆT ĐỐI KHÔNG dùng hiệu ứng mờ nhòe neon/glow (không dùng shadowBlur lớn hay drop-shadow nhòe).
-4. TUYỆT ĐỐI TUÂN THỦ "Zero Data Leakage": Chỉ vẽ sơ đồ thí nghiệm/thiết bị đề dẫn, KHÔNG vẽ đáp án hoặc lời giải của câu hỏi lên hình.
-5. Trả về đúng duy nhất khối lệnh hoàn chỉnh:
-\`\`\`javascript
-VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
-    // mã vẽ mới
-});
-\`\`\``;
+YÊU CẦU TINH CHỈNH:
+1. Chuẩn logic: 780 x 305 px. Hàm nhận tham số (ctx, w, h, t).
+2. Thiết kế phẳng chuẩn EdTech, sắc nét, tương phản cao trên nền tối (#090d16).
+3. TUYỆT ĐỐI KHÔNG dùng AI Glow (không text-shadow, không filter mờ nhòe neon).
+4. Đảm bảo chuyển động mượt mà theo chu kỳ thời gian t.
+5. Trả về DUY NHẤT khối mã: VLXTModels.register('${id}', function(ctx, w, h, t) { ... });`;
 
         navigator.clipboard.writeText(promptText).then(() => {
-            showToast(`🌟 Đã sao chép Prompt + Code của ${currentModelId}! Hãy dán vào Gemini web (Ctrl + V).`);
-        }).catch(err => {
-            alert('Không thể sao chép tự động: ' + err);
+            showToast('Đã sao chép Prompt cho Gemini Web!', 'success');
+        }).catch(() => {
+            showToast('Không thể sao chép tự động.', 'warn');
         });
     }
 
-    // Apply Hot-Reload Code from Editor
     function applyHotReloadCode() {
-        const userCode = document.getElementById('code-editor').value;
-
-        let compiledFn = null;
-        let registeredId = null;
-
-        const fakeVLXT = {
-            register: function(id, fn) {
-                registeredId = id;
-                compiledFn = fn;
-            }
-        };
-
+        const code = document.getElementById('code-editor').value;
         try {
-            // Thực thi an toàn với sandbox hứng hàm
-            const runFn = new Function('VLXTModels', 'clearCanvas', 'drawRoundRect', 'drawArrow', 'drawOpenCup', 'drawOpenCupU', 'drawNuclide', 'drawTitleBadge', 'drawThermometer', 'drawPressureGauge', 'drawSpring', 'drawCallout', 'drawCircleNum', 'drawDotB', 'drawCrossB', 'drawSubText', 'drawSetup', 'drawAlphaCluster', 'drawGammaRay', userCode);
+            const regFn = new Function('VLXTModels', code);
+            regFn(window.VLXTModels);
 
-            runFn(
-                fakeVLXT,
-                window.clearCanvas,
-                window.drawRoundRect,
-                window.drawArrow,
-                window.drawOpenCup,
-                window.drawOpenCupU,
-                window.drawNuclide,
-                window.drawTitleBadge,
-                window.drawThermometer,
-                window.drawPressureGauge,
-                window.drawSpring,
-                window.drawCallout,
-                window.drawCircleNum,
-                window.drawDotB,
-                window.drawCrossB,
-                window.drawSubText,
-                window.drawSetup,
-                window.drawAlphaCluster,
-                window.drawGammaRay
-            );
+            const updatedFn = window.VLXTModels._canvasRegistry[currentModelId];
+            if (updatedFn) {
+                activeDrawFn = updatedFn;
+                setEditorStatus(`Đã Hot-Reload thành công lúc ${new Date().toLocaleTimeString()}!`, 'success');
+                showToast(`Đã áp dụng mã mới cho ${currentModelId}`, 'success');
 
-            if (typeof compiledFn === 'function') {
-                activeDrawFn = compiledFn;
-                setEditorStatus('hot', '✨ Đang chạy code Hot-Reload vừa áp dụng!');
-                showToast(`🚀 Đã áp dụng thành công mã vẽ mới cho ${currentModelId}!`);
-            } else {
-                throw new Error("Không tìm thấy lệnh VLXTModels.register('" + currentModelId + "', ...)");
+                const ov = getLocalOverrides();
+                ov[currentModelId] = code;
+                saveLocalOverrides(ov);
             }
         } catch (err) {
-            console.error("Lỗi biên dịch code:", err);
-            setEditorStatus('error', `🔴 Lỗi cú pháp: ${err.message}`);
-            alert(`Lỗi khi chạy code: ${err.message}\n\nVui lòng kiểm tra lại cú pháp JavaScript!`);
+            setEditorStatus(`Lỗi cú pháp JS: ${err.message}`, 'error');
+            showToast(`Lỗi cú pháp: ${err.message}`, 'warn');
         }
     }
 
     function copyCleanCodeForAntigravity() {
         const code = document.getElementById('code-editor').value;
         navigator.clipboard.writeText(code).then(() => {
-            showToast(`📋 Đã chép code của ${currentModelId}! Thầy chỉ cần gửi vào chat để Antigravity cập nhật.`);
+            showToast('Đã sao chép mã sạch vào Clipboard!', 'success');
         });
     }
 
     function restoreOriginalCode() {
-        if (originalCodeCache[currentModelId]) {
-            document.getElementById('code-editor').value = originalCodeCache[currentModelId];
-            applyHotReloadCode();
-            setEditorStatus('ok', '🟢 Đang chạy code gốc từ thư viện chính thức');
-            showToast(`↺ Đã khôi phục code ban đầu của ${currentModelId}`);
+        if (!confirm(`Khôi phục lại mã nguồn mặc định cho ${currentModelId}?`)) return;
+        const ov = getLocalOverrides();
+        delete ov[currentModelId];
+        saveLocalOverrides(ov);
+
+        const origCode = originalCodeCache[currentModelId];
+        if (origCode) {
+            document.getElementById('code-editor').value = origCode;
+            try {
+                const regFn = new Function('VLXTModels', origCode);
+                regFn(window.VLXTModels);
+                activeDrawFn = window.VLXTModels._canvasRegistry[currentModelId];
+            } catch(e) {}
         }
+        setEditorStatus(`Đã khôi phục mã nguồn gốc của ${currentModelId}`, 'success');
+        showToast('Đã khôi phục mã nguồn gốc', 'info');
     }
 
-    function setEditorStatus(type, msg) {
-        const el = document.getElementById('editor-status');
-        el.className = `status-badge ${type}`;
-        el.innerHTML = `<span>${msg}</span>`;
+    function setEditorStatus(msg, type = 'info') {
+        const bar = document.getElementById('editor-status');
+        bar.className = 'editor-status ' + type;
+        const icon = (type === 'success') ? '<i class="fa-solid fa-circle-check"></i> ' : (type === 'error' ? '<i class="fa-solid fa-triangle-exclamation"></i> ' : '<i class="fa-solid fa-circle-info"></i> ');
+        bar.innerHTML = icon + msg;
     }
 
-    function showToast(msg) {
-        const toast = document.getElementById('studio-toast');
-        toast.textContent = msg;
-        toast.style.display = 'flex';
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => {
-            toast.style.display = 'none';
-        }, 3500);
+    function showToast(msg, type = 'info') {
+        const t = document.getElementById('studio-toast');
+        t.textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 3200);
     }
 
-    const GAS_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec';
-
-    // Đọc overrides từ localStorage
     function getLocalOverrides() {
         try {
-            const raw = localStorage.getItem('VLXT_CANVAS_OVERRIDES');
-            return raw ? JSON.parse(raw) : {};
+            return JSON.parse(localStorage.getItem('VLXT_CANVAS_OVERRIDES') || '{}');
         } catch(e) {
             return {};
         }
     }
 
-    function saveLocalOverrides(map) {
-        try {
-            localStorage.setItem('VLXT_CANVAS_OVERRIDES', JSON.stringify(map));
-            updateOverridesCountBadge();
-        } catch(e) {}
+    function saveLocalOverrides(ov) {
+        localStorage.setItem('VLXT_CANVAS_OVERRIDES', JSON.stringify(ov));
+        updateOverridesCountBadge();
     }
 
     function updateOverridesCountBadge() {
-        const map = getLocalOverrides();
-        const count = Object.keys(map).length;
-        const el = document.getElementById('disp-overrides-count');
-        if (el) el.textContent = count;
+        const ov = getLocalOverrides();
+        const count = Object.keys(ov).length;
+        const badge = document.getElementById('badge-modified-count');
+        if (badge) {
+            badge.textContent = `Đã chỉnh (${count})`;
+            badge.style.display = count > 0 ? 'inline-flex' : 'none';
+        }
     }
 
-    // 💾 LƯU VÀO NGÂN HÀNG ĐỀ & CLOUD ĐÁM MÂY
     async function saveToCloudAndBank() {
-        const btn = document.getElementById('btn-save-cloud');
-        const code = document.getElementById('code-editor').value;
+        applyHotReloadCode();
 
-        // 1. Kiểm tra cú pháp trước khi lưu
-        let compiledFn = null;
-        try {
-            compiledFn = window.VLXTModels.compileCanvasFn(code);
-            if (typeof compiledFn !== 'function') {
-                throw new Error("Không thể trích xuất hàm vẽ từ code");
+        // 1. Cập nhật câu hỏi nếu có chỉnh sửa
+        const dsList = window.DS_94_QUESTIONS || [];
+        const q = dsList.find(item => item.modelId === currentModelId || item.id === currentModelId);
+        if (q) {
+            q.isApproved = true;
+            q.chatLuong = 'tinh';
+            q.reviewStatus = 'APPROVED';
+
+            // Lưu vào ngân hàng đề trong localStorage
+            let bank = [];
+            try {
+                bank = JSON.parse(localStorage.getItem('vlxt_admin_nganhang') || '[]');
+            } catch(e) { bank = []; }
+
+            const idx = bank.findIndex(item => item.id === q.id || item.modelId === q.modelId);
+            if (idx >= 0) {
+                bank[idx] = Object.assign({}, bank[idx], q);
+            } else {
+                bank.unshift(q);
             }
-        } catch(err) {
-            alert("🔴 Lỗi cú pháp code: " + err.message + "\nVui lòng kiểm tra lại trước khi lưu!");
-            return;
-        }
+            try {
+                localStorage.setItem('vlxt_admin_nganhang', JSON.stringify(bank));
+            } catch(e) {}
 
-        btn.disabled = true;
-        btn.innerHTML = '<span class="fa-spin">⏳</span> Đang lưu Cloud...';
-
-        try {
-            // 2. Lưu vào localStorage
-            const overrides = getLocalOverrides();
-            overrides[currentModelId] = code;
-            saveLocalOverrides(overrides);
-
-            // 3. Áp dụng ngay cho canvas hiện tại
-            activeDrawFn = compiledFn;
-            if (window.VLXTModels && window.VLXTModels.applyOverrideFn) {
-                window.VLXTModels.applyOverrideFn(currentModelId, compiledFn);
-            }
-
-            // 4. Phát tín hiệu Realtime cho tab Ngân Hàng Đề đổi hình ngay lập tức (0ms)
-            if (typeof BroadcastChannel !== 'undefined') {
+            // Phát BroadcastChannel cho tab Ngân Hàng Đề
+            if (window.BroadcastChannel) {
                 try {
-                    const bc = new BroadcastChannel('vlxt_canvas_sync');
-                    bc.postMessage({
-                        type: 'SYNC_OVERRIDE',
-                        modelId: currentModelId,
-                        code: code
-                    });
+                    const bc = new BroadcastChannel('vlxt_bank_sync');
+                    bc.postMessage({ type: 'NEW_QUESTION_SAVED', question: q });
+                    bc.close();
                 } catch(e) {}
             }
+        }
 
-            // 5. Gửi lên Google Apps Script đám mây theo modelId riêng lẻ (tránh giới hạn 50K ký tự ô tính Google Sheets)
+        // 2. Gửi overrides lên Google Apps Script nếu có key
+        const overrides = getLocalOverrides();
+        const adminKey = localStorage.getItem('vlxt_backend_admin_key') || localStorage.getItem('adminKey') || '';
+        if (adminKey && window.DB_URL) {
             try {
-                const payload = {
-                    action: 'savesetting',
-                    key: 'VLXT_CANVAS_' + currentModelId,
-                    value: code
-                };
-
-                await fetch(GAS_BACKEND_URL, {
+                showToast('Đang đồng bộ lên Google Cloud Sheet...', 'info');
+                await fetch(window.DB_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'saveCanvasOverrides',
+                        adminKey: adminKey,
+                        overrides: overrides
+                    })
                 });
-            } catch (cloudErr) {
-                console.warn("Lỗi đồng bộ Cloud (đã lưu an toàn trong máy):", cloudErr);
+                showToast('Đã lưu & đồng bộ thành công vào Ngân Hàng Đề & Cloud!', 'success');
+            } catch(e) {
+                showToast('Đã lưu cục bộ & Ngân hàng đề (Cloud chờ đồng bộ).', 'success');
             }
-
-            setEditorStatus('hot', `⭐ Đã lưu thành công mô hình ${currentModelId} vào Ngân Hàng Đề & Cloud!`);
-            showToast(`✅ Đã lưu ${currentModelId} lên Cloud & Ngân hàng! Mọi đề thi đều tự nhận mô hình mới.`);
-        } catch (err) {
-            console.error("Lỗi khi lưu lên Cloud:", err);
-            // Dù lỗi mạng vẫn đã lưu vào localStorage trên máy
-            setEditorStatus('hot', `💾 Đã lưu cục bộ ${currentModelId} (Mạng Cloud bị trễ, sẽ tự đồng bộ sau)`);
-            showToast(`💾 Đã lưu cục bộ vào máy Thầy!`);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> 💾 Lưu vào Ngân Hàng Đề & Cloud';
+        } else {
+            showToast('Đã lưu vào Ngân Hàng Đề & Bộ nhớ trình duyệt!', 'success');
         }
     }
 
-    // Xóa override câu này để quay về mặc định
-    async function deleteCurrentOverride() {
-        const overrides = getLocalOverrides();
-        if (!overrides[currentModelId]) {
-            showToast(`Mô hình ${currentModelId} đang dùng bản gốc mặc định.`);
-            return;
-        }
-
-        if (!confirm(`Thầy có chắc muốn xóa bản tinh chỉnh của ${currentModelId} để quay về hình vẽ gốc của hệ thống không?`)) {
-            return;
-        }
-
-        delete overrides[currentModelId];
-        saveLocalOverrides(overrides);
-
-        // Khôi phục code gốc
-        restoreOriginalCode();
-
-        // Gửi lên cloud
-        try {
-            await fetch(GAS_BACKEND_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    action: 'savesetting',
-                    key: 'VLXT_CANVAS_' + currentModelId,
-                    value: ''
-                })
-            });
-
-            if (typeof BroadcastChannel !== 'undefined') {
-                new BroadcastChannel('vlxt_canvas_sync').postMessage({ type: 'SYNC_OVERRIDE' });
-            }
-            showToast(`↺ Đã khôi phục ${currentModelId} về mô hình gốc trên cả Cloud & Ngân hàng!`);
-        } catch(e) {
-            showToast(`↺ Đã khôi phục ${currentModelId} về mô hình gốc.`);
-        }
-    }
-
-    // Xuất file backup JSON chứa toàn bộ bản tinh chỉnh mô hình
     function exportOverridesJson() {
-        const overrides = getLocalOverrides();
-        let exportData = overrides;
-        if (Object.keys(exportData).length === 0 && window.VLXTModels && window.VLXTModels._canvasRegistry) {
-            exportData = {};
-            for (let id in window.VLXTModels._canvasRegistry) {
-                exportData[id] = window.VLXTModels._canvasRegistry[id].toString();
-            }
-        }
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const ov = getLocalOverrides();
+        const str = JSON.stringify(ov, null, 2);
+        const blob = new Blob([str], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `VLXT_CANVAS_OVERRIDES_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = `VLXT_Canvas_Overrides_${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
-        showToast('📥 Đã tải file sao lưu JSON toàn bộ mô hình Canvas!');
+        showToast('Đã xuất file JSON overrides!', 'success');
     }
 
+    // ══════════════════════════════════════════════════════════════════
+    // KHỞI TẠO & ĐIỀU KHIỂN CHẾ ĐỘ 2: PHÒNG DUYỆT & SOẠN CÂU HỎI (514 CÂU)
+    // ══════════════════════════════════════════════════════════════════
 
-    /* ══════════════════════════════════════════════════════════════════════════
-       LOGIC PHÒNG DUYỆT & SOẠN CÂU HỎI STAGING (MỞ RỘNG PHẦN 1, 2, 3)
-    ══════════════════════════════════════════════════════════════════════════ */
     let currentStudioMode = 'MODEL'; // 'MODEL' hoặc 'STAGING'
+    let currentPoolFilter = 'ALL';   // 'ALL', 'DS', 'TLN', 'TN'
+    let currentChapterFilter = 'ALL';
+    let currentLevelFilter = 'ALL';
+
     let stagingList = [];
-    let currentStagingIdx = 0;
     let filteredStagingList = [];
-    let stagingActiveDrawFn = null;
+    let currentStagingIdx = 0;
+    let stCanvasAnimId = null;
     let stSimTime = 0.0;
-    let stIsPlaying = true;
+    let stLastTime = 0;
 
-    // Khởi tạo Staging Questions
     function initStagingSystem() {
-        // Nạp từ window.VLXT_STAGING_QUESTIONS hoặc localStorage
-        const localSaved = localStorage.getItem('VLXT_STAGING_QUESTIONS_SAVED');
-        if (localSaved) {
-            try { stagingList = JSON.parse(localSaved); } catch(e) {}
-        }
-        if (!stagingList || stagingList.length === 0) {
-            if (window.VLXT_STAGING_QUESTIONS && Array.isArray(window.VLXT_STAGING_QUESTIONS)) {
-                stagingList = JSON.parse(JSON.stringify(window.VLXT_STAGING_QUESTIONS));
-            }
-        }
+        const poolDS = (window.DS_94_QUESTIONS || []).map(q => Object.assign({ loai: 'DS' }, q));
+        const poolTLN = (window.TLN_370_QUESTIONS || []).map(q => Object.assign({ loai: 'TLN' }, q));
+        const poolTN = (window.STAGING_QUESTIONS || []).map(q => Object.assign({ loai: 'TN' }, q));
 
-        // Điền dropdown mô hình vào form Staging
-        const modelSelect = document.getElementById('st-input-model');
-        if (modelSelect && ALL_MODEL_IDS) {
-            ALL_MODEL_IDS.forEach(id => {
-                const opt = document.createElement('option');
-                opt.value = id;
-                const cap = MODEL_CAPTIONS[id] || id;
-                opt.textContent = `${id} — ${cap.slice(0, 42)}...`;
-                modelSelect.appendChild(opt);
+        stagingList = [ ...poolDS, ...poolTLN, ...poolTN ];
+
+        // Nạp trạng thái đã duyệt từ localStorage nếu có
+        try {
+            const saved = JSON.parse(localStorage.getItem('VLXT_STAGING_QUESTIONS_SAVED') || '[]');
+            const savedMap = {};
+            saved.forEach(s => { if (s && s.id) savedMap[s.id] = s; });
+            stagingList.forEach(q => {
+                if (savedMap[q.id]) {
+                    Object.assign(q, savedMap[q.id]);
+                }
             });
-        }
+        } catch(e) {}
 
-        updateStagingBadgeCount();
         filterStagingQuestions();
+        updateStagingBadgeCount();
     }
 
     function switchStudioMode(mode) {
@@ -1755,58 +1986,93 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
             btnStaging.classList.remove('active');
             viewModel.style.display = 'flex';
             viewStaging.style.display = 'none';
-            if (currentModelId) loadModel(currentModelId);
         } else {
-            btnModel.classList.remove('active');
             btnStaging.classList.add('active');
+            btnModel.classList.remove('active');
             viewModel.style.display = 'none';
             viewStaging.style.display = 'flex';
-            filterStagingQuestions();
+
+            if (stagingList.length === 0) {
+                initStagingSystem();
+            } else {
+                loadStagingQuestion(currentStagingIdx);
+            }
         }
     }
 
     function updateStagingBadgeCount() {
-        const badge = document.getElementById('disp-staging-badge');
-        if (badge) badge.textContent = stagingList.length;
-        const approvedCount = stagingList.filter(q => q.isApproved).length;
+        const approvedCount = stagingList.filter(q => q.isApproved || q.chatLuong === 'tinh').length;
+        const total = stagingList.length;
+        const badge = document.getElementById('badge-staging-count');
+        if (badge) {
+            badge.textContent = `${approvedCount}/${total} Tinh`;
+        }
         const prog = document.getElementById('st-progress-text');
-        if (prog) prog.textContent = `${approvedCount}/${stagingList.length}`;
+        if (prog) {
+            prog.textContent = `Câu ${currentStagingIdx + 1} / ${filteredStagingList.length || 0}`;
+        }
+    }
+
+    function onStagingPoolChanged(pool) {
+        currentPoolFilter = pool;
+        filterStagingQuestions();
+    }
+
+    function onStagingFilterChange() {
+        currentChapterFilter = document.getElementById('st-filter-chapter').value;
+        currentLevelFilter = document.getElementById('st-filter-level').value;
+        filterStagingQuestions();
     }
 
     function filterStagingQuestions() {
-        const topicFilter = document.getElementById('st-filter-topic') ? document.getElementById('st-filter-topic').value : 'ALL';
-        
         filteredStagingList = stagingList.filter(q => {
-            if (topicFilter === 'ALL') return true;
-            return (q.subTopic || '').includes(topicFilter);
+            // 1. Lọc theo Kho
+            if (currentPoolFilter !== 'ALL') {
+                if (currentPoolFilter === 'DS' && q.loai !== 'DS') return false;
+                if (currentPoolFilter === 'TLN' && q.loai !== 'TLN') return false;
+                if (currentPoolFilter === 'TN' && q.loai !== 'TN') return false;
+            }
+
+            // 2. Lọc theo Chương
+            if (currentChapterFilter !== 'ALL') {
+                const ch = (q.chuong || '').toUpperCase();
+                if (currentChapterFilter === 'C1' && !ch.includes('1') && !ch.includes('NHIỆT')) return false;
+                if (currentChapterFilter === 'C2' && !ch.includes('2') && !ch.includes('KHÍ')) return false;
+                if (currentChapterFilter === 'C3' && !ch.includes('3') && !ch.includes('TỪ')) return false;
+                if (currentChapterFilter === 'C4' && !ch.includes('4') && !ch.includes('HẠT NHÂN')) return false;
+            }
+
+            // 3. Lọc theo Mức độ
+            if (currentLevelFilter !== 'ALL') {
+                if ((q.mucDo || '').toUpperCase() !== currentLevelFilter) return false;
+            }
+
+            return true;
         });
 
-        const selectEl = document.getElementById('st-select-question');
-        if (!selectEl) return;
-        selectEl.innerHTML = '';
+        // Điền vào select box
+        const sel = document.getElementById('st-select-question');
+        sel.innerHTML = '';
+
+        if (filteredStagingList.length === 0) {
+            sel.innerHTML = '<option value="">Không có câu hỏi nào khớp bộ lọc</option>';
+            document.getElementById('st-progress-text').textContent = '0/0';
+            return;
+        }
 
         filteredStagingList.forEach((q, idx) => {
             const opt = document.createElement('option');
             opt.value = idx;
-            const statusPrefix = q.isApproved ? '✅ ' : '⏳ ';
-            const topicPrefix = (q.subTopic || '').split('–')[0].trim();
-            const textShort = (q.question || '').replace(/\$[^\$]*\$/g, '').slice(0, 38);
-            opt.textContent = `${statusPrefix}[${idx+1}/${filteredStagingList.length}] ${topicPrefix}: ${textShort}...`;
-            selectEl.appendChild(opt);
+            const loaiTag = (q.loai === 'DS' ? '🧪 Đ/S' : (q.loai === 'TLN' ? '🔢 TLN' : '📘 TN'));
+            const statusIcon = (q.isApproved || q.chatLuong === 'tinh') ? '✓ ' : '';
+            opt.textContent = `${statusIcon}${idx + 1}. [${loaiTag}] ${q.id || ''} — ${q.subTopic || q.chuong || ''}`;
+            sel.appendChild(opt);
         });
 
         currentStagingIdx = 0;
-        if (filteredStagingList.length > 0) {
-            selectEl.value = 0;
-            loadStagingQuestion(0);
-        } else {
-            clearStagingDisplay();
-        }
+        sel.value = 0;
+        loadStagingQuestion(0);
         updateStagingNavButtons();
-    }
-
-    function onStagingFilterChange() {
-        filterStagingQuestions();
     }
 
     function onStagingQuestionSelect(val) {
@@ -1822,228 +2088,339 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
         const nextIdx = currentStagingIdx + delta;
         if (nextIdx >= 0 && nextIdx < filteredStagingList.length) {
             currentStagingIdx = nextIdx;
-            const sel = document.getElementById('st-select-question');
-            if (sel) sel.value = nextIdx;
+            document.getElementById('st-select-question').value = nextIdx;
             loadStagingQuestion(nextIdx);
             updateStagingNavButtons();
         }
     }
 
     function updateStagingNavButtons() {
-        const prevBtn = document.getElementById('btn-st-prev');
-        const nextBtn = document.getElementById('btn-st-next');
-        if (prevBtn) prevBtn.disabled = (currentStagingIdx <= 0);
-        if (nextBtn) nextBtn.disabled = (currentStagingIdx >= filteredStagingList.length - 1);
+        document.getElementById('btn-st-prev').disabled = (currentStagingIdx <= 0);
+        document.getElementById('btn-st-next').disabled = (currentStagingIdx >= filteredStagingList.length - 1);
+        updateStagingBadgeCount();
     }
 
     function loadStagingQuestion(idx) {
         const q = filteredStagingList[idx];
         if (!q) return;
 
-        // 1. Cập nhật Preview
+        // 1. Cập nhật Preview Badges & Header
         document.getElementById('st-preview-id').textContent = q.id || `CÂU #${idx+1}`;
         document.getElementById('st-preview-counts-text').textContent = `Câu ${idx+1} / ${filteredStagingList.length}`;
-        
-        const statusBox = document.getElementById('st-preview-badge-status');
-        if (statusBox) {
-            statusBox.innerHTML = q.isApproved 
-                ? '<span class="st-badge st-badge-status-approved"><i class="fa-solid fa-check"></i> ĐÃ DUYỆT</span>'
-                : '<span class="st-badge st-badge-status-pending">⏳ Chờ duyệt</span>';
+
+        const statusBox = document.getElementById('st-preview-status');
+        if (q.isApproved || q.chatLuong === 'tinh') {
+            statusBox.className = 'badge-stage-status approved';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> ĐẠT CHUẨN TINH';
+        } else {
+            statusBox.className = 'badge-stage-status pending';
+            statusBox.innerHTML = '<i class="fa-regular fa-clock"></i> CHỜ DUYỆT';
         }
 
-        // Badges
-        const cardType = document.getElementById('st-card-type');
-        if (cardType) {
-            const loaiMap = { 'TN': 'Phần I · Trắc nghiệm ABCD', 'DS': 'Phần II · Đúng/Sai', 'TLN': 'Phần III · Trả lời ngắn' };
-            cardType.textContent = loaiMap[q.loai] || 'Phần I · Trắc nghiệm ABCD';
-        }
-        const cardTopic = document.getElementById('st-card-topic');
-        if (cardTopic) cardTopic.textContent = (q.subTopic || 'Chủ đề lý thuyết').split('–')[0].trim();
-        const cardMucdo = document.getElementById('st-card-mucdo');
-        if (cardMucdo) {
-            const mdMap = { 'NB': 'Nhận biết', 'TH': 'Thông hiểu', 'VD': 'Vận dụng', 'VDC': 'Vận dụng cao' };
-            cardMucdo.textContent = mdMap[q.mucDo] || 'Thông hiểu';
+        const typeBox = document.getElementById('st-preview-type');
+        const loai = q.loai || 'TN';
+        typeBox.textContent = (loai === 'DS' ? 'ĐÚNG / SAI 4 Ý' : (loai === 'TLN' ? 'TRẢ LỜI NGẮN' : 'TRẮC NGHIỆM ABCD'));
+
+        const levelBox = document.getElementById('st-preview-level');
+        levelBox.textContent = (q.mucDo === 'VD' ? 'VẬN DỤNG (VD)' : (q.mucDo === 'VDC' ? 'VẬN DỤNG CAO (VDC)' : (q.mucDo === 'NB' ? 'NHẬN BIẾT (NB)' : 'THÔNG HIỂU (TH)')));
+
+        // 2. Đề bài chung (nếu có)
+        const debaichungBox = document.getElementById('st-preview-debaichung');
+        if (q.deBaiChung && q.deBaiChung.trim()) {
+            debaichungBox.style.display = 'block';
+            debaichungBox.innerHTML = renderMathTextToHtml(q.deBaiChung);
+        } else {
+            debaichungBox.style.display = 'none';
         }
 
-        // Đề bài
-        const qTextEl = document.getElementById('st-card-question');
-        if (qTextEl) qTextEl.innerHTML = renderMathTextToHtml(q.question || '');
+        // 3. Đề bài chính & Bảng số liệu
+        document.getElementById('st-preview-question').innerHTML = renderMathTextToHtml(q.question || '');
 
-        // Phương án Options
-        const optsContainer = document.getElementById('st-card-options');
-        if (optsContainer) {
-            optsContainer.innerHTML = '';
-            ['A', 'B', 'C', 'D'].forEach(letter => {
-                const optText = q['opt' + letter] || '';
-                const isCorrect = (String(q.correct || '').toUpperCase() === letter);
-                const optCard = document.createElement('div');
-                optCard.className = `staging-opt-card ${isCorrect ? 'correct' : ''}`;
-                optCard.onclick = () => { onStagingFieldChange('correct', letter); };
-                optCard.innerHTML = `
-                    <div class="staging-opt-letter">${letter}</div>
-                    <div class="staging-opt-text">${renderMathTextToHtml(optText)} ${isCorrect ? '<b style="color:#10b981;margin-left:6px">✓ Đáp án đúng</b>' : ''}</div>
+        // 4. Các phương án / mệnh đề theo loại câu
+        const tnBox = document.getElementById('st-preview-options');
+        const dsBox = document.getElementById('st-preview-ds');
+        const tlnBox = document.getElementById('st-preview-tln');
+
+        const editorTn = document.getElementById('st-editor-tn-section');
+        const editorDs = document.getElementById('st-editor-ds-section');
+        const editorTln = document.getElementById('st-editor-tln-section');
+
+        if (loai === 'DS') {
+            tnBox.style.display = 'none';
+            editorTn.style.display = 'none';
+            tlnBox.style.display = 'none';
+            editorTln.style.display = 'none';
+
+            dsBox.style.display = 'flex';
+            editorDs.style.display = 'block';
+
+            const correctStr = String(q.correct || 'ĐĐĐĐ').toUpperCase();
+            const statements = [
+                { key: 'a', text: q.optA || (q.subItems && q.subItems[0] ? q.subItems[0].statement : ''), isTrue: correctStr[0] === 'Đ' || correctStr[0] === 'T' || correctStr[0] === '1' },
+                { key: 'b', text: q.optB || (q.subItems && q.subItems[1] ? q.subItems[1].statement : ''), isTrue: correctStr[1] === 'Đ' || correctStr[1] === 'T' || correctStr[1] === '1' },
+                { key: 'c', text: q.optC || (q.subItems && q.subItems[2] ? q.subItems[2].statement : ''), isTrue: correctStr[2] === 'Đ' || correctStr[2] === 'T' || correctStr[2] === '1' },
+                { key: 'd', text: q.optD || (q.subItems && q.subItems[3] ? q.subItems[3].statement : ''), isTrue: correctStr[3] === 'Đ' || correctStr[3] === 'T' || correctStr[3] === '1' }
+            ];
+
+            dsBox.innerHTML = statements.map(s => `
+                <div class="ds-stmt-row">
+                    <div class="ds-stmt-left">
+                        <span class="ds-stmt-label">${s.key})</span>
+                        <span class="ds-stmt-text">${renderMathTextToHtml(s.text)}</span>
+                    </div>
+                    <span class="ds-badge ${s.isTrue ? 'true' : 'false'}">
+                        ${s.isTrue ? '<i class="fa-solid fa-check"></i> Đúng' : '<i class="fa-solid fa-xmark"></i> Sai'}
+                    </span>
+                </div>
+            `).join('');
+
+            // Cập nhật Editor DS
+            document.getElementById('st-inp-ds-a').value = q.optA || (statements[0].text);
+            document.getElementById('st-inp-ds-b').value = q.optB || (statements[1].text);
+            document.getElementById('st-inp-ds-c').value = q.optC || (statements[2].text);
+            document.getElementById('st-inp-ds-d').value = q.optD || (statements[3].text);
+            updateStagingDsTfButtons(correctStr);
+
+        } else if (loai === 'TLN') {
+            tnBox.style.display = 'none';
+            editorTn.style.display = 'none';
+            dsBox.style.display = 'none';
+            editorDs.style.display = 'none';
+
+            tlnBox.style.display = 'flex';
+            editorTln.style.display = 'block';
+
+            document.getElementById('st-tln-mock-unit').textContent = q.donVi || q.unit || '';
+            document.getElementById('st-tln-correct-text').textContent = `${q.correct || ''} ${q.donVi || ''}`;
+
+            // Cập nhật Editor TLN
+            document.getElementById('st-inp-tln-correct').value = q.correct || '';
+            document.getElementById('st-inp-tln-unit').value = q.donVi || q.unit || '';
+            document.getElementById('st-inp-tln-tolerance').value = q.tolerance || 0.01;
+
+        } else {
+            // Trắc nghiệm ABCD
+            dsBox.style.display = 'none';
+            editorDs.style.display = 'none';
+            tlnBox.style.display = 'none';
+            editorTln.style.display = 'none';
+
+            tnBox.style.display = 'flex';
+            editorTn.style.display = 'block';
+
+            const opts = [
+                { key: 'A', text: q.optA || '' },
+                { key: 'B', text: q.optB || '' },
+                { key: 'C', text: q.optC || '' },
+                { key: 'D', text: q.optD || '' }
+            ];
+
+            tnBox.innerHTML = opts.map(o => {
+                const isCorrect = (q.correct && q.correct.toUpperCase() === o.key);
+                return `
+                    <div class="staging-opt-item ${isCorrect ? 'correct' : ''}">
+                        <div class="staging-opt-pill">${o.key}</div>
+                        <div class="staging-opt-content">${renderMathTextToHtml(o.text)}</div>
+                        ${isCorrect ? '<span class="badge-opt-correct"><i class="fa-solid fa-check"></i> Đúng</span>' : ''}
+                    </div>
                 `;
-                optsContainer.appendChild(optCard);
+            }).join('');
+
+            // Cập nhật Editor TN
+            document.getElementById('st-inp-opta').value = q.optA || '';
+            document.getElementById('st-inp-optb').value = q.optB || '';
+            document.getElementById('st-inp-optc').value = q.optC || '';
+            document.getElementById('st-inp-optd').value = q.optD || '';
+
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                const rad = document.getElementById('st-rad-' + letter.toLowerCase());
+                if (rad) rad.checked = (q.correct && q.correct.toUpperCase() === letter);
             });
         }
 
-        // Lời giải
-        const expEl = document.getElementById('st-card-explain-text');
-        if (expEl) expEl.innerHTML = renderMathTextToHtml(q.giaiThich || 'Theo lý thuyết chuẩn Bộ GD&ĐT.');
+        // 5. Lời giải chi tiết
+        document.getElementById('st-preview-explain').innerHTML = renderMathTextToHtml(q.giaiThich || q.solution || '<p>Đang cập nhật lời giải chi tiết...</p>');
 
-        // 2. Cập nhật Canvas của câu này (nếu có modelId)
-        const canvasBox = document.getElementById('st-canvas-box');
-        const noCanvasBox = document.getElementById('st-no-canvas-box');
-        if (q.modelId && MODEL_CAPTIONS[q.modelId]) {
-            if (canvasBox) canvasBox.style.display = 'flex';
-            if (noCanvasBox) noCanvasBox.style.display = 'none';
-            document.getElementById('st-disp-model-name').textContent = `${q.modelId} — ${(MODEL_CAPTIONS[q.modelId]||'').slice(0,35)}...`;
-            mountStagingCanvas(q.modelId);
+        // 6. Điền các trường chung vào Live Editor
+        document.getElementById('st-inp-id').value = q.id || '';
+        document.getElementById('st-inp-loai').value = loai;
+        document.getElementById('st-inp-mucdo').value = q.mucDo || 'TH';
+        document.getElementById('st-inp-chuong').value = q.chuong || 'CHƯƠNG 1 – VẬT LÝ NHIỆT';
+        document.getElementById('st-inp-baihoc').value = q.baiHoc || '';
+        document.getElementById('st-inp-modelid').value = q.modelId || '';
+        document.getElementById('st-inp-subtopic').value = q.subTopic || '';
+        document.getElementById('st-inp-question').value = q.question || '';
+        document.getElementById('st-inp-giaiThich').value = q.giaiThich || q.solution || '';
+
+        const groupDebaichung = document.getElementById('st-group-debaichung');
+        if (loai === 'TLN' || (q.deBaiChung && q.deBaiChung.trim())) {
+            groupDebaichung.style.display = 'block';
+            document.getElementById('st-inp-debaichung').value = q.deBaiChung || '';
         } else {
-            if (canvasBox) canvasBox.style.display = 'none';
-            if (noCanvasBox) noCanvasBox.style.display = 'block';
+            groupDebaichung.style.display = 'none';
         }
 
-        // 3. Cập nhật Form Editor bên phải
-        document.getElementById('st-input-id').value = q.id || '';
-        document.getElementById('st-input-loai').value = q.loai || 'TN';
-        if (document.getElementById('st-input-subtopic')) document.getElementById('st-input-subtopic').value = q.subTopic || '';
-        if (document.getElementById('st-input-model')) document.getElementById('st-input-model').value = q.modelId || '';
-        document.getElementById('st-input-question').value = q.question || '';
-        document.getElementById('st-input-optA').value = q.optA || '';
-        document.getElementById('st-input-optB').value = q.optB || '';
-        document.getElementById('st-input-optC').value = q.optC || '';
-        document.getElementById('st-input-optD').value = q.optD || '';
-        document.getElementById('st-input-explain').value = q.giaiThich || '';
+        // 7. Mount Canvas nếu có Model ID
+        mountStagingCanvas(q.modelId);
 
-        // Radio correct
-        ['A', 'B', 'C', 'D'].forEach(letter => {
-            const rad = document.getElementById('st-rad-' + letter);
-            if (rad) rad.checked = (String(q.correct || '').toUpperCase() === letter);
-        });
-
-        // Trigger KaTeX render
-        if (window.renderMathInElement) {
+        // 8. Kích hoạt KaTeX rendering
+        const card = document.getElementById('st-qcard');
+        if (window.renderMathInElement && card) {
             try {
-                renderMathInElement(document.getElementById('st-qcard-box'), {
-                    delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}],
+                window.renderMathInElement(card, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
                     throwOnError: false
                 });
             } catch(e) {}
         }
     }
 
-    function renderMathTextToHtml(str) {
-        if (!str) return '';
-        // Escape HTML
-        let s = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return s;
+    function updateStagingDsTfButtons(correctStr) {
+        const keys = ['a', 'b', 'c', 'd'];
+        keys.forEach((k, idx) => {
+            const btn = document.getElementById('st-btn-ds-' + k);
+            if (!btn) return;
+            const isTrue = correctStr[idx] === 'Đ' || correctStr[idx] === 'T' || correctStr[idx] === '1';
+            btn.className = 'ds-badge ' + (isTrue ? 'true' : 'false');
+            btn.innerHTML = isTrue ? '✓ Đúng' : '✗ Sai';
+        });
+    }
+
+    function toggleStagingDsTf(key) {
+        const q = filteredStagingList[currentStagingIdx];
+        if (!q) return;
+
+        let cur = (q.correct || 'ĐĐĐĐ').split('');
+        while (cur.length < 4) cur.push('Đ');
+        const idxMap = { a: 0, b: 1, c: 2, d: 3 };
+        const idx = idxMap[key];
+        cur[idx] = (cur[idx] === 'Đ') ? 'S' : 'Đ';
+        q.correct = cur.join('');
+
+        updateStagingDsTfButtons(q.correct);
+        loadStagingQuestion(currentStagingIdx);
+    }
+
+    function onStagingDsFieldChange(key, val) {
+        const q = filteredStagingList[currentStagingIdx];
+        if (!q) return;
+        if (key === 'a') q.optA = val;
+        if (key === 'b') q.optB = val;
+        if (key === 'c') q.optC = val;
+        if (key === 'd') q.optD = val;
+        loadStagingQuestion(currentStagingIdx);
+    }
+
+    function onStagingLoaiChange(val) {
+        const q = filteredStagingList[currentStagingIdx];
+        if (!q) return;
+        q.loai = val;
+        loadStagingQuestion(currentStagingIdx);
+    }
+
+    function renderMathTextToHtml(text) {
+        if (!text) return '';
+        // Chuẩn hóa \dfrac thành KaTeX
+        let clean = text.replace(/\\dfrac/g, '\\dfrac');
+        // Cho phép render HTML an toàn
+        return clean;
     }
 
     function onStagingFieldChange(field, val) {
         const q = filteredStagingList[currentStagingIdx];
         if (!q) return;
-
         q[field] = val;
-
-        // Lưu lại bản nháp vào localStorage
-        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
-
-        // Re-render Preview nhẹ nhàng
-        if (field === 'question') {
-            const el = document.getElementById('st-card-question');
-            if (el) {
-                el.innerHTML = renderMathTextToHtml(val);
-                if (window.renderMathInElement) renderMathInElement(el, {delimiters:[{left:'$',right:'$',display:false}]});
-            }
-        } else if (field.startsWith('opt') || field === 'correct') {
-            loadStagingQuestion(currentStagingIdx);
-        } else if (field === 'giaiThich') {
-            const el = document.getElementById('st-card-explain-text');
-            if (el) {
-                el.innerHTML = renderMathTextToHtml(val);
-                if (window.renderMathInElement) renderMathInElement(el, {delimiters:[{left:'$',right:'$',display:false}]});
-            }
-        } else if (field === 'modelId') {
-            loadStagingQuestion(currentStagingIdx);
-        }
+        loadStagingQuestion(currentStagingIdx);
     }
 
-    // Mount Canvas Animation cho Staging
-    let stagingRafId = null;
     function mountStagingCanvas(modelId) {
-        const stCv = document.getElementById('staging-canvas');
-        if (!stCv) return;
-        const stCtx = stCv.getContext('2d');
-        stCv.width = 780 * 2.0;
-        stCv.height = 305 * 2.0;
-        stCtx.scale(2.0, 2.0);
+        const container = document.getElementById('st-canvas-container');
+        const noCanvasBox = document.getElementById('st-no-canvas-box');
 
-        let drawFn = null;
-        if (window.VLXTModels && window.VLXTModels.getDrawFunction) {
-            drawFn = window.VLXTModels.getDrawFunction(modelId);
+        if (stCanvasAnimId) {
+            cancelAnimationFrame(stCanvasAnimId);
+            stCanvasAnimId = null;
         }
 
-        if (stagingRafId) cancelAnimationFrame(stagingRafId);
-
-        let stTime = 0.0;
-        let lastT = 0;
-
-        function loop(ts) {
-            if (!lastT) lastT = ts;
-            const dt = (ts - lastT) / 1000.0;
-            lastT = ts;
-            stTime += Math.min(dt, 0.1);
-
-            stCtx.clearRect(0, 0, 780, 305);
-            if (typeof drawFn === 'function') {
-                try {
-                    drawFn(stCtx, 780, 305, stTime);
-                } catch(e) {}
-            }
-            stagingRafId = requestAnimationFrame(loop);
+        if (!modelId || !window.VLXTModels || !window.VLXTModels._canvasRegistry || !window.VLXTModels._canvasRegistry[modelId]) {
+            container.style.display = 'none';
+            noCanvasBox.style.display = 'flex';
+            document.getElementById('st-disp-model-id').textContent = 'LÝ THUYẾT / TÍNH TOÁN';
+            document.getElementById('st-disp-caption').textContent = 'Câu hỏi không sử dụng đồ họa chuyển động Canvas';
+            return;
         }
-        stagingRafId = requestAnimationFrame(loop);
+
+        container.style.display = 'flex';
+        noCanvasBox.style.display = 'none';
+        document.getElementById('st-disp-model-id').textContent = modelId;
+        document.getElementById('st-disp-caption').textContent = MODEL_CAPTIONS[modelId] || modelId;
+
+        const canvas = document.getElementById('st-canvas');
+        const ctx = canvas.getContext('2d');
+        const drawFn = window.VLXTModels._canvasRegistry[modelId];
+
+        stSimTime = 0.0;
+        stLastTime = performance.now();
+
+        function loop(now) {
+            const dt = (now - stLastTime) / 1000.0;
+            stLastTime = now;
+            if (dt > 0 && dt < 0.2) stSimTime += dt;
+
+            document.getElementById('st-time-val').textContent = stSimTime.toFixed(2) + 's';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            try {
+                drawFn(ctx, canvas.width, canvas.height, stSimTime);
+            } catch(e) {}
+
+            stCanvasAnimId = requestAnimationFrame(loop);
+        }
+        stCanvasAnimId = requestAnimationFrame(loop);
     }
 
-    function jumpToModelEditorFromStaging() {
-        const q = filteredStagingList[currentStagingIdx];
-        if (!q || !q.modelId) return;
-        switchStudioMode('MODEL');
-        const sel = document.getElementById('sel-model');
-        if (sel) {
-            sel.value = q.modelId;
-            loadModel(q.modelId);
-        }
+    function resetStagingTime() {
+        stSimTime = 0.0;
     }
 
-    // Đẩy thẳng câu hỏi vào Ngân Hàng Đề và Cloud (0ms)
-    async function saveStagingQuestionToBank() {
+    function saveStagingQuestionToBank() {
         const q = filteredStagingList[currentStagingIdx];
         if (!q) return;
 
         q.isApproved = true;
-        updateStagingBadgeCount();
-        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
+        q.chatLuong = 'tinh';
+        q.reviewStatus = 'APPROVED';
 
-        // 1. Lưu vào VLXT_BANK_QUESTIONS trong localStorage để trang Ngân Hàng nhận ngay
+        updateStagingBadgeCount();
+        loadStagingQuestion(currentStagingIdx);
+
+        // 1. Lưu danh sách staging đã duyệt vào localStorage
+        try {
+            localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
+        } catch(e) {}
+
+        // 2. Lưu trực tiếp vào vlxt_admin_nganhang để trang Ngân Hàng Đề nhận ngay
         let bank = [];
         try {
-            const rawBank = localStorage.getItem('VLXT_BANK_QUESTIONS');
-            if (rawBank) bank = JSON.parse(rawBank);
-        } catch(e) {}
-        if (!Array.isArray(bank)) bank = [];
+            bank = JSON.parse(localStorage.getItem('vlxt_admin_nganhang') || '[]');
+        } catch(e) { bank = []; }
 
-        const existingIdx = bank.findIndex(x => x.id === q.id);
-        if (existingIdx >= 0) {
-            bank[existingIdx] = q;
+        const qId = q.id || q.ma || 'VLXT-STAGING-' + Date.now();
+        const idx = bank.findIndex(item => (item.id && item.id === qId) || (item.ma && item.ma === qId));
+        if (idx >= 0) {
+            bank[idx] = Object.assign({}, bank[idx], q);
         } else {
             bank.unshift(q);
         }
-        localStorage.setItem('VLXT_BANK_QUESTIONS', JSON.stringify(bank));
 
-        // 2. Phát BroadcastChannel cho tab Ngân Hàng Đề (ngan-hang-de.html) cập nhật 0ms
-        if (typeof BroadcastChannel !== 'undefined') {
+        try {
+            localStorage.setItem('vlxt_admin_nganhang', JSON.stringify(bank));
+        } catch(e) {}
+
+        // 3. Phát BroadcastChannel để các tab khác (như ngan-hang-de.html) cập nhật tức thì 0ms
+        if (window.BroadcastChannel) {
             try {
                 const bc = new BroadcastChannel('vlxt_bank_sync');
                 bc.postMessage({
@@ -2054,160 +2431,141 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
             } catch(e) {}
         }
 
-        // 3. Đẩy lên Cloud Google Apps Script backend nếu có admin key
-        const adminKey = localStorage.getItem('VLXT_ADMIN_KEY') || localStorage.getItem('adminKey') || '';
-        const gasUrl = localStorage.getItem('VLXT_GAS_URL') || '';
-        if (gasUrl && adminKey) {
-            try {
-                fetch(gasUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'importnganhang',
-                        adminKey: adminKey,
-                        dryRun: false,
-                        questions: [q]
-                    })
-                }).catch(() => {});
-            } catch(e) {}
+        // 4. Nếu có Admin Key và DB_URL, gửi lưu nền lên Google Apps Script
+        const adminKey = localStorage.getItem('vlxt_backend_admin_key') || localStorage.getItem('adminKey');
+        if (adminKey && window.DB_URL) {
+            fetch(window.DB_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'appendQuestion',
+                    adminKey: adminKey,
+                    question: q
+                })
+            }).then(() => {
+                showToast(`Đã lưu & đồng bộ "${qId}" lên Ngân Hàng Đề & Cloud!`, 'success');
+            }).catch(() => {
+                showToast(`Đã lưu "${qId}" vào Ngân Hàng Đề cục bộ!`, 'success');
+            });
+        } else {
+            showToast(`Đã lưu thành công "${qId}" vào Ngân Hàng Đề!`, 'success');
         }
-
-        showToast(`✅ Đã lưu và đẩy câu [${q.id}] vào Ngân Hàng Đề thành công!`);
-
-        // Tự động chuyển sang câu tiếp theo
-        setTimeout(() => {
-            if (currentStagingIdx < filteredStagingList.length - 1) {
-                navigateStagingQuestion(1);
-            } else {
-                loadStagingQuestion(currentStagingIdx);
-            }
-        }, 300);
     }
 
     function markStagingApproved() {
         const q = filteredStagingList[currentStagingIdx];
         if (!q) return;
         q.isApproved = true;
+        q.chatLuong = 'tinh';
+        q.reviewStatus = 'APPROVED';
         updateStagingBadgeCount();
-        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
-        showToast(`✓ Đã đánh dấu câu [${q.id}] ĐÃ DUYỆT`);
-        if (currentStagingIdx < filteredStagingList.length - 1) {
-            navigateStagingQuestion(1);
-        } else {
-            loadStagingQuestion(currentStagingIdx);
-        }
+        loadStagingQuestion(currentStagingIdx);
+        showToast(`Đã đánh dấu câu "${q.id || ''}" đạt chuẩn Tinh!`, 'success');
     }
 
-    function deleteCurrentStagingQuestion() {
-        if (!confirm('Thầy có chắc chắn muốn xóa câu này khỏi danh sách duyệt không?')) return;
-        const q = filteredStagingList[currentStagingIdx];
-        if (!q) return;
-
-        stagingList = stagingList.filter(item => item.id !== q.id);
-        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
-        updateStagingBadgeCount();
-        filterStagingQuestions();
-        showToast('🗑️ Đã xóa câu hỏi khỏi danh sách duyệt.');
+    function resetStagingCurrentQuestion() {
+        if (!confirm('Hoàn tác mọi chỉnh sửa của câu hỏi này?')) return;
+        initStagingSystem();
+        loadStagingQuestion(currentStagingIdx);
+        showToast('Đã khôi phục dữ liệu ban đầu của câu hỏi', 'info');
     }
 
     function exportStagingJson() {
-        const blob = new Blob([JSON.stringify(stagingList, null, 2)], { type: 'application/json;charset=utf-8' });
+        const str = JSON.stringify(stagingList, null, 2);
+        const blob = new Blob([str], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `VLXT_STAGING_QUESTIONS_50_EXPORT_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = `VLXT_Staging_Pool_${currentPoolFilter}_${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
-        showToast('📥 Đã tải file JSON gói 50 câu hỏi Staging!');
+        showToast(`Đã xuất gói JSON (${stagingList.length} câu)!`, 'success');
     }
 
     function importStagingJson() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = (e) => {
+        const inp = document.createElement('input');
+        inp.type = 'file';
+        inp.accept = '.json';
+        inp.onchange = function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = (ev) => {
+            reader.onload = function(evt) {
                 try {
-                    const imported = JSON.parse(ev.target.result);
-                    if (Array.isArray(imported)) {
-                        stagingList = imported;
-                        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
-                        updateStagingBadgeCount();
-                        filterStagingQuestions();
-                        showToast(`📥 Đã nạp thành công ${imported.length} câu hỏi vào Staging!`);
-                    } else {
-                        alert('File JSON phải là một mảng danh sách câu hỏi [ {...}, {...} ]');
-                    }
+                    const parsed = JSON.parse(evt.target.result);
+                    const newQs = Array.isArray(parsed) ? parsed : (parsed.questions || []);
+                    if (!newQs.length) throw new Error('File không chứa danh sách câu hỏi hợp lệ.');
+
+                    stagingList = newQs.concat(stagingList);
+                    filterStagingQuestions();
+                    showToast(`Đã nạp thành công ${newQs.length} câu hỏi mới vào Staging Studio!`, 'success');
                 } catch(err) {
-                    alert('Lỗi đọc file JSON: ' + err.message);
+                    showToast('Lỗi đọc file JSON: ' + err.message, 'warn');
                 }
             };
-            reader.readAsText(file);
+            reader.readAsText(file, 'utf-8');
         };
-        input.click();
+        inp.click();
     }
 
     function addNewStagingQuestion() {
-        const newId = `VLXT-TN-NEW-${Date.now().toString().slice(-4)}`;
+        const newId = `VLXT-NEW-${Date.now().toString().slice(-4)}`;
         const newQ = {
             id: newId,
-            loai: 'TN',
-            tnType: 'LT',
+            loai: (currentPoolFilter === 'DS' ? 'DS' : (currentPoolFilter === 'TLN' ? 'TLN' : 'TN')),
             mucDo: 'TH',
-            chatLuong: 'Tinh',
-            chuong: 'CHƯƠNG 2 – KHÍ LÝ TƯỞNG',
-            baiHoc: 'B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT',
-            subTopic: 'CD07 – Quá trình đẳng nhiệt & Định luật Boyle',
-            modelId: 'MH-C2-27',
+            chatLuong: 'chua_duyet',
+            chuong: 'CHƯƠNG 1 – VẬT LÝ NHIỆT',
+            baiHoc: 'Bài mới',
+            subTopic: '',
+            modelId: '',
             question: 'Nội dung câu hỏi mới...',
             optA: 'Phương án A',
             optB: 'Phương án B',
             optC: 'Phương án C',
             optD: 'Phương án D',
-            correct: 'A',
-            giaiThich: 'Lời giải thích chi tiết...',
+            correct: (currentPoolFilter === 'DS' ? 'ĐĐĐĐ' : 'A'),
+            giaiThich: 'Lời giải chi tiết...',
             isApproved: false
         };
+
         stagingList.unshift(newQ);
-        localStorage.setItem('VLXT_STAGING_QUESTIONS_SAVED', JSON.stringify(stagingList));
-        updateStagingBadgeCount();
         filterStagingQuestions();
-        showToast('➕ Đã thêm một câu hỏi mới vào đầu danh sách duyệt!');
+        currentStagingIdx = 0;
+        document.getElementById('st-select-question').value = 0;
+        loadStagingQuestion(0);
+        showToast(`Đã tạo câu hỏi mới: ${newId}`, 'success');
     }
 
-    // Tự động khởi động Staging System khi DOM sẵn sàng
-    window.addEventListener('DOMContentLoaded', () => {
-        initStagingSystem();
-    });
-
-    // Modal hiển thị danh sách các câu đã override
+    // Modal Danh sách câu đã tinh chỉnh
     function showOverridesListModal() {
-        const map = getLocalOverrides();
-        const keys = Object.keys(map);
-        const container = document.getElementById('modal-overrides-list');
-        container.innerHTML = '';
+        const modal = document.getElementById('modal-overrides-overlay');
+        const listContainer = document.getElementById('modal-overrides-list');
+        const countSpan = document.getElementById('modal-overrides-count');
+        const overrides = getLocalOverrides();
+        const ids = Object.keys(overrides);
 
-        if (keys.length === 0) {
-            container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:30px 0;">Chưa có mô hình nào được tinh chỉnh. Tất cả 94 câu đều đang chạy bản gốc chuẩn.</div>';
+        countSpan.textContent = `(${ids.length} mô hình)`;
+        listContainer.innerHTML = '';
+
+        if (ids.length === 0) {
+            listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px;">Chưa có mô hình nào được lưu tinh chỉnh cục bộ.</div>';
         } else {
-            keys.forEach(k => {
+            ids.forEach(id => {
                 const item = document.createElement('div');
                 item.className = 'override-item';
-                const cap = MODEL_CAPTIONS[k] || k;
                 item.innerHTML = `
-                    <div>
-                        <span class="override-item-id">${k}</span>
-                        <span class="override-item-name">${cap.slice(0, 42)}...</span>
+                    <div class="override-item-left">
+                        <span class="override-item-id">${id}</span>
+                        <span class="override-item-caption">${MODEL_CAPTIONS[id] || id}</span>
                     </div>
                     <div class="override-item-actions">
-                        <button class="nav-btn" onclick="selectAndCloseModal('${k}')">Xem & Sửa</button>
+                        <button class="nav-btn" onclick="selectAndCloseModal('${id}')" title="Mở mô hình này"><i class="fa-solid fa-arrow-right"></i> Mở</button>
                     </div>
                 `;
-                container.appendChild(item);
+                listContainer.appendChild(item);
             });
         }
-        document.getElementById('modal-overrides-overlay').style.display = 'flex';
+
+        modal.style.display = 'flex';
     }
 
     function closeOverridesListModal() {
@@ -2223,6 +2581,13 @@ VLXTModels.register('${currentModelId}', function(ctx, w, h, t) {
         }
     }
 
+    // Khởi tạo toàn hệ thống khi DOM sẵn sàng
+    document.addEventListener('DOMContentLoaded', function() {
+        populateModelDropdown('ALL');
+        updateOverridesCountBadge();
+        requestAnimationFrame(renderLoop);
+        initStagingSystem();
+    });
 </script>
 
     <!-- Modal Danh Sách Câu Đã Tinh Chỉnh -->
