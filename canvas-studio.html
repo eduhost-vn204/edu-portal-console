@@ -1179,11 +1179,13 @@
         <section class="controls-ribbon">
             <div class="selector-group">
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
-                <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:210px;">
-                    <option value="ALL">🌟 Tất Cả Mô Hình (Phần 1, 2, 3)</option>
-                    <option value="P2" selected>🧪 Phần 2: Đúng / Sai (94 Mô hình)</option>
+                <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
+                    <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Mới (50 Đề Chờ Duyệt)</option>
+                    <option value="P2_ORIGINAL_94">🧪 94 Mô Hình Đúng / Sai Gốc (Đã Nạp)</option>
+                    <option value="P2_ALL">🌟 Toàn Bộ 200 Mô Hình Đúng / Sai (94 Gốc + 106 Mới)</option>
                     <option value="P1">📘 Phần 1: Trắc Nghiệm ABCD (Các mô hình TN)</option>
                     <option value="P3">🔢 Phần 3: Trả Lời Ngắn (Chu trình, đồ thị, máy biến áp)</option>
+                    <option value="ALL">★ Tất Cả Mô Hình Trong Hệ Thống</option>
                 </select>
 
                 <select id="sel-chapter" class="studio-select" onchange="onChapterFilterChange()">
@@ -1759,7 +1761,18 @@
             'MH-C4-99': 'Con đường khí phóng xạ tự nhiên Radon ²²²₈₆Rn thấm từ đất đá tích tụ vào bên trong ngôi nhà',
             'MH-C4-100': 'Cấu tạo Pin nguyên tử Plutonium-238 (2,5 Ci · T = 87,7 năm) chuyển nhiệt phân rã alpha thành điện năng'
         }
-    // Model list metadata
+    
+    // Tự động nạp 106 Mô hình Đúng/Sai mới vào MODEL_CAPTIONS
+    if (window.STAGING_DS_106_QUESTIONS && Array.isArray(window.STAGING_DS_106_QUESTIONS)) {
+        window.STAGING_DS_106_QUESTIONS.forEach(q => {
+            if (q.modelId) {
+                const topicText = q.subTopic ? q.subTopic.replace(/^DS-C\d\.\d+\s*[-–]\s*/, '') : '';
+                MODEL_CAPTIONS[q.modelId] = topicText ? `${topicText} (${q.id})` : (q.id || q.modelId);
+            }
+        });
+    }
+
+// Model list metadata
     let ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
     let currentModelId = 'MH-C1-01';
     let originalCodeCache = {};
@@ -1771,7 +1784,7 @@
     let frameCount = 0;
     let lastFpsUpdate = 0;
 
-    let currentPartFilter = 'P2'; // 'ALL', 'P1', 'P2', 'P3'
+    let currentPartFilter = 'P2_STAGING_106'; // 'ALL', 'P1', 'P2', 'P3'
     let currentModelEditorTab = 'CODE'; // 'CODE' or 'QUESTION'
 
     const cv = document.getElementById('studio-canvas');
@@ -1806,18 +1819,22 @@
 
         let filteredIds = ALL_MODEL_IDS;
 
-        // 1. Lọc theo Nhóm Phần
-        if (currentPartFilter === 'P2') {
-            filteredIds = filteredIds.filter(id => (id.startsWith('MH-C1-') || id.startsWith('MH-C2-') || id.startsWith('MH-C3-') || id.startsWith('MH-C4-')) && !id.includes('TN'));
+        // 1. Lọc theo Nhóm Phần (Hỗ trợ đầy đủ 106 mô hình mới + 94 mô hình gốc)
+        if (currentPartFilter === 'P2_STAGING_106') {
+            filteredIds = filteredIds.filter(id => id.startsWith('MH-STAGING-'));
+        } else if (currentPartFilter === 'P2_ORIGINAL_94') {
+            filteredIds = filteredIds.filter(id => (id.startsWith('MH-C1-') || id.startsWith('MH-C2-') || id.startsWith('MH-C3-') || id.startsWith('MH-C4-')) && !id.includes('TN') && !id.startsWith('MH-STAGING-'));
+        } else if (currentPartFilter === 'P2_ALL' || currentPartFilter === 'P2') {
+            filteredIds = filteredIds.filter(id => (id.startsWith('MH-C1-') || id.startsWith('MH-C2-') || id.startsWith('MH-C3-') || id.startsWith('MH-C4-') || id.startsWith('MH-STAGING-')) && !id.includes('TN'));
         } else if (currentPartFilter === 'P1') {
             filteredIds = filteredIds.filter(id => id.includes('TN') || id === 'MH-C2-27' || id === 'MH-C2-28' || id === 'MH-C3-53' || id === 'MH-C3-55' || id === 'MH-C3-75');
         } else if (currentPartFilter === 'P3') {
             filteredIds = filteredIds.filter(id => id.startsWith('MH-TLN-'));
         }
 
-        // 2. Lọc theo Chương
+        // 2. Lọc theo Chương (C1, C2, C3, C4)
         if (ch !== 'ALL') {
-            filteredIds = filteredIds.filter(id => id.includes(`-${ch}-`) || id.includes(`${ch}_`));
+            filteredIds = filteredIds.filter(id => id.includes(`-${ch}-`) || id.includes(`${ch}_`) || id.includes(`-${ch}`));
         }
 
         filteredIds.forEach(id => {
@@ -2001,13 +2018,18 @@
         const card = document.getElementById('model-question-preview');
         if (!card) return;
 
-        // Tìm kiếm câu hỏi trong cả 3 nguồn (Đúng/Sai, Trả lời ngắn, Trắc nghiệm ABCD)
+        // Tìm kiếm câu hỏi trong cả 4 nguồn: 106 câu Đúng/Sai mới, 94 câu Đúng/Sai gốc, Trả lời ngắn, Trắc nghiệm ABCD
+        const stagingDsList = window.STAGING_DS_106_QUESTIONS || [];
         const dsList = window.DS_94_QUESTIONS || [];
         const tlnList = window.TLN_370_QUESTIONS || [];
         const tnList = window.STAGING_QUESTIONS || [];
 
-        let q = dsList.find(item => item.modelId === id || item.id === id);
+        let q = stagingDsList.find(item => item.modelId === id || item.id === id);
         let partType = 'DS';
+
+        if (!q) {
+            q = dsList.find(item => item.modelId === id || item.id === id);
+        }
 
         if (!q) {
             q = tnList.find(item => item.modelId === id || item.id === id);
@@ -2396,6 +2418,16 @@ YÊU CẦU TINH CHỈNH:
 
         // Chuyển sang Staging Mode và mở đúng câu hỏi tương ứng
         setTimeout(() => {
+            if (currentModelId.startsWith('MH-STAGING-')) {
+                const poolSelect = document.getElementById('st-filter-pool');
+                if (poolSelect && poolSelect.value !== 'STAGING_DS_106') {
+                    poolSelect.value = 'STAGING_DS_106';
+                    if (typeof onStagingPoolChanged === 'function') {
+                        onStagingPoolChanged('STAGING_DS_106');
+                    }
+                }
+            }
+
             switchStudioMode('STAGING');
             // Tìm câu hỏi tương ứng với currentModelId
             const idx = filteredStagingList.findIndex(q => q.modelId === currentModelId || q.id === currentModelId);
@@ -3324,6 +3356,22 @@ function initStagingSystem() {
     // KHỞI TẠO TỨC THÌ (FAIL-SAFE INITIALIZATION)
     // ══════════════════════════════════════════════════════════════════
     function startStudioApp() {
+        // Tự động nạp 106 Mô hình Đúng/Sai mới vào MODEL_CAPTIONS
+        if (window.STAGING_DS_106_QUESTIONS && Array.isArray(window.STAGING_DS_106_QUESTIONS)) {
+            window.STAGING_DS_106_QUESTIONS.forEach(q => {
+                if (q.modelId) {
+                    const topicText = q.subTopic ? q.subTopic.replace(/^DS-C\d\.\d+\s*[-–]\s*/, '') : '';
+                    MODEL_CAPTIONS[q.modelId] = topicText ? `${topicText} (${q.id})` : (q.id || q.modelId);
+                }
+            });
+            ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
+        }
+
+        // Mặc định nạp mô hình đầu tiên của 106 mô hình mới khi mở Tab Mô hình
+        if (window.STAGING_DS_106_QUESTIONS && window.STAGING_DS_106_QUESTIONS[0] && window.STAGING_DS_106_QUESTIONS[0].modelId) {
+            currentModelId = window.STAGING_DS_106_QUESTIONS[0].modelId;
+        }
+
         populateModelDropdown('ALL');
         loadModel(currentModelId);
         updateOverridesCountBadge();
