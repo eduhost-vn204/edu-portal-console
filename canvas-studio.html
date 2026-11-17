@@ -977,9 +977,9 @@
             <!-- Right Column: Code Editor & Gemini Assistant -->
             <div class="editor-card">
                 <div class="editor-toolbar">
-                    <button class="btn-save-cloud" id="btn-save-cloud" onclick="saveToCloudAndBank()" title="Lưu vĩnh viễn vào Ngân Hàng Đề và Google Cloud — Đề thi tự nhận ngay!">
+                    <button class="btn-save-cloud" id="btn-save-cloud" onclick="saveModelAndTransferToStaging()" style="background:#0284c7;border-color:#0369a1;" title="Lưu mã mô hình này và chuyển sang Phòng Duyệt Câu Hỏi để thẩm định toàn diện câu hỏi">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        💾 Lưu vào Ngân Hàng Đề & Cloud
+                        💾 Lưu Mô Hình &amp; Sang Phòng Duyệt Câu Hỏi ▶
                     </button>
 
                     <button class="btn-apply" onclick="applyHotReloadCode()" title="Chạy thử nghiệm chuyển động Canvas tại chỗ trước khi lưu">
@@ -1166,8 +1166,8 @@
                 <!-- CỘT PHẢI: TRÌNH BIÊN TẬP TRỰC TIẾP (LIVE QUESTION EDITOR) -->
                 <div class="editor-card">
                     <div class="editor-toolbar">
-                        <button class="nav-btn primary" onclick="saveStagingQuestionToBank()" style="background:#0f766e;border-color:#0d9488" title="Lưu câu hỏi này vào Ngân Hàng Đề và Cloud">
-                            <i class="fa-solid fa-floppy-disk"></i> Lưu vào Ngân Hàng Đề &amp; Cloud
+                        <button class="nav-btn primary" onclick="saveStagingQuestionToBank()" style="background:#0f766e;border-color:#0d9488;font-size:13.5px;" title="Duyệt câu hỏi này và đẩy chính thức vào Ngân Hàng Đề & Cloud">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> 🚀 Duyệt Tinh &amp; Đẩy Vào Ngân Hàng Đề
                         </button>
                         <button class="nav-btn" onclick="markStagingApproved()" style="background:rgba(16,185,129,0.1);color:#34d399;border-color:rgba(16,185,129,0.3)">
                             <i class="fa-solid fa-check"></i> Đánh dấu Tinh
@@ -2069,6 +2069,25 @@ YÊU CẦU TINH CHỈNH:
         }
     }
 
+    function saveModelAndTransferToStaging() {
+        applyHotReloadCode();
+        showToast(`Đã lưu mô hình ${currentModelId}! Đang chuyển sang Phòng Duyệt...`, 'success');
+
+        // Chuyển sang Staging Mode và mở đúng câu hỏi tương ứng
+        setTimeout(() => {
+            switchStudioMode('STAGING');
+            // Tìm câu hỏi tương ứng với currentModelId
+            const idx = filteredStagingList.findIndex(q => q.modelId === currentModelId || q.id === currentModelId);
+            if (idx >= 0) {
+                currentStagingIdx = idx;
+                const sel = document.getElementById('st-select-question');
+                if (sel) sel.value = idx;
+                loadStagingQuestion(idx);
+                updateStagingNavButtons();
+            }
+        }, 400);
+    }
+
     async function saveToCloudAndBank() {
         applyHotReloadCode();
 
@@ -2866,23 +2885,3 @@ YÊU CẦU TINH CHỈNH:
 
 </body>
 </html>
-        // ══════════════════════════════════════════════════════════════════
-        // MÔ HÌNH PHẦN 1: TRẮC NGHIỆM ABCD (THÍ NGHIỆM & HIỆN TƯỢNG VẬT LÝ)
-        // ══════════════════════════════════════════════════════════════════
-        'MH-C1-TN01': 'Thí nghiệm Brown chuyển động hỗn loạn của hạt phấn hoa trong nước',
-        'MH-C1-TN02': 'Thí nghiệm đo nhiệt dung riêng & nhiệt nóng chảy của chất lỏng',
-        'MH-C2-27': 'Thí nghiệm nén khí đẳng nhiệt & Định luật Boyle (Xy-lanh kín & Áp kế)',
-        'MH-C2-28': 'Thí nghiệm đun nóng khí giãn nở đẳng áp & Định luật Charles',
-        'MH-C3-53': 'Tương tác từ trường giữa nam châm thẳng & hệ kim la bàn',
-        'MH-C3-55': 'Tác dụng của lực từ lên đoạn dây dẫn mang dòng điện (Quy tắc bàn tay trái)',
-        'MH-C3-75': 'Hiện tượng cảm ứng điện từ & Định luật Lenz (Nam châm dịch chuyển qua cuộn dây)',
-
-        // ══════════════════════════════════════════════════════════════════
-        // MÔ HÌNH PHẦN 3: TRẢ LỜI NGẮN (CHU TRÌNH, ĐỒ THỊ & THIẾT BỊ ĐO)
-        // ══════════════════════════════════════════════════════════════════
-        'MH-TLN-01': 'Chu trình nhiệt động lực học khép kín trên đồ thị p-V (Tính công & hiệu suất)',
-        'MH-TLN-02': 'Đồ thị biến thiên từ thông theo thời gian Phi(t) (Tính suất điện động cảm ứng)',
-        'MH-TLN-03': 'Mô hình truyền tải điện năng & Máy biến áp lý tưởng (Tính tỉ số điện áp & hao phí)',
-        'MH-TLN-04': 'Thí nghiệm tán xạ hạt alpha qua lá vàng mỏng Rutherford (Cấu tạo hạt nhân)',
-        'MH-TLN-05': 'Đồ thị phân rã phóng xạ đồng vị Plutonium-238 trong pin nhiệt hạt nhân'
-
