@@ -1,3 +1,26 @@
+## Bàn giao gần nhất (18/11/2026 11:05)
+- **Thay Thế Tại Chỗ 3 Câu Đúng/Sai Bị Trùng (`VLXT-DS-VD28-030`, `031`, `098`) Kèm 3 Mô Hình Canvas Độc Bản & Tự Đồng Bộ Ghi Đè Google Sheets (`3.244` Câu Giữ Nguyên)**:
+- **Mục tiêu**:
+  1. Giữ nguyên 3 câu gốc (`002`, `010`, `081`) và thay thế **tại chỗ** đúng 3 bản sao bị trùng (`VLXT-DS-VD28-030` Chương 1, `VLXT-DS-VD28-031` Chương 1, `VLXT-DS-VD28-098` Chương 4) bằng 3 câu hỏi Đúng/Sai mới 100% không trùng trích từ `BỘ ĐỀ ÔN LUYỆN 9+ THPTQG MÔN VẬT LÝ 2026`.
+  2. Tái sử dụng đúng 3 mã `id` & `modelId` (`MH-STAGING-C1-30`, `MH-STAGING-C1-31`, `MH-STAGING-C4-26`) để `importNganHang` trên Google Apps Script tự ghi đè tại chỗ 3 dòng trên Google Sheets `NganHang` (giữ tròn `3.244` câu, `200` ĐS = `50/chương`, không sinh dòng rác).
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`)**:
+  - Commit mã: `02c8f60` (`feat(bank): replace 3 duplicate DS questions (030, 031, 098) in-place with bespoke models`).
+  - `assets/staging-ds-106-questions.json` & `.js`, `assets/ds106-bank-pack.js`, `assets/ngan-hang-3048-questions.json` & `.js`:
+    + `VLXT-DS-VD28-030` (`MH-STAGING-C1-30`, `DS-C1.1`, `ĐSSS`): Thả liên tiếp 2 quả cầu kim loại ($210^\circ\text{C}$ và $150^\circ\text{C}$) vào nhiệt lượng kế chứa nước ở $20^\circ\text{C}$ (nguồn `BODE9_11`, Đề 11 Câu 1, kèm ảnh gốc `assets/images/staging-ds/VLXT-DS-VD28-030.png`).
+    + `VLXT-DS-VD28-031` (`MH-STAGING-C1-31`, `DS-C1.2`, `ĐĐSĐ`): Khảo sát bảng 12 mốc nhiệt độ–thời gian mẫu chất rắn cấp nhiệt $200\text{ W}$ (nguồn `BODE9_8`, Đề 8 Câu 1, kèm `.vstep-data-table`, xóa ảnh trùng cũ `VLXT-DS-VD28-031.png`).
+    + `VLXT-DS-VD28-098` (`MH-STAGING-C4-26`, `DS-C4.4`, `ĐSĐS`): Băng chuyền chiếu xạ tia gamma nguồn $^{60}_{27}\text{Co}$ ($H_0 = 2000\text{ Ci}$) theo kỹ thuật SIT (nguồn `BODE9_15`, Đề 15 Câu 4, kèm ảnh gốc `assets/images/staging-ds/VLXT-DS-VD28-098.png`).
+  - `assets/staging-ds-models.js`: Viết mới hoàn toàn 3 hàm vẽ Canvas 60 FPS độc bản `MH-STAGING-C1-30`, `MH-STAGING-C1-31`, `MH-STAGING-C4-26` (EdTech phẳng `shadowBlur = 0`, chữ `>= 14.5px`, Zero Data Leakage) và cập nhật `VLXT_DS106_CAPTIONS`.
+  - `ngan-hang-de.html` & `canvas-studio.html`: Cập nhật mapping `DS_C1/C4_MODEL_TO_SUBTOPIC` cho 3 mô hình, nâng cấp `applyBankRows()` / `mergeTn220BtPackIntoBankList()` tự ghi đè nếu `optA` máy chủ cũ khác bản chuẩn, đổi khóa `vlxt_ds106_bank_synced_v2` để `syncApprovedDs106ToServer()` tự đẩy đúng 3 câu mới ghi đè lên Google Sheets, và nâng cache-buster `?v=20261118-ds200-v2`.
+- **Kiểm tra đã chạy sau chỉnh sửa cuối**:
+  - `node scripts/test-apps-script-logic.mjs` (`12/12` PASS) & `node scripts/test-import-nganhang.mjs` (`12/12` PASS).
+  - `verify_dedup3_release.mjs`: PASS 100% 3 Cổng (`node -c`, `</html>`, 0 secret, Jaccard ĐS `030: 0.358`, `031: 0.222`, `098: 0.231`; GAS VM `importNganHang` ghi đè tại chỗ `updated = 3, inserted = 0, alreadyExistsCount = 103, quarantinedCount = 0, countAfter = 3244`; Playwright `ngan-hang-de.html` Retina `2x` xác nhận auto-sync gửi đúng `['VLXT-DS-VD28-030', 'VLXT-DS-VD28-031', 'VLXT-DS-VD28-098']`, `DS = 200 [50/50/50/50]`, 50 đề `official_ds_4` `usedTotal = 200`; `canvas-studio.html` audit `oob = 0, overlaps = 0, smallFonts = 0, katexErrors = 0`, `0` lỗi Console/404). Đã kiểm tra trực quan 4 ảnh PNG Retina `2x`.
+- **Phát hiện minh bạch cần Thầy lưu ý**:
+  - Khi rà soát sâu Jaccard toàn bộ 200 câu ĐS, phát hiện thêm **2 cặp trùng ngữ nghĩa còn lại** từ ngân hàng gốc/nguồn: (1) `VLXT-DS-VD28-084` & `VLXT-DS-VD28-099` (Cobalt-60 `15,0 g`), (2) `VLXT-G12-C2-MH-31` & `VLXT-DS-VD28-038` (Túi khí ô tô). Đã giữ nguyên chờ ý kiến Thầy nếu muốn thay nốt.
+- **Điều phải giữ nguyên**:
+  - Không thêm ID mới làm phình dòng Sheet; mọi cập nhật giữ đúng `3.244` câu (`200 DS`) và bảo toàn khu Chờ Duyệt (`130 TN-LT` + `50`).
+- **Việc còn lại**:
+  - Thầy mở/F5 `ngan-hang-de.html` để trình duyệt tự đồng bộ ngầm 3 câu thay thế lên Google Sheets; quyết định có thay thêm 2 cặp trùng (`084/099`, `MH-31/038`) và lịch bốc bù `90 TN-LT`.
+
 ## Bàn giao gần nhất (18/11/2026 10:25)
 - **Đẩy Trọn Bộ 106 Câu Đúng/Sai Độc Bản (`VLXT-DS-VD28-001..106`) + 106 Mô Hình Canvas (`MH-STAGING-*`) Vào Ngân Hàng Đề Chính Thức — Đạt Chuẩn 200 Câu Đúng/Sai (`50` Câu/Chương, 50 Đề Bộ 2025–2026) & Ưu Tiên Hiển Thị Đầu Trang**:
 - **Mục tiêu**:
