@@ -1,3 +1,24 @@
+## Bàn giao gần nhất (18/11/2026 10:15)
+- **Kiểm Chứng Dữ Liệu Live Google Sheets (`3.138` Câu) & Nâng Cấp Lọc/Ưu Tiên Hiển Thị `90` Câu `TN-BT` + `14` Mô Hình Canvas Trên `ngan-hang-de.html`**:
+- **Chẩn đoán thực tế trên Production**:
+  - Live Google Apps Script (`DB_URL?type=nganhang`) đã ghi đủ **`3.138` câu**, gồm đủ **`90` câu `VLXT-TN220-BT-001`..`090`** (`batchId: "BATCH_TN220_BT_20261118"`, timestamp `2026-11-18T02:58:32Z`) và đủ **`14` câu có nhúng `<div class="vlxt-model-slot" data-model-id="MH-TN220-..."></div>`**.
+  - Tuy nhiên `ngan-hang-de.html` phân trang `30` câu/lượt (`NH_PAGE_SIZE = 30`) theo thứ tự cuối bảng nên khi lọc `TN_BT` (`1.370` câu), `1.280` câu cũ (`VLXT-PT-...`) chắn trang `1 → 43`, khiến 90 câu mới + 14 mô hình nằm ở vị trí `1.281 → 1.370`.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main` qua worktree sạch)**:
+  - Commit mã: `85dc18e` (`feat(bank-ui): prioritize new BT batch & 14 canvas models to top, add #nh-f-model & quick chips`).
+  - `ngan-hang-de.html`:
+    1. Thêm helpers `getQuestionModelId()`, `isQuestionHasModel()`, `isNewPushedBtBatch()`, `getBtPriorityRank()` và `syncModelFilterOnTypeChange()`.
+    2. Thêm bộ lọc `#nh-f-model` (`HAS_MODEL`, `NEW_BT_90`, `NEW_BT_MODEL_14`, `NO_MODEL`) và mở rộng tìm kiếm `#nh-f-search` khớp cả `modelId` (`MH-TN220-...`) & `batchId`.
+    3. Trong `bankFiltered()`: khi mở `TN_BT`, mặc định ưu tiên xếp **14 câu BT mới có Mô hình Canvas lên vị trí `#1 → #14`**, tiếp theo là **76 câu BT mới còn lại (`#15 → #90`)**, kèm nút `toggleBtSortMode()` chuyển qua lại giữa chế độ ưu tiên và thứ tự gốc Sheet.
+    4. Trong `renderSubtopicSummaryBar()`: thêm thanh chip lọc riêng cho `TN_BT` (`🚀 14 Câu BT Có Mô Hình Canvas 60 FPS`, `🆕 90 Câu BT Vừa Đẩy Đợt 18/11`, `⬜ Chưa có mô hình`) và 2 chip truy cập 1 chạm ngay ở thanh mặc định đầu trang.
+    5. Trong `bankRowHtml()`: gắn huy hiệu phẳng `⚡ Mới đẩy 18/11` cho các câu thuộc đợt 90 câu mới đẩy (không dùng AI Glow).
+- **Kiểm tra đã chạy**:
+  - `vm.Script`: PASS 5 `<script>` inline của `ngan-hang-de.html`; `After </html> length: 0`; `git diff --check` PASS; quét secret & `shadowBlur` = `0`.
+  - Playwright Chromium Retina `2x` trên full `3.138` câu (`scratch/verify_tnbt_ux_worktree.mjs`): PASS exit 0 (`0` lỗi); chọn `TN_BT` hiển thị ngay 14 câu đầu `#1..#14` đều là `VLXT-TN220-BT-*` kèm `14/14` Canvas V2 mount & vẽ thật; chip `14` / `90` / toggle sort / tìm kiếm `MH-TN220-C3-20` $\to$ `VLXT-TN220-BT-070` hoạt động chính xác 100%.
+- **Điều phải giữ nguyên**:
+  - Worktree `_codex_verify_live` đang có thay đổi song song chưa push (`DS106`); giữ nguyên không ghi đè; khi rebase lên `origin/main` giữ nguyên quy tắc không AI Glow và các bộ lọc 16 CĐ / 21–22 CĐ ĐS.
+- **Việc còn lại**:
+  - Thầy nhấn F5 tải lại `ngan-hang-de.html` để xem ngay `14` câu BT có mô hình ở đầu mục `🧮 TN Tính toán / Đồ thị`; chờ Thầy chốt để bốc bổ sung `90` câu `TN-LT` còn thiếu.
+
 ## Bàn giao gần nhất (18/11/2026 09:50)
 - **Tách Gói 220 Câu Thành 130 Câu TN Lý Thuyết (`TN-LT` Chờ Duyệt) + 90 Câu TN Bài Tập (`TN-BT`) Kèm 14 Mô Hình Canvas Đẩy Thẳng Vào Ngân Hàng Đề (`3.048 → 3.138` Câu) & Kiểm Kê Nguồn Bù Kho `6 vat ly`**:
 - **Mục tiêu**:
