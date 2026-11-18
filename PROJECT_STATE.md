@@ -1,3 +1,23 @@
+## Bàn giao gần nhất (18/11/2026 11:12)
+- **Hoàn Thiện Trọn Bộ 220 Câu `TN-LT` Thuần Lý Thuyết Trong Hộp Chờ Duyệt (`STAGING_220`) Kèm 19 Mô Hình Canvas 60 FPS Mới (`46` Mô Hình Đợt 220)**:
+- **Mục tiêu**:
+  1. Thực hiện lệnh xác nhận của Thầy Nguyễn Xuân Trường (*"Thầy xác nhận cho em bốc tiếp 90 câu lý thuyết còn thiếu lấy từ 276 câu sẵn trong kho, vẽ thêm mô hình canvas cho các câu có mô hình tương ứng, rồi đưa vào hộp chờ duyệt đạt chọn 220 câu cho thầy"*).
+  2. Giữ nguyên **130 câu `TN-LT`** hiện có trong Hộp Chờ Duyệt (`STAGING_220`), bốc bù đúng **90 câu `TN-LT` thuần lý thuyết không trùng** (`Jaccard < 0.68`, kiểm chứng qua `guessTnType === 'LT'` trên văn bản và rà soát vật lí từng câu), chuẩn hóa `KaTeX` + lời giải chi tiết sư phạm cho 90 câu và xây dựng **19 mô hình Canvas 2D 60 FPS Retina (`MH-TN220-C1-28..MH-TN220-C3-46`)** 1-1 cho toàn bộ 19 câu có hình trong đợt bù.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`, rebase sạch trên `9fd8364` / `02c8f60`)**:
+  - Commit mã: `7f16ac2` (`feat(staging): complete 220 pure TN-LT staging box with 19 bespoke Canvas 2D models`).
+  - `assets/staging-tn-220-questions.json` & `.js`: Hoàn thiện đủ **`220` câu `TN-LT`** (`130` cũ + `90` mới `VLXT-ST220-C*-CD*-LT*`, cân bằng `$` 100%, chuẩn hóa nhãn 16 CĐ & tên bài học khớp tuyệt đối `ngan-hang-de.html`). Phân bổ chính xác từng chủ đề: **`CD05: 20` (`+5`), `CD07: 20` (`+15`), `CD08: 63` (`+39`), `CD09: 10` (`+9`), `CD10: 20` (`+1`), `CD12: 49` (`+17`), `CD14: 23` (`+1`), `CD15: 15` (`+3`)**.
+  - `assets/images/staging-220/q220_lt_*.png|.jpg|.jpeg`: Giữ đúng **19 ảnh gốc sạch** trích từ đề Word (`q220_lt_001, 002, 004, 005, 006, 007, 008, 011, 012, 013, 014, 016, 018, 020, 021, 023..026`), đã xóa 7 ảnh của các câu bị loại để không còn file thừa.
+  - `assets/staging-tn220-models.js`: Bổ sung mới hoàn toàn **19 mô hình Canvas 60 FPS Retina** (`MH-TN220-C1-28..29`, `MH-TN220-C2-30..42`, `MH-TN220-C3-43..46`) và đăng ký đủ `VLXT_TN220_CAPTIONS` (tổng **`46` mô hình Đợt 220**: `14` đã nạp Bank BT + `32` đang Chờ Duyệt LT; phân bổ `C1: 5, C2: 22, C3: 16, C4: 3`). Tuân thủ phẳng EdTech (`shadowBlur = 0`, cốc thí nghiệm hở miệng chữ U, chuyển động răng cưa 1 chiều, Zero Data Leakage).
+  - `canvas-studio.html` & `ngan-hang-de.html`: Cập nhật `?v=20261118-lt220full` (giữ nguyên `?v=20261118-ds200-v2` của `02c8f60`), cập nhật Hộp Chờ Duyệt `STAGING_220` lên **`220 Câu TN-LT`**, tổng hệ thống **`3.514 Câu` (`3.244` Bank + `220` Staging LT + `50` Staging 50)**, và bộ lọc Tab 1 `P1_STAGING_220` lên **`46 Mô Hình` (`5 C1, 22 C2, 16 C3, 3 C4`)**.
+- **Kiểm tra đã chạy sau rebase & chỉnh sửa cuối**:
+  - Gate 1 (`verify_lt220_full.mjs`): PASS `vm.Script` cho `assets/staging-tn-220-questions.js`, `assets/staging-tn220-models.js`, toàn bộ `<script>` inline của `canvas-studio.html` & `ngan-hang-de.html`; trailing after `</html> = 0`; `shadowBlur = 0`; `0` secret mới; `220/220` câu đúng `TN-LT`, đúng canonical 16 CĐ & cân bằng `$` 100%, `71/71` câu thuần chữ mới vượt qua `guessTnType === 'LT'`, `git diff origin/main --check` sạch.
+  - Gate 2 Playwright Chromium Retina `2x` (`verify_lt220_pw.py`): PASS `0` lỗi Console/PageError/404 cục bộ; `disp-staging-badge = "3,514 Câu"`; `STAGING_220 = 220` (`CD05:20, CD07:20, CD08:63, CD09:10, CD10:20, CD12:49, CD14:23, CD15:15`); `BANK_ALL = 3244`; `ALL = 3514`; Tab 1 `P1_STAGING_220 = 46` (`C1:5, C2:22, C3:16, C4:3`), dựng toàn bộ 46 mô hình qua 3 mốc `t = 0.0, 0.85, 1.95` (`1560×610`) không khung rỗng; kiểm tra trực quan toàn bộ 19 ảnh PNG mô hình mới + ảnh Mode 2 UI (sửa xong lỗi tổ hợp vectơ `B⃗` trên `MH-TN220-C3-46` và kiểm thử lại đạt 100%).
+- **Điều phải giữ nguyên**:
+  - Toàn bộ **`220` câu `TN-LT` (`STAGING_220`)** nằm ở **Chờ Duyệt (`canvas-studio.html`)**, **CHƯA** đẩy vào Ngân hàng chính thức (`ngan-hang-3048-questions.json` giữ nguyên `3.244` câu với bản vá `02c8f60`).
+- **Việc còn lại**:
+  - Thầy mở `canvas-studio.html` chọn **`🚀 Hộp Chờ Duyệt Lý Thuyết — 220 Câu TN-LT Tinh Tuyển (C1–C4)`** để rà soát nội dung + Canvas trước khi bấm nạp vào Ngân Hàng Đề chính thức (khi có Khóa Quản trị).
+  - Nếu Thầy chưa F5 `ngan-hang-de.html` sau `02c8f60`, lần mở `ngan-hang-de.html` kế tiếp sẽ tự sync ghi đè 3 câu ĐS (`030, 031, 098`) lên Google Sheets `NganHang`.
+
 ## Bàn giao gần nhất (18/11/2026 11:05)
 - **Thay Thế Tại Chỗ 3 Câu Đúng/Sai Bị Trùng (`VLXT-DS-VD28-030`, `031`, `098`) Kèm 3 Mô Hình Canvas Độc Bản & Tự Đồng Bộ Ghi Đè Google Sheets (`3.244` Câu Giữ Nguyên)**:
 - **Mục tiêu**:
