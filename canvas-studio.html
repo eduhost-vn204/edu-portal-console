@@ -15,19 +15,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.244 Câu & Các Gói Staging Chuyên Biệt -->
-    <script src="assets/ngan-hang-3048-questions.js?v=20261118-ds200"></script>
+    <script src="assets/ngan-hang-3048-questions.js?v=20261118-ds200-v2"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
-    <script src="assets/ds106-bank-pack.js?v=20261118-ds200"></script>
+    <script src="assets/ds106-bank-pack.js?v=20261118-ds200-v2"></script>
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261118-sync50"></script>
     <script src="assets/staging-tn-220-questions.js?v=20261118-tnbt"></script>
-    <script src="assets/staging-ds-106-questions.js?v=20261118-ds200"></script>
+    <script src="assets/staging-ds-106-questions.js?v=20261118-ds200-v2"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
-    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200"></script>
-    <script src="assets/staging-ds-models.js?v=20261118-ds200"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
+    <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tn50models"></script>
     <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
 
@@ -2777,9 +2777,13 @@ YÊU CẦU TINH CHỈNH:
             const id = String(itemQ.id).trim();
             if (idxById.has(id)) {
                 const target = list[idxById.get(id)];
-                if (!target.modelId && itemQ.modelId) target.modelId = itemQ.modelId;
-                if (itemQ.subTopic) target.subTopic = itemQ.subTopic;
-                if (itemQ.baiHoc && itemQ.loai === 'DS') target.baiHoc = itemQ.baiHoc;
+                if (itemQ.loai === 'DS' && String(target.optA || '').trim() !== String(itemQ.optA || '').trim()) {
+                    Object.assign(target, itemQ);
+                } else {
+                    if (!target.modelId && itemQ.modelId) target.modelId = itemQ.modelId;
+                    if (itemQ.subTopic) target.subTopic = itemQ.subTopic;
+                    if (itemQ.baiHoc && itemQ.loai === 'DS') target.baiHoc = itemQ.baiHoc;
+                }
             } else {
                 list.push({ ...itemQ });
                 idxById.set(id, list.length - 1);

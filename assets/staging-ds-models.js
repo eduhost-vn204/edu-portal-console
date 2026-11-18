@@ -5214,7 +5214,7 @@
     });
 
     // =========================================================================
-    // CÂU 30 (MH-STAGING-C1-30 · VLXT-DS-VD28-030): Đồ thị biến thiên nhiệt độ t (°C) theo thời gian τ (phút) khi nung nóng thỏi chì 1 kg
+    // CÂU 30 (MH-STAGING-C1-30 · VLXT-DS-VD28-030): Thả liên tiếp hai quả cầu kim loại (210 °C và 150 °C) vào nhiệt lượng kế chứa nước ở 20 °C
     // =========================================================================
     window.VLXTModels.register('MH-STAGING-C1-30', function(ctx, w, h, t) {
         ctx.clearRect(0, 0, w, h);
@@ -5240,7 +5240,7 @@
             ctx.restore();
         }
 
-        function arrowLine(x1, y1, x2, y2, col, lw = 2.8, hl = 9) {
+        function arrowLine(x1, y1, x2, y2, col, lw = 2.6, hl = 8) {
             const ang = Math.atan2(y2 - y1, x2 - x1);
             ctx.save();
             ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round';
@@ -5253,153 +5253,155 @@
             ctx.restore();
         }
 
-        function drawOpenCrucible(x, y, cw, ch, col, lw = 3.2, flare = 6) {
-            ctx.save();
-            ctx.strokeStyle = col;
-            ctx.lineWidth = lw;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(x - flare, y);
-            ctx.lineTo(x, y + 6);
-            ctx.lineTo(x, y + ch);
-            ctx.lineTo(x + cw, y + ch);
-            ctx.lineTo(x + cw, y + 6);
-            ctx.lineTo(x + cw + flare, y);
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        // Đồ thị t (°C) theo τ (phút) trùng khớp 100% ảnh gốc 030.png
-        const ox = 92, oy = 258;
-        const x5 = 162, x10 = 232, x15 = 302, xC = 398;
-        const y27 = 240, y127 = 188, y227 = 136, y327 = 84;
-
-        ctx.save();
-        arrowLine(ox, oy + 6, ox, 30, '#f1f5f9', 2.8, 9);
-        arrowLine(ox - 6, oy, 456, oy, '#f1f5f9', 2.8, 9);
-
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.textAlign = 'right';
+        // Tiêu đề bên trái
+        const title = 'CÂN BẰNG NHIỆT: THẢ 2 QUẢ CẦU VÀO BÌNH NƯỚC';
+        ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        roundBox(14, 12, 434, 30, 7, '#0f172a', 'rgba(56, 189, 248, 0.55)', 1.8);
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText('t (°C)', ox - 10, 40);
+        ctx.fillText(title, 26, 27);
 
-        ctx.textAlign = 'center';
-        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('τ (phút)', 424, oy + 26);
+        // Khung mô phỏng bình nhiệt lượng kế hở miệng
+        roundBox(14, 50, 434, 242, 10, '#0f172a', '#334155', 1.8);
 
-        ctx.font = '800 15px "DM Mono", monospace';
-        ctx.fillText('O', ox - 12, oy + 20);
+        const saw = (t * 0.18) % 1;
+        const phase2 = saw >= 0.45;
+        const p1Frac = Math.min(1, saw / 0.36);
+        const p2Frac = phase2 ? Math.min(1, (saw - 0.45) / 0.36) : 0;
 
-        ctx.fillStyle = '#e2e8f0';
-        ctx.font = '800 14.5px "DM Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('5', x5, oy + 21);
-        ctx.fillText('10', x10, oy + 21);
-        ctx.fillText('15', x15, oy + 21);
-
-        ctx.textAlign = 'right';
-        ctx.fillText('27', ox - 10, y27);
-        ctx.fillText('127', ox - 10, y127);
-        ctx.fillText('227', ox - 10, y227);
-        ctx.fillText('327', ox - 10, y327);
-
-        ctx.strokeStyle = '#94a3b8';
-        ctx.lineWidth = 1.8;
-        ctx.setLineDash([5, 4]);
-        ctx.beginPath();
-        ctx.moveTo(ox, y127); ctx.lineTo(x5, y127); ctx.lineTo(x5, oy);
-        ctx.moveTo(ox, y227); ctx.lineTo(x10, y227); ctx.lineTo(x10, oy);
-        ctx.moveTo(ox, y327); ctx.lineTo(x15, y327); ctx.lineTo(x15, oy);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 3.8;
+        // Thành cách nhiệt ngoài (hở miệng trên)
+        const outX = 76, outY = 104, outW = 196, outH = 148;
+        ctx.save();
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 4;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.moveTo(ox, y27);
-        ctx.lineTo(x15, y327);
-        ctx.lineTo(xC, y327);
+        ctx.moveTo(outX - 8, outY);
+        ctx.lineTo(outX, outY + 6);
+        ctx.lineTo(outX, outY + outH);
+        ctx.lineTo(outX + outW, outY + outH);
+        ctx.lineTo(outX + outW, outY + 6);
+        ctx.lineTo(outX + outW + 8, outY);
         ctx.stroke();
 
-        const xA = ox + (7.2 / 15) * (x15 - ox);
-        const yA = y27 - (7.2 / 15) * (y27 - y327);
-        const markers = [
-            { x: xA, y: yA, label: 'A', lx: xA - 16, ly: yA - 13 },
-            { x: x15, y: y327, label: 'B', lx: x15, ly: y327 - 19 },
-            { x: xC, y: y327, label: 'C', lx: xC, ly: y327 - 19 }
-        ];
-        markers.forEach(m => {
-            ctx.fillStyle = '#fbbf24';
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(m.x, m.y, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#fbbf24';
-            ctx.font = '800 17px "Plus Jakarta Sans", system-ui, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(m.label, m.lx, m.ly);
-        });
+        // Lòng bình nhiệt lượng kế bên trong (hở miệng trên)
+        const inX = 94, inY = 112, inW = 160, inH = 128;
+        ctx.fillStyle = phase2 ? 'rgba(56, 189, 248, 0.36)' : `rgba(14, 165, 233, ${(0.22 + 0.14 * p1Frac).toFixed(2)})`;
+        ctx.fillRect(inX + 2, inY + 42, inW - 4, inH - 44);
 
-        const saw = (t * 0.18) % 1;
-        let dotX, dotY;
-        if (saw < 0.68) {
-            const r = saw / 0.68;
-            dotX = ox + (x15 - ox) * r;
-            dotY = y27 + (y327 - y27) * r;
-        } else {
-            const r = (saw - 0.68) / 0.32;
-            dotX = x15 + (xC - x15) * r;
-            dotY = y327;
-        }
-        ctx.fillStyle = '#f97316';
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2.2;
-        ctx.beginPath(); ctx.arc(dotX, dotY, 6.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        ctx.restore();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(inX, inY);
+        ctx.lineTo(inX, inY + inH);
+        ctx.lineTo(inX + inW, inY + inH);
+        ctx.lineTo(inX + inW, inY);
+        ctx.stroke();
 
-        // Cột phải: Thông số đề bài (mọi font >= 14.5px) & Chén nung hở miệng
-        ctx.save();
-        roundBox(486, 16, 280, 118, 10, '#0f172a', '#38bdf8', 2);
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+        // Nhiệt kế bên phải trong nước
+        const thX = 236;
+        roundBox(thX - 4, 80, 8, 134, 4, '#1e293b', '#cbd5e1', 1.6);
+        const mercTop = phase2 ? 120 : (178 - p1Frac * 44);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(thX - 2, mercTop, 4, 214 - mercTop);
+        ctx.beginPath(); ctx.arc(thX, 216, 7, 0, Math.PI * 2); ctx.fill();
+
+        // Nhãn nước & nhiệt kế bên cạnh bình
         ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('THÔNG SỐ ĐỀ BÀI', 504, 40);
-
-        ctx.fillStyle = '#f8fafc';
         ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('• Vật nung: Thỏi chì (Pb)', 504, 68);
-        ctx.fillText('• Khối lượng: m = 1 kg', 504, 94);
         ctx.fillStyle = '#7dd3fc';
-        ctx.fillText('• c = 130 J/(kg·K)', 504, 120);
+        ctx.fillText(phase2 ? 'Nước + (1): 60 °C' : (p1Frac > 0.7 ? 'Đạt cân bằng: 60 °C' : 'Nước ban đầu: 20 °C'), 292, 164);
 
-        roundBox(486, 146, 280, 144, 10, '#0f172a', '#475569', 2);
-        const cupX = 566, cupY = 166, cupW = 120, cupH = 66;
-        const warmR = Math.round(110 + saw * 135);
-        const warmG = Math.round(125 + saw * 25);
-        const warmB = Math.round(145 - saw * 95);
-        roundBox(cupX + 12, cupY + 26, cupW - 24, 34, 6, `rgb(${warmR}, ${warmG}, ${warmB})`, '#e2e8f0', 1.8);
-
-        ctx.fillStyle = '#f8fafc';
+        // Quả cầu (1): 210 °C
+        const b1X = 136;
+        const b1Y = phase2 ? 214 : (78 + p1Frac * (214 - 78));
+        ctx.fillStyle = phase2 ? '#f59e0b' : (p1Frac > 0.7 ? '#fb923c' : '#ef4444');
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(b1X, b1Y, 17, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#ffffff';
         ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Pb (1 kg)', cupX + cupW / 2, cupY + 43);
+        ctx.fillText('1', b1X, b1Y + 1);
 
-        drawOpenCrucible(cupX, cupY, cupW, cupH, '#cbd5e1', 3.2, 7);
+        if (!phase2) {
+            arrowLine(b1X + 20, b1Y, b1X + 42, b1Y - 12, '#fb923c', 2.4, 7);
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#fca5a5';
+            ctx.fillText('Cầu (1): 210 °C', 292, 118);
+        } else {
+            // Quả cầu (2): 150 °C hạ vào bình
+            const b2X = 192;
+            const b2Y = 78 + p2Frac * (214 - 78);
+            ctx.fillStyle = '#ef4444';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(b2X, b2Y, 17, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('2', b2X, b2Y + 1);
 
-        const burnerPulse = 0.55 + 0.45 * Math.sin(t * 5) ** 2;
-        roundBox(556, 236, 140, 10, 4, `rgba(249, 115, 22, ${(0.45 + 0.35 * burnerPulse).toFixed(2)})`, '#fb923c', 1.8);
-        ctx.fillStyle = '#cbd5e1';
+            if (p2Frac > 0.35) {
+                arrowLine(b2X - 20, b2Y, b1X + 21, b1Y, '#fbbf24', 2.4, 7);
+                arrowLine(b2X + 18, b2Y - 10, b2X + 36, b2Y - 26, '#fbbf24', 2.4, 7);
+            } else {
+                arrowLine(b2X, b2Y + 20, b2X, b2Y + 42, '#fbbf24', 2.6, 8);
+            }
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#fdba74';
+            ctx.fillText('Cầu (2): 150 °C', 292, 118);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillText('Truyền cho cả nước & (1)', 292, 206);
+        }
+
+        // Chú thích pha phía dưới bình
+        ctx.fillStyle = phase2 ? '#fde68a' : '#7dd3fc';
+        ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(
+            phase2 ? 'Lần 2: Thả tiếp cầu (2) ở 150 °C vào nhiệt lượng kế' : 'Lần 1: Thả cầu (1) ở 210 °C vào nước ở 20 °C',
+            231,
+            274
+        );
+        ctx.restore();
+
+        // Cột phải: Thông số đề bài (Zero Data Leakage)
+        ctx.save();
+        roundBox(458, 12, 308, 280, 10, '#0f172a', '#38bdf8', 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('DỮ KIỆN ĐỀ BÀI', 476, 40);
+
+        ctx.fillStyle = '#7dd3fc';
         ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('Quá trình nung nóng chì', 626, 268);
+        ctx.fillText('• Nước ban đầu: t₀ = 20 °C', 476, 76);
+
+        ctx.fillStyle = '#fca5a5';
+        ctx.fillText('• Quả cầu (1): t₁ = 210 °C', 476, 108);
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillText('• Cân bằng lần 1: t₁′ = 60 °C', 476, 140);
+
+        ctx.fillStyle = '#fdba74';
+        ctx.fillText('• Quả cầu (2): t₂ = 150 °C', 476, 172);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText('• c (kim loại) = 460 J/(kg·K)', 476, 206);
+        ctx.fillText('• c (nước) = 4200 J/(kg·K)', 476, 236);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText('• Bỏ qua hao phí & chuyển thể', 476, 268);
         ctx.restore();
     });
 
     // =========================================================================
-    // CÂU 31 (MH-STAGING-C1-31 · VLXT-DS-VD28-031): Đồ thị nhiệt độ theo thời gian khi thả 200 g nước đá (-8 °C) vào nước (35 °C) trong cốc cách nhiệt
+    // CÂU 31 (MH-STAGING-C1-31 · VLXT-DS-VD28-031): Khảo sát nhiệt độ theo thời gian của mẫu chất rắn được cấp nhiệt liên tục công suất 200 W
     // =========================================================================
     window.VLXTModels.register('MH-STAGING-C1-31', function(ctx, w, h, t) {
         ctx.clearRect(0, 0, w, h);
@@ -5438,119 +5440,164 @@
             ctx.restore();
         }
 
-        function drawSub(base, sub, x, y, col, align = 'left', baseSize = 15.5, subSize = 12.5) {
+        function drawOpenBeaker(x, y, bw, bh, col, lw = 3, flare = 6) {
             ctx.save();
-            ctx.font = `800 ${baseSize}px "Plus Jakarta Sans", system-ui, sans-serif`;
-            const bw = ctx.measureText(base).width;
-            ctx.font = `800 ${subSize}px "Plus Jakarta Sans", system-ui, sans-serif`;
-            const sw = ctx.measureText(sub).width;
-            let sx = x;
-            if (align === 'center') sx = x - (bw + sw) / 2;
-            else if (align === 'right') sx = x - (bw + sw);
-            ctx.fillStyle = col;
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.font = `800 ${baseSize}px "Plus Jakarta Sans", system-ui, sans-serif`;
-            ctx.fillText(base, sx, y);
-            ctx.font = `800 ${subSize}px "Plus Jakarta Sans", system-ui, sans-serif`;
-            ctx.fillText(sub, sx + bw + 1, y + 5);
+            ctx.strokeStyle = col;
+            ctx.lineWidth = lw;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x - flare, y);
+            ctx.lineTo(x, y + 6);
+            ctx.lineTo(x, y + bh);
+            ctx.lineTo(x + bw, y + bh);
+            ctx.lineTo(x + bw, y + 6);
+            ctx.lineTo(x + bw + flare, y);
+            ctx.stroke();
             ctx.restore();
-            return bw + sw + 1;
         }
 
-        // Hệ trục đồ thị khớp 100% ảnh gốc 031.png
-        const ox = 86, y0 = 204;
-        const y35 = 56, y5 = 180, yNeg8 = 248;
-        const xT1 = 166, xT2 = 246, xT3 = 298, xEnd = 420;
-
-        arrowLine(ox, 286, ox, 26, '#f1f5f9', 2.8, 8);
-        arrowLine(46, y0, 444, y0, '#f1f5f9', 2.8, 8);
-
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        // Tiêu đề trên trái
+        roundBox(14, 12, 452, 30, 7, '#0f172a', 'rgba(56, 189, 248, 0.55)', 1.8);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Nhiệt độ t (°C)', ox + 12, 32);
+        ctx.fillText('KHẢO SÁT NHIỆT ĐỘ MẪU CHẤT (CÔNG SUẤT 200 W)', 26, 27);
 
+        // Đồ thị t (°C) theo τ (phút) đúng theo 12 mốc bảng số liệu
+        const ox = 80, y0 = 206;
+        const dx = 30, scaleY = 8; // 0..11 phút -> x = 80..410 ; -8..12 °C -> y = 270..110
+        const dataPts = [
+            [0, -8], [1, -4], [2, 0], [3, 0], [4, 0], [5, 0],
+            [6, 2], [7, 4], [8, 6], [9, 8], [10, 10], [11, 12]
+        ];
+        const px = (tau) => ox + tau * dx;
+        const py = (temp) => y0 - temp * scaleY;
+
+        ctx.save();
+        arrowLine(ox, 286, ox, 54, '#f1f5f9', 2.8, 8);
+        arrowLine(54, y0, 464, y0, '#f1f5f9', 2.8, 8);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('t (°C)', ox + 10, 62);
         ctx.textAlign = 'center';
-        ctx.fillText('Thời gian τ (s)', 378, y0 + 48);
+        ctx.fillText('τ (phút)', 436, y0 - 20);
 
+        // Nhãn trục tung: -8, -4, 0, 4, 8, 12
         ctx.font = '800 14.5px "DM Mono", monospace';
         ctx.textAlign = 'right';
-        ctx.fillText('35', ox - 10, y35);
-        ctx.fillText('5', ox - 10, y5);
-        ctx.fillText('O', ox - 10, y0 + 18);
-        ctx.fillText('-8', ox - 10, yNeg8);
+        ctx.fillStyle = '#e2e8f0';
+        [-8, -4, 4, 8, 12].forEach(val => {
+            ctx.fillText(String(val), ox - 10, py(val));
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.22)';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(ox, py(val)); ctx.lineTo(430, py(val)); ctx.stroke();
+        });
+        ctx.fillText('0', ox - 12, y0 + 16);
 
-        drawSub('τ', '1', xT1, y0 + 20, '#e2e8f0', 'center');
-        drawSub('τ', '2', xT2, y0 + 20, '#e2e8f0', 'center');
-        drawSub('τ', '3', xT3, y0 + 20, '#fbbf24', 'center');
+        // Nhãn trục hoành tránh đè đường cong
+        ctx.textAlign = 'center';
+        ctx.fillText('2', px(2), y0 - 18);
+        [5, 8, 11].forEach(tau => {
+            ctx.fillText(String(tau), px(tau), y0 + 22);
+        });
 
-        // Đường gióng nét đứt đỏ giống ảnh gốc
-        ctx.save();
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 2;
+        // Đường gióng từ điểm (11, 12)
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.6;
         ctx.setLineDash([5, 4]);
         ctx.beginPath();
-        ctx.moveTo(ox, y5); ctx.lineTo(xT3, y5); ctx.lineTo(xT3, y0);
+        ctx.moveTo(ox, py(12)); ctx.lineTo(px(11), py(12)); ctx.lineTo(px(11), y0);
         ctx.stroke();
-        ctx.restore();
+        ctx.setLineDash([]);
 
-        // Đường trên (Nước): (ox, 35) -> (xT3, 5) -> (xEnd, 5)
-        ctx.strokeStyle = '#fb923c';
+        // Vẽ 3 đoạn đồ thị rõ nét
         ctx.lineWidth = 3.6;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(ox, y35); ctx.lineTo(xT3, y5); ctx.lineTo(xEnd, y5);
-        ctx.stroke();
-
-        // Đường dưới (Nước đá): (ox, -8) -> (xT1, 0) -> (xT2, 0) -> (xT3, 5) -> (xEnd, 5)
         ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 3.6;
-        ctx.beginPath();
-        ctx.moveTo(ox, yNeg8); ctx.lineTo(xT1, y0); ctx.lineTo(xT2, y0); ctx.lineTo(xT3, y5); ctx.lineTo(xEnd, y5);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(px(0), py(-8)); ctx.lineTo(px(2), py(0)); ctx.stroke();
 
-        // Hai điểm chạy đồng bộ 1 chiều sawtooth theo τ
-        const saw = (t * 0.16) % 1;
-        const curX = ox + saw * (xEnd - ox);
-        const waterY = curX <= xT3 ? (y35 + ((curX - ox) / (xT3 - ox)) * (y5 - y35)) : y5;
-        let iceY;
-        if (curX <= xT1) iceY = yNeg8 + ((curX - ox) / (xT1 - ox)) * (y0 - yNeg8);
-        else if (curX <= xT2) iceY = y0;
-        else if (curX <= xT3) iceY = y0 + ((curX - xT2) / (xT3 - xT2)) * (y5 - y0);
-        else iceY = y5;
+        ctx.strokeStyle = '#fbbf24';
+        ctx.beginPath(); ctx.moveTo(px(2), py(0)); ctx.lineTo(px(5), py(0)); ctx.stroke();
 
-        ctx.fillStyle = '#fb923c'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(curX, waterY, 5.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#f97316';
+        ctx.beginPath(); ctx.moveTo(px(5), py(0)); ctx.lineTo(px(11), py(12)); ctx.stroke();
+
+        // 12 điểm đo từ bảng
+        dataPts.forEach(([tau, temp]) => {
+            ctx.fillStyle = tau < 2 ? '#38bdf8' : (tau <= 5 ? '#fbbf24' : '#f97316');
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.arc(px(tau), py(temp), 4.2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        });
+
+        // Điểm quét 1 chiều sawtooth trên bảng đo 0 -> 11 phút
+        const saw = (t * 0.14) % 1;
+        const curTau = saw * 11;
+        let curTemp;
+        if (curTau <= 2) curTemp = -8 + 4 * curTau;
+        else if (curTau <= 5) curTemp = 0;
+        else curTemp = 2 * (curTau - 5);
+
+        ctx.fillStyle = '#22c55e';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.arc(px(curTau), py(curTemp), 6.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // Cột phải: Bình nung hở miệng công suất P = 200 W & đồng hồ đo sống động (Zero Data Leakage)
+        ctx.save();
+        roundBox(478, 12, 288, 280, 10, '#0f172a', '#38bdf8', 2);
         ctx.fillStyle = '#38bdf8';
-        ctx.beginPath(); ctx.arc(curX, iceY, 5.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = '800 15px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('MẪU CHẤT & BỘ CẤP NHIỆT', 622, 36);
 
-        // Card phải thông số đề bài (Zero Data Leakage)
-        roundBox(460, 12, 306, 280, 10, '#0f172a', '#38bdf8', 2);
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('THÔNG SỐ THÍ NGHIỆM', 478, 38);
+        const bx = 562, by = 66, bw = 112, bh = 86;
+        // Thể chất trong bình theo nhiệt độ
+        if (curTau <= 2) {
+            roundBox(bx + 14, by + 26, bw - 28, 54, 6, 'rgba(56, 189, 248, 0.38)', '#7dd3fc', 1.8);
+        } else if (curTau <= 5) {
+            const melt = (curTau - 2) / 3;
+            roundBox(bx + 6, by + 32, bw - 12, 48, 6, 'rgba(251, 191, 36, 0.25)', '#fbbf24', 1.5);
+            const sw = Math.max(18, (bw - 28) * (1 - 0.7 * melt));
+            roundBox(bx + (bw - sw) / 2, by + 40, sw, 36, 5, 'rgba(125, 211, 252, 0.55)', '#e0f2fe', 1.5);
+        } else {
+            roundBox(bx + 4, by + 28, bw - 8, 52, 6, 'rgba(249, 115, 22, 0.35)', '#fb923c', 1.8);
+        }
+        drawOpenBeaker(bx, by, bw, bh, '#cbd5e1', 3.2, 6);
 
-        ctx.fillStyle = '#7dd3fc';
-        ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('• Nước đá: 200 g ở -8 °C', 478, 72);
+        // Nhiệt kế nhúng vào mẫu
+        ctx.fillStyle = '#e2e8f0';
+        ctx.fillRect(bx + bw - 22, by - 10, 6, 74);
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.arc(bx + bw - 19, by + 64, 5.5, 0, Math.PI * 2); ctx.fill();
+
+        // Đế gia nhiệt P = 200 W (cân đối 2 biên chữ)
+        roundBox(528, by + bh + 6, 188, 26, 6, 'rgba(249, 115, 22, 0.22)', '#fb923c', 1.8);
         ctx.fillStyle = '#fdba74';
-        ctx.fillText('• Nước trong cốc ở 35 °C', 478, 102);
-
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillText('• c (nước đá) = 2100 J/(kg·K)', 478, 138);
-        ctx.fillText('• λ (nước đá) = 3,4·10⁵ J/kg', 478, 168);
-        ctx.fillText('• c (nước) = 4200 J/(kg·K)', 478, 198);
-
-        roundBox(478, 224, 270, 52, 7, '#1e293b', '#475569', 1.6);
-        ctx.fillStyle = '#fb923c';
         ctx.font = '800 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
-        ctx.fillText('━━ Nước ban đầu (35 → 5 °C)', 488, 240);
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillText('━━ Nước đá (-8 → 0 → 5 °C)', 488, 262);
+        ctx.fillText('P = 200 W (không đổi)', 622, by + bh + 19);
+
+        // Thẻ đọc số liệu tức thời (Zero Data Leakage)
+        roundBox(494, 194, 256, 84, 8, '#1e293b', '#475569', 1.6);
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText(`• Thời điểm τ = ${curTau.toFixed(1).replace('.', ',')} phút`, 510, 214);
+        ctx.fillStyle = curTau < 2 ? '#7dd3fc' : (curTau <= 5 ? '#fde68a' : '#fdba74');
+        ctx.font = '800 15.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText(`• Nhiệt độ đo: t = ${curTemp.toFixed(1).replace('.', ',')} °C`, 510, 240);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '700 14.5px "Plus Jakarta Sans", system-ui, sans-serif';
+        ctx.fillText('• Nguồn bảng số liệu (0 → 11 phút)', 510, 264);
+        ctx.restore();
     });
 
     // =========================================================================
@@ -17403,7 +17450,7 @@
         });
 
     // =========================================================================
-    // CÂU 98 (MH-STAGING-C4-26 · VLXT-DS-VD28-098): Phản ứng phân hạch dây chuyền ²³⁵₉₂U + ¹₀n → ⁹⁵₃₉Y + ¹³⁸₅₃I + k·¹₀n
+    // CÂU 98 (MH-STAGING-C4-26 · VLXT-DS-VD28-098): Hệ thống băng chuyền chiếu xạ tia gamma nguồn ⁶⁰₂₇Co (2000 Ci) khử trùng nhộng ruồi (kỹ thuật SIT)
     // =========================================================================
     window.VLXTModels.register('MH-STAGING-C4-26', function(ctx, w, h, t) {
             ctx.clearRect(0, 0, w, h);
@@ -17430,113 +17477,116 @@
                 ctx.restore();
             }
 
-            function drawNuclide(A, Z, sym, x, y, col = '#f8fafc', fontSize = 17, align = 'left') {
-                const idxSize = Math.max(13, Math.round(fontSize * 0.74));
+            function arrowLine(x1, y1, x2, y2, col, lw = 2.4, hl = 7) {
+                const ang = Math.atan2(y2 - y1, x2 - x1);
                 ctx.save();
-                ctx.textBaseline = 'middle';
-                ctx.font = `800 ${idxSize}px 'Segoe UI', system-ui, sans-serif`;
-                const wA = A !== '' ? ctx.measureText(String(A)).width : 0;
-                const wZ = Z !== '' ? ctx.measureText(String(Z)).width : 0;
-                const idxW = Math.max(wA, wZ);
-                const gap = idxW > 0 ? 2 : 0;
-                ctx.font = `800 ${fontSize}px 'Segoe UI', system-ui, sans-serif`;
-                const symW = ctx.measureText(sym).width;
-                const totalW = idxW + gap + symW;
-                let sx = x;
-                if (align === 'center') sx = x - totalW / 2;
-                else if (align === 'right') sx = x - totalW;
-                ctx.fillStyle = col;
-                ctx.textAlign = 'right';
-                ctx.font = `800 ${idxSize}px 'Segoe UI', system-ui, sans-serif`;
-                if (wA > 0) ctx.fillText(String(A), sx + idxW, y - Math.round(fontSize * 0.34));
-                if (wZ > 0) ctx.fillText(String(Z), sx + idxW, y + Math.round(fontSize * 0.36));
-                ctx.textAlign = 'left';
-                ctx.font = `800 ${fontSize}px 'Segoe UI', system-ui, sans-serif`;
-                ctx.fillText(sym, sx + idxW + gap, y);
+                ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 - hl * Math.cos(ang - Math.PI / 6), y2 - hl * Math.sin(ang - Math.PI / 6));
+                ctx.lineTo(x2 - hl * Math.cos(ang + Math.PI / 6), y2 - hl * Math.sin(ang + Math.PI / 6));
+                ctx.closePath(); ctx.fill();
                 ctx.restore();
             }
 
             // Tiêu đề
             ctx.save();
-            const title = 'PHẢN ỨNG PHÂN HẠCH HẠT NHÂN URANIUM-235';
-            ctx.font = `800 15px 'Segoe UI', system-ui, sans-serif`;
-            const titleW = ctx.measureText(title).width + 24;
-            roundBox(14, 10, titleW, 30, 7, '#0f172a', 'rgba(56, 189, 248, 0.55)', 1.8);
+            const title = 'CHIẾU XẠ TIA GAMMA (⁶⁰Co) THEO KỸ THUẬT SIT';
+            roundBox(14, 12, 424, 30, 7, '#0f172a', 'rgba(56, 189, 248, 0.55)', 1.8);
             ctx.fillStyle = '#38bdf8';
+            ctx.font = `800 14.5px 'Segoe UI', system-ui, sans-serif`;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            ctx.fillText(title, 26, 25);
-            ctx.restore();
+            ctx.fillText(title, 26, 27);
 
-            const saw = (t * 0.28) % 1;
-            const cx = 198, cy = 166;
+            // Buồng mô phỏng bên trái
+            roundBox(14, 52, 424, 240, 10, '#0f172a', '#334155', 1.8);
 
-            ctx.save();
-            if (saw < 0.45) {
-                const p = saw / 0.45;
-                // Neutron nhiệt bay từ trái vào U-235
-                const nx = 36 + p * (cx - 40 - 36);
-                ctx.fillStyle = '#38bdf8';
-                ctx.beginPath(); ctx.arc(nx, cy, 8, 0, Math.PI * 2); ctx.fill();
-                drawNuclide('1', '0', 'n', nx, cy - 26, '#7dd3fc', 16, 'center');
+            // Hộp chắn chì chứa nguồn Co-60 ở phía trên
+            const sx = 226;
+            roundBox(sx - 96, 66, 192, 52, 8, '#1e293b', '#94a3b8', 2.4);
+            // Cửa phát hướng xuống ở đáy hộp chì
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(sx - 44, 114, 88, 6);
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath(); ctx.arc(sx - 58, 92, 11, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = `800 15px 'Segoe UI', system-ui, sans-serif`;
+            ctx.textAlign = 'left';
+            ctx.fillText('Nguồn ⁶⁰₂₇Co', sx - 36, 92);
 
-                // Hạt nhân nặng U-235
-                ctx.fillStyle = 'rgba(245, 158, 11, 0.28)';
-                ctx.strokeStyle = '#fbbf24';
-                ctx.lineWidth = 3;
-                ctx.beginPath(); ctx.arc(cx, cy, 34, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                drawNuclide('235', '92', 'U', cx, cy, '#ffffff', 18, 'center');
-            } else {
-                const p = (saw - 0.45) / 0.55;
-                // Chớp tách hạt nhân
-                ctx.fillStyle = `rgba(254, 240, 138, ${(0.4 * (1 - p)).toFixed(2)})`;
-                ctx.beginPath(); ctx.arc(cx, cy, 22 + p * 34, 0, Math.PI * 2); ctx.fill();
+            // Chùm tia gamma chiếu từ hộp nguồn xuống băng chuyền (lệch nhấp nháy nhẹ + mũi tên)
+            const waveOffset = (t * 28) % 24;
+            [-36, 0, 36].forEach(dx => {
+                ctx.strokeStyle = 'rgba(250, 204, 21, 0.85)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let ry = 122; ry <= 178; ry += 4) {
+                    const rx = sx + dx + Math.sin((ry - waveOffset) * 0.28) * 3.5;
+                    if (ry === 122) ctx.moveTo(rx, ry); else ctx.lineTo(rx, ry);
+                }
+                ctx.stroke();
+                arrowLine(sx + dx, 174, sx + dx, 188, '#fbbf24', 2.2, 6);
+            });
+            ctx.fillStyle = '#fde68a';
+            ctx.font = `800 14.5px 'Segoe UI', system-ui, sans-serif`;
+            ctx.textAlign = 'left';
+            ctx.fillText('Chùm tia γ', sx + 54, 152);
 
-                // Hai hạt nhân con Y-95 và I-138 tách ra
-                const yx = cx + 20 + p * 92, yy = cy - 20 - p * 48;
-                const ix = cx + 20 + p * 92, iy = cy + 20 + p * 48;
-
-                ctx.fillStyle = 'rgba(16, 185, 129, 0.28)';
-                ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = 2.6;
-                ctx.beginPath(); ctx.arc(yx, yy, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                drawNuclide('95', '39', 'Y', yx, yy, '#ffffff', 16, 'center');
-
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.28)';
-                ctx.strokeStyle = '#38bdf8';
-                ctx.beginPath(); ctx.arc(ix, iy, 26, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                drawNuclide('138', '53', 'I', ix, iy, '#ffffff', 16, 'center');
-
-                // Biểu diễn k neutron mới bay ra (không lộ số k cụ thể)
-                const nPos = [[cx + 42 + p * 116, cy], [cx + 36 + p * 102, cy - 12]];
-                nPos.forEach(([px, py]) => {
-                    ctx.fillStyle = '#fbbf24';
-                    ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.fill();
-                });
-                ctx.fillStyle = '#fde68a';
-                ctx.font = `800 15px 'Segoe UI', system-ui, sans-serif`;
-                ctx.textAlign = 'left';
-                ctx.fillText('+ k neutron mới', 262, 268);
+            // Băng chuyền & con lăn
+            const beltY = 232;
+            roundBox(42, beltY, 368, 16, 8, '#1e293b', '#64748b', 2);
+            const saw = (t * 0.22) % 1;
+            const rot = saw * Math.PI * 4;
+            for (let rx = 62; rx <= 390; rx += 54) {
+                ctx.fillStyle = '#475569';
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 1.6;
+                ctx.beginPath(); ctx.arc(rx, beltY + 8, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(rx, beltY + 8);
+                ctx.lineTo(rx + Math.cos(rot) * 5, beltY + 8 + Math.sin(rot) * 5);
+                ctx.stroke();
             }
 
-            // Bảng dữ kiện đề bài bên phải (Zero Data Leakage)
-            roundBox(414, 52, 352, 240, 10, '#0f172a', '#fbbf24', 2);
+            // Khay nhộng 5 kg chạy 1 chiều sawtooth trên băng chuyền
+            const trayX = 60 + saw * 240;
+            const trayY = 196;
+            const inBeam = Math.abs(trayX + 46 - sx) < 58;
+            roundBox(trayX, trayY, 92, 34, 6, inBeam ? 'rgba(245, 158, 11, 0.28)' : 'rgba(56, 189, 248, 0.16)', inBeam ? '#fbbf24' : '#38bdf8', 2.2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = `800 14.5px 'Segoe UI', system-ui, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('m = 5 kg', trayX + 46, trayY + 18);
+
+            // Chú thích phía dưới băng chuyền
+            ctx.fillStyle = '#7dd3fc';
+            ctx.font = `700 14.5px 'Segoe UI', system-ui, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Khay nhộng di chuyển qua vùng chiếu xạ →', 226, 272);
+            ctx.restore();
+
+            // Bảng dữ kiện bên phải (Zero Data Leakage — rộng 320px thoáng viền phải)
+            ctx.save();
+            roundBox(448, 12, 320, 280, 10, '#0f172a', '#fbbf24', 2);
             ctx.fillStyle = '#fbbf24';
             ctx.font = `800 15.5px 'Segoe UI', system-ui, sans-serif`;
             ctx.textAlign = 'left';
-            ctx.fillText('THÔNG SỐ PHẢN ỨNG', 432, 78);
+            ctx.textBaseline = 'middle';
+            ctx.fillText('THÔNG SỐ HỆ THỐNG SIT', 464, 40);
 
             ctx.fillStyle = '#f8fafc';
             ctx.font = `700 14.5px 'Segoe UI', system-ui, sans-serif`;
-            ctx.fillText('• Hạt nhân bia: ²³⁵₉₂U + neutron nhiệt', 432, 112);
-            ctx.fillText('• Sản phẩm: ⁹⁵₃₉Y + ¹³⁸₅₃I + k neutron', 432, 144);
+            ctx.fillText('• Nguồn gamma: ⁶⁰₂₇Co', 464, 76);
+            ctx.fillText('• Độ phóng xạ: H₀ = 2000 Ci', 464, 106);
+            ctx.fillText('• Chu kì bán rã: T = 5,27 năm', 464, 136);
             ctx.fillStyle = '#7dd3fc';
-            ctx.fillText('• Độ hụt khối: Δm = 0,181 amu', 432, 176);
-            ctx.fillStyle = '#f8fafc';
-            ctx.fillText('• 1 amu = 931,5 MeV/c²', 432, 208);
+            ctx.fillText('• Năng lượng: E₀ = 2,5 MeV/phân rã', 464, 168);
             ctx.fillStyle = '#6ee7b7';
-            ctx.fillText('• Kích thích ban đầu: 10¹⁰ hạt U-235', 432, 240);
-            ctx.fillText('• Xét 9 phân hạch dây chuyền đầu', 432, 268);
+            ctx.fillText('• Khay nhộng: m = 5 kg', 464, 200);
+            ctx.fillText('• Liều hấp thụ: 100 J/kg | H = 20%', 464, 230);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillText('• 1 Ci = 3,7·10¹⁰ Bq ; 1 MeV = 1,6·10⁻¹³ J', 464, 264);
             ctx.restore();
         });
 
@@ -18820,8 +18870,8 @@
     "MH-STAGING-C1-27": "Lò điện công suất 2,5 kW (hiệu suất 60%) nấu chảy hợp kim đồng 0,8 kg và bạc 0,2 kg",
     "MH-STAGING-C1-28": "Khảo sát tốc độ làm nguội nước nóng trong hai chậu: để nguội tự nhiên (không gió) và thổi quạt gió",
     "MH-STAGING-C1-29": "Thí nghiệm làm tan chảy đá vụn trong phễu bằng nguồn nóng 17 W và cân điện tử",
-    "MH-STAGING-C1-30": "Đồ thị biến thiên nhiệt độ t (°C) theo thời gian τ (phút) khi nung nóng thỏi chì 1 kg",
-    "MH-STAGING-C1-31": "Đồ thị nhiệt độ theo thời gian khi thả 200 g nước đá (-8 °C) vào nước (35 °C) trong cốc cách nhiệt",
+    "MH-STAGING-C1-30": "Thả liên tiếp hai quả cầu kim loại (210 °C và 150 °C) vào nhiệt lượng kế chứa nước ở 20 °C",
+    "MH-STAGING-C1-31": "Khảo sát nhiệt độ theo thời gian của mẫu chất rắn được cấp nhiệt liên tục công suất 200 W",
     "MH-STAGING-C1-32": "Đồ thị nhiệt độ theo thời gian của nước khi đun nóng đến sôi và để nguội (0 đến 20 phút)",
     "MH-STAGING-C1-33": "Thí nghiệm đo nhiệt nóng chảy riêng của nước đá với nguồn nhiệt 56 W và bảng số liệu cân trong 485 s",
     "MH-STAGING-C2-01": "Thí nghiệm đo áp suất khí quyển bằng ống thủy tinh có nút kín N và khóa đáy k",
@@ -18888,7 +18938,7 @@
     "MH-STAGING-C4-23": "Đo tốc độ phân rã 240 phân rã/phút của mẫu gỗ cổ vật chứa 25 g carbon",
     "MH-STAGING-C4-24": "Pin hạt nhân Betavolt dùng đồng vị ⁶³₂₈Ni (T = 100 năm) cấp nguồn cho máy tạo nhịp tim",
     "MH-STAGING-C4-25": "Các ứng dụng thực tế của tia phóng xạ trong y học hạt nhân và bảo quản nông sản",
-    "MH-STAGING-C4-26": "Phản ứng phân hạch dây chuyền ²³⁵₉₂U + ¹₀n → ⁹⁵₃₉Y + ¹³⁸₅₃I + k·¹₀n",
+    "MH-STAGING-C4-26": "Hệ thống băng chuyền chiếu xạ tia gamma nguồn ⁶⁰₂₇Co (2000 Ci) khử trùng nhộng ruồi (kỹ thuật SIT)",
     "MH-STAGING-C4-27": "Quá trình phân rã mẫu 15,0 g Cobalt ⁶⁰₂₇Co tạo thành hạt nhân bền ⁶⁰₂₈Ni",
     "MH-STAGING-C4-28": "So sánh cấu tạo nucleon và độ hụt khối của hai hạt nhân A và B",
     "MH-STAGING-C4-29": "Quá trình phóng xạ α của đồng vị Uranium ²³⁸₉₂U (λ = 4,916·10⁻¹⁸ s⁻¹)",

@@ -1769,7 +1769,6 @@
     "batchId": "BATCH_DS106_OFFICIAL_20261118"
   },
   {
-    "id": "VLXT-DS-VD28-030",
     "qNum": 30,
     "mon": "Vật lý",
     "chuong": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
@@ -1780,8 +1779,8 @@
       "lessonCode": "G12_C1_B04",
       "lessonTitle": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
     },
-    "subTopic": "DS-C1.3 – Thí nghiệm đo Nhiệt nóng chảy riêng của nước đá",
-    "topicCode": "DS-C1.3",
+    "subTopic": "DS-C1.1 – Truyền nhiệt & Cân bằng nhiệt trong thực tế",
+    "topicCode": "DS-C1.1",
     "tnType": "",
     "loai": "DS",
     "type": "TRUE_FALSE_4PART",
@@ -1790,47 +1789,47 @@
     "reviewStatus": "APPROVED",
     "rawTier": "TINH",
     "modelId": "MH-STAGING-C1-30",
-    "modelTag": "DS-VD28 · DS-C1.3",
-    "simType": "LEAD_HEATING_GRAPH_HSD10",
-    "caption": "Đồ thị biến thiên nhiệt độ t (°C) theo thời gian τ (phút) khi nung nóng thỏi chì 1 kg",
-    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (HSD_10. ĐỀ SỐ 10)",
+    "modelTag": "DS-VD28 · DS-C1.1",
+    "simType": "TWO_SPHERES_CALORIMETER_EQ",
+    "caption": "Thả liên tiếp hai quả cầu kim loại (210 °C và 150 °C) vào nhiệt lượng kế chứa nước ở 20 °C",
+    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (BODE9_11 · ĐỀ SỐ 11)",
     "deBaiChung": "",
     "nhomId": "",
     "hinhAnh": "assets/images/staging-ds/VLXT-DS-VD28-030.png",
-    "question": "<p>Hình vẽ bên cho thấy đồ thị biểu diễn sự biến thiên của nhiệt độ $t$ theo thời gian $\\tau$ trong quá trình nung nóng một thỏi chì có khối lượng $1\\text{ kg}$. Biết nhiệt dung riêng của chì là $130\\text{ J/(kg.K)}$.</p>",
-    "optA": "Khi chì chuyển từ trạng thái $B$ sang trạng thái $C$, nội năng của chì không thay đổi.",
-    "optB": "Nội năng của chì tăng $20\\,800\\text{ J}$ trong $8\\text{ phút}$ đầu nung nóng.",
-    "optC": "Nhiệt độ nóng chảy của chì là $27^\\circ\\text{C}$.",
-    "optD": "Tại điểm $B$ trên đồ thị chì ở trạng thái lỏng.",
-    "correct": "SĐSS",
+    "question": "<p>Trong một bình nhiệt lượng kế chứa nước, thả một quả cầu kim loại có nhiệt độ $210^\\circ\\text{C}$ vào bình và chìm hoàn toàn trong nước, làm cho nhiệt độ của nước tăng từ $20^\\circ\\text{C}$ đến $60^\\circ\\text{C}$ thì hệ đạt cân bằng nhiệt. Tiếp tục thả thêm một quả cầu kim loại giống như trên nhưng có nhiệt độ $150^\\circ\\text{C}$ vào bình và chìm hoàn toàn trong nước. Sau đó hệ đạt trạng thái cân bằng nhiệt và trong suốt quá trình truyền nhiệt không có sự chuyển thể. Bỏ qua sự trao đổi nhiệt với môi trường và bình nhiệt lượng kế. Bỏ qua sự hóa hơi của nước. Biết nhiệt dung riêng của kim loại làm quả cầu là $460\\text{ J/(kg}\\cdot\\text{K)}$ và nhiệt dung riêng của nước là $4200\\text{ J/(kg}\\cdot\\text{K)}$.</p>",
+    "optA": "Khi thả quả cầu kim loại thứ nhất vào bình nhiệt lượng kế, nhiệt độ cân bằng của hệ là $60^\\circ\\text{C}$.",
+    "optB": "Khi thả tiếp quả cầu kim loại thứ hai vào bình nhiệt lượng kế, nhiệt lượng do quả cầu kim loại thứ hai tỏa ra bằng nhiệt lượng thu vào của lượng nước trong bình nhiệt lượng kế.",
+    "optC": "Nhiệt độ cân bằng của hệ sau lần thả thứ hai là $80^\\circ\\text{C}$.",
+    "optD": "Khối lượng của mỗi quả cầu kim loại bằng hai lần khối lượng của lượng nước chứa trong bình nhiệt lượng kế.",
+    "correct": "ĐSSS",
     "subItems": [
       {
         "key": "a",
-        "statement": "Khi chì chuyển từ trạng thái $B$ sang trạng thái $C$, nội năng của chì không thay đổi.",
-        "isCorrect": false
-      },
-      {
-        "key": "b",
-        "statement": "Nội năng của chì tăng $20\\,800\\text{ J}$ trong $8\\text{ phút}$ đầu nung nóng.",
+        "statement": "Khi thả quả cầu kim loại thứ nhất vào bình nhiệt lượng kế, nhiệt độ cân bằng của hệ là $60^\\circ\\text{C}$.",
         "isCorrect": true
       },
       {
+        "key": "b",
+        "statement": "Khi thả tiếp quả cầu kim loại thứ hai vào bình nhiệt lượng kế, nhiệt lượng do quả cầu kim loại thứ hai tỏa ra bằng nhiệt lượng thu vào của lượng nước trong bình nhiệt lượng kế.",
+        "isCorrect": false
+      },
+      {
         "key": "c",
-        "statement": "Nhiệt độ nóng chảy của chì là $27^\\circ\\text{C}$.",
+        "statement": "Nhiệt độ cân bằng của hệ sau lần thả thứ hai là $80^\\circ\\text{C}$.",
         "isCorrect": false
       },
       {
         "key": "d",
-        "statement": "Tại điểm $B$ trên đồ thị chì ở trạng thái lỏng.",
+        "statement": "Khối lượng của mỗi quả cầu kim loại bằng hai lần khối lượng của lượng nước chứa trong bình nhiệt lượng kế.",
         "isCorrect": false
       }
     ],
-    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">a — SAI</span> Khi chì chuyển từ $B$ sang $C$ (đoạn nằm ngang ở $327^\\circ\\text{C}$), chì đang nóng chảy và liên tục nhận nhiệt lượng ($Q > 0$) để phá vỡ liên kết tinh thể nên <strong>nội năng của chì tăng</strong> ($\\Delta U > 0$).</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">b — ĐÚNG</span> Trong $\\tau_{15} = 15\\text{ phút}$ đầu, nhiệt độ thỏi chì tăng đều từ $27^\\circ\\text{C}$ lên $327^\\circ\\text{C}$ ($\\Delta T = 300\\text{ K}$). Với công suất cấp nhiệt $\\mathcal{P}$ không đổi:<div class=\"vlxt-math-callout\">$$\\begin{cases} \\mathcal{P} \\tau_{15} = m c \\Delta T \\\\ \\mathcal{P} \\tau_8 = \\Delta U \\end{cases} \\implies \\Delta U = m c \\Delta T \\cdot \\frac{\\tau_8}{\\tau_{15}} = 1 \\cdot 130 \\cdot (327 - 27) \\cdot \\frac{8}{15} = 20\\,800\\text{ J}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> $27^\\circ\\text{C}$ là nhiệt độ ban đầu của thỏi chì tại $\\tau = 0$. Quá trình nóng chảy (đoạn nằm ngang $BC$) xảy ra ở nhiệt độ không đổi bằng <strong>$327^\\circ\\text{C}$</strong>.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">d — SAI</span> Tại điểm $B$ ($\\tau = 15\\text{ phút}$, $t = 327^\\circ\\text{C}$), thỏi chì vừa đạt tới nhiệt độ nóng chảy và <strong>bắt đầu nóng chảy</strong> nên tại $B$ chì đang ở <strong>trạng thái rắn</strong>.</div>",
+    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">a — ĐÚNG</span> Theo giả thiết đề bài, khi thả quả cầu kim loại thứ nhất ($210^\\circ\\text{C}$) vào bình nhiệt lượng kế chứa nước ($20^\\circ\\text{C}$), nhiệt độ của nước tăng lên đến $60^\\circ\\text{C}$ thì hệ đạt cân bằng nhiệt. Vậy nhiệt độ cân bằng của hệ ở lần thứ nhất là $60^\\circ\\text{C}$.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">b — SAI</span> Khi thả tiếp quả cầu kim loại thứ hai ($150^\\circ\\text{C}$) vào bình, lúc này trong bình đang có cả nước và quả cầu kim loại thứ nhất ở nhiệt độ $60^\\circ\\text{C}$. Vì vậy nhiệt lượng do quả cầu thứ hai tỏa ra bằng <strong>tổng nhiệt lượng thu vào của nước và quả cầu thứ nhất</strong>.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> Lần thả thứ nhất, phương trình cân bằng nhiệt cho ta tỉ số nhiệt dung:<div class=\"vlxt-math-callout\">$$m_c c_c (210 - 60) = m_n c_n (60 - 20) \\implies m_n c_n = 3{,}75\\,m_c c_c$$</div>Lần thả thứ hai (quả cầu 2 truyền nhiệt cho cả nước và quả cầu 1 đang ở $60^\\circ\\text{C}$):<div class=\"vlxt-math-callout\">$$m_c c_c (150 - t_{\\text{cb2}}) = (m_n c_n + m_c c_c)(t_{\\text{cb2}} - 60) = 4{,}75\\,m_c c_c (t_{\\text{cb2}} - 60) \\implies t_{\\text{cb2}} = \\frac{435}{5{,}75} \\approx 75{,}7^\\circ\\text{C} \\ne 80^\\circ\\text{C}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">d — SAI</span> Thay $c_c = 460\\text{ J/(kg}\\cdot\\text{K)}$ và $c_n = 4200\\text{ J/(kg}\\cdot\\text{K)}$ vào hệ thức $m_n c_n = 3{,}75\\,m_c c_c$:<div class=\"vlxt-math-callout\">$$\\frac{m_c}{m_n} = \\frac{c_n}{3{,}75\\,c_c} = \\frac{4200}{3{,}75 \\cdot 460} = \\frac{56}{23} \\approx 2{,}43 \\ne 2$$</div></div>",
     "isApproved": true,
-    "batchId": "BATCH_DS106_OFFICIAL_20261118"
+    "batchId": "BATCH_DS106_OFFICIAL_20261118",
+    "id": "VLXT-DS-VD28-030"
   },
   {
-    "id": "VLXT-DS-VD28-031",
     "qNum": 31,
     "mon": "Vật lý",
     "chuong": "CHƯƠNG 1 – VẬT LÝ NHIỆT",
@@ -1841,8 +1840,8 @@
       "lessonCode": "G12_C1_B04",
       "lessonTitle": "Bài 4. Nhiệt dung riêng - Nhiệt nóng chảy - Nhiệt hóa hơi"
     },
-    "subTopic": "DS-C1.3 – Thí nghiệm đo Nhiệt nóng chảy riêng của nước đá",
-    "topicCode": "DS-C1.3",
+    "subTopic": "DS-C1.2 – Thí nghiệm đo Nhiệt dung riêng",
+    "topicCode": "DS-C1.2",
     "tnType": "",
     "loai": "DS",
     "type": "TRUE_FALSE_4PART",
@@ -1851,44 +1850,45 @@
     "reviewStatus": "APPROVED",
     "rawTier": "TINH",
     "modelId": "MH-STAGING-C1-31",
-    "modelTag": "DS-VD28 · DS-C1.3",
-    "simType": "ICE_WATER_EQUILIBRIUM_GRAPH",
-    "caption": "Đồ thị nhiệt độ theo thời gian khi thả 200 g nước đá (-8 °C) vào nước (35 °C) trong cốc cách nhiệt",
-    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (HSD_3. ĐỀ SỐ 03)",
+    "modelTag": "DS-VD28 · DS-C1.2",
+    "simType": "CONSTANT_POWER_200W_MELTING_TABLE",
+    "caption": "Khảo sát nhiệt độ theo thời gian của mẫu chất rắn được cấp nhiệt liên tục công suất 200 W",
+    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (BODE9_8 · ĐỀ SỐ 08)",
     "deBaiChung": "",
     "nhomId": "",
-    "hinhAnh": "assets/images/staging-ds/VLXT-DS-VD28-031.png",
-    "question": "<p>Cho $200\\text{ g}$ nước đá ở $-8^\\circ\\text{C}$ vào một cốc cách nhiệt đựng nước ở $35^\\circ\\text{C}$. Sự thay đổi nhiệt độ của nước đá và nước trong cốc theo thời gian được biểu diễn theo đồ thị hình bên. Biết nhiệt dung riêng của nước đá là $2100\\text{ J/(kg.K)}$, nhiệt nóng chảy riêng của nước đá là $3{,}4\\cdot 10^5\\text{ J/kg}$, nhiệt dung riêng của nước là $4200\\text{ J/(kg.K)}$, bỏ qua nhiệt dung của cốc. Trong các phát biểu sau đây, phát biểu nào đúng, phát biểu nào sai?</p>",
-    "optA": "Nước đá tan trong khoảng thời gian $\\tau_2$ giây.",
-    "optB": "Trong khoảng thời gian từ $\\tau_1$ đến $\\tau_2$, nước đá không thu nhiệt từ nước trong cốc.",
-    "optC": "Trong khoảng thời gian $\\tau_2$ giây đầu tiên, nước trong cốc tỏa ra một lượng nhiệt bằng $761{,}3\\text{ kJ}$.",
-    "optD": "Khối lượng nước trong cốc bằng $0{,}6\\text{ kg}$.",
-    "correct": "SSSĐ",
+    "hinhAnh": "",
+    "question": "<p>Một mẫu chất rắn được cấp nhiệt liên tục với công suất không đổi là $200\\text{ W}$. Nhiệt độ của mẫu được ghi lại theo thời gian trong bảng số liệu sau:</p><div class=\"vstep-data-panel\"><table class=\"vstep-data-table\"><thead><tr><th>Thời điểm (phút)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr></thead><tbody><tr><td>Nhiệt độ ($^\\circ\\text{C}$)</td><td>$-8$</td><td>$-4$</td><td>$0$</td><td>$0$</td><td>$0$</td><td>$0$</td><td>$2$</td><td>$4$</td><td>$6$</td><td>$8$</td><td>$10$</td><td>$12$</td></tr></tbody></table></div>",
+    "optA": "Đây là một mẫu chất rắn kết tinh.",
+    "optB": "Ta không thể xác định nhiệt dung riêng của mẫu với số liệu trên.",
+    "optC": "Nhiệt dung riêng của mẫu ở thể rắn lớn hơn nhiệt dung riêng ở thể lỏng.",
+    "optD": "Có thể xác định tỉ số nhiệt dung riêng ở thể rắn và nhiệt dung riêng ở thể lỏng là $\\dfrac{1}{2}$.",
+    "correct": "ĐĐSĐ",
     "subItems": [
       {
         "key": "a",
-        "statement": "Nước đá tan trong khoảng thời gian $\\tau_2$ giây.",
-        "isCorrect": false
+        "statement": "Đây là một mẫu chất rắn kết tinh.",
+        "isCorrect": true
       },
       {
         "key": "b",
-        "statement": "Trong khoảng thời gian từ $\\tau_1$ đến $\\tau_2$, nước đá không thu nhiệt từ nước trong cốc.",
-        "isCorrect": false
+        "statement": "Ta không thể xác định nhiệt dung riêng của mẫu với số liệu trên.",
+        "isCorrect": true
       },
       {
         "key": "c",
-        "statement": "Trong khoảng thời gian $\\tau_2$ giây đầu tiên, nước trong cốc tỏa ra một lượng nhiệt bằng $761{,}3\\text{ kJ}$.",
+        "statement": "Nhiệt dung riêng của mẫu ở thể rắn lớn hơn nhiệt dung riêng ở thể lỏng.",
         "isCorrect": false
       },
       {
         "key": "d",
-        "statement": "Khối lượng nước trong cốc bằng $0{,}6\\text{ kg}$.",
+        "statement": "Có thể xác định tỉ số nhiệt dung riêng ở thể rắn và nhiệt dung riêng ở thể lỏng là $\\dfrac{1}{2}$.",
         "isCorrect": true
       }
     ],
-    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">a — SAI</span> Từ $0$ đến $\\tau_1$, nước đá chỉ tăng nhiệt độ từ $-8^\\circ\\text{C}$ lên $0^\\circ\\text{C}$ (chưa nóng chảy). Nước đá tan chảy ở $0^\\circ\\text{C}$ trong khoảng thời gian từ $\\tau_1$ đến $\\tau_2$, tức khoảng thời gian là <strong>$\\tau_2 - \\tau_1$ giây</strong>.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">b — SAI</span> Trong khoảng thời gian từ $\\tau_1$ đến $\\tau_2$, nhiệt độ của nước đá không đổi ($0^\\circ\\text{C}$) nhưng nước đá vẫn <strong>liên tục thu nhiệt lượng</strong> từ nước nóng trong cốc để chuyển pha từ rắn sang lỏng.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> Trong khoảng thời gian $\\tau_2$ giây đầu tiên, nhiệt lượng nước trong cốc tỏa ra bằng tổng nhiệt lượng nước đá thu vào để tăng từ $-8^\\circ\\text{C}$ lên $0^\\circ\\text{C}$ và tan hoàn toàn ở $0^\\circ\\text{C}$:<div class=\"vlxt-math-callout\">$$Q_2 = m_{\\text{đ}} c_{\\text{đ}} \\Delta t_{\\text{đ}} + m_{\\text{đ}} \\lambda = 0{,}2 \\cdot 2100 \\cdot 8 + 0{,}2 \\cdot 3{,}4\\cdot 10^5 = 71\\,360\\text{ J} = 71{,}36\\text{ kJ} \\neq 761{,}3\\text{ kJ}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">d — ĐÚNG</span> Xét phương trình cân bằng nhiệt đến trạng thái cân bằng $t_{\\text{cb}} = 5^\\circ\\text{C}$ (tại thời điểm $\\tau_3$):<div class=\"vlxt-math-callout\">$$Q_2 + m_{\\text{đ}} c_{\\text{n}} (t_{\\text{cb}} - 0) = m_{\\text{n}} c_{\\text{n}} (t_{\\text{n}} - t_{\\text{cb}}) \\implies 71\\,360 + 0{,}2\\cdot 4200\\cdot 5 = m_{\\text{n}}\\cdot 4200\\cdot (35 - 5) \\implies m_{\\text{n}} \\approx 0{,}6\\text{ kg}$$</div></div>",
+    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">a — ĐÚNG</span> Từ bảng số liệu, trong khoảng thời gian từ phút thứ $2$ đến phút thứ $5$, mẫu chất nhận nhiệt liên tục nhưng nhiệt độ giữ nguyên ở một giá trị xác định $0^\\circ\\text{C}$ để nóng chảy. Việc có nhiệt độ nóng chảy xác định là đặc trưng của <strong>chất rắn kết tinh</strong>.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">b — ĐÚNG</span> Từ hệ thức $c = \\dfrac{\\mathcal{P} \\Delta \\tau}{m \\Delta T}$, bảng số liệu cho công suất $\\mathcal{P} = 200\\text{ W}$ và độ biến thiên nhiệt độ theo thời gian, nhưng <strong>chưa biết khối lượng $m$ của mẫu</strong> nên không thể tính giá trị tuyệt đối của nhiệt dung riêng.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">c — SAI</span> Với cùng công suất cấp nhiệt $\\mathcal{P}$ không đổi, tốc độ tăng nhiệt độ $\\dfrac{\\Delta T}{\\Delta \\tau} = \\dfrac{\\mathcal{P}}{mc}$ tỉ lệ nghịch với nhiệt dung riêng $c$. Ở thể rắn ($0\\to 2\\text{ phút}$), nhiệt độ tăng $4^\\circ\\text{C/phút}$; ở thể lỏng ($5\\to 11\\text{ phút}$), nhiệt độ tăng $2^\\circ\\text{C/phút}$. Vì ở thể lỏng tăng nhiệt độ chậm hơn nên $c_{\\text{rắn}} \\lt  c_{\\text{lỏng}}$.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">d — ĐÚNG</span> Trong cả hai giai đoạn khối lượng $m$ và công suất $\\mathcal{P}$ như nhau nên tỉ số nhiệt dung riêng là:<div class=\"vlxt-math-callout\">$$\\frac{c_{\\text{rắn}}}{c_{\\text{lỏng}}} = \\frac{(\\Delta T / \\Delta \\tau)_{\\text{lỏng}}}{(\\Delta T / \\Delta \\tau)_{\\text{rắn}}} = \\frac{2^\\circ\\text{C/phút}}{4^\\circ\\text{C/phút}} = \\frac{1}{2}$$</div></div>",
     "isApproved": true,
-    "batchId": "BATCH_DS106_OFFICIAL_20261118"
+    "batchId": "BATCH_DS106_OFFICIAL_20261118",
+    "id": "VLXT-DS-VD28-031"
   },
   {
     "id": "VLXT-DS-VD28-032",
@@ -5917,19 +5917,18 @@
     "batchId": "BATCH_DS106_OFFICIAL_20261118"
   },
   {
-    "id": "VLXT-DS-VD28-098",
     "qNum": 98,
     "mon": "Vật lý",
     "chuong": "CHƯƠNG 4 – VẬT LÝ HẠT NHÂN",
-    "baiHoc": "B33. PHẢN ỨNG HẠT NHÂN",
+    "baiHoc": "B35. ĐỒ THỊ PHÓNG XẠ - ỨNG DỤNG CỦA HIỆN TƯỢNG PHÓNG XẠ",
     "taxonomy": {
       "chapterCode": "C4",
       "chapterTitle": "CHƯƠNG 4 – VẬT LÝ HẠT NHÂN",
-      "lessonCode": "G12_C4_B33",
-      "lessonTitle": "Bài 33. Phản ứng hạt nhân"
+      "lessonCode": "G12_C4_B35",
+      "lessonTitle": "Bài 35. Đồ thị phóng xạ - Ứng dụng của hiện tượng phóng xạ"
     },
-    "subTopic": "DS-C4.2 – Lò phản ứng hạt nhân, Phân hạch, Nhiệt hạch & Hiệu suất nhà máy điện",
-    "topicCode": "DS-C4.2",
+    "subTopic": "DS-C4.4 – Phóng xạ môi trường, Công nghiệp, Sinh học & Pin nguyên tử",
+    "topicCode": "DS-C4.4",
     "tnType": "",
     "loai": "DS",
     "type": "TRUE_FALSE_4PART",
@@ -5938,44 +5937,45 @@
     "reviewStatus": "APPROVED",
     "rawTier": "TINH",
     "modelId": "MH-STAGING-C4-26",
-    "modelTag": "DS-VD28 · DS-C4.2",
-    "simType": "U235_Y95_I138_CHAIN_FISSION",
-    "caption": "Phản ứng phân hạch dây chuyền ²³⁵₉₂U + ¹₀n → ⁹⁵₃₉Y + ¹³⁸₅₃I + k·¹₀n",
-    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (HSD_6. ĐỀ SỐ 06)",
+    "modelTag": "DS-VD28 · DS-C4.4",
+    "simType": "SIT_CO60_GAMMA_CONVEYOR",
+    "caption": "Hệ thống băng chuyền chiếu xạ tia gamma nguồn ⁶⁰₂₇Co (2000 Ci) khử trùng nhộng ruồi (kỹ thuật SIT)",
+    "source": "Vật Lý Xuân Trường — Tuyển Chọn Nguồn Tham Khảo (BODE9_15 · ĐỀ SỐ 15)",
     "deBaiChung": "",
     "nhomId": "",
-    "hinhAnh": "",
-    "question": "<p>Hạt nhân $^{235}_{92}\\text{U}$ hấp thụ một neutron nhiệt rồi vỡ ra thành hai hạt nhân $^{95}_{39}\\text{Y}$ và $^{138}_{53}\\text{I}$ kèm theo giải phóng một số hạt neutron mới. Biết rằng tổng khối lượng các hạt trước phản ứng lớn hơn tổng khối lượng các hạt sau phản ứng là $0{,}181\\text{ amu}$. Lấy $1\\text{ amu} = 931{,}5\\text{ MeV}/c^2$.</p>",
-    "optA": "Phản ứng trên gọi là phản ứng nhiệt hạch (phản ứng tổng hợp).",
-    "optB": "Quá trình này giải phóng kèm theo hai hạt neutron mới.",
-    "optC": "Một hạt nhân urani $^{235}_{92}\\text{U}$ phân hạch thì tỏa ra năng lượng trung bình là $168{,}6\\text{ MeV}$.",
-    "optD": "Giả sử ban đầu ta kích thích cho $10^{10}$ hạt $^{235}_{92}\\text{U}$ phân hạch. Năng lượng tỏa ra sau $9$ phân hạch dây chuyền đầu tiên (kể cả phân hạch kích thích ban đầu) thì năng lượng tỏa ra bằng $1{,}66 \\cdot 10^{16}\\text{ MeV}$.",
-    "correct": "SSĐĐ",
+    "hinhAnh": "assets/images/staging-ds/VLXT-DS-VD28-098.png",
+    "question": "<p>Để tiêu diệt ruồi đục quả hại trái cây, người ta áp dụng kỹ thuật SIT bằng cách chiếu xạ tia gamma từ nguồn Cobalt ($^{60}_{27}\\text{Co}$) để làm vô sinh các con đực trước khi thả ra tự nhiên. Biết nguồn phóng xạ tại nhà máy có độ phóng xạ ban đầu $H_0 = 2000\\text{ Ci}$, chu kì bán rã $T = 5{,}27\\text{ năm}$. Mỗi phân rã của $^{60}_{27}\\text{Co}$ tỏa ra năng lượng trung bình là $2{,}5\\text{ MeV}$. Một khay nhộng ruồi có khối lượng $5\\text{ kg}$ được đưa vào băng chuyền để chiếu xạ. Để gây vô sinh, khay nhộng cần nhận được liều lượng hấp thụ là $100\\text{ J/kg}$. Biết hiệu suất sử dụng năng lượng của hệ thống là $20\\%$. Cho $1\\text{ Ci} = 3{,}7 \\cdot 10^{10}\\text{ Bq}$ và $1\\text{ MeV} = 1{,}6 \\cdot 10^{-13}\\text{ J}$.</p>",
+    "optA": "Tổng năng lượng mà khay nhộng cần hấp thụ để đạt yêu cầu vô sinh là $500\\text{ J}$.",
+    "optB": "Công suất phát năng lượng của nguồn phát xạ ở thời điểm ban đầu xấp xỉ $5{,}9\\text{ W}$.",
+    "optC": "Thời gian chiếu xạ cần thiết cho khay nhộng ở thời điểm ban đầu ($t = 0\\text{ s}$) là khoảng $84{,}5\\text{ giây}$.",
+    "optD": "Sau $10{,}54\\text{ năm}$, để khay nhộng vẫn nhận đủ liều lượng như trên thì thời gian chiếu xạ phải kéo dài thành $169\\text{ giây}$.",
+    "correct": "ĐSĐS",
     "subItems": [
       {
         "key": "a",
-        "statement": "Phản ứng trên gọi là phản ứng nhiệt hạch (phản ứng tổng hợp).",
-        "isCorrect": false
+        "statement": "Tổng năng lượng mà khay nhộng cần hấp thụ để đạt yêu cầu vô sinh là $500\\text{ J}$.",
+        "isCorrect": true
       },
       {
         "key": "b",
-        "statement": "Quá trình này giải phóng kèm theo hai hạt neutron mới.",
+        "statement": "Công suất phát năng lượng của nguồn phát xạ ở thời điểm ban đầu xấp xỉ $5{,}9\\text{ W}$.",
         "isCorrect": false
       },
       {
         "key": "c",
-        "statement": "Một hạt nhân urani $^{235}_{92}\\text{U}$ phân hạch thì tỏa ra năng lượng trung bình là $168{,}6\\text{ MeV}$.",
+        "statement": "Thời gian chiếu xạ cần thiết cho khay nhộng ở thời điểm ban đầu ($t = 0\\text{ s}$) là khoảng $84{,}5\\text{ giây}$.",
         "isCorrect": true
       },
       {
         "key": "d",
-        "statement": "Giả sử ban đầu ta kích thích cho $10^{10}$ hạt $^{235}_{92}\\text{U}$ phân hạch. Năng lượng tỏa ra sau $9$ phân hạch dây chuyền đầu tiên (kể cả phân hạch kích thích ban đầu) thì năng lượng tỏa ra bằng $1{,}66 \\cdot 10^{16}\\text{ MeV}$.",
-        "isCorrect": true
+        "statement": "Sau $10{,}54\\text{ năm}$, để khay nhộng vẫn nhận đủ liều lượng như trên thì thời gian chiếu xạ phải kéo dài thành $169\\text{ giây}$.",
+        "isCorrect": false
       }
     ],
-    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">a — SAI</span> Quá trình một hạt nhân nặng ($^{235}_{92}\\text{U}$) hấp thụ neutron rồi vỡ thành hai hạt nhân trung bình ($^{95}_{39}\\text{Y}$ và $^{138}_{53}\\text{I}$) gọi là <strong>phản ứng phân hạch</strong>, không phải phản ứng nhiệt hạch.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">b — SAI</span> Áp dụng định luật bảo toàn số khối $A$ ($1 + 235 = 95 + 138 + k \\cdot 1 \\implies k = 3$):<div class=\"vlxt-math-callout\">$$^{1}_{0}\\text{n} + {}^{235}_{92}\\text{U} \\to {}^{95}_{39}\\text{Y} + {}^{138}_{53}\\text{I} + 3\\,{}^{1}_{0}\\text{n}$$</div>Quá trình này giải phóng kèm theo <strong>$3$ hạt neutron mới</strong> (hệ số nhân $k = 3$), không phải $2$ hạt.</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">c — ĐÚNG</span> Năng lượng tỏa ra của một phản ứng phân hạch $^{235}_{92}\\text{U}$ là:<div class=\"vlxt-math-callout\">$$\\Delta E = (m_{\\text{trước}} - m_{\\text{sau}}) c^2 = 0{,}181 \\cdot 931{,}5 \\approx 168{,}6\\text{ MeV}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">d — ĐÚNG</span> Tổng số hạt nhân $^{235}_{92}\\text{U}$ bị phân hạch qua $9$ thế hệ liên tiếp (từ thế hệ $0$ kích thích ban đầu $N_0 = 10^{10}$ đến thế hệ thứ $8$, công bội $k = 3$) là:<div class=\"vlxt-math-callout\">$$N = N_0 k^0 + N_0 k^1 + \\dots + N_0 k^8 = N_0 \\frac{k^9 - 1}{k - 1}$$</div>Tổng năng lượng tỏa ra sau $9$ phân hạch dây chuyền đầu tiên:<div class=\"vlxt-math-callout\">$$Q = N \\cdot \\Delta E = 10^{10} \\cdot \\frac{3^9 - 1}{3 - 1} \\cdot 168{,}6 \\approx 1{,}66 \\cdot 10^{16}\\text{ MeV}$$</div></div>",
+    "giaiThich": "<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">a — ĐÚNG</span> Tổng năng lượng mà khay nhộng khối lượng $m = 5\\text{ kg}$ cần hấp thụ với liều $100\\text{ J/kg}$ là:<div class=\"vlxt-math-callout\">$$Q = m \\cdot D = 5 \\cdot 100 = 500\\text{ J}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">b — SAI</span> Đổi $H_0 = 2000 \\cdot 3{,}7 \\cdot 10^{10} = 7{,}4 \\cdot 10^{13}\\text{ Bq}$ và $E_0 = 2{,}5 \\cdot 1{,}6 \\cdot 10^{-13} = 4{,}0 \\cdot 10^{-13}\\text{ J}$. Công suất phát năng lượng toàn phần của nguồn ở thời điểm ban đầu là:<div class=\"vlxt-math-callout\">$$\\mathcal{P}_0 = H_0 E_0 = 7{,}4 \\cdot 10^{13} \\cdot 4{,}0 \\cdot 10^{-13} = 29{,}6\\text{ W} \\ne 5{,}9\\text{ W}$$</div>($5{,}92\\text{ W}$ là công suất có ích truyền tới khay nhộng sau khi nhân hiệu suất $20\\%$).</div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge true\">c — ĐÚNG</span> Công suất hấp thụ có ích ở thời điểm ban đầu là $\\mathcal{P}_{\\text{ích}} = \\mathcal{P}_0 \\cdot 20\\% = 29{,}6 \\cdot 0{,}20 = 5{,}92\\text{ W}$. Thời gian chiếu xạ cần thiết:<div class=\"vlxt-math-callout\">$$\\tau_0 = \\frac{Q}{\\mathcal{P}_{\\text{ích}}} = \\frac{500}{5{,}92} \\approx 84{,}46\\text{ s} \\approx 84{,}5\\text{ giây}$$</div></div>\n<div class=\"exp-stmt-item\"><span class=\"exp-key-badge false\">d — SAI</span> Sau $t = 10{,}54\\text{ năm} = 2T$, độ phóng xạ của nguồn giảm còn $H' = H_0 \\cdot 2^{-2} = \\dfrac{H_0}{4} = 1{,}85 \\cdot 10^{13}\\text{ Bq}$, nên công suất có ích giảm $4$ lần còn $\\mathcal{P}'_{\\text{ích}} = \\dfrac{5{,}92}{4} = 1{,}48\\text{ W}$. Thời gian chiếu xạ khi đó phải kéo dài gấp $4$ lần:<div class=\"vlxt-math-callout\">$$\\tau' = \\frac{Q}{\\mathcal{P}'_{\\text{ích}}} = \\frac{500}{1{,}48} \\approx 337{,}8\\text{ giây} \\ne 169\\text{ giây}$$</div></div>",
     "isApproved": true,
-    "batchId": "BATCH_DS106_OFFICIAL_20261118"
+    "batchId": "BATCH_DS106_OFFICIAL_20261118",
+    "id": "VLXT-DS-VD28-098"
   },
   {
     "id": "VLXT-DS-VD28-099",

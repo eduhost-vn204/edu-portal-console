@@ -13,14 +13,14 @@
     <script src="https://cdn.jsdelivr.net/npm/wmf@1.0.2/dist/wmf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="assets/canvas-core-helpers.js"></script>
-    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/100-mohinh-tln-chinhthuc.js"></script>
     <script src="assets/tln-thuc-te-models.js"></script>
     <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tnbt"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
-    <script src="assets/staging-ds-models.js?v=20261118-ds200"></script>
-    <script src="assets/ds106-bank-pack.js?v=20261118-ds200"></script>
+    <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
+    <script src="assets/ds106-bank-pack.js?v=20261118-ds200-v2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -7262,8 +7262,8 @@ const DS_C1_MODEL_TO_SUBTOPIC = {
     'MH-STAGING-C1-27': CANONICAL_DS_C1_SUBTOPICS[3],
     'MH-STAGING-C1-28': CANONICAL_DS_C1_SUBTOPICS[4],
     'MH-STAGING-C1-29': CANONICAL_DS_C1_SUBTOPICS[2],
-    'MH-STAGING-C1-30': CANONICAL_DS_C1_SUBTOPICS[2],
-    'MH-STAGING-C1-31': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-30': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-31': CANONICAL_DS_C1_SUBTOPICS[1],
     'MH-STAGING-C1-32': CANONICAL_DS_C1_SUBTOPICS[2],
     'MH-STAGING-C1-33': CANONICAL_DS_C1_SUBTOPICS[2]
 };
@@ -7413,7 +7413,7 @@ const DS_C4_MODEL_TO_SUBTOPIC = {
     'MH-STAGING-C4-23': CANONICAL_DS_C4_SUBTOPICS[4],
     'MH-STAGING-C4-24': CANONICAL_DS_C4_SUBTOPICS[4],
     'MH-STAGING-C4-25': CANONICAL_DS_C4_SUBTOPICS[3],
-    'MH-STAGING-C4-26': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-26': CANONICAL_DS_C4_SUBTOPICS[3],
     'MH-STAGING-C4-27': CANONICAL_DS_C4_SUBTOPICS[3],
     'MH-STAGING-C4-28': CANONICAL_DS_C4_SUBTOPICS[0],
     'MH-STAGING-C4-29': CANONICAL_DS_C4_SUBTOPICS[4],
@@ -8431,7 +8431,8 @@ function applyBankRows(rows){
             _rawServerTaxonomyById[id] = {
                 baiHoc: String(q.baiHoc || '').trim(),
                 tnType: String(q.tnType || '').trim(),
-                subTopic: String(q.subTopic || '').trim()
+                subTopic: String(q.subTopic || '').trim(),
+                optA: String(q.optA || '').trim()
             };
         }
     });
@@ -8496,12 +8497,16 @@ function applyBankRows(rows){
         filteredRaw.forEach(q => {
             const meta = dsMetaMap.get(String(q.id || '').trim());
             if (meta) {
-                if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
-                if (meta.baiHoc) q.baiHoc = meta.baiHoc;
-                if (meta.subTopic) q.subTopic = meta.subTopic;
-                if (q.tnType === undefined) q.tnType = '';
-                if (meta.modelId && !/data-model-id=/i.test(String(q.question || ''))) {
-                    q.question = String(q.question || '').trim() + `\n<div class="vlxt-model-slot" data-model-id="${nhEsc(meta.modelId)}"></div>`;
+                if (String(q.optA || '').trim() !== String(meta.optA || '').trim()) {
+                    Object.assign(q, meta);
+                } else {
+                    if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
+                    if (meta.baiHoc) q.baiHoc = meta.baiHoc;
+                    if (meta.subTopic) q.subTopic = meta.subTopic;
+                    if (q.tnType === undefined) q.tnType = '';
+                    if (meta.modelId && !/data-model-id=/i.test(String(q.question || ''))) {
+                        q.question = String(q.question || '').trim() + `\n<div class="vlxt-model-slot" data-model-id="${nhEsc(meta.modelId)}"></div>`;
+                    }
                 }
             }
         });
@@ -8519,7 +8524,7 @@ function applyBankRows(rows){
     if (getAdminKey() && !localStorage.getItem('vlxt_tn220_bt_synced_v1')) {
         setTimeout(() => syncApprovedTn220BtToServer(true), 2400);
     }
-    if (getAdminKey() && !localStorage.getItem('vlxt_ds106_bank_synced_v1')) {
+    if (getAdminKey() && !localStorage.getItem('vlxt_ds106_bank_synced_v2')) {
         setTimeout(() => syncApprovedDs106ToServer(true), 3600);
     }
     bankLoaded = true;
@@ -8575,10 +8580,10 @@ async function syncApprovedDs106ToServer(silent) {
     if (!key || !Array.isArray(window.VLXT_DS106_BANK) || !window.VLXT_DS106_BANK.length) return;
     const missingQs = window.VLXT_DS106_BANK.filter(dsQ => {
         const srv = _rawServerTaxonomyById[dsQ.id];
-        return !srv;
+        return !srv || srv.optA !== String(dsQ.optA || '').trim();
     });
     if (!missingQs.length) {
-        try { localStorage.setItem('vlxt_ds106_bank_synced_v1', '1'); } catch (e) {}
+        try { localStorage.setItem('vlxt_ds106_bank_synced_v2', '1'); } catch (e) {}
         return;
     }
     _ds106SyncInFlight = true;
@@ -8590,9 +8595,9 @@ async function syncApprovedDs106ToServer(silent) {
             questions: missingQs
         });
         if (res && res.ok) {
-            try { localStorage.setItem('vlxt_ds106_bank_synced_v1', '1'); } catch (e) {}
+            try { localStorage.setItem('vlxt_ds106_bank_synced_v2', '1'); } catch (e) {}
             missingQs.forEach(q => {
-                _rawServerTaxonomyById[q.id] = { baiHoc: q.baiHoc || '', tnType: '', subTopic: q.subTopic || '' };
+                _rawServerTaxonomyById[q.id] = { baiHoc: q.baiHoc || '', tnType: '', subTopic: q.subTopic || '', optA: String(q.optA || '').trim() };
             });
             try { await adminDbDelete('nganhang'); } catch (e) {}
             if (!silent) toast('<i class="fa-solid fa-circle-check"></i> Đã đồng bộ ' + missingQs.length + ' câu Đúng/Sai &amp; mô hình Canvas lên Google Sheets!', 'ok');
