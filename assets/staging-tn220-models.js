@@ -2291,6 +2291,176 @@
         ctx.fillText('D', ax, yBot + 19); ctx.fillText('C', ax + aw, yBot + 19);
     });
 
+    // 47. MH-TN220-C2-47 — Ấn ống kim loại mỏng rỗng xuống nước đẳng nhiệt (VLXT-T1-L09-Q29)
+    window.VLXTModels.register('MH-TN220-C2-47', function (ctx, w, h, t) {
+        const bg = ctx.createLinearGradient(0, 0, 0, h);
+        bg.addColorStop(0, '#060b19'); bg.addColorStop(1, '#0a1226');
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(148,163,184,0.06)'; ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+        for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('THÍ NGHIỆM ẤN ỐNG RỖNG ÚP NGƯỢC XUỐNG NƯỚC (T = const)', w / 2, 26);
+
+        const saw = (t * 0.22) % 1;
+        // Hai panel so sánh: (a) Ban đầu (trên mặt nước) -> (b) Đang ấn chìm xuống nước
+        const drawTank = (cx, title, depthFrac, subNote) => {
+            const tx = cx - 125, ty = 78, tw = 250, th = 182;
+            const waterTop = ty + 52 + depthFrac * 18;
+            // Nước trong bể hở miệng chữ U
+            ctx.fillStyle = 'rgba(14,165,233,0.22)';
+            ctx.fillRect(tx + 4, waterTop, tw - 8, ty + th - waterTop - 3);
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.moveTo(tx + 4, waterTop); ctx.lineTo(tx + tw - 4, waterTop); ctx.stroke();
+
+            // Thành bể thủy tinh chữ U hở miệng trên (không vẽ nắp trên)
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty); ctx.lineTo(tx, ty + th); ctx.lineTo(tx + tw, ty + th); ctx.lineTo(tx + tw, ty);
+            ctx.stroke();
+
+            // Ống kim loại mỏng úp ngược (kín đỉnh trên, hở đáy dưới)
+            const tubeW = 64, tubeH = 112;
+            const tubeX = cx - tubeW / 2;
+            const tubeTop = ty - 26 + depthFrac * 74;
+            const tubeBot = tubeTop + tubeH;
+            const insideWaterY = Math.max(waterTop + 8 + depthFrac * 24, tubeTop + 34);
+            const airH = Math.max(26, Math.min(tubeBot, insideWaterY) - tubeTop - 3);
+
+            // Cột không khí bị nén bên trong ống
+            ctx.fillStyle = depthFrac > 0.2 ? 'rgba(251,191,36,0.28)' : 'rgba(56,189,248,0.14)';
+            ctx.fillRect(tubeX + 2, tubeTop + 2, tubeW - 4, airH);
+            // Nước dâng một phần vào đáy ống
+            if (tubeBot > insideWaterY) {
+                ctx.fillStyle = 'rgba(14,165,233,0.42)';
+                ctx.fillRect(tubeX + 2, insideWaterY, tubeW - 4, tubeBot - insideWaterY);
+            }
+
+            // Vỏ ống kim loại úp ngược (kín trên, hở dưới)
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3.2;
+            ctx.beginPath();
+            ctx.moveTo(tubeX, tubeBot); ctx.lineTo(tubeX, tubeTop); ctx.lineTo(tubeX + tubeW, tubeTop); ctx.lineTo(tubeX + tubeW, tubeBot);
+            ctx.stroke();
+
+            // Mũi tên lực ấn F hướng xuống khi đang ấn
+            if (depthFrac > 0.15) {
+                ctx.strokeStyle = '#f97316'; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(cx, tubeTop - 26); ctx.lineTo(cx, tubeTop - 4); ctx.stroke();
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath(); ctx.moveTo(cx, tubeTop - 2); ctx.lineTo(cx - 6, tubeTop - 12); ctx.lineTo(cx + 6, tubeTop - 12); ctx.closePath(); ctx.fill();
+                ctx.font = '800 14px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'left';
+                ctx.fillText('Ấn xuống', cx + 12, tubeTop - 10);
+            }
+
+            // Các hạt khí động học minh họa mật độ tăng khi nén
+            const nDots = 7;
+            for (let i = 0; i < nDots; i++) {
+                const px = tubeX + 12 + ((i * 19 + saw * 40) % (tubeW - 24));
+                const py = tubeTop + 10 + ((i * 23 + saw * 55) % Math.max(12, airH - 16));
+                ctx.fillStyle = depthFrac > 0.2 ? '#fbbf24' : '#7dd3fc';
+                ctx.beginPath(); ctx.arc(px, py, 2.8, 0, Math.PI * 2); ctx.fill();
+            }
+
+            ctx.fillStyle = '#f8fafc'; ctx.font = '700 14px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(title, cx, ty + th + 24);
+            ctx.fillStyle = '#94a3b8'; ctx.font = '600 12.5px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(subNote, cx, ty + th + 41);
+        };
+
+        drawTank(205, '(a) Chạm mặt thoáng nước', 0.08, 'Thể tích khí V₀ ban đầu');
+        // Mũi tên chuyển tiếp ở giữa
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.6;
+        ctx.beginPath(); ctx.moveTo(358, 165); ctx.lineTo(418, 165); ctx.stroke();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.moveTo(422, 165); ctx.lineTo(410, 159); ctx.lineTo(410, 171); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#7dd3fc'; ctx.font = '700 13px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('T = const', 390, 152);
+        drawTank(575, '(b) Ống chìm sâu dần', 0.25 + saw * 0.65, 'Thể tích khí V giảm dần');
+    });
+
+    // 48. MH-TN220-C1-48 — Đun nóng hai chất lỏng X, Y cùng khối lượng & công suất + đồ thị T-t (VLXT-T1-L05-Q13)
+    window.VLXTModels.register('MH-TN220-C1-48', function (ctx, w, h, t) {
+        const bg = ctx.createLinearGradient(0, 0, 0, h);
+        bg.addColorStop(0, '#060b19'); bg.addColorStop(1, '#0a1226');
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(148,163,184,0.06)'; ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+        for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+
+        const saw = (t * 0.2) % 1;
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('ĐUN HAI CHẤT LỎNG X, Y (CÙNG m, CÔNG SUẤT P) & ĐỒ THỊ T(t)', w / 2, 24);
+
+        // Trái: 2 cốc hở miệng chữ U chứa X và Y
+        const drawBeaker = (cx, label, liquidColor, boilLevel) => {
+            const bx = cx - 44, by = 78, bw = 88, bh = 128;
+            ctx.fillStyle = liquidColor;
+            ctx.fillRect(bx + 4, by + 34, bw - 8, bh - 38);
+            // Cốc U hở miệng trên
+            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.8;
+            ctx.beginPath();
+            ctx.moveTo(bx, by); ctx.lineTo(bx, by + bh); ctx.lineTo(bx + bw, by + bh); ctx.lineTo(bx + bw, by);
+            ctx.stroke();
+            // Bếp đun công suất P đồng nhất
+            ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+            ctx.fillRect(bx - 6, by + bh + 6, bw + 12, 20);
+            ctx.strokeRect(bx - 6, by + bh + 6, bw + 12, 20);
+            ctx.fillStyle = '#fb923c'; ctx.fillRect(bx + 10, by + bh + 10, bw - 20, 6);
+            // Bọt nhiệt chuyển động đều lên trên
+            for (let i = 0; i < 4; i++) {
+                const bProg = (saw * boilLevel + i * 0.25) % 1;
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.beginPath();
+                ctx.arc(bx + 18 + i * 17, by + bh - 12 - bProg * (bh - 52), 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.fillStyle = '#f8fafc'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(label, cx, by - 10);
+            ctx.fillStyle = '#94a3b8'; ctx.font = '600 12.5px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('P = const', cx, by + bh + 44);
+        };
+        drawBeaker(106, 'Chất lỏng X', 'rgba(56,189,248,0.28)', 0.9);
+        drawBeaker(248, 'Chất lỏng Y', 'rgba(249,115,22,0.28)', 1.4);
+
+        // Phải: Đồ thị Nhiệt độ - Thời gian chuẩn đề (Y dốc hơn X và đạt đoạn nằm ngang cao/sớm tương ứng)
+        const gx = 376, gy = 250, gw = 344, gh = 184;
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(gx, gy - gh); ctx.lineTo(gx, gy); ctx.lineTo(gx + gw, gy); ctx.stroke();
+        // Mũi tên trục
+        ctx.fillStyle = '#e2e8f0';
+        ctx.beginPath(); ctx.moveTo(gx, gy - gh - 6); ctx.lineTo(gx - 5, gy - gh + 5); ctx.lineTo(gx + 5, gy - gh + 5); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(gx + gw + 6, gy); ctx.lineTo(gx + gw - 5, gy - 5); ctx.lineTo(gx + gw - 5, gy + 5); ctx.closePath(); ctx.fill();
+        ctx.font = '700 14px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText('Nhiệt độ', gx - 24, gy - gh - 12);
+        ctx.textAlign = 'right';
+        ctx.fillText('Thời gian', gx + gw + 10, gy + 24);
+        ctx.fillText('O', gx - 8, gy + 16);
+
+        // Đường Y (màu cam, dốc hơn, lên đoạn bằng phía trên cao hơn)
+        const drawPieceCurve = (pts, col, label, labelPos) => {
+            ctx.strokeStyle = col; ctx.lineWidth = 3.2;
+            ctx.beginPath();
+            pts.forEach((pt, idx) => idx === 0 ? ctx.moveTo(pt[0], pt[1]) : ctx.lineTo(pt[0], pt[1]));
+            ctx.stroke();
+            // Chấm quét động tiến độ sawtooth trên đường đồ thị
+            const totalSegs = pts.length - 1;
+            const prog = saw * totalSegs;
+            const segIdx = Math.min(totalSegs - 1, Math.floor(prog));
+            const localT = prog - segIdx;
+            const dotX = pts[segIdx][0] + (pts[segIdx + 1][0] - pts[segIdx][0]) * localT;
+            const dotY = pts[segIdx][1] + (pts[segIdx + 1][1] - pts[segIdx][1]) * localT;
+            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(dotX, dotY, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = col; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText(label, labelPos[0], labelPos[1]);
+        };
+
+        const ptsY = [[gx, gy - 32], [gx + 145, gy - 152], [gx + 275, gy - 152]];
+        const ptsX = [[gx, gy - 32], [gx + 205, gy - 112], [gx + 305, gy - 112]];
+        drawPieceCurve(ptsX, '#38bdf8', 'X', [gx + 312, gy - 107]);
+        drawPieceCurve(ptsY, '#fb923c', 'Y', [gx + 282, gy - 147]);
+    });
+
 })();
 
 // === VLXT_TN220_CAPTIONS_REGISTRY ===
@@ -2341,7 +2511,9 @@
   "MH-TN220-C3-43": "Câu LT01: Một nam châm ban đầu được đặt giữa hai đầu của một lõi sắt mề...",
   "MH-TN220-C3-44": "Câu LT03: Xét mạch điện như hình vẽ. Khi dịch chuyển con chạy về bên ph...",
   "MH-TN220-C3-45": "Câu LT05: Hình bên mô tả thí nghiệm về hiện tượng cảm ứng điện từ. Khi ...",
-  "MH-TN220-C3-46": "Câu LT06: Một khung dây dẫn ABCD chuyển động dọc theo hai đường $xx'$ ,..."
+  "MH-TN220-C3-46": "Câu LT06: Một khung dây dẫn ABCD chuyển động dọc theo hai đường $xx'$ ,...",
+  "MH-TN220-C2-47": "Thí nghiệm ấn ống kim loại rỗng úp ngược xuống nước (đẳng nhiệt)",
+  "MH-TN220-C1-48": "Đun nóng hai chất lỏng X, Y cùng công suất & đồ thị nhiệt độ - thời gian"
 };
   g.VLXT_TN220_CAPTIONS = Object.assign(g.VLXT_TN220_CAPTIONS || {}, caps);
   if (typeof MODEL_CAPTIONS === 'object' && MODEL_CAPTIONS) {

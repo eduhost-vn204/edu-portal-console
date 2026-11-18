@@ -1,3 +1,23 @@
+## Bàn giao gần nhất (18/11/2026 14:35)
+- **Chiến Dịch 50 Đề Chuẩn Bộ GD&ĐT 2026 (1.400 Câu Độc Lập Không Trùng) + Làm Sạch Ngân Hàng (`3.514` Câu) + Ngân Hàng Quản Trị Đề & Chiến Dịch (`ngan-hang-de.html`)**:
+- **Mục tiêu**:
+  1. Theo chỉ đạo của Thầy (*"dùng 50 đề tạo từ ngân hàng vừa nạp cho bài Test điểm thi THPTQG, học sinh làm ồ wow trực quan với mô hình canvas, và quản lý 50 đề ngay trong Ngân hàng thành Ngân hàng quản trị"*): làm sạch dữ liệu tồn đọng trên `3.514` câu và dựng **50 đề 28 câu chuẩn Bộ 2026 (`1.400` câu độc lập)** phân chia 4 mục đích (`5` Khảo sát Free · `15` Thực chiến 8+ · `20` Về đích 9+ · `10` Tổng duyệt 2026).
+  2. Nâng cấp `ngan-hang-de.html` thành **Ngân hàng quản trị** hợp nhất Kho Câu Hỏi Chuẩn Hóa (`3.514`) & Tab Quản Lý Đề & Chiến Dịch (`50` đề + SoanDe) cùng Inspector xem toàn bộ 28 câu có Canvas 60 FPS trực tiếp, đổi câu tại chỗ, xuất Word `.docx` và đồng bộ cloud.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`, trên nền `194e5be`)**:
+  - `assets/staging-tn220-models.js`: Bổ sung **2 mô hình Canvas 60 FPS Retina mới** (`MH-TN220-C2-47` cho `VLXT-T1-L09-Q29` & `MH-TN220-C1-48` cho `VLXT-T1-L05-Q13`, tổng `48` mô hình, `shadowBlur = 0`, Zero Data Leakage).
+  - `assets/tln-thuc-te-models.js`: Đăng ký thêm renderer **Canvas 60 FPS Retina (`MH-TLN-2026-03`)** cho cụm câu Phần III thanh dẫn trượt trên thanh ray trong từ trường đều (giữ nguyên SVG dự phòng).
+  - `assets/ngan-hang-3048-questions.json` & `.js`: Vá sạch `235` đáp án `TLN` từ `tln-370-questions.js` (khử 10 đáp án bị lỗi ngày/ký tự từ Google Sheets, đạt `370/370` số thực hợp lệ), sửa `24` đáp án chữ `'A'` trên `VLXT-T1-L09/L10` + 5 lời giải L10, xóa `204` đường dẫn ảnh chết `question-crops/*.png`, gắn đủ `modelId` mới.
+  - `assets/thptqg-50-exams-pack.js`: Tạo bộ **50 đề chuẩn Bộ GD&ĐT (`THPTQG-2026-DE01..DE50`)**, mỗi đề 28 câu (`Phần I: 18 TN-LT`, `Phần II: 4 ĐS 100% Canvas`, `Phần III: 6 TLN gồm 3 cụm nhomId nguyên vẹn`), **1.400 mã câu hỏi độc nhất (`0` trùng lặp giữa 50 đề)**, mỗi đề có **`5–8` mô hình Canvas 60 FPS** (`Đề 01` Câu 1 là `MH-TN220-C2-30`, tổng `8` mô hình).
+  - `ngan-hang-de.html`: Thêm thẻ KPI bấm được `#nh-s-total-exams` (`50` đề), thanh 2 tab workspace (`Kho Câu Hỏi Chuẩn Hóa` / `Quản Lý Đề & Chiến Dịch`), 5 thẻ mục đích (`50 / 5 / 15 / 20 / 10`), bộ lọc tìm kiếm theo mã câu/mô hình, gán mục đích/mở-khóa/Free-VIP từng đề, modal `#nh-exam-inspector-overlay` hiển thị 28 câu kèm Canvas 60 FPS & nút `Đổi câu`, tạo đề 28 câu mới chống trùng, xuất `.docx`, tự đồng bộ `registerCampaign50Usages()` & filter chiến dịch `THPTQG_2026` (giao diện phẳng EdTech, không AI Glow).
+- **Kiểm tra đã chạy sau chỉnh sửa cuối**:
+  - `node scripts/test-apps-script-logic.mjs` (`12/12` PASS) & `node scripts/test-import-nganhang.mjs` (`12/12` PASS).
+  - `verify_50exams_admin.mjs`: PASS `vm.Script` 5 file JS + 5 block HTML, `</html>`, `1.400/1.400` ID khớp ngân hàng `3.514` (`0` trùng), `370/370` `TLN` số hợp lệ, `shadowBlur = 0`, `0` secret, `git diff --check` sạch.
+  - Playwright Retina `2x` (`pw_verify_admin_50exams.py`): PASS `Cau=3,514, De=50`, 5 thẻ mục đích `['50', '5', '15', '20', '10']`, lọc `KHAO_SAT_FREE` (`5`), đổi mục đích cập nhật tức thì, mở Inspector `DE01` đủ 28 câu + 10 `<canvas>` (`1560×610`) + đổi Câu 1 thành công, `0` lỗi Console/PageError; kiểm tra trực quan 2 ảnh PNG Retina `2x`.
+- **Điều phải giữ nguyên**:
+  - Giữ nguyên giao diện CBT sáng của `phong-thi-thu.html`; không AI Glow; đồng bộ Google Sheets qua trình duyệt admin có `vlxt_backend_admin_key`.
+- **Việc còn lại**:
+  - Đồng bộ hoàn thiện sang web Học sinh (`eduhost-vn204/edu-portal-lms`) đã thực hiện ở cùng đợt (`danh-gia-nang-luc.html`, `freemium-flow.js`, `data/thptqg-50-manifest.js`, `data/thptqg-exams/de-01..50.json`).
+
 ## Bàn giao gần nhất (18/11/2026 13:39)
 - **Đẩy Gộp Trọn Bộ `270` Câu `TN-LT` (`220` Đợt Mới + `50` Chương 2–3) Kèm `59` Mô Hình Canvas 60 FPS Vào Ngân Hàng Đề Chính Thức (`3.244 -> 3.514` Câu · Đạt Chuẩn `16/16` Chủ Đề 50 Đề)**:
 - **Mục tiêu**:

@@ -16,10 +16,11 @@
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/100-mohinh-tln-chinhthuc.js"></script>
     <script src="assets/tln-thuc-te-models.js"></script>
-    <script src="assets/staging-tn220-models.js?v=20261118-lt270"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-50de"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-lt270"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
     <script src="assets/tn270-lt-bank-pack.js?v=20261118-lt270"></script>
+    <script src="assets/thptqg-50-exams-pack.js?v=20261118-50de"></script>
     <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/ds106-bank-pack.js?v=20261118-ds200-v2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -136,6 +137,47 @@
         #nh-autopick-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2150; align-items:center; justify-content:center; padding:16px; }
         #nh-autopick-overlay.show { display:flex; }
         #nh-autopick-modal { background:var(--bg); color:var(--black); border-radius:14px; width:min(760px,96vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 16px 40px rgba(0,0,0,.28); border:1.5px solid var(--border); overflow:hidden; }
+        /* Quản trị Đề & Chiến dịch THPTQG 2026 (Phẳng, sắc nét — Zero AI Glow) */
+        .nh-workspace-tabs { display:flex; gap:10px; margin-bottom:20px; border-bottom:1.5px solid var(--border); padding-bottom:12px; flex-wrap:wrap; align-items:center; }
+        .nh-ws-tab { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg); color:var(--black); font-size:13.5px; font-weight:700; cursor:pointer; transition:border-color .14s, background .14s; }
+        .nh-ws-tab:hover { border-color:var(--blue); }
+        .nh-ws-tab.active { background:#0b84f3; color:#ffffff; border-color:#0b84f3; }
+        .nh-ws-badge { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:800; padding:2px 8px; border-radius:999px; background:rgba(15,23,42,0.08); color:var(--black); }
+        .nh-ws-tab.active .nh-ws-badge { background:rgba(255,255,255,0.22); color:#ffffff; }
+        .nh-purpose-grid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; margin-bottom:18px; }
+        @media(max-width:1100px){ .nh-purpose-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+        .nh-purpose-card { background:var(--bg); border:1.5px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; text-align:left; transition:border-color .14s, transform .14s; }
+        .nh-purpose-card:hover { border-color:var(--blue); transform:translateY(-1px); }
+        .nh-purpose-card.active { border-color:#0b84f3; background:rgba(11,132,243,0.06); }
+        .nh-purpose-card .npc-num { font-size:22px; font-weight:800; font-family:'DM Mono',monospace; color:var(--black); margin-top:4px; }
+        .nh-purpose-card .npc-lbl { font-size:12px; font-weight:700; color:var(--gray); }
+        .nh-purpose-card .npc-sub { font-size:11px; color:var(--gray2); margin-top:2px; }
+        .nh-exam-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; }
+        .nh-exam-toolbar input, .nh-exam-toolbar select { padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--black); font-size:13px; font-family:'Inter',sans-serif; }
+        .nh-exam-toolbar input { flex:1; min-width:220px; }
+        .nh-exam-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+        @media(max-width:960px){ .nh-exam-grid { grid-template-columns:1fr; } }
+        .nh-exam-card { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:10px; }
+        .nh-exam-card:hover { border-color:var(--blue); }
+        .nh-ec-head { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+        .nh-ec-id { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:6px; background:rgba(11,132,243,0.1); color:#0b84f3; border:1px solid rgba(11,132,243,0.28); }
+        .nh-ec-title { font-size:14.5px; font-weight:800; color:var(--black); line-height:1.4; }
+        .nh-ec-pills { display:flex; gap:6px; flex-wrap:wrap; font-size:11.5px; font-weight:600; color:var(--gray); }
+        .nh-ec-pill { padding:3px 9px; border-radius:6px; background:var(--bg2); border:1px solid var(--border); }
+        .nh-ec-pill.model { background:rgba(14,165,233,0.1); color:#0284c7; border-color:rgba(14,165,233,0.32); font-weight:700; }
+        .nh-ec-purpose-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .nh-ec-purpose-row select { flex:1; min-width:200px; padding:6px 10px; border-radius:7px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12.5px; font-weight:600; }
+        .nh-ec-actions { display:flex; gap:7px; flex-wrap:wrap; padding-top:6px; border-top:1px solid var(--border); }
+        .nh-ec-btn { padding:6px 11px; border-radius:7px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:none; }
+        .nh-ec-btn:hover { border-color:var(--blue); }
+        .nh-ec-btn.primary { background:#0b84f3; color:#fff; border-color:#0b84f3; }
+        .nh-ec-btn.teal { background:#0f766e; color:#fff; border-color:#0f766e; }
+        .nh-ec-btn.green { background:#15803d; color:#fff; border-color:#15803d; }
+        #nh-exam-inspector-overlay { display:none; position:fixed; inset:0; background:rgba(2,6,23,.72); z-index:2250; align-items:center; justify-content:center; padding:16px; }
+        #nh-exam-inspector-overlay.show { display:flex; }
+        #nh-exam-inspector-modal { background:var(--bg); color:var(--black); border:1.5px solid var(--border); border-radius:14px; width:min(1040px, 97vw); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,.35); }
+        .stat-card.clickable-card { cursor:pointer; transition:border-color .14s, transform .14s; }
+        .stat-card.clickable-card:hover { border-color:var(--blue); transform:translateY(-1px); }
         .nh-q-text { font-size:15.5px; font-weight:600; line-height:1.68; color:#f1f5f9; margin-bottom:14px; word-break:break-word; }
         .nh-context { background:rgba(56,189,248,0.06); border-left:3.5px solid #0b84f3; padding:10px 14px; font-size:14px; margin-bottom:12px; border-radius:6px; color:#e0f2fe; line-height:1.6; }
         
@@ -807,6 +849,16 @@
         /* Stat boxes */
         body.dark .stat-val { color:#e6edf3; }
         body.dark .stat-box, body.dark .stat-card { background:#161b22; border-color:#30363d; }
+        body.dark .nh-ws-tab { background:#161b22; border-color:#30363d; color:#e6edf3; }
+        body.dark .nh-ws-badge { background:rgba(255,255,255,0.1); color:#e6edf3; }
+        body.dark .nh-purpose-card { background:#161b22; border-color:#30363d; }
+        body.dark .nh-purpose-card.active { border-color:#38bdf8; background:rgba(56,189,248,0.1); }
+        body.dark .nh-purpose-card .npc-num, body.dark .nh-ec-title { color:#f1f5f9; }
+        body.dark .nh-exam-toolbar, body.dark .nh-exam-card, body.dark #nh-exam-inspector-modal { background:#161b22; border-color:#30363d; color:#e6edf3; }
+        body.dark .nh-ec-pill { background:#0d1117; border-color:#30363d; color:#94a3b8; }
+        body.dark .nh-ec-pill.model { background:rgba(14,165,233,0.16); color:#38bdf8; border-color:rgba(56,189,248,0.36); }
+        body.dark .nh-ec-btn { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .nh-ec-actions { border-color:#30363d; }
         /* Scores table */
         body.dark .scores-wrap, body.dark .scores-table-wrap { background:#161b22; border-color:#30363d; }
         body.dark .scores-search input { color:#e6edf3; }
@@ -1520,7 +1572,7 @@
 <div class="tab-content active" id="tab-nganhang">
 <div class="wrap">
     <div class="lm-toolbar" style="margin-bottom:20px">
-        <h2><i class="fa-solid fa-database" style="color:var(--blue);font-size:20px"></i> Ngân hàng câu hỏi</h2>
+        <h2><i class="fa-solid fa-database" style="color:var(--blue);font-size:20px"></i> Ngân hàng quản trị — Câu hỏi &amp; Chiến dịch Đề thi</h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn-new" style="background:#0f766e" onclick="openAutoPickSubtopicModal()">
                 <i class="fa-solid fa-dice"></i> 🎲 Bốc 16 Chủ đề / Đề 18 câu Bộ (Chống trùng)
@@ -1541,8 +1593,9 @@
     <!-- KHU VỰC THÔNG BÁO TRẠNG THÁI NGUỒN DỮ LIỆU & THỜI ĐIỂM CẬP NHẬT -->
     <div id="nh-source-status" style="margin-bottom:18px;display:none"></div>
 
-    <div class="stat-row" style="margin-bottom:24px">
+    <div class="stat-row" style="margin-bottom:18px">
         <div class="stat-card"><div class="stat-label">Tổng số câu</div><div class="stat-val blue" id="nh-s-total">—</div></div>
+        <div class="stat-card clickable-card" onclick="switchBankWorkspaceTab('exams')" title="Bấm để mở Tab Quản lý 50+ Đề &amp; Chiến dịch"><div class="stat-label">🗂️ Tổng số đề (Quản trị)</div><div class="stat-val" id="nh-s-total-exams" style="color:#0284c7">50</div><div id="nh-s-total-exams-sub" style="font-size:11px;color:var(--gray);margin-top:3px;font-weight:600">50 Đề Chiến dịch 2026</div></div>
         <div class="stat-card"><div class="stat-label">Trắc nghiệm (TN)</div><div class="stat-val" id="nh-s-tn">—</div></div>
         <div class="stat-card"><div class="stat-label">📘 TN Lý thuyết (THPTQG)</div><div class="stat-val blue" id="nh-s-tn-lt">—</div></div>
         <div class="stat-card"><div class="stat-label">🧮 TN Tính toán (Chưa chia)</div><div class="stat-val" id="nh-s-tn-bt" style="color:#7c3aed">—</div></div>
@@ -1551,6 +1604,18 @@
         <div class="stat-card"><div class="stat-label">Câu tinh (đã rà soát)</div><div class="stat-val green" id="nh-s-tinh">—</div></div>
     </div>
 
+    <div class="nh-workspace-tabs">
+        <button type="button" class="nh-ws-tab active" id="nh-tab-btn-questions" onclick="switchBankWorkspaceTab('questions')">
+            <span><i class="fa-solid fa-layer-group"></i> Kho Câu Hỏi Chuẩn Hóa</span>
+            <span class="nh-ws-badge" id="nh-tab-q-count">—</span>
+        </button>
+        <button type="button" class="nh-ws-tab" id="nh-tab-btn-exams" onclick="switchBankWorkspaceTab('exams')">
+            <span><i class="fa-solid fa-clipboard-list"></i> Quản Lý Đề &amp; Chiến Dịch</span>
+            <span class="nh-ws-badge" id="nh-tab-exams-count">50</span>
+        </button>
+    </div>
+
+    <div id="nh-workspace-questions">
     <div class="nh-grid">
         <!-- CỘT TRÁI: NẠP FILE -->
         <div>
@@ -1685,6 +1750,8 @@
                 </select>
                 <select id="nh-f-campaign" onchange="bankFiltersChanged()">
                     <option value="">Mọi trạng thái chiến dịch</option>
+                    <option value="used_THPTQG_2026">⚡ Đã vào: Chiến dịch 50 Đề THPTQG 2026 (1.400 câu)</option>
+                    <option value="unused_THPTQG_2026">🟢 Chưa dùng trong: Chiến dịch 50 Đề THPTQG 2026</option>
                     <option value="unused_THITHU">🛡️ Chưa dùng trong: Chiến dịch Thi Thử (Chống trùng Thi Thử)</option>
                     <option value="unused_DGNL">🛡️ Chưa dùng trong: Chiến dịch Đánh Giá Năng Lực (Chống trùng ĐGNL)</option>
                     <option value="unused_KIEMTRA">🛡️ Chưa dùng trong: Chiến dịch Kiểm Tra Định Kỳ (Chống trùng Kiểm Tra)</option>
@@ -1803,6 +1870,40 @@
                 </div>
             </div>
         </div>
+    </div>
+    </div><!-- end nh-workspace-questions -->
+
+    <div id="nh-workspace-exams" style="display:none">
+        <div class="nh-purpose-grid" id="nh-exam-purpose-cards"></div>
+        <div class="nh-exam-toolbar">
+            <input type="text" id="nh-em-search" placeholder="Tìm theo mã đề, tên đề, mã câu hỏi hoặc mã mô hình Canvas..." oninput="renderUnifiedExamManager()">
+            <select id="nh-em-f-purpose" onchange="renderUnifiedExamManager()">
+                <option value="">🎯 Mọi mục đích đề</option>
+                <option value="KHAO_SAT_FREE">🎯 Khảo sát điểm thi THPTQG (Free · Đề 01–05)</option>
+                <option value="THUC_CHIEN_8PLUS">🚀 Thực chiến bứt phá 8+ (Đề 06–20)</option>
+                <option value="VE_DICH_9PLUS">🏆 Chiến dịch Về đích 9+ (Đề 21–40)</option>
+                <option value="TONG_DUYET_2026">🔥 Tổng duyệt sát ngày thi (Đề 41–50)</option>
+                <option value="PHONG_THI_THU">🏛️ Đề Phòng Thi Thử / Soạn Đề khác</option>
+            </select>
+            <select id="nh-em-f-status" onchange="renderUnifiedExamManager()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="mo">✅ Đang mở</option>
+                <option value="khoa">🔒 Đang khóa</option>
+                <option value="free">🎁 Miễn phí (Free)</option>
+                <option value="vip">⭐ Tiêu chuẩn / VIP</option>
+            </select>
+            <button type="button" class="btn-new" style="background:#0f766e" onclick="createNewManagedExam28()">
+                <i class="fa-solid fa-plus"></i> Tạo đề chuẩn Bộ 28 câu mới
+            </button>
+            <button type="button" class="btn-new" style="background:#0284c7" onclick="syncCampaign50ToCloud()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Đồng bộ Chiến dịch lên Sheets
+            </button>
+            <button type="button" class="btn-new" style="background:#475569" onclick="exportManagedExamsConfigJson()">
+                <i class="fa-solid fa-download"></i> Xuất cấu hình 50 đề (.json)
+            </button>
+        </div>
+        <div id="nh-em-count-bar" style="font-size:13px;color:var(--gray);font-weight:600;margin-bottom:12px"></div>
+        <div class="nh-exam-grid" id="nh-exam-cards-grid"></div>
     </div>
 </div>
 </div>
@@ -5599,6 +5700,7 @@ function renderExamList() {
             }).join('');
         }
     }
+    if (typeof renderUnifiedExamManager === 'function') renderUnifiedExamManager();
 }
 
 async function toggleExamVisibility(examId, curHienThi) {
@@ -8212,7 +8314,8 @@ const CAMPAIGN_NAME_MAP = {
     THITHU: 'Thi Thử THPT (THITHU)',
     KIEMTRA: 'Kiểm Tra Định Kỳ (KIEMTRA)',
     BAIHOC: 'Luyện Tập Bài Học (BAIHOC)',
-    DAUTRUONG: 'Đấu Trường (DAUTRUONG)'
+    DAUTRUONG: 'Đấu Trường (DAUTRUONG)',
+    THPTQG_2026: 'Chiến dịch 50 Đề THPTQG 2026'
 };
 const STATIC_CAMPAIGN_USAGE = {"VLXT-T1-L07-Q32":[{"campaign":"DGNL","examId":"dgnl_de1","label":"ĐGNL: Đề 1"}],"VLXT-PT-KLT-DE08-P128-Q07":[{"campaign":"DGNL","examId":"dgnl_de1","label":"ĐGNL: Đề 1"}],"VLXT-C2-B01-MCQ-002":[{"campaign":"DGNL","examId":"dgnl_de2","label":"ĐGNL: Đề 2"}],"VLXT-PT-KLT-DE07-P120-Q03":[{"campaign":"DGNL","examId":"dgnl_de2","label":"ĐGNL: Đề 2"}],"VLXT-PT-HN-B02-P95-Q01":[{"campaign":"DGNL","examId":"dgnl_de2","label":"ĐGNL: Đề 2"}],"VLXT-PT-DE_05-P1-Q15":[{"campaign":"THITHU","examId":"thithu_demo_01","label":"Thi thử: thithu_demo_01"},{"campaign":"THITHU","examId":"vedich2k9_de02","label":"Thi thử: Đề 02"}],"VLXT-PT-P031-Q04":[{"campaign":"THITHU","examId":"thithu_demo_01","label":"Thi thử: thithu_demo_01"},{"campaign":"THITHU","examId":"vedich2k9_de02","label":"Thi thử: Đề 02"}],"VLXT-T1-L10-Q12":[{"campaign":"THITHU","examId":"vedich2k9_de03","label":"Thi thử: Đề 03"}],"VLXT-PT-HN-B06-P238-Q04":[{"campaign":"THITHU","examId":"vedich2k9_de03","label":"Thi thử: Đề 03"}],"VLXT-T1-L17-Q13":[{"campaign":"THITHU","examId":"vedich2k9_de04","label":"Thi thử: Đề 04"}],"VLXT-PT-P024-Q23":[{"campaign":"THITHU","examId":"vedich2k9_de04","label":"Thi thử: Đề 04"}],"VLXT-PT-DE_01-P1-Q12":[{"campaign":"THITHU","examId":"vedich2k9_de04","label":"Thi thử: Đề 04"}],"VLXT-T1-L09-Q24":[{"campaign":"THITHU","examId":"vedich2k9_de04","label":"Thi thử: Đề 04"}],"VLXT-PT-TT-B04-P207-Q01":[{"campaign":"THITHU","examId":"vedich2k9_de05","label":"Thi thử: Đề 05"}],"VLXT-PT-DE_01-P1-Q13":[{"campaign":"THITHU","examId":"vedich2k9_de05","label":"Thi thử: Đề 05"}],"VLXT-PT-HN-B06-P226-Q09":[{"campaign":"THITHU","examId":"vedich2k9_de05","label":"Thi thử: Đề 05"}],"VLXT-PT-TT-B07-P284-Q01":[{"campaign":"THITHU","examId":"vedich2k9_de05","label":"Thi thử: Đề 05"}],"VLXT-PT-HN-B01-P16-Q05":[{"campaign":"THITHU","examId":"vedich2k9_de05","label":"Thi thử: Đề 05"}],"VLXT-PT-HN-B02-P117-Q01":[{"campaign":"THITHU","examId":"vedich2k9_de06","label":"Thi thử: Đề 06"}],"VLXT-PT-DE_03-P1-Q08":[{"campaign":"THITHU","examId":"vedich2k9_de07","label":"Thi thử: Đề 07"}],"VLXT-PT-DE_17-P1-Q01":[{"campaign":"THITHU","examId":"vedich2k9_de09","label":"Thi thử: Đề 09"}],"VLXT-PT-TT-B05-P225-Q07":[{"campaign":"THITHU","examId":"vedich2k9_de09","label":"Thi thử: Đề 09"}],"VLXT-PT-KLT-DE15-P181-Q11":[{"campaign":"THITHU","examId":"vedich2k9_de09","label":"Thi thử: Đề 09"}],"VLXT-PT-HN-B01-P41-Q03":[{"campaign":"THITHU","examId":"vedich2k9_de09","label":"Thi thử: Đề 09"}],"VLXT-PT-TT-B05-P232-Q03":[{"campaign":"THITHU","examId":"vedich2k9_de09","label":"Thi thử: Đề 09"}],"VLXT-T1-L07-Q20":[{"campaign":"THITHU","examId":"vedich2k9_de10","label":"Thi thử: Đề 10"}],"VLXT-PT-KLT-DE01-P85-Q05":[{"campaign":"THITHU","examId":"vedich2k9_de10","label":"Thi thử: Đề 10"}],"VLXT-PT-HN-B02-P78-Q08":[{"campaign":"THITHU","examId":"vedich2k9_de10","label":"Thi thử: Đề 10"}],"VLXT-PT-TT-B07-P281-Q03":[{"campaign":"THITHU","examId":"vedich2k9_de10","label":"Thi thử: Đề 10"}],"VLXT-T1-L09-Q07B":[{"campaign":"THITHU","examId":"vedich2k9_de10","label":"Thi thử: Đề 10"}],"VLXT-T1-L17-Q50":[{"campaign":"THITHU","examId":"vedich2k9_de12","label":"Thi thử: Đề 12"}],"VLXT-PT-KLT-B04-P57-BTVN-Q11":[{"campaign":"THITHU","examId":"vedich2k9_de12","label":"Thi thử: Đề 12"}],"VLXT-PT-HN-B02-P84-Q05":[{"campaign":"THITHU","examId":"vedich2k9_de14","label":"Thi thử: Đề 14"}],"VLXT-T1-L09-Q18":[{"campaign":"THITHU","examId":"vedich2k9_de15","label":"Thi thử: Đề 15"}],"VLXT-PT-HN-B04-P166-Q03":[{"campaign":"THITHU","examId":"vedich2k9_de15","label":"Thi thử: Đề 15"}],"VLXT-PT-DE_01-P1-Q01":[{"campaign":"THITHU","examId":"vedich2k9_de15","label":"Thi thử: Đề 15"}],"VLXT-T1-L02-Q26":[{"campaign":"THITHU","examId":"vedich2k9_de15","label":"Thi thử: Đề 15"}]};
 let _dynamicCampaignUsageById = {};
@@ -8453,6 +8556,12 @@ function applyBankRows(rows){
                 if (!q.subTopic && meta.subTopic) q.subTopic = meta.subTopic;
                 if (!q.deBaiChung && meta.deBaiChung) q.deBaiChung = meta.deBaiChung;
                 if (!q.nhomId && meta.nhomId) q.nhomId = meta.nhomId;
+                if (meta.correct && (!q.correct || /GMT/i.test(String(q.correct)) || /^[A-D]$/i.test(String(q.correct).trim()))) {
+                    q.correct = String(meta.correct);
+                }
+            }
+            if ((q.id === 'VLXT-TLN-2026-05' || q.id === 'VLXT-TLN-2026-06') && !q.modelId) {
+                q.modelId = 'MH-TLN-2026-03';
             }
         });
         // Chỉ nạp dự phòng khi server hoàn toàn chưa có câu Trả lời ngắn nào
@@ -8551,7 +8660,43 @@ function applyBankRows(rows){
             }
         });
     }
+    const VLXT_HEALED_ANSWERS = {
+        'VLXT-T1-L09-Q02':'B','VLXT-T1-L09-Q03':'B','VLXT-T1-L09-Q06':'C','VLXT-T1-L09-Q09':'D',
+        'VLXT-T1-L09-Q10':'D','VLXT-T1-L09-Q11':'C','VLXT-T1-L09-Q12':'D','VLXT-T1-L09-Q15':'B',
+        'VLXT-T1-L09-Q18':'B','VLXT-T1-L09-Q19':'C','VLXT-T1-L09-Q20':'B','VLXT-T1-L09-Q21':'C',
+        'VLXT-T1-L09-Q22':'C','VLXT-T1-L09-Q23':'D','VLXT-T1-L09-Q24':'B','VLXT-T1-L09-Q25':'B',
+        'VLXT-T1-L09-Q26':'D','VLXT-T1-L09-Q28':'C','VLXT-T1-L09-Q29':'C','VLXT-T1-L09-Q32':'D',
+        'VLXT-T1-L10-Q06':'D','VLXT-T1-L10-Q07':'B','VLXT-T1-L10-Q09':'D','VLXT-T1-L10-Q12':'B'
+    };
+    const VLXT_HEALED_EXPLAINS = {
+        'VLXT-T1-L10-Q06':'Bộ thí nghiệm khảo sát định luật Boyle (quá trình đẳng nhiệt) gồm xilanh chứa khí có pit-tông chia vạch thể tích, áp kế đo áp suất và giá đỡ; <strong>không sử dụng cân</strong>. Chọn <strong>D</strong>.',
+        'VLXT-T1-L10-Q07':'Khi kéo pit-tông ra ngoài, <strong>thể tích khí còn lại trong xilanh tăng lên</strong> làm áp suất bên trong giảm xuống thấp hơn áp suất khí quyển bên ngoài, nhờ đó đẩy thuốc từ lọ đi vào trong xilanh. Chọn <strong>B</strong>.',
+        'VLXT-T1-L10-Q08':'Theo định luật Boyle, đối với một lượng khí lí tưởng xác định ở nhiệt độ không đổi ($T = \\text{const}$), áp suất $p$ <strong>tỉ lệ nghịch với thể tích</strong> $V$ ($pV = \\text{hằng số}$). Chọn <strong>A</strong>.',
+        'VLXT-T1-L10-Q09':'Trong quá trình đẳng nhiệt, nhiệt độ $T$ giữ không đổi theo mọi giá trị của áp suất $p$, nên trong hệ tọa độ $(p, T)$ đường đẳng nhiệt là <strong>đường thẳng song song với trục $Op$</strong> (vuông góc trục $OT$). Chọn <strong>D</strong>.',
+        'VLXT-T1-L10-Q12':'Với một lượng khí lí tưởng ở nhiệt độ không đổi, ta có $p = \\mu k T \\implies \\mu = \\dfrac{p}{kT}$. Khi $T = \\text{const}$, mật độ phân tử khí $\\mu$ <strong>tăng tỉ lệ thuận với áp suất</strong> $p$. Chọn <strong>B</strong>.'
+    };
+    filteredRaw.forEach(q => {
+        const qid = String(q.id || '').trim();
+        if (VLXT_HEALED_ANSWERS[qid]) q.correct = VLXT_HEALED_ANSWERS[qid];
+        if (VLXT_HEALED_EXPLAINS[qid]) q.giaiThich = VLXT_HEALED_EXPLAINS[qid];
+        if (qid === 'VLXT-T1-L09-Q29') {
+            q.modelId = 'MH-TN220-C2-47';
+            q.hinhAnh = '';
+            if (!/data-model-id=/i.test(String(q.question || ''))) {
+                q.question = String(q.question || '').trim() + '\n<div class="vlxt-model-slot" data-model-id="MH-TN220-C2-47"></div>';
+            }
+        } else if (qid === 'VLXT-T1-L05-Q13') {
+            q.modelId = 'MH-TN220-C1-48';
+            q.hinhAnh = '';
+            if (!/data-model-id=/i.test(String(q.question || ''))) {
+                q.question = String(q.question || '').trim() + '\n<div class="vlxt-model-slot" data-model-id="MH-TN220-C1-48"></div>';
+            }
+        } else if (String(q.hinhAnh || '').trim().startsWith('question-crops/')) {
+            q.hinhAnh = '';
+        }
+    });
     bankData = filteredRaw.map(q => normalizeQuestionTaxonomy(q));
+    if (typeof registerCampaign50Usages === 'function') registerCampaign50Usages();
     if (getAdminKey() && !localStorage.getItem(SYNC_STORAGE_KEY)) {
         setTimeout(() => syncApprovedAuditToServer(true), 1200);
     }
@@ -8571,6 +8716,7 @@ function applyBankRows(rows){
     renderBankList();
     updateSelBar();
     renderBankSourceStatus();
+    if (typeof renderUnifiedExamManager === 'function') renderUnifiedExamManager();
     setTimeout(() => scanExternalCampaignSources(), 150);
 }
 
@@ -8700,6 +8846,8 @@ function renderBankStats(){
     document.getElementById('nh-s-ds').textContent=c.DS.toLocaleString();
     document.getElementById('nh-s-tln').textContent=c.TLN.toLocaleString();
     document.getElementById('nh-s-tinh').textContent=tinhCount.toLocaleString();
+    const tabQ = document.getElementById('nh-tab-q-count'); if (tabQ) tabQ.textContent = bankData.length.toLocaleString();
+    if (typeof updateExamStatCards === 'function') updateExamStatCards();
 }
 
 function updateBankBaiOptions(selectedChuong, preserveVal){
@@ -9517,7 +9665,9 @@ function doesQuestionMatchBankFilter(q, st){
 
     let matchCamp = true;
     if (f.fcamp) {
-        if (f.fcamp === 'unused_THITHU') matchCamp = !isQuestionUsedInCampaign(q, 'THITHU');
+        if (f.fcamp === 'used_THPTQG_2026') matchCamp = isQuestionUsedInCampaign(q, 'THPTQG_2026');
+        else if (f.fcamp === 'unused_THPTQG_2026') matchCamp = !isQuestionUsedInCampaign(q, 'THPTQG_2026');
+        else if (f.fcamp === 'unused_THITHU') matchCamp = !isQuestionUsedInCampaign(q, 'THITHU');
         else if (f.fcamp === 'unused_DGNL') matchCamp = !isQuestionUsedInCampaign(q, 'DGNL');
         else if (f.fcamp === 'unused_KIEMTRA') matchCamp = !isQuestionUsedInCampaign(q, 'KIEMTRA');
         else if (f.fcamp === 'unused_ALL') matchCamp = (getQuestionCampaignUsages(q).length === 0);
@@ -14258,14 +14408,531 @@ async function htResetDevice(deviceId) {
     </div>
 </div>
 
+<div id="nh-exam-inspector-overlay" onclick="if(event.target===this) closeManagedExamInspector()">
+    <div id="nh-exam-inspector-modal">
+        <div class="nhe-head" style="background:#0f172a;color:#f8fafc;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.12);flex-shrink:0">
+            <div>
+                <h3 id="nh-ei-title" style="margin:0;font-size:16px;font-weight:800;color:#ffffff">Chi tiết đề thi</h3>
+                <div id="nh-ei-sub" style="font-size:12px;color:#cbd5e1;margin-top:3px"></div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+                <button type="button" class="nh-ec-btn teal" id="nh-ei-docx-btn"><i class="fa-solid fa-file-word"></i> Xuất Word (.docx)</button>
+                <button type="button" onclick="closeManagedExamInspector()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div id="nh-ei-body" style="padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+</div>
+
 <script>
 window.CURRENT_PAGE_MODULE = 'nganhang';
 document.addEventListener('DOMContentLoaded', function() {
     handleUrlRouting('nganhang');
     if (localStorage.getItem('adminLoggedIn') === '1') {
         switchTab('nganhang');
+        if (typeof loadExamList === 'function') {
+            setTimeout(() => { try { loadExamList(); } catch(e) {} }, 600);
+        }
     }
+    if (typeof renderUnifiedExamManager === 'function') renderUnifiedExamManager();
 });
+
+/* ══════════════════════════════════════════════════════════════════════════
+   QUẢN LÝ ĐỀ & CHIẾN DỊCH 50 ĐỀ THPTQG 2026 (TRỰC TIẾP TRONG NGÂN HÀNG QUẢN TRỊ)
+══════════════════════════════════════════════════════════════════════════ */
+const EXAM_OVERRIDES_STORAGE_KEY = 'vlxt_admin_50exams_overrides_v1';
+const EXAM_CUSTOM_STORAGE_KEY = 'vlxt_admin_50exams_custom_v1';
+
+const EXAM_PURPOSES = [
+    { code: 'KHAO_SAT_FREE', label: '🎯 Khảo sát điểm thi THPTQG (Free)', short: '🎯 Khảo sát Free', desc: 'Đề 01–05 · Miễn phí chẩn đoán' },
+    { code: 'THUC_CHIEN_8PLUS', label: '🚀 Thực chiến bứt phá 8+', short: '🚀 Thực chiến 8+', desc: 'Đề 06–20 · Luyện phản xạ đề Bộ' },
+    { code: 'VE_DICH_9PLUS', label: '🏆 Chiến dịch Về đích 9+', short: '🏆 Về đích 9+', desc: 'Đề 21–40 · Nâng cao & bẫy VDC' },
+    { code: 'TONG_DUYET_2026', label: '🔥 Tổng duyệt sát ngày thi', short: '🔥 Tổng duyệt 2026', desc: 'Đề 41–50 · Tổng duyệt toàn diện' },
+    { code: 'PHONG_THI_THU', label: '🏛️ Đề Phòng Thi Thử / Soạn Đề', short: '🏛️ Thi Thử / Soạn Đề', desc: 'Đề đồng bộ từ Soạn Đề & SoanDe' },
+    { code: 'KIEM_TRA_DINH_KY', label: '📝 Kiểm tra định kỳ / Khác', short: '📝 Kiểm tra khác', desc: 'Kiểm tra theo chương & chuyên đề' }
+];
+const EXAM_PURPOSE_MAP = Object.fromEntries(EXAM_PURPOSES.map(p => [p.code, p]));
+let _activePurposeFilterCard = '';
+let _currentInspectorExamId = '';
+
+function readExamJsonStorage(key, fallback) {
+    try {
+        const raw = localStorage.getItem(key);
+        const parsed = raw ? JSON.parse(raw) : fallback;
+        return parsed || fallback;
+    } catch (e) { return fallback; }
+}
+function writeExamJsonStorage(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+
+function getManagedExamOverrides() { return readExamJsonStorage(EXAM_OVERRIDES_STORAGE_KEY, {}); }
+function saveManagedExamOverrides(ov) { writeExamJsonStorage(EXAM_OVERRIDES_STORAGE_KEY, ov || {}); }
+function getCustomManagedExams() {
+    const arr = readExamJsonStorage(EXAM_CUSTOM_STORAGE_KEY, []);
+    return Array.isArray(arr) ? arr : [];
+}
+function saveCustomManagedExams(arr) { writeExamJsonStorage(EXAM_CUSTOM_STORAGE_KEY, Array.isArray(arr) ? arr : []); }
+
+function registerCampaign50Usages() {
+    const pack = Array.isArray(window.VLXT_THPTQG_50_EXAMS) ? window.VLXT_THPTQG_50_EXAMS : [];
+    const custom = getCustomManagedExams();
+    const ov = getManagedExamOverrides();
+    [...pack, ...custom].forEach(ex => {
+        if (!ex || !ex.examId) return;
+        const mergedIds = (ov[ex.examId] && Array.isArray(ov[ex.examId].questionIds)) ? ov[ex.examId].questionIds : (ex.questionIds || []);
+        const lbl = 'THPTQG: Đề ' + String(ex.examNumber || ex.examId).replace(/\D+/g, '').padStart(2, '0');
+        mergedIds.forEach(qid => {
+            addCampaignUsageEntry(_dynamicCampaignUsageById, qid, {
+                campaign: 'THPTQG_2026',
+                examId: ex.examId,
+                label: lbl
+            });
+        });
+    });
+}
+
+function getManagedExamsList() {
+    const ov = getManagedExamOverrides();
+    const byId = new Map();
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+
+    const pushItem = (rawEx, isPack50) => {
+        if (!rawEx || !rawEx.examId) return;
+        const id = String(rawEx.examId).trim();
+        const itemOv = ov[id] || {};
+        const qIds = Array.isArray(itemOv.questionIds) ? itemOv.questionIds : (Array.isArray(rawEx.questionIds) ? rawEx.questionIds : []);
+        let modelCount = Number(rawEx.modelCount || 0);
+        if (bankById.size && qIds.length) {
+            modelCount = qIds.filter(qid => {
+                const qObj = bankById.get(qid);
+                return qObj && isQuestionHasModel(qObj);
+            }).length;
+        }
+        const purpose = itemOv.purpose || rawEx.purpose || (isPack50 ? 'THUC_CHIEN_8PLUS' : 'PHONG_THI_THU');
+        const purposeMeta = EXAM_PURPOSE_MAP[purpose] || EXAM_PURPOSES[0];
+        byId.set(id, {
+            examId: id,
+            examNumber: rawEx.examNumber || 0,
+            tenDe: itemOv.tenDe || rawEx.tenDe || id,
+            purpose,
+            purposeLabel: purposeMeta.label,
+            accessTier: itemOv.accessTier || rawEx.accessTier || (purpose === 'KHAO_SAT_FREE' ? 'free' : 'standard'),
+            thoiGian: Number(itemOv.thoiGian || rawEx.thoiGian || 50),
+            soCau: qIds.length || Number(rawEx.soCau || 28),
+            trangThai: itemOv.trangThai || (String(rawEx.trangThai || 'mo').toLowerCase() === 'mo' ? 'mo' : 'khoa'),
+            hienThi: itemOv.hienThi || (String(rawEx.hienThi || 'hien').toLowerCase() === 'an' ? 'an' : 'hien'),
+            p1Count: rawEx.p1Count || (qIds.length === 28 ? 18 : 0),
+            p2Count: rawEx.p2Count || (qIds.length === 28 ? 4 : 0),
+            p3Count: rawEx.p3Count || (qIds.length === 28 ? 6 : 0),
+            modelCount,
+            questionIds: qIds,
+            isPack50: !!isPack50,
+            campaign: rawEx.campaign || 'THPTQG_2026'
+        });
+    };
+
+    (Array.isArray(window.VLXT_THPTQG_50_EXAMS) ? window.VLXT_THPTQG_50_EXAMS : []).forEach(ex => pushItem(ex, true));
+    getCustomManagedExams().forEach(ex => pushItem(ex, true));
+    if (typeof examListData !== 'undefined' && Array.isArray(examListData)) {
+        examListData.forEach(ex => {
+            if (ex && ex.examId && !byId.has(String(ex.examId).trim())) {
+                pushItem({
+                    examId: ex.examId,
+                    tenDe: ex.tenDe,
+                    purpose: ex.loaiDe === 'kiemtra' ? 'KIEM_TRA_DINH_KY' : 'PHONG_THI_THU',
+                    accessTier: 'standard',
+                    thoiGian: ex.thoiGian || 50,
+                    soCau: ex.soCau || (Array.isArray(ex.questions) ? ex.questions.length : 0),
+                    trangThai: ex.trangThai || 'khoa',
+                    hienThi: ex.hienThi || 'hien',
+                    questionIds: Array.isArray(ex.questions) ? ex.questions.map(q => q.id).filter(Boolean) : []
+                }, false);
+            }
+        });
+    }
+    return Array.from(byId.values());
+}
+
+function updateExamStatCards() {
+    const list = getManagedExamsList();
+    const elTot = document.getElementById('nh-s-total-exams');
+    const elSub = document.getElementById('nh-s-total-exams-sub');
+    const elTab = document.getElementById('nh-tab-exams-count');
+    const packCnt = list.filter(x => x.isPack50).length;
+    if (elTot) elTot.textContent = list.length.toLocaleString();
+    if (elTab) elTab.textContent = list.length.toLocaleString();
+    if (elSub) elSub.textContent = `${packCnt} Đề Chiến dịch 2026` + (list.length > packCnt ? ` · +${list.length - packCnt} đề khác` : '');
+}
+
+function switchBankWorkspaceTab(tab) {
+    const isExams = (tab === 'exams');
+    const wsQ = document.getElementById('nh-workspace-questions');
+    const wsE = document.getElementById('nh-workspace-exams');
+    const bQ = document.getElementById('nh-tab-btn-questions');
+    const bE = document.getElementById('nh-tab-btn-exams');
+    if (wsQ) wsQ.style.display = isExams ? 'none' : '';
+    if (wsE) wsE.style.display = isExams ? '' : 'none';
+    if (bQ) bQ.classList.toggle('active', !isExams);
+    if (bE) bE.classList.toggle('active', isExams);
+    if (isExams) renderUnifiedExamManager();
+}
+
+function filterExamsByPurposeCard(code) {
+    _activePurposeFilterCard = (_activePurposeFilterCard === code) ? '' : code;
+    const sel = document.getElementById('nh-em-f-purpose');
+    if (sel) sel.value = _activePurposeFilterCard;
+    renderUnifiedExamManager();
+}
+
+function renderUnifiedExamManager() {
+    updateExamStatCards();
+    const list = getManagedExamsList();
+    const purposeCardsEl = document.getElementById('nh-exam-purpose-cards');
+    const selPurp = document.getElementById('nh-em-f-purpose');
+    const activePurp = selPurp ? selPurp.value : _activePurposeFilterCard;
+    _activePurposeFilterCard = activePurp;
+
+    if (purposeCardsEl) {
+        const cntByPurpose = {};
+        EXAM_PURPOSES.forEach(p => { cntByPurpose[p.code] = 0; });
+        list.forEach(ex => { cntByPurpose[ex.purpose] = (cntByPurpose[ex.purpose] || 0) + 1; });
+        const summaryDefs = [
+            { code: '', label: '📚 Tổng số đề quản trị', count: list.length, sub: 'Gộp Chiến dịch 2026 + SoanDe' },
+            { code: 'KHAO_SAT_FREE', label: '🎯 Khảo sát điểm (Free)', count: cntByPurpose.KHAO_SAT_FREE || 0, sub: 'Mở miễn phí chẩn đoán THPT' },
+            { code: 'THUC_CHIEN_8PLUS', label: '🚀 Thực chiến 8+', count: cntByPurpose.THUC_CHIEN_8PLUS || 0, sub: 'Luyện phản xạ chuẩn Bộ 2026' },
+            { code: 'VE_DICH_9PLUS', label: '🏆 Chiến dịch Về đích 9+', count: cntByPurpose.VE_DICH_9PLUS || 0, sub: 'Tổng hợp chuẩn 3 phần & bẫy' },
+            { code: 'TONG_DUYET_2026', label: '🔥 Tổng duyệt 2026', count: cntByPurpose.TONG_DUYET_2026 || 0, sub: 'Chạy nước rút trước kỳ thi' }
+        ];
+        purposeCardsEl.innerHTML = summaryDefs.map(d => `
+            <button type="button" class="nh-purpose-card ${activePurp === d.code ? 'active' : ''}" onclick="filterExamsByPurposeCard('${d.code}')">
+                <div class="npc-lbl">${nhEsc(d.label)}</div>
+                <div class="npc-num">${d.count}</div>
+                <div class="npc-sub">${nhEsc(d.sub)}</div>
+            </button>
+        `).join('');
+    }
+
+    const qSearch = (document.getElementById('nh-em-search')?.value || '').trim().toLowerCase();
+    const fStatus = document.getElementById('nh-em-f-status')?.value || '';
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+
+    const filtered = list.filter(ex => {
+        if (activePurp && ex.purpose !== activePurp) return false;
+        if (fStatus === 'mo' && ex.trangThai !== 'mo') return false;
+        if (fStatus === 'khoa' && ex.trangThai !== 'khoa') return false;
+        if (fStatus === 'free' && ex.accessTier !== 'free') return false;
+        if (fStatus === 'vip' && ex.accessTier === 'free') return false;
+        if (qSearch) {
+            const qModels = ex.questionIds.map(id => {
+                const q = bankById.get(id);
+                return q ? (id + ' ' + getQuestionModelId(q)) : id;
+            }).join(' ');
+            const hay = (ex.examId + ' ' + ex.tenDe + ' ' + ex.purposeLabel + ' ' + qModels).toLowerCase();
+            if (!hay.includes(qSearch)) return false;
+        }
+        return true;
+    });
+
+    const cntBar = document.getElementById('nh-em-count-bar');
+    if (cntBar) {
+        const modTotal = filtered.reduce((acc, ex) => acc + (ex.modelCount || 0), 0);
+        cntBar.innerHTML = `Đang hiển thị <b>${filtered.length} / ${list.length} đề</b> · Tổng mô hình Canvas 60 FPS nhúng trong nhóm: <b style="color:#0284c7">${modTotal} mô hình</b>`;
+    }
+
+    const grid = document.getElementById('nh-exam-cards-grid');
+    if (!grid) return;
+    if (!filtered.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;padding:36px;text-align:center;border:1.5px dashed var(--border);border-radius:12px;color:var(--gray)">Không tìm thấy đề nào khớp bộ lọc.</div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(ex => {
+        const stBadge = ex.trangThai === 'mo'
+            ? `<span class="nh-badge" style="background:rgba(16,185,129,0.14);color:#10b981;border:1px solid rgba(16,185,129,0.35)">✅ Đang mở</span>`
+            : `<span class="nh-badge" style="background:rgba(148,163,184,0.14);color:#64748b;border:1px solid rgba(148,163,184,0.35)">🔒 Đang khóa</span>`;
+        const tierBadge = ex.accessTier === 'free'
+            ? `<span class="nh-badge" style="background:rgba(245,158,11,0.15);color:#d97706;border:1px solid rgba(245,158,11,0.35)">🎁 Free</span>`
+            : `<span class="nh-badge" style="background:rgba(124,58,237,0.12);color:#7c3aed;border:1px solid rgba(124,58,237,0.32)">⭐ ${ex.accessTier === 'vip' ? 'VIP' : 'Tiêu chuẩn'}</span>`;
+        const optsHtml = EXAM_PURPOSES.map(p => `<option value="${p.code}" ${p.code === ex.purpose ? 'selected' : ''}>${nhEsc(p.label)}</option>`).join('');
+        const stuUrl = ex.examNumber
+            ? `https://vatlyxuantruong.io.vn/danh-gia-nang-luc.html?exam=${ex.examNumber}&autostart=1`
+            : `https://vatlyxuantruong.io.vn/thithu.html?id=${encodeURIComponent(ex.examId)}`;
+        const hasInspectable = ex.questionIds && ex.questionIds.length > 0;
+        return `<div class="nh-exam-card" data-exam-id="${nhEsc(ex.examId)}">
+            <div class="nh-ec-head">
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                    <span class="nh-ec-id">${nhEsc(ex.examId)}</span>
+                    ${stBadge}
+                    ${tierBadge}
+                </div>
+                <span style="font-size:11.5px;color:var(--gray2);font-weight:700">${ex.hienThi === 'an' ? '🙈 Ẩn HS' : '👁️ Hiện HS'}</span>
+            </div>
+            <div class="nh-ec-title">${nhEsc(ex.tenDe)}</div>
+            <div class="nh-ec-pills">
+                <span class="nh-ec-pill">${ex.soCau} câu · ${ex.thoiGian} phút</span>
+                ${ex.p1Count ? `<span class="nh-ec-pill">P1:${ex.p1Count} · P2:${ex.p2Count} · P3:${ex.p3Count}</span>` : ''}
+                <span class="nh-ec-pill model">🎬 ${ex.modelCount} Mô hình trực quan</span>
+            </div>
+            <div class="nh-ec-purpose-row">
+                <span style="font-size:12px;font-weight:700;color:var(--gray)">Mục đích:</span>
+                <select onchange="changeManagedExamPurpose('${nhEsc(ex.examId)}', this.value)">${optsHtml}</select>
+            </div>
+            <div class="nh-ec-actions">
+                ${hasInspectable ? `<button type="button" class="nh-ec-btn primary" onclick="openManagedExamInspector('${nhEsc(ex.examId)}')"><i class="fa-solid fa-eye"></i> Xem &amp; Đổi câu (Canvas)</button>` : ''}
+                ${hasInspectable ? `<button type="button" class="nh-ec-btn teal" onclick="exportManagedExamDocx('${nhEsc(ex.examId)}')"><i class="fa-solid fa-file-word"></i> Xuất Word</button>` : ''}
+                <button type="button" class="nh-ec-btn" onclick="toggleManagedExamProp('${nhEsc(ex.examId)}','trangThai')">${ex.trangThai === 'mo' ? '🔒 Khóa' : '✅ Mở'}</button>
+                <button type="button" class="nh-ec-btn" onclick="toggleManagedExamProp('${nhEsc(ex.examId)}','accessTier')">${ex.accessTier === 'free' ? '⭐ VIP' : '🎁 Free'}</button>
+                <a href="${stuUrl}" target="_blank" class="nh-ec-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Web HS</a>
+                ${hasInspectable ? `<button type="button" class="nh-ec-btn green" onclick="syncManagedExamToCloud('${nhEsc(ex.examId)}')"><i class="fa-solid fa-cloud-arrow-up"></i> Cloud</button>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function changeManagedExamPurpose(examId, newPurpose) {
+    const ov = getManagedExamOverrides();
+    ov[examId] = Object.assign({}, ov[examId], {
+        purpose: newPurpose,
+        accessTier: newPurpose === 'KHAO_SAT_FREE' ? 'free' : (ov[examId]?.accessTier === 'free' ? 'standard' : (ov[examId]?.accessTier || (newPurpose === 'VE_DICH_9PLUS' || newPurpose === 'TONG_DUYET_2026' ? 'vip' : 'standard')))
+    });
+    saveManagedExamOverrides(ov);
+    renderUnifiedExamManager();
+    toast('<i class="fa-solid fa-circle-check"></i> Đã cập nhật mục đích đề ' + nhEsc(examId), 'ok');
+}
+
+function toggleManagedExamProp(examId, prop) {
+    const list = getManagedExamsList();
+    const cur = list.find(x => x.examId === examId);
+    if (!cur) return;
+    const ov = getManagedExamOverrides();
+    const next = Object.assign({}, ov[examId]);
+    if (prop === 'trangThai') next.trangThai = (cur.trangThai === 'mo') ? 'khoa' : 'mo';
+    else if (prop === 'hienThi') next.hienThi = (cur.hienThi === 'an') ? 'hien' : 'an';
+    else if (prop === 'accessTier') next.accessTier = (cur.accessTier === 'free') ? 'vip' : 'free';
+    ov[examId] = next;
+    saveManagedExamOverrides(ov);
+    renderUnifiedExamManager();
+}
+
+function openManagedExamInspector(examId) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex) return;
+    _currentInspectorExamId = examId;
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+    const qs = ex.questionIds.map(id => bankById.get(id)).filter(Boolean);
+    document.getElementById('nh-ei-title').textContent = `${ex.examId} — ${ex.tenDe}`;
+    document.getElementById('nh-ei-sub').textContent = `${ex.purposeLabel} · ${qs.length} câu hỏi · ${qs.filter(isQuestionHasModel).length} mô hình Canvas 60 FPS`;
+    const docxBtn = document.getElementById('nh-ei-docx-btn');
+    if (docxBtn) docxBtn.onclick = () => exportManagedExamDocx(examId);
+
+    const body = document.getElementById('nh-ei-body');
+    if (!qs.length) {
+        body.innerHTML = `<div style="padding:36px 20px;text-align:center;color:var(--gray);border:1.5px dashed var(--border);border-radius:12px;">
+            <i class="fa-solid fa-spinner" style="font-size:22px;margin-bottom:10px;display:block;color:var(--blue)"></i>
+            Đang tải dữ liệu ${ex.questionIds.length} câu hỏi từ Ngân hàng — vui lòng đóng và thử lại sau giây lát.
+        </div>`;
+        document.getElementById('nh-exam-inspector-overlay').classList.add('show');
+        return;
+    }
+    const secHtml = [];
+    qs.forEach((q, idx) => {
+        if (idx === 0) secHtml.push(`<div style="font-weight:800;color:#0284c7;font-size:13.5px;padding:6px 10px;border-left:4px solid #0284c7;background:rgba(2,132,199,0.08);border-radius:6px">PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn (Câu 1–18 · 4,5 điểm)</div>`);
+        if (idx === 18) secHtml.push(`<div style="font-weight:800;color:#d97706;font-size:13.5px;padding:6px 10px;border-left:4px solid #d97706;background:rgba(245,158,11,0.08);border-radius:6px;margin-top:8px">PHẦN II. Câu trắc nghiệm đúng sai thực nghiệm (Câu 19–22 · 4,0 điểm)</div>`);
+        if (idx === 22) secHtml.push(`<div style="font-weight:800;color:#059669;font-size:13.5px;padding:6px 10px;border-left:4px solid #059669;background:rgba(16,185,129,0.08);border-radius:6px;margin-top:8px">PHẦN III. Câu trắc nghiệm trả lời ngắn (Câu 23–28 · 1,5 điểm)</div>`);
+
+        const mId = getQuestionModelId(q);
+        const slot = (mId && hasRegisteredModel(mId) && !/data-model-id=/i.test(String(q.question || '')))
+            ? `<div class="vlxt-model-slot" data-model-id="${nhEsc(mId)}"></div>` : '';
+        const tlnSvg = (!hasRegisteredModel(mId) && mId && window.VLXT_TLN_MODELS && window.VLXT_TLN_MODELS[mId])
+            ? `<div style="margin:8px auto;max-width:640px">${window.VLXT_TLN_MODELS[mId].svg}</div>` : '';
+        const subLine = q.subTopic ? `<span class="nh-badge b-subtopic">${nhEsc(q.subTopic)}</span>` : '';
+        const swapBtn = q.loai !== 'TLN'
+            ? `<button type="button" class="nh-ec-btn" onclick="swapManagedExamQuestion('${nhEsc(examId)}', ${idx})" title="Thay bằng câu Tinh khác cùng chủ đề/chương"><i class="fa-solid fa-arrows-rotate"></i> Đổi câu</button>` : '';
+        let ansInfo = '';
+        if (q.loai === 'TN') {
+            ansInfo = `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px;font-size:13px">` +
+                ['A','B','C','D'].map(L => `<div style="padding:6px 10px;border-radius:7px;border:1px solid ${String(q.correct).toUpperCase()===L?'#10b981':'var(--border)'};background:${String(q.correct).toUpperCase()===L?'rgba(16,185,129,0.12)':'transparent'}"><b>${L}.</b> ${nhSafe(q['opt'+L]||'')}</div>`).join('') +
+                `</div>`;
+        } else if (q.loai === 'DS') {
+            const cs = String(q.correct || '').toUpperCase();
+            ansInfo = `<div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:13px">` +
+                ['a','b','c','d'].map((l, si) => `<div style="padding:5px 10px;border-radius:6px;border:1px solid var(--border)"><b>${l})</b> ${nhSafe(q['opt'+l.toUpperCase()]||'')} — <strong style="color:${cs[si]==='Đ'?'#10b981':'#ef4444'}">${cs[si]==='Đ'?'Đúng':'Sai'}</strong></div>`).join('') +
+                `</div>`;
+        } else {
+            ansInfo = `<div style="margin-top:8px;font-size:13px;font-weight:700;color:#10b981">Đáp án chuẩn: ${nhEsc(q.correct || '')}</div>`;
+        }
+
+        secHtml.push(`<div class="nh-row" style="margin-bottom:0">
+            <div class="nh-q-body">
+                <div class="nh-meta">
+                    <span class="nh-badge b-${(q.loai||'tn').toLowerCase()}">Câu ${idx+1}</span>
+                    ${subLine}
+                    ${mId ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.35)"><i class="fa-solid fa-cubes"></i> ${nhEsc(mId)}</span>` : ''}
+                    <span style="font-size:11px;color:#94a3b8;font-family:'DM Mono',monospace;margin-left:auto">${nhEsc(q.id)}</span>
+                    ${swapBtn}
+                </div>
+                ${q.deBaiChung ? `<div class="nh-context">${nhSafe(q.deBaiChung)}</div>` : ''}
+                ${tlnSvg}${slot}
+                <div class="nh-q-text">${nhSafe(q.question)}</div>
+                ${ansInfo}
+            </div>
+        </div>`);
+    });
+    body.innerHTML = secHtml.join('');
+    document.getElementById('nh-exam-inspector-overlay').classList.add('show');
+    mountVlxtModelsWithCaptions(body, { compact: true });
+    if (window.renderMathInElement) {
+        try { renderMathInElement(body, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }], throwOnError: false }); } catch(e) {}
+    }
+}
+
+function closeManagedExamInspector() {
+    document.getElementById('nh-exam-inspector-overlay').classList.remove('show');
+}
+
+function swapManagedExamQuestion(examId, qIdx) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex || !ex.questionIds[qIdx]) return;
+    const oldId = ex.questionIds[qIdx];
+    const oldQ = bankData.find(q => q.id === oldId);
+    if (!oldQ) return;
+    const usedSet = new Set(ex.questionIds);
+    const candidates = bankData.filter(q => {
+        if (usedSet.has(q.id)) return false;
+        if (String(q.chatLuong || '').toLowerCase() !== 'tinh') return false;
+        if (q.loai !== oldQ.loai) return false;
+        if (oldQ.loai === 'TN') return q.tnType === oldQ.tnType && q.subTopic === oldQ.subTopic;
+        return q.chuong === oldQ.chuong;
+    });
+    if (!candidates.length) {
+        toast('Không còn câu hỏi dự phòng cùng chủ đề/chương chưa dùng trong đề này.', 'err');
+        return;
+    }
+    const pick = candidates[Math.floor(Math.random() * candidates.length)];
+    const newIds = ex.questionIds.slice();
+    newIds[qIdx] = pick.id;
+    const ov = getManagedExamOverrides();
+    ov[examId] = Object.assign({}, ov[examId], { questionIds: newIds });
+    saveManagedExamOverrides(ov);
+    registerCampaign50Usages();
+    renderUnifiedExamManager();
+    openManagedExamInspector(examId);
+    toast(`<i class="fa-solid fa-arrows-rotate"></i> Đã đổi Câu ${qIdx + 1}: ${oldId} → ${pick.id}`, 'ok');
+}
+
+async function exportManagedExamDocx(examId) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex) return;
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+    const questions = ex.questionIds.map(id => bankById.get(id)).filter(Boolean);
+    if (!questions.length) { toast('Đề chưa có câu hỏi chi tiết trong Ngân hàng.', 'err'); return; }
+    try {
+        toast('Đang dựng file Word (.docx) kèm ảnh Canvas & công thức...', 'ok');
+        const blob = await buildExamDocxBlob(questions, {
+            title: ex.tenDe,
+            subtitle: `${ex.purposeLabel} · Thời gian ${ex.thoiGian} phút · 28 câu chuẩn Bộ GD&ĐT 2026`
+        });
+        const fname = (ex.examId + '_' + ex.tenDe).replace(/[\\/:*?"<>|]/g, '').slice(0, 70) + '.docx';
+        downloadBlob(blob, fname);
+    } catch (e) {
+        toast('Lỗi xuất Word: ' + e.message, 'err');
+    }
+}
+
+function createNewManagedExam28() {
+    const planP1 = computeAutoPickPlan({ scope: 'official_18', campaign: 'THPTQG_2026', loaiFilter: 'TN_LT', onlyTinh: true });
+    if (!planP1 || planP1.pickedIds.length < 18) {
+        toast('Không đủ 18 câu TN Lý thuyết chưa dùng trong chiến dịch để tạo đề mới.', 'err');
+        return;
+    }
+    const planDs = computeAutoPickPlan({ scope: 'official_ds_4', campaign: 'THPTQG_2026', loaiFilter: 'DS', onlyTinh: true });
+    const tlnByNhom = new Map();
+    bankData.filter(q => q.loai === 'TLN' && String(q.chatLuong || '').toLowerCase() === 'tinh').forEach(q => {
+        if (!q.nhomId) return;
+        if (!tlnByNhom.has(q.nhomId)) tlnByNhom.set(q.nhomId, []);
+        tlnByNhom.get(q.nhomId).push(q);
+    });
+    const pickedTln = [];
+    ['2', '3', '4'].forEach(chNum => {
+        for (const [, pair] of tlnByNhom.entries()) {
+            if (pair.length === 2 && String(pair[0].chuong || '').includes(chNum) && pair.every(q => !isQuestionUsedInCampaign(q, 'THPTQG_2026'))) {
+                pickedTln.push(pair[0].id, pair[1].id);
+                break;
+            }
+        }
+    });
+    if (planDs.pickedIds.length < 4 || pickedTln.length < 6) {
+        toast('Đã hết cụm câu ĐS hoặc TLN chưa dùng cho đề bổ sung mới.', 'err');
+        return;
+    }
+    const list = getManagedExamsList();
+    const nextNum = list.filter(x => x.isPack50).length + 1;
+    const examId = `THPTQG-2026-DE${String(nextNum).padStart(2, '0')}`;
+    const newEx = {
+        examNumber: nextNum,
+        examId,
+        tenDe: `Đề Chuẩn Bộ 2026 Bổ Sung – Đề số ${String(nextNum).padStart(2, '0')}`,
+        purpose: 'TONG_DUYET_2026',
+        accessTier: 'vip',
+        thoiGian: 50,
+        soCau: 28,
+        trangThai: 'khoa',
+        hienThi: 'an',
+        campaign: 'THPTQG_2026',
+        questionIds: [...planP1.pickedIds, ...planDs.pickedIds, ...pickedTln]
+    };
+    const custom = getCustomManagedExams();
+    custom.push(newEx);
+    saveCustomManagedExams(custom);
+    registerCampaign50Usages();
+    renderUnifiedExamManager();
+    openManagedExamInspector(examId);
+    toast('<i class="fa-solid fa-circle-check"></i> Đã tạo ' + examId + ' (28 câu chuẩn Bộ không trùng)!', 'ok');
+}
+
+async function syncManagedExamToCloud(examId) {
+    if (!getAdminKey()) { toast('Vui lòng nhập Khóa Quản trị (biểu tượng chìa khóa) để đồng bộ lên Google Sheets.', 'err'); return false; }
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex || !ex.questionIds.length) return false;
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+    const LOAI_TYPE = { TN: 'mc', DS: 'tf', TLN: 'short' };
+    const questions = ex.questionIds.map(id => {
+        const q = bankById.get(id); if (!q) return null;
+        return {
+            id: q.id,
+            type: LOAI_TYPE[q.loai] || 'mc',
+            question: q.question || '',
+            optA: q.optA || '', optB: q.optB || '', optC: q.optC || '', optD: q.optD || '',
+            correct: q.correct || '', giaiThich: q.giaiThich || '', chatLuong: 'tinh'
+        };
+    }).filter(Boolean);
+    const okExam = await postAdminWriteWithRetry({
+        action: 'saveexam', examId: ex.examId, tenDe: ex.tenDe, thoiGian: ex.thoiGian,
+        trangThai: ex.trangThai, hienThi: ex.hienThi, lop: 12, campaign: ex.campaign, loaiDe: 'thithu'
+    });
+    if (!okExam) { toast('Chưa lưu được metadata đề ' + ex.examId, 'err'); return false; }
+    const okQs = await postAdminWriteWithRetry({ action: 'savequestions', examId: ex.examId, clearFirst: true, questions });
+    if (okQs) toast('<i class="fa-solid fa-circle-check"></i> Đã đồng bộ ' + ex.examId + ' lên SoanDe Cloud!', 'ok');
+    return !!okQs;
+}
+
+async function syncCampaign50ToCloud() {
+    if (!getAdminKey()) { toast('Vui lòng nhập Khóa Quản trị (biểu tượng chìa khóa) trước khi đồng bộ lên Google Sheets.', 'err'); return; }
+    const items = getManagedExamsList().filter(x => x.isPack50 && x.questionIds.length);
+    if (!confirm(`Đồng bộ lần lượt ${items.length} đề Chiến dịch 2026 lên sheet SoanDe Google Sheets?`)) return;
+    let okCnt = 0;
+    for (const ex of items) {
+        if (await syncManagedExamToCloud(ex.examId)) okCnt++;
+    }
+    toast(`Đã đồng bộ xong ${okCnt}/${items.length} đề Chiến dịch lên Google Sheets!`, 'ok');
+}
+
+function exportManagedExamsConfigJson() {
+    const list = getManagedExamsList();
+    const blob = new Blob([JSON.stringify(list, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, 'vlxt-50-de-thptqg-2026-config.json');
+}
 
 // Lắng nghe sự kiện lưu/duyệt câu hỏi từ Canvas Motion Studio
 if (window.BroadcastChannel) {
