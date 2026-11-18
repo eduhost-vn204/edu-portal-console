@@ -1,3 +1,26 @@
+## Bàn giao gần nhất (18/11/2026 13:39)
+- **Đẩy Gộp Trọn Bộ `270` Câu `TN-LT` (`220` Đợt Mới + `50` Chương 2–3) Kèm `59` Mô Hình Canvas 60 FPS Vào Ngân Hàng Đề Chính Thức (`3.244 -> 3.514` Câu · Đạt Chuẩn `16/16` Chủ Đề 50 Đề)**:
+- **Mục tiêu**:
+  1. Thực hiện chỉ đạo của Thầy (*"Đẩy gộp cả hai gói luôn em nhé, để cho nó đủ 16 x 16 chủ đề"*): hợp nhất cả gói `STAGING_220` (`220` câu `TN-LT` + `32` mô hình `MH-TN220-*`) và `STAGING_50` (`50` câu C2–C3 + `27` mô hình `MH-TN50-*`) thành gói **`270` câu `TN-LT` + `59` mô hình Canvas 60 FPS** chính thức trong Ngân Hàng Đề.
+  2. Làm sạch trước khi đẩy: khử 2 va chạm `normText` của Apps Script `importNganHang` (`557`, `523`), thay 7 câu `ST50` thuần chữ trùng/lạc chuyên đề/tính toán bằng 7 câu `TN-LT` thuần lý thuyết đã thẩm định, chuẩn hóa `< -> \lt ` và `> -> \gt ` trong `$...$` tránh lỗi KaTeX/HTML, và đăng ký đủ `VLXT_TN50_CAPTIONS` (`27` mô hình).
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`, trên nền `eb1e9e8`)**:
+  - Commit mã: `73685b7` (`feat(bank): promote 270 TN-LT questions (220+50) and 59 Canvas models to reach 16/16 topic quotas (3514 bank)`).
+  - `assets/staging-c2-c3-questions.json` & `.js`, `assets/staging-tn-220-questions.json` & `.js`: Hoàn thiện lời giải KaTeX cho 7 câu sạch thay thế (`VLXT-STAGE-C3-CD10-557`, `CD07-287/305`, `CD10-516`, `CD11-523/536/547`), chuẩn hóa `<`/`>` trong `$...$`, đánh dấu `isApproved: true`, `reviewStatus: "APPROVED"`, `chatLuong: "tinh"` cho đủ 270 câu.
+  - `assets/staging-tn50-models.js`: Bổ sung `// === VLXT_TN50_CAPTIONS_REGISTRY ===` (`window.VLXT_TN50_CAPTIONS` đủ 27 tiêu đề tiếng Việt `Câu ...` & tự trộn vào `MODEL_CAPTIONS`).
+  - `assets/tn270-lt-bank-pack.js`: Tạo mới gói `window.VLXT_TN270_LT_BANK` gồm đủ **`270` câu `TN-LT`** (`batchId: "BATCH_TN270_LT_OFFICIAL_20261118"`, `tnType: "LT"`, nhúng `<div class="vlxt-model-slot" data-model-id="..."></div>` trên đủ `59` câu có mô hình và giữ nguyên `hinhAnh`).
+  - `assets/ngan-hang-3048-questions.json` & `.js`: Nâng Ngân hàng đề chính thức từ **`3.244` lên `3.514` câu** (`1.574 TN-LT + 1.370 TN-BT + 200 DS + 370 TLN`), hoàn thành chỉ tiêu 50 đề ở cả **16/16 chủ đề**:
+    `CD01:145, CD02:111, CD03:96, CD04:120, CD05:100, CD06:70, CD07:50, CD08:100, CD09:50, CD10:100, CD11:104, CD12:100, CD13:117, CD14:100, CD15:50, CD16:161`.
+  - `ngan-hang-de.html`: Hợp nhất `VLXT_TN270_LT_BANK` trong `applyBankRows()`, bổ sung `syncApprovedTn270LtToServer()` (`vlxt_tn270_lt_bank_synced_v1`, hẹn `4600ms` và nối vào `syncApprovedAuditToServer`), thêm lọc `NEW_LT_MODEL_59` / `NEW_LT_270`, sắp xếp `_nhLtSortMode` + `getLtPriorityRank` đưa 59 câu LT có mô hình lên trang đầu (`#1..#59`), 3 chip phẳng EdTech (không AI Glow), badge `⚡ Mới đẩy 18/11`, và bổ sung `'CD08'` vào `slot17Prefs` trong `computeAutoPickPlan()`.
+  - `canvas-studio.html`: Nạp `tn270-lt-bank-pack.js?v=20261118-lt270`, gộp `VLXT_TN220_CAPTIONS` + `VLXT_TN50_CAPTIONS` vào `MODEL_CAPTIONS`, đưa `STAGING_220` và `STAGING_50` vào nhóm `🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.514 CÂU)` (`TN_LT: 1.574 Câu — Đủ 16/16 CĐ`).
+- **Kiểm tra đã chạy sau chỉnh sửa cuối**:
+  - `node scripts/test-apps-script-logic.mjs` (`12/12` PASS) & `node scripts/test-import-nganhang.mjs` (`12/12` PASS).
+  - Gate 1 & 2 (`verify_lt270_release.mjs`): PASS `vm.Script` 6 file JS + 6 block inline HTML, `</html>` sạch, `shadowBlur = 0`, `0` secret, `git diff --check` sạch; VM `src/Mã.js` `importNganHang`: Lần 1 `inserted=270, updated=0, alreadyExistsCount=0, quarantinedCount=0, countAfter=3514` (`tnType='LT'`, canonical `subTopic`); Lần 2 idempotent `inserted=0, alreadyExistsCount=270, countAfter=3514`.
+  - Gate 3 & 4 Playwright Retina `2x` (`verify_lt270_pw.py`): PASS auto-sync `importnganhang` POST (`270` câu, `BATCH_TN270_LT_OFFICIAL_20261118`); `bankData=3514`, `16/16` chip CD không còn nhãn `thiếu`; lọc 59 mô hình LT & 270 LT đều ưu tiên Canvas lên đầu trang (`1560×610`, caption chuẩn, badge phẳng); Auto-Pick `official_18` tạo `50/50` đề sạch (`900` câu không trùng ở `KIEMTRA`) và **`49/49` đề Thi thử mới (`882` câu)** trên nền 12 đề `THITHU` đã có sẵn trong `STATIC_CAMPAIGN_USAGE` (nhờ `CD07` có 1 câu trong `vedich2k9_de03` và `CD15` có 1 câu trong `vedich2k9_de09`); xuất `.docx` kèm 2 ảnh PNG hợp lệ; `canvas-studio.html` đủ 27 mô hình `MH-TN50-*` không lỗi JS/HTTP ngoài 4 probe dự phòng `data/danhgianangluc*.json` của repo Học sinh. Kiểm tra trực quan 2 ảnh PNG Retina `2x`.
+- **Điều phải giữ nguyên**:
+  - Giữ nguyên giao diện CBT sáng của `phong-thi-thu.html`; không AI Glow; mọi thay đổi Google Sheets đi qua cơ chế auto-sync trình duyệt khi có Khóa Quản trị (`vlxt_backend_admin_key`).
+- **Việc còn lại**:
+  - Thầy mở/F5 `ngan-hang-de.html` (đã nhập Khóa Quản trị) và chờ ~5 giây để trình duyệt tự đồng bộ 270 câu `TN-LT` lên Google Sheets `NganHang`. (Lưu ý nhỏ cho Thầy: vì 1 câu `CD07` và 1 câu `CD15` đã nằm sẵn trong 2 đề Thi thử cũ `vedich2k9_de03` / `de09`, quỹ câu chưa dùng cho chiến dịch `THITHU` hiện tạo thêm được **49 đề mới** cộng với 12 đề cũ = 61 đề.)
+
 ## Bàn giao gần nhất (18/11/2026 11:12)
 - **Hoàn Thiện Trọn Bộ 220 Câu `TN-LT` Thuần Lý Thuyết Trong Hộp Chờ Duyệt (`STAGING_220`) Kèm 19 Mô Hình Canvas 60 FPS Mới (`46` Mô Hình Đợt 220)**:
 - **Mục tiêu**:
