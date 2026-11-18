@@ -1,3 +1,29 @@
+## Bàn giao gần nhất (18/11/2026 09:50)
+- **Tách Gói 220 Câu Thành 130 Câu TN Lý Thuyết (`TN-LT` Chờ Duyệt) + 90 Câu TN Bài Tập (`TN-BT`) Kèm 14 Mô Hình Canvas Đẩy Thẳng Vào Ngân Hàng Đề (`3.048 → 3.138` Câu) & Kiểm Kê Nguồn Bù Kho `6 vat ly`**:
+- **Mục tiêu**:
+  1. Tách chính xác gói 220 câu ban đầu (`STAGING_220`) thành phần **Lý thuyết thuần (`TN-LT`)** giữ lại Hộp Chờ Duyệt tại `canvas-studio.html` và phần **Bài tập tính toán / Đồ thị định lượng (`TN-BT`)** đẩy thẳng lên Ngân Hàng Đề chính thức (mục `🧮 TN Tính toán / Đồ thị`) kèm toàn bộ mô hình Canvas 60 FPS theo chỉ đạo trực tiếp của Thầy.
+  2. Tích hợp hiển thị & đồng bộ mô hình Canvas Phần I trực tiếp trên `ngan-hang-de.html` (`applyBankRows`, `bankRowHtml`, `mountVlxtModelsWithCaptions`) + cập nhật `canvas-studio.html`.
+  3. Kiểm kê chính xác theo từng chủ đề số câu `TN-LT` còn thiếu cần bốc thêm và trữ lượng `TN-LT` sạch không trùng đang sẵn có trong kho `6 vat ly`.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`)**:
+  - Commit mã: `9743226` (`feat(bank): split 220 package into 130 TN-LT staging and push 90 TN-BT with 14 canvas models to official bank`).
+  - `assets/ngan-hang-3048-questions.json` & `.js`: Nối thêm **90 câu `TN-BT` chuẩn (`VLXT-TN220-BT-001`..`090`, `batchId: "BATCH_TN220_BT_20261118"`)**, nâng tổng Ngân hàng từ **3.048 $\to$ 3.138 câu** (`TN-BT` từ **1.280 $\to$ 1.370 câu**; gồm **14 câu gắn `modelId` + `<div class="vlxt-model-slot" data-model-id="MH-TN220-..."></div>`**, đặt `hinhAnh: ""` tránh trùng ảnh tĩnh).
+  - `assets/tn220-bt-bank-pack.js`: Mới — xuất `window.VLXT_TN220_BT_BANK` (90 câu `TN-BT`) để `ngan-hang-de.html` và `canvas-studio.html` hợp nhất tức thì và đồng bộ nền lên Google Sheets.
+  - `assets/staging-tn-220-questions.json` & `.js`: Rút gọn chỉ giữ **130 câu `TN-LT` thuần** (`13` mô hình Canvas `MH-TN220-*`), giữ ở Hộp Chờ Duyệt chờ Thầy duyệt.
+  - `assets/staging-tn220-models.js`: Giữ trọn 27 mô hình `MH-TN220-*` và đăng ký `window.VLXT_TN220_CAPTIONS` (27 tiêu đề tiếng Việt).
+  - `ngan-hang-de.html`: Nạp `staging-tn220-models.js`, `staging-tn50-models.js`, `tn220-bt-bank-pack.js`; thêm `hasRegisteredModel()` + `mountVlxtModelsWithCaptions()` dùng chung cho danh sách Ngân hàng & xem trước Đề thi; hợp nhất `VLXT_TN220_BT_BANK` trong `applyBankRows()`; tự đồng bộ Google Sheets qua `syncApprovedTn220BtToServer()` dùng `getAdminKey()` (khi Thầy mở Quản trị); render `.vlxt-model-slot` và ẩn ảnh tĩnh trùng lặp trong `bankRowHtml()`.
+  - `canvas-studio.html`: Cập nhật số đếm (`STAGING_220: 130 Câu TN-LT`, `BANK_ALL: 3.138 Câu`, `TN_BT: 1.370 Câu`, `ALL: 3.424 Câu`), nạp `VLXT_TN220_CAPTIONS`, bổ sung tìm câu hỏi BT Ngân hàng trong `renderModelQuestionDetails()`, tự trích xuất `data-model-id`, làm sạch `<div class="vlxt-model-slot">` qua `stripModelSlotMarkup()` khi preview/soạn thảo.
+- **Số liệu kiểm kê & nguồn bù `TN-LT` (từ kho `6 vat ly`, đối chiếu trùng với 3.138 Bank + 50 + 130 LT)**:
+  - **Cần bốc thêm đúng `90` câu `TN-LT`** (`CD05: 5`, `CD07: 15`, `CD08: 39`, `CD09: 9`, `CD10: 1`, `CD12: 17`, `CD14: 1`, `CD15: 3`). (Ghi chú: Gói `STAGING_50` Chương 2 & 3 đang chờ duyệt riêng có 50 câu gắn nhãn LT: `10 CD07, 10 CD08, 10 CD10, 10 CD11, 10 CD12`, khi lọc theo `guessTnType` còn ~26 LT thuần & ~24 BT).
+  - **Trữ lượng `TN-LT` sạch không trùng hiện sẵn có trong `harvested_pool.json` + 13 file Word GV đã quét**: Tổng **276 câu `TN-LT`** (`191` thuần chữ + `85` có 1 hình định tính), dư ở **tất cả 8/8 chủ đề**: `CD05=32 (+27)`, `CD07=30 (+15)`, `CD08=43 (+4)`, `CD09=39 (+30)`, `CD10=35 (+34)`, `CD12=51 (+34)`, `CD14=31 (+30)`, `CD15=15 (+12)` (chưa cần đụng tới 150+ Đề Trường/Sở 2025 & 45 Đề THPTQG).
+- **Kiểm tra đã chạy (sau chỉnh sửa cuối)**:
+  - `vm.Script` PASS cho toàn bộ 4 file `.js` (`staging-tn220-models.js`, `staging-tn-220-questions.js`, `tn220-bt-bank-pack.js`, `ngan-hang-3048-questions.js`), 5 inline `<script>` của `ngan-hang-de.html` và 1 inline `<script>` của `canvas-studio.html`; `After </html> length: 0`; `shadowBlurHits: 0`; `git diff --check` PASS; quét secret = `0`.
+  - Playwright Chromium HiDPI (`deviceScaleFactor: 2`, `1440×900`) PASS (exit 0): `canvas-studio.html` xác nhận `STAGING_220 = 130` (100% LT), `BANK_ALL = 3.138`, `TN_BT = 1.370`, `VLXT-TN220-BT-006` (`MH-TN220-C2-04`) vẽ `1560×610` Canvas sắc nét không lộ `<div class="vlxt-model-slot">`, Mode 1 đủ 27 mô hình & tra được `VLXT-TN220-BT-070`, đã xem trực tiếp 2 PNG xác minh; `ngan-hang-de.html` (`applyBankRows([])`) xác nhận hợp nhất đủ 90 `TN-BT`, mount 14/14 Canvas V2 trong `#nh-list`, nâng cấp caption tiếng Việt chuẩn, không trùng ảnh tĩnh, `0` lỗi mới (`2` thông báo SVG `height="auto"` có sẵn từ `tln-thuc-te-models.js` cũ ở batch TLN).
+- **Điều phải giữ nguyên**:
+  - Giữ **130 câu `TN-LT` (`STAGING_220`)**, **50 câu `STAGING_50`** và **106 câu `STAGING_DS_106`** ở chế độ Staging Preview chờ Thầy duyệt; chỉ 90 câu `TN-BT` đợt này được đẩy thẳng lên Ngân hàng theo lệnh của Thầy.
+  - Không hardcode `adminKey`; đồng bộ Google Sheets Production của 90 câu `TN-BT` chỉ chạy qua session hợp lệ khi Thầy mở `ngan-hang-de.html`.
+- **Việc còn lại**:
+  - Chờ Thầy chốt lệnh để tiến hành bốc đủ **90 câu `TN-LT` còn thiếu** từ kho `6 vat ly` (`276` câu sạch sẵn có), dựng mô hình nếu có hình vẽ và đưa vào Hộp Chờ Duyệt `canvas-studio.html`; đồng thời Thầy mở `ngan-hang-de.html` để phiên Quản trị tự động đẩy đồng bộ 90 câu `TN-BT` lên Google Sheet thực (nếu chưa sync từ file tĩnh).
+
 ## Bàn giao gần nhất (18/11/2026 09:18)
 - **Đồng Bộ `subTopic`/`baiHoc` Gói 50 Câu & Bóc Tách, Xây Dựng 27 Mô Hình Canvas 60 FPS Cho Gói 220 Câu Trắc Nghiệm Bù Đủ 8 Chủ Đề (`STAGING_220` / `P1_STAGING_220`)**:
 - **Mục tiêu**:
