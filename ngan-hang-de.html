@@ -16,6 +16,9 @@
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
     <script src="assets/100-mohinh-tln-chinhthuc.js"></script>
     <script src="assets/tln-thuc-te-models.js"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
+    <script src="assets/staging-tn50-models.js?v=20261118-tnbt"></script>
+    <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -5938,10 +5941,8 @@ function renderExamDetailQuestions() {
         </div>`;
     }).join('');
 
-    // Mount SVG Motion Graphics trước khi render công thức KaTeX
-    if (window.VLXTModels && typeof window.VLXTModels.mountAll === 'function') {
-        try { window.VLXTModels.mountAll(qContainer, { compact: true }); } catch(e) {}
-    }
+    // Mount SVG/Canvas Motion Graphics trước khi render công thức KaTeX
+    mountVlxtModelsWithCaptions(qContainer, { compact: true });
 
     // Render KaTeX formulas
     if (typeof renderMathInElement === 'function') {
@@ -6433,11 +6434,28 @@ function nhSafe(s){
         .replace(/<img\b(?![^<]*>)[\s\S]*$/i,'')
         .replace(/(^|[\s>])[A-Za-z0-9+\/]{400,}={0,2}(?=$|[\s<])/g,'$1');
 }
+function hasRegisteredModel(mid){
+    if(!mid || !window.VLXTModels) return false;
+    return !!((window.VLXTModels._canvasRegistry && window.VLXTModels._canvasRegistry[mid])
+        || (typeof window.VLXTModels.has === 'function' && window.VLXTModels.has(mid)));
+}
+function mountVlxtModelsWithCaptions(rootEl, opts){
+    if(!rootEl || !window.VLXTModels || typeof window.VLXTModels.mountAll!=='function') return;
+    try{ window.VLXTModels.mountAll(rootEl, opts || { compact: true }); }catch(e){}
+    const extCaps = Object.assign({}, window.VLXT_TN220_CAPTIONS || {}, window.VLXT_TN50_CAPTIONS || {});
+    if(!Object.keys(extCaps).length || !rootEl.querySelectorAll) return;
+    rootEl.querySelectorAll('.vlxt-model-slot[data-model-id]').forEach(slot => {
+        const mid = slot.getAttribute('data-model-id');
+        if(!mid || !extCaps[mid]) return;
+        const spans = slot.querySelectorAll('.canvas-caption > span');
+        if(spans.length >= 2 && spans[1].textContent.indexOf('Mô hình Canvas V2') === 0){
+            spans[1].textContent = extCaps[mid];
+        }
+    });
+}
 function nhKatex(el){
     if(!el) return;
-    if(window.VLXTModels && typeof window.VLXTModels.mountAll==='function'){
-        try{ window.VLXTModels.mountAll(el, { compact: true }); }catch(e){}
-    }
+    mountVlxtModelsWithCaptions(el, { compact: true });
     setTimeout(()=>{
         if(typeof renderMathInElement==='function'){
             try{
@@ -8319,9 +8337,37 @@ function applyBankRows(rows){
             });
         }
     }
+    // Hợp nhất gói 90 câu TN Tính toán / Đồ thị + 14 mô hình Canvas 60 FPS (đẩy thẳng 18/11/2026)
+    if (Array.isArray(window.VLXT_TN220_BT_BANK) && window.VLXT_TN220_BT_BANK.length > 0) {
+        const btMetaMap = new Map();
+        const existingBtIds = new Set(filteredRaw.map(q => String(q.id || '').trim()));
+        window.VLXT_TN220_BT_BANK.forEach(btQ => {
+            if (btQ && btQ.id) btMetaMap.set(String(btQ.id).trim(), btQ);
+        });
+        filteredRaw.forEach(q => {
+            const meta = btMetaMap.get(String(q.id || '').trim());
+            if (meta) {
+                if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
+                if (meta.tnType) q.tnType = meta.tnType;
+                if (q.subTopic === undefined) q.subTopic = '';
+                if (meta.modelId && !/data-model-id=/i.test(String(q.question || ''))) {
+                    q.question = String(q.question || '').trim() + `\n<div class="vlxt-model-slot" data-model-id="${nhEsc(meta.modelId)}"></div>`;
+                }
+            }
+        });
+        window.VLXT_TN220_BT_BANK.forEach(btQ => {
+            if (btQ && btQ.id && !existingBtIds.has(String(btQ.id).trim())) {
+                filteredRaw.push({ ...btQ });
+                existingBtIds.add(String(btQ.id).trim());
+            }
+        });
+    }
     bankData = filteredRaw.map(q => normalizeQuestionTaxonomy(q));
     if (getAdminKey() && !localStorage.getItem(SYNC_STORAGE_KEY)) {
         setTimeout(() => syncApprovedAuditToServer(true), 1200);
+    }
+    if (getAdminKey() && !localStorage.getItem('vlxt_tn220_bt_synced_v1')) {
+        setTimeout(() => syncApprovedTn220BtToServer(true), 2400);
     }
     bankLoaded = true;
     bankSel.clear();
@@ -8331,6 +8377,42 @@ function applyBankRows(rows){
     updateSelBar();
     renderBankSourceStatus();
     setTimeout(() => scanExternalCampaignSources(), 150);
+}
+
+let _tn220BtSyncInFlight = false;
+async function syncApprovedTn220BtToServer(silent) {
+    if (_tn220BtSyncInFlight) return;
+    const key = getAdminKey();
+    if (!key || !Array.isArray(window.VLXT_TN220_BT_BANK) || !window.VLXT_TN220_BT_BANK.length) return;
+    const missingQs = window.VLXT_TN220_BT_BANK.filter(btQ => {
+        const srv = _rawServerTaxonomyById[btQ.id];
+        return !srv;
+    });
+    if (!missingQs.length) {
+        try { localStorage.setItem('vlxt_tn220_bt_synced_v1', '1'); } catch (e) {}
+        return;
+    }
+    _tn220BtSyncInFlight = true;
+    try {
+        const res = await postAdminWriteJson({
+            action: 'importnganhang',
+            dryRun: false,
+            batchId: 'BATCH_TN220_BT_20261118',
+            questions: missingQs
+        });
+        if (res && res.ok) {
+            try { localStorage.setItem('vlxt_tn220_bt_synced_v1', '1'); } catch (e) {}
+            missingQs.forEach(q => {
+                _rawServerTaxonomyById[q.id] = { baiHoc: q.baiHoc || '', tnType: 'BT', subTopic: '' };
+            });
+            try { await adminDbDelete('nganhang'); } catch (e) {}
+            if (!silent) toast('<i class="fa-solid fa-circle-check"></i> Đã đồng bộ ' + missingQs.length + ' câu TN-BT &amp; mô hình Canvas lên Google Sheets!', 'ok');
+        }
+    } catch (e) {
+        if (!silent) toast('Chưa đồng bộ được gói TN-BT lên Cloud: ' + e.message, 'err');
+    } finally {
+        _tn220BtSyncInFlight = false;
+    }
 }
 
 function renderBankStats(){
@@ -9019,12 +9101,16 @@ function bankRowHtml(q,withCheck){
 
     let tlnModelStage = '';
     const mIdVal = String(q.modelId || ((String(q.question || '').match(/data-model-id=["']([^"']+)["']/i) || [])[1]) || '').trim();
-    if (mIdVal && window.VLXT_TLN_MODELS && window.VLXT_TLN_MODELS[mIdVal]) {
+    const hasEmbeddedSlot = /class=["'][^"']*vlxt-model-slot/i.test(String(q.question || ''));
+    const hasCanvasOrSvg = hasRegisteredModel(mIdVal);
+    if (mIdVal && hasCanvasOrSvg && !hasEmbeddedSlot) {
+        tlnModelStage = `<div class="vlxt-model-slot" data-model-id="${nhEsc(mIdVal)}"></div>`;
+    } else if (mIdVal && window.VLXT_TLN_MODELS && window.VLXT_TLN_MODELS[mIdVal]) {
         tlnModelStage = '<div class="nh-tln-model-stage" style="margin:14px auto;max-width:680px;background:#050b14;border:1px solid #1e293b;border-radius:10px;padding:12px;text-align:center">' + window.VLXT_TLN_MODELS[mIdVal].svg + '</div>';
     }
 
     let visualStage='';
-    if(q.hinhAnh){
+    if(q.hinhAnh && !(mIdVal && hasCanvasOrSvg)){
         const imgs=q.hinhAnh.split(',').map(u=>u.trim()).filter(Boolean);
         if(imgs.length>0){
             visualStage=`<div class="nh-visual-stage">${imgs.map(u=>`<img class="nh-img-thumb" src="${nhEsc(driveImg(u))}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div>`;
@@ -9062,9 +9148,9 @@ function bankRowHtml(q,withCheck){
         ? `<span class="nh-badge b-subtopic" title="${isCanDs ? 'Chủ đề Đúng/Sai Mô hình thực tế' : 'Chủ đề Lý thuyết (16 CD)'}: ${nhEsc(displaySubTopic)}"><i class="fa-solid fa-sitemap"></i> ${nhEsc(displaySubTopic)}</span>`
         : '<span class="nh-badge b-sub-none" title="Chưa chia Chủ đề (áp dụng cho TN Lý thuyết &amp; ĐS Chương 1–4)"><i class="fa-regular fa-clock"></i> Chưa chia chủ đề</span>';
 
-    const modelIdVal = String(q.modelId || ((String(q.question || '').match(/data-model-id=["']([^"']+)["']/i) || [])[1]) || '').trim();
+    const modelIdVal = mIdVal;
     const modelBadge = modelIdVal
-        ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.38);font-family:'DM Mono',monospace" title="Mô hình SVG thực tế nhúng trực tiếp"><i class="fa-solid fa-cubes"></i> ${nhEsc(modelIdVal)}</span>`
+        ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.38);font-family:'DM Mono',monospace" title="Mô hình chuyển động trực quan nhúng trực tiếp"><i class="fa-solid fa-cubes"></i> ${nhEsc(modelIdVal)}</span>`
         : '';
 
     const campaignBadges = renderCampaignBadgesHtml(q);

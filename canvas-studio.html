@@ -14,12 +14,13 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.048 Câu & Các Gói Staging Chuyên Biệt -->
-    <script src="assets/ngan-hang-3048-questions.js?v=20261117-nh3048"></script>
+    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.138 Câu & Các Gói Staging Chuyên Biệt -->
+    <script src="assets/ngan-hang-3048-questions.js?v=20261118-tnbt"></script>
+    <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261118-sync50"></script>
-    <script src="assets/staging-tn-220-questions.js?v=20261118-tn220"></script>
+    <script src="assets/staging-tn-220-questions.js?v=20261118-tnbt"></script>
     <script src="assets/staging-ds-106-questions.js?v=20261118-bespoke106"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
@@ -27,7 +28,7 @@
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
     <script src="assets/staging-ds-models.js?v=20261118-bespoke106"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tn50models"></script>
-    <script src="assets/staging-tn220-models.js?v=20261118-tn220"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1160,7 +1161,7 @@
         <!-- Mode Toggle Switcher (Phòng Duyệt & Soạn Câu Hỏi là Phòng Chính) -->
         <div class="mode-toggle-group">
             <button type="button" class="mode-toggle-btn active" id="btn-mode-staging" onclick="switchStudioMode('STAGING')">
-                <i class="fa-solid fa-list-check"></i> 📋 Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.048+ Câu</span>)
+                <i class="fa-solid fa-list-check"></i> 📋 Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.424 Câu</span>)
             </button>
             <button type="button" class="mode-toggle-btn" id="btn-mode-model" onclick="switchStudioMode('MODEL')">
                 <i class="fa-solid fa-cube"></i> 🎬 Tinh Chỉnh Mô Hình (Canvas)
@@ -1184,7 +1185,7 @@
             <div class="selector-group">
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
                 <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
-                    <option value="P1_STAGING_220">🚀 27 Mô Hình 220 Câu Mới Bóc Tách (C1–C4 Có Hình)</option>
+                    <option value="P1_STAGING_220">🚀 27 Mô Hình Đợt 220 (14 BT Đã Nạp NH &amp; 13 LT Chờ Duyệt)</option>
                     <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Mới (50 Đề Chờ Duyệt)</option>
                     <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 & C3 Có Hình)</option>
                     <option value="P2_ORIGINAL_94">🧪 94 Mô Hình Đúng / Sai Gốc (Đã Nạp)</option>
@@ -1339,14 +1340,14 @@
                     <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
                         <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
-                            <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Mới — 220 Câu Bù Đủ 8 Chủ Đề (C1–C4)</option>
+                            <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Lý Thuyết — 130 Câu TN-LT Tinh Tuyển (C1–C4)</option>
                             <option value="STAGING_DS_106">🧪 106 Câu Đúng/Sai 50 Đề (Mới Bóc Tách Chờ Duyệt)</option>
                             <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 & 3)</option>
                         </optgroup>
-                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.048 CÂU)">
-                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.048 Câu)</option>
+                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.138 CÂU)">
+                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.138 Câu)</option>
                             <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
-                            <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.280 Câu)</option>
+                            <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.370 Câu)</option>
                             <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu Mô Hình Canvas)</option>
                             <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
                         </optgroup>
@@ -2110,16 +2111,22 @@
         }
     }
 
+    function stripModelSlotMarkup(str) {
+        return String(str || '').replace(/\s*<div\b[^>]*class=["'][^"']*vlxt-model-slot[^"']*["'][^>]*>\s*<\/div>/gi, '').trim();
+    }
+
     function renderModelQuestionDetails(id) {
         const card = document.getElementById('model-question-preview');
         if (!card) return;
 
-        // Tìm kiếm câu hỏi trong cả 5 nguồn: 106 câu ĐS mới, 94 câu ĐS gốc, Trả lời ngắn, TN50, TN220
+        // Tìm kiếm câu hỏi trong cả 7 nguồn: 106 ĐS mới, 94 ĐS gốc, TN220-LT, TN220-BT Bank, Ngân hàng 3.138, TN50, Trả lời ngắn
         const stagingDsList = window.STAGING_DS_106_QUESTIONS || [];
         const dsList = window.DS_94_QUESTIONS || [];
         const tlnList = window.TLN_370_QUESTIONS || [];
         const tnList = window.VLXT_STAGING_QUESTIONS || window.STAGING_QUESTIONS || [];
         const tn220List = window.VLXT_STAGING_220_QUESTIONS || [];
+        const tn220BtList = window.VLXT_TN220_BT_BANK || [];
+        const bankAllList = window.VLXT_NGANHANG_3048 || [];
 
         let q = stagingDsList.find(item => item.modelId === id || item.id === id);
         let partType = 'DS';
@@ -2131,6 +2138,14 @@
         if (!q) {
             q = tn220List.find(item => item.modelId === id || item.id === id);
             if (q) partType = 'TN';
+        }
+        if (!q) {
+            q = tn220BtList.find(item => item.modelId === id || item.id === id);
+            if (q) partType = q.loai || 'TN';
+        }
+        if (!q) {
+            q = bankAllList.find(item => item.modelId === id || item.id === id);
+            if (q) partType = q.loai || 'TN';
         }
         if (!q) {
             q = tnList.find(item => item.modelId === id || item.id === id);
@@ -2180,7 +2195,7 @@
             const chungHtml = (q.deBaiChung || '').trim()
                 ? `<div style="margin-bottom:8px; padding:8px 10px; background:rgba(56,189,248,0.08); border-left:3px solid #38bdf8; border-radius:4px; color:#cbd5e1;">${renderMathTextToHtml(q.deBaiChung)}</div>`
                 : '';
-            elQText.innerHTML = chungHtml + renderMathTextToHtml(q.question || '');
+            elQText.innerHTML = chungHtml + renderMathTextToHtml(stripModelSlotMarkup(q.question || ''));
         }
 
         // Hiển thị hình ảnh gốc từ đề Word nếu có
@@ -2597,11 +2612,13 @@ YÊU CẦU TINH CHỈNH:
             if (selLv) selLv.value = 'ALL';
 
             if (currentModelId.startsWith('MH-TN220-')) {
+                const isStillInStaging220 = (window.VLXT_STAGING_220_QUESTIONS || []).some(item => item.modelId === currentModelId);
+                const targetPool = isStillInStaging220 ? 'STAGING_220' : 'TN_BT';
                 const poolSelect = document.getElementById('st-filter-pool');
-                if (poolSelect && poolSelect.value !== 'STAGING_220') {
-                    poolSelect.value = 'STAGING_220';
+                if (poolSelect && poolSelect.value !== targetPool) {
+                    poolSelect.value = targetPool;
                     if (typeof onStagingPoolChanged === 'function') {
-                        onStagingPoolChanged('STAGING_220');
+                        onStagingPoolChanged(targetPool);
                     }
                 } else {
                     filterStagingQuestions();
@@ -2734,9 +2751,29 @@ YÊU CẦU TINH CHỈNH:
         loadStagingQuestion(currentStagingIdx);
     }
 
+    function mergeTn220BtPackIntoBankList(bankRows) {
+        const list = Array.isArray(bankRows) ? bankRows.slice() : [];
+        const pack = window.VLXT_TN220_BT_BANK || [];
+        if (!pack.length) return list;
+        const idxById = new Map();
+        list.forEach((q, i) => { if (q && q.id) idxById.set(String(q.id).trim(), i); });
+        pack.forEach(btQ => {
+            if (!btQ || !btQ.id) return;
+            const id = String(btQ.id).trim();
+            if (idxById.has(id)) {
+                const target = list[idxById.get(id)];
+                if (!target.modelId && btQ.modelId) target.modelId = btQ.modelId;
+            } else {
+                list.push({ ...btQ });
+                idxById.set(id, list.length - 1);
+            }
+        });
+        return list;
+    }
+
 function initStagingSystem() {
-        // Nạp nguồn 3.048 câu Ngân Hàng Đề chính thức
-        const rawBank = window.VLXT_NGANHANG_3048 || [];
+        // Nạp nguồn Ngân Hàng Đề chính thức (3.138+ câu, tự hợp nhất gói TN220-BT mới đẩy)
+        const rawBank = mergeTn220BtPackIntoBankList(window.VLXT_NGANHANG_3048 || []);
         const poolBank = rawBank.map(q => Object.assign({}, q, { isFromBank: true }));
 
         const poolDS = (window.DS_94_QUESTIONS || []).map(q => Object.assign({ loai: 'DS' }, q));
@@ -2753,8 +2790,12 @@ function initStagingSystem() {
         });
 
         if (poolBank.length > 0) {
-            // Đảm bảo các câu DS trong ngân hàng có modelId nếu chưa gắn
+            // Đảm bảo mọi câu trong ngân hàng (DS / TN / TLN) tự trích xuất modelId từ slot hoặc ID
             poolBank.forEach(q => {
+                if (!q.modelId && q.question) {
+                    const slotMatch = String(q.question).match(/data-model-id=["']([^"']+)["']/i);
+                    if (slotMatch) q.modelId = slotMatch[1].trim();
+                }
                 if (q.loai === 'DS' && !q.modelId && q.id && q.id.includes('MH-')) {
                     const match = q.id.match(/MH-C\d-\d+/);
                     if (match) q.modelId = match[0];
@@ -2792,16 +2833,17 @@ function initStagingSystem() {
     }
 
     async function syncBankDirectlyFromServer() {
-        showToast('Đang tải 3.048 câu nguồn thật từ Máy chủ Google Apps Script...', 'info');
+        showToast('Đang tải dữ liệu Ngân hàng câu hỏi mới nhất từ Máy chủ Google Apps Script...', 'info');
         try {
             const res = await fetch('https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec?type=nganhang&_t=' + Date.now());
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const json = await res.json();
             const rows = Array.isArray(json) ? json : (json.data || []);
             if (rows && rows.length) {
-                window.VLXT_NGANHANG_3048 = rows;
+                const mergedRows = mergeTn220BtPackIntoBankList(rows);
+                window.VLXT_NGANHANG_3048 = mergedRows;
                 initStagingSystem();
-                showToast(`Đã đồng bộ thành công ${rows.length.toLocaleString()} câu hỏi từ Live Server!`, 'success');
+                showToast(`Đã đồng bộ thành công ${mergedRows.length.toLocaleString()} câu hỏi (đã gộp gói TN-BT & mô hình)!`, 'success');
             } else {
                 throw new Error('Máy chủ trả về dữ liệu rỗng');
             }
@@ -3048,9 +3090,10 @@ function initStagingSystem() {
             }
         }
 
-        // 3. Đề bài chính
+        // 3. Đề bài chính (làm sạch thẻ .vlxt-model-slot nếu câu từ Ngân hàng đã nhúng sẵn)
+        const cleanQuestionText = stripModelSlotMarkup(q.question || '');
         const qBox = document.getElementById('st-preview-question');
-        if (qBox) qBox.innerHTML = renderMathTextToHtml(q.question || '');
+        if (qBox) qBox.innerHTML = renderMathTextToHtml(cleanQuestionText);
 
         // Hiển thị hình ảnh gốc từ đề Word nếu có
         const stImgBox = document.getElementById('st-preview-image-container');
@@ -3231,7 +3274,7 @@ function initStagingSystem() {
         if (inpBai) inpBai.value = q.baiHoc || '';
         if (inpModel) inpModel.value = q.modelId || '';
         if (inpSubtopic) inpSubtopic.value = q.subTopic || '';
-        if (inpQuestion) inpQuestion.value = q.question || '';
+        if (inpQuestion) inpQuestion.value = cleanQuestionText;
         if (inpGiaiThich) inpGiaiThich.value = q.giaiThich || q.solution || '';
 
         const groupDebaichung = document.getElementById('st-group-debaichung');
@@ -3611,18 +3654,22 @@ function initStagingSystem() {
             });
             ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
         }
-        // Tự động nạp 27 Mô hình 220 Câu Mới Bóc Tách (C1–C4) vào MODEL_CAPTIONS
-        const st220List = window.VLXT_STAGING_220_QUESTIONS;
-        if (Array.isArray(st220List)) {
-            st220List.forEach(q => {
-                if (q.modelId) {
-                    const shortQ = (q.question || '').replace(/<[^>]+>/g, '').slice(0, 62);
-                    const qNum = (q.id || '').split('-').pop();
-                    MODEL_CAPTIONS[q.modelId] = `Câu ${qNum}: ${shortQ}${shortQ.length >= 62 ? '...' : ''}`;
-                }
-            });
-            ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
+        // Tự động nạp đủ 27 Mô hình đợt 220 (14 BT đã lên Ngân hàng + 13 LT chờ duyệt) vào MODEL_CAPTIONS
+        if (window.VLXT_TN220_CAPTIONS && typeof window.VLXT_TN220_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_TN220_CAPTIONS);
         }
+        const tn220AllSources = [
+            ...(Array.isArray(window.VLXT_STAGING_220_QUESTIONS) ? window.VLXT_STAGING_220_QUESTIONS : []),
+            ...(Array.isArray(window.VLXT_TN220_BT_BANK) ? window.VLXT_TN220_BT_BANK : [])
+        ];
+        tn220AllSources.forEach(q => {
+            if (q && q.modelId && !MODEL_CAPTIONS[q.modelId]) {
+                const shortQ = stripModelSlotMarkup(q.question || '').replace(/<[^>]+>/g, '').slice(0, 62);
+                const qNum = (q.id || '').split('-').pop();
+                MODEL_CAPTIONS[q.modelId] = `Câu ${qNum}: ${shortQ}${shortQ.length >= 62 ? '...' : ''}`;
+            }
+        });
+        ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
 
         // Mặc định nạp mô hình đầu tiên của 106 mô hình mới khi mở Tab Mô hình
         if (window.STAGING_DS_106_QUESTIONS && window.STAGING_DS_106_QUESTIONS[0] && window.STAGING_DS_106_QUESTIONS[0].modelId) {

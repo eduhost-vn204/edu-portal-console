@@ -1396,3 +1396,40 @@
         });
     });
 })();
+
+// === VLXT_TN220_CAPTIONS_REGISTRY ===
+(function (g) {
+  var caps = {
+  "MH-TN220-C1-01": "Câu 001: Thực hiện thí nghiệm hơ nóng một khối khí trong ống nghiệm có ...",
+  "MH-TN220-C1-02": "Câu 002: Thả một quả cầu kim loại ở nhiệt độ phòng vào một cốc chứa nướ...",
+  "MH-TN220-C1-03": "Câu 003: Hiện tượng quả bóng bàn bị móp (nhưng chưa bị thủng) khi thả v...",
+  "MH-TN220-C2-04": "Câu 021: Hai bình chứa khác nhau X và Y có thể tích V và 4 V được nối v...",
+  "MH-TN220-C2-05": "Câu 022: Hình bên là đồ thị biểu diễn đường đẳng nhiệt của một lượng kh...",
+  "MH-TN220-C2-06": "Câu 023: Đồ thị biểu diễn hai đường đẳng nhiệt của cùng một lượng khí l...",
+  "MH-TN220-C2-07": "Câu 041: Một lượng khí lí tưởng có trạng thái biến đổi theo đồ thị hình...",
+  "MH-TN220-C2-08": "Câu 042: Một lượng khí lí tưởng biến đổi trạng thái có đồ thị áp suất t...",
+  "MH-TN220-C2-09": "Câu 043: Đồ thị nào sau đây không phù hợp với quá trình đẳng áp?",
+  "MH-TN220-C2-10": "Câu 044: Đồ thị nào sau đây không mô tả quá trình đẳng áp?",
+  "MH-TN220-C2-11": "Câu 104: Một khối khí thực hiện một chu trình biến đổi trạng thái khép ...",
+  "MH-TN220-C2-12": "Câu 105: Hình bên là đồ thị biểu diễn một chu trình biến đổi trạng thái...",
+  "MH-TN220-C3-13": "Câu 114: Trong hình dưới đây, mũi tên chỉ hướng của cảm ứng từ tại điểm...",
+  "MH-TN220-C3-14": "Câu 115: Nhìn vào hình vẽ, hãy cho biết tên các cực từ của thanh nam ch...",
+  "MH-TN220-C3-15": "Câu 116: Hình dưới đây cho thấy các đường sức từ trường giữa hai cực từ...",
+  "MH-TN220-C3-16": "Câu 117: Từ trường trong một vùng không gian được mô tả bằng các đường ...",
+  "MH-TN220-C3-17": "Câu 118: Trái Đất là một nam châm khổng lồ, xung quanh Trái Đất có từ t...",
+  "MH-TN220-C3-18": "Câu 119: Hình bên là các đường sức từ của một nam châm. So sánh từ trườ...",
+  "MH-TN220-C3-19": "Câu 120: Cung cấp điện vào hai đầu của đoạn dây dẫn, đặt kim nam châm s...",
+  "MH-TN220-C3-20": "Câu 134: Một khung kim loại hình vuông có cạnh L chuyển động với vận tố...",
+  "MH-TN220-C3-21": "Câu 135: Những hình vẽ nào sau đây xác định đúng chiều dòng điện cảm ứn...",
+  "MH-TN220-C3-22": "Câu 136: Một học sinh tiến hành thí nghiệm khảo sát hiện tượng cảm ứng ...",
+  "MH-TN220-C3-23": "Câu 137: Một vòng dây kín có diện tích $50\\,\\text{cm}^{2}$ đặt trong từ...",
+  "MH-TN220-C3-24": "Câu 138: Hình vẽ nào dưới đây, từ thông gửi qua diện tích của khung dây...",
+  "MH-TN220-C4-25": "Câu 183: Bên dưới là mô hình nguyên tử của hai nguyên tố. Số nucleon ch...",
+  "MH-TN220-C4-26": "Câu 184: Bên dưới là mô hình của một nguyên tử. Số nucleon trong hạt nh...",
+  "MH-TN220-C4-27": "Câu 206: Đồ thị nào dưới đây mô tả gần đúng mối liên hệ giữa năng lượng..."
+};
+  g.VLXT_TN220_CAPTIONS = Object.assign(g.VLXT_TN220_CAPTIONS || {}, caps);
+  if (typeof MODEL_CAPTIONS === 'object' && MODEL_CAPTIONS) {
+    Object.assign(MODEL_CAPTIONS, caps);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
