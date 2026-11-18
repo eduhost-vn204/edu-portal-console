@@ -4021,3 +4021,40 @@
 
     console.info('[VLXT staging-tn50-models] Đã đăng ký thành công toàn bộ 27 mô hình Canvas 60 FPS (MH-TN50-C2 & C3).');
 })(window);
+
+// === VLXT_TN50_CAPTIONS_REGISTRY ===
+(function (g) {
+  const caps = {
+  "MH-TN50-C2-251": "Câu 251: Biểu đồ cho thấy kết quả thu được khi thực hiện thí nghiệm để nghiên cứu...",
+  "MH-TN50-C2-258": "Câu 258: Một xilanh được lắp một pit-tông trơn chứa khí lý tưởng như hình vẽ bên....",
+  "MH-TN50-C2-274": "Câu 274: Đồ thị sau đây diễn tả quá trình biến đổi nào của một lượng khí xác định?",
+  "MH-TN50-C2-255": "Câu 255: Đồ thị biểu diễn mối quan hệ $V - T$ của một khối khí lý tưởng xác định....",
+  "MH-TN50-C2-269": "Câu 269: Đường đẳng áp của một khối khí xác định tương ứng với áp suất $p_1$ và...",
+  "MH-TN50-C2-314": "Câu 314: Một khối khí có áp suất $p_0$, thể tích $V_0$ được đun nóng đẳng áp,...",
+  "MH-TN50-C2-337": "Câu 337: Một thí nghiệm được thực hiện với khối không khí chứa trong bình cầu và...",
+  "MH-TN50-C2-347": "Câu 347: Một khối khí thay đổi trạng thái như đồ thị biểu diễn như hình vẽ bên. Sự...",
+  "MH-TN50-C2-350": "Câu 350: Một khối khí ban đầu có các thông số trạng thái là $p_0, V_0, T_0$. Biến...",
+  "MH-TN50-C3-502": "Câu 502: Với nam châm điện ở hình trên, kết luận nào sau đây đúng?",
+  "MH-TN50-C3-503": "Câu 503: Muốn tăng từ trường của nam châm điện ta có thể",
+  "MH-TN50-C3-505": "Câu 505: Ba nam châm giống hệt nhau $P, Q$ và $R$ được thả đồng thời từ trạng thái...",
+  "MH-TN50-C3-521": "Câu 521: Một khung dây dẫn $MNPQ$ quay đều quanh một trục nằm ngang vuông góc với...",
+  "MH-TN50-C3-522": "Câu 522: Khi dịch chuyển thanh nam châm ra xa ống dây (hình bên), trong ống dây có...",
+  "MH-TN50-C3-526": "Câu 526: Cho sơ đồ mạch điện và kim nam châm được treo như hình. Khi đóng công tắc...",
+  "MH-TN50-C3-546": "Câu 546: Một vòng dây dẫn kín, tròn, phẳng không biến dạng $(C)$ đặt trong mặt...",
+  "MH-TN50-C3-528": "Câu 528: Để xác định chiều của lực từ tác dụng lên đoạn dây mang dòng điện người...",
+  "MH-TN50-C3-535": "Câu 535: Một sợi dây kim loại hình vuông có cạnh bằng $15,7\\text{ cm}$ được đặt...",
+  "MH-TN50-C3-538": "Câu 538: Lực từ tác dụng lên đoạn dây $AC$ có độ lớn là",
+  "MH-TN50-C3-539": "Câu 539: Bỏ qua trọng lượng khung dây, nếu khung tự do thì hệ lực từ tác dụng lên...",
+  "MH-TN50-C3-531": "Câu 531: Một khung tròn và một khung vuông, được làm từ cùng một loại dây kim...",
+  "MH-TN50-C3-533": "Câu 533: Từ thông qua vòng dây tại thời điểm $t = 0,5\\text{ s}$ là",
+  "MH-TN50-C3-544": "Câu 544: Từ thông cực đại qua vòng dây là bao nhiêu $\\text{mWb}$? (Kết quả làm...",
+  "MH-TN50-C3-545": "Câu 545: Một thanh nam châm được đẩy vào một cuộn dây được nối với một ampe kế...",
+  "MH-TN50-C3-554": "Câu 554: Đồ thị cho thấy mối liên hệ giữa từ thông $\\phi$ qua cuộn dây theo thời...",
+  "MH-TN50-C3-556": "Câu 556: Cuộn dây sơ cấp của máy biến áp tăng áp lí tưởng được nối với nguồn điện...",
+  "MH-TN50-C3-564": "Câu 564: Ống thẳng đứng, làm bằng đồng, chì và cao su, có kích thước giống hệt..."
+};
+  g.VLXT_TN50_CAPTIONS = Object.assign(g.VLXT_TN50_CAPTIONS || {}, caps);
+  if (typeof MODEL_CAPTIONS === 'object' && MODEL_CAPTIONS) {
+    Object.assign(MODEL_CAPTIONS, caps);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);

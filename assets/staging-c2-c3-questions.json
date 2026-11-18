@@ -19,8 +19,9 @@
     "correct": "D",
     "giaiThich": "Theo định luật Boyle, đối với một lượng khí lí tưởng xác định ở nhiệt độ không đổi: $p \\cdot V = \\text{const} \\implies p = \\text{const} \\cdot \\frac{1}{V}$.<br>Do đó, đồ thị là một đoạn thẳng có đường kéo dài đi qua gốc tọa độ $O(0,0)$ khi trục tung $y$ biểu diễn <b>Áp suất ($p$)</b> và trục hoành $x$ biểu diễn <b>$1/\\text{Thể tích}$ ($1/V$)</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-254",
@@ -42,8 +43,9 @@
     "correct": "D",
     "giaiThich": "Trong quá trình đẳng nhiệt của một khối khí xác định, áp suất và thể tích tỉ lệ nghịch với nhau ($p \\sim \\frac{1}{V} \\iff pV = \\text{hằng số}$).<br>Khi áp suất $p$ tăng 2 lần thì thể tích $V$ phải <b>giảm 2 lần</b>. Nhận xét D cho rằng thể tích cũng tăng 2 lần là sai.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-258",
@@ -65,8 +67,9 @@
     "correct": "A",
     "giaiThich": "Phân tích hai giai đoạn biến đổi trạng thái của lượng khí trong xilanh:<br>• <b>Giai đoạn 1:</b> Pít-tông được giữ cố định ($V = \\text{const}$, quá trình đẳng tích) và khí được làm mát ($T$ giảm). Theo định luật Charles, áp suất $p$ giảm nên đồ thị là đoạn thẳng đứng hướng từ trạng thái $i$ đi xuống.<br>• <b>Giai đoạn 2:</b> Pít-tông được đẩy vào trong từ từ ở nhiệt độ không đổi ($T = \\text{const}$, quá trình đẳng nhiệt) làm thể tích giảm ($V$ giảm). Theo định luật Boyle, áp suất $p$ tăng theo đường cong hypebol dốc lên về phía bên trái đến trạng thái cuối $f$.<br>Đồ thị ở phương án <b>A</b> mô tả chính xác cả hai quá trình này.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-273",
@@ -88,8 +91,9 @@
     "correct": "D",
     "giaiThich": "Theo thuyết động học phân tử chất khí, các phân tử chất khí luôn chuyển động hỗn loạn không ngừng về mọi phía và va chạm vào nhau cũng như vào thành bình. Chúng không bao giờ dừng lại đứng yên. Do đó, phát biểu <b>D</b> không phải đặc điểm của phân tử khí.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-274",
@@ -111,8 +115,9 @@
     "correct": "D",
     "giaiThich": "Phân tích đồ thị trong hệ trục tọa độ $(p, V)$:<br>• Đoạn đường cong hypebol có áp suất tăng và thể tích giảm ứng với quá trình <b>biến đổi đẳng nhiệt</b> ($T = \\text{const}$).<br>• Đoạn đường thẳng nằm ngang có mũi tên hướng sang trái ứng với áp suất không đổi ($p = \\text{const}$) và thể tích $V$ giảm dần (<b>nén đẳng áp</b>).<br>Vậy đồ thị diễn tả quá trình biến đổi đẳng nhiệt sau đó nén đẳng áp.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-277",
@@ -134,34 +139,12 @@
     "correct": "D",
     "giaiThich": "Định luật Boyle: Ở nhiệt độ không đổi, áp suất $p$ của một lượng khí lí tưởng xác định tỉ lệ nghịch với thể tích $V$ của nó ($p \\sim \\frac{1}{V}$ hay $pV = \\text{hằng số}$).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-287",
-    "loai": "TN",
-    "tnType": "LT",
-    "mucDo": "VD",
-    "chuong": "CHƯƠNG 2 – KHÍ LÝ TƯỞNG",
-    "baiHoc": "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT",
-    "subTopic": "CD07 – Quá trình đẳng nhiệt & Định luật Boyle",
-    "topicCode": "CD07",
-    "modelId": "",
-    "hinhAnh": "",
-    "deBaiChung": "",
-    "question": "Một lượng khí được nén đẳng nhiệt từ thể tích $10,0\\text{ lít}$ đến $4,0\\text{ lít}$, áp suất khí tăng thêm $0,75\\text{ atm}$. Áp suất ban đầu của khí là",
-    "optA": "$0,3\\text{ atm}$.",
-    "optB": "$0,5\\text{ atm}$.",
-    "optC": "$1,0\\text{ atm}$.",
-    "optD": "$0,25\\text{ atm}$.",
-    "correct": "B",
-    "giaiThich": "Áp dụng định luật Boyle cho quá trình nén đẳng nhiệt của lượng khí:<br>$$p_1 V_1 = p_2 V_2 \\iff p_1 \\cdot 10,0 = (p_1 + 0,75) \\cdot 4,0$$<br>$$\\iff 10p_1 = 4p_1 + 3 \\iff 6p_1 = 3 \\iff p_1 = 0,5\\text{ atm}.$$<br>Vậy áp suất ban đầu của khí là $0,5\\text{ atm}$ (đáp án <b>B</b>).",
-    "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
-  },
-  {
-    "id": "VLXT-STAGE-C2-CD07-305",
     "loai": "TN",
     "tnType": "LT",
     "mucDo": "NB",
@@ -172,16 +155,41 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Trong hệ tọa độ $(p, T)$ đường đẳng nhiệt là",
-    "optA": "đường thẳng kéo dài qua $O$.",
-    "optB": "đường cong hypebol.",
-    "optC": "đường thẳng song song trục $OT$.",
-    "optD": "đường thẳng song song trục $Op$.",
-    "correct": "D",
-    "giaiThich": "Trong hệ tọa độ $(p, T)$, quá trình đẳng nhiệt có nhiệt độ $T = \\text{const}$ không đổi nên đường đẳng nhiệt là đường thẳng vuông góc với trục $OT$, tức là <b>song song với trục $Op$</b>.",
+    "question": "Đơn vị của áp suất nào sau đây không đúng?",
+    "optA": "Pascal (Pa)",
+    "optB": "Bar",
+    "optC": "Lít",
+    "optD": "Atmosphere (atm)",
+    "correct": "C",
+    "giaiThich": "Đơn vị chuẩn SI của áp suất là <strong>Pascal ($\\text{Pa} = \\text{N/m}^2$)</strong>; ngoài ra trong thực tế và khí lí tưởng còn dùng $\\text{bar}$, $\\text{atm}$, $\\text{mmHg}$. Còn <strong>lít ($\\text{l}$ hay $\\text{L}$) là đơn vị đo thể tích</strong> ($1\\text{ lít} = 1\\text{ dm}^3$), không phải đơn vị áp suất. Vậy đáp án không đúng là <strong>C</strong>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
+  },
+  {
+    "id": "VLXT-STAGE-C2-CD07-305",
+    "loai": "TN",
+    "tnType": "LT",
+    "mucDo": "TH",
+    "chuong": "CHƯƠNG 2 – KHÍ LÝ TƯỞNG",
+    "baiHoc": "B11. ĐỊNH LUẬT BOYLE – QUÁ TRÌNH ĐẲNG NHIỆT",
+    "subTopic": "CD07 – Quá trình đẳng nhiệt & Định luật Boyle",
+    "topicCode": "CD07",
+    "modelId": "",
+    "hinhAnh": "",
+    "deBaiChung": "",
+    "question": "Trong hệ tọa độ $(p, V)$, một khối khí lý tưởng biến đổi đẳng nhiệt ở nhiệt độ $T_1$ từ trạng thái $(p_1, V_1)$ sang $(p_2, V_2)$, rồi tiếp tục biến đổi đẳng nhiệt ở nhiệt độ $T_2$ đến trạng thái $(p_3, V_3)$. Nếu $T_1 \\gt T_2$, nhận định nào sau đây đúng?",
+    "optA": "Đường đẳng nhiệt $T_1$ nằm phía trên đường đẳng nhiệt $T_2$.",
+    "optB": "Đường đẳng nhiệt $T_1$ nằm phía dưới đường đẳng nhiệt $T_2$.",
+    "optC": "Hai đường đẳng nhiệt $T_1$ và $T_2$ trùng nhau.",
+    "optD": "Đường đẳng nhiệt $T_1$ nằm hoàn toàn về bên trái đường đẳng nhiệt $T_2$.",
+    "correct": "A",
+    "giaiThich": "Theo phương trình trạng thái khí lý tưởng $pV = nRT$, với cùng một lượng khí xác định, xét tại cùng một giá trị thể tích $V$ thì áp suất $p = \\dfrac{nRT}{V}$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$. Vì $T_1 \\gt T_2$ nên ứng với mọi thể tích $V$ ta đều có $p(T_1) \\gt p(T_2)$, tức là <strong>đường đẳng nhiệt $T_1$ nằm phía trên đường đẳng nhiệt $T_2$</strong>. Chọn <strong>A</strong>.",
+    "chatLuong": "tinh",
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-329",
@@ -203,8 +211,9 @@
     "correct": "C",
     "giaiThich": "Trong hệ tọa độ $(p, V)$, hệ thức định luật Boyle $p = \\frac{\\text{const}}{V}$ có dạng hàm tỉ lệ nghịch $y = \\frac{a}{x}$, nên đường đẳng nhiệt có dạng là một nhánh <b>đường hyperbol</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD07-361",
@@ -226,8 +235,9 @@
     "correct": "C",
     "giaiThich": "Quá trình đẳng nhiệt là quá trình biến đổi trạng thái của một lượng khí xác định trong đó nhiệt độ được giữ không đổi ($T = \\text{const}$).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-255",
@@ -249,8 +259,9 @@
     "correct": "D",
     "giaiThich": "Phân tích từng giai đoạn trên đồ thị $(V, T)$:<br>• <b>$X \\to Y$:</b> Đường thẳng có phần kéo dài đi qua gốc tọa độ $O(0,0)$ là đường đẳng áp $\\implies$ áp suất không đổi. Vậy (1) <b>đúng</b>.<br>• <b>$Y \\to Z$:</b> Nhiệt độ $T$ không đổi (đẳng nhiệt), thể tích $V$ giảm nên theo định luật Boyle $p = \\frac{nRT}{V}$ tăng. Vậy (2) <b>đúng</b>.<br>• <b>$Z \\to X$:</b> Thể tích $V$ không đổi (đẳng tích), nhiệt độ $T$ giảm nên áp suất $p = \\frac{nRT}{V}$ giảm. Vậy (3) <b>đúng</b>.<br>Cả ba phát biểu đều đúng.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-259",
@@ -272,8 +283,9 @@
     "correct": "D",
     "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái của một lượng khí xác định khi thể tích được giữ không đổi ($V = \\text{const}$). Đun nóng khí trong một bình kín cứng có dung tích không đổi là quá trình đẳng tích (trong khi các trường hợp còn lại thể tích hoặc khối lượng khí thay đổi).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-266",
@@ -295,8 +307,9 @@
     "correct": "D",
     "giaiThich": "Theo chương trình Vật lí 12 hiện hành, định luật Charles mô tả quá trình đẳng áp ($p = \\text{const}$): thể tích $V$ của một khối lượng khí xác định tỉ lệ thuận với nhiệt độ tuyệt đối $T$:<br>$$\\frac{V}{T} = \\text{hằng số} \\iff \\frac{V_1}{T_1} = \\frac{V_2}{T_2}.$$<br>Do đó hệ thức đúng là <b>D</b> (còn $p_1 V_1 = p_2 V_2$ là định luật Boyle).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-269",
@@ -311,15 +324,16 @@
     "hinhAnh": "assets/images/staging/q_269_0.jpg",
     "deBaiChung": "",
     "question": "Đường đẳng áp của một khối khí xác định tương ứng với áp suất $p_1$ và $p_2$ như hình vẽ. Hệ thức đúng là",
-    "optA": "$p_1 > p_2$.",
-    "optB": "$p_1 < p_2$.",
+    "optA": "$p_1 \\gt p_2$.",
+    "optB": "$p_1 \\lt p_2$.",
     "optC": "$p_1 = p_2$.",
     "optD": "$p_1 \\ge p_2$.",
     "correct": "A",
-    "giaiThich": "Từ phương trình trạng thái $pV = nRT \\implies V = \\left(\\frac{nR}{p}\\right) T$.<br>Trong hệ tọa độ $(V, T)$, đường đẳng áp có độ dốc càng lớn thì áp suất $p$ càng nhỏ (hoặc kẻ đường thẳng đứng đẳng nhiệt $T = \\text{const}$ cắt đường $p_2$ ở phía trên đường $p_1$, tức $V_2 > V_1 \\implies p_2 < p_1$, hay $p_1 > p_2$). Chọn đáp án <b>A</b>.",
+    "giaiThich": "Từ phương trình trạng thái $pV = nRT \\implies V = \\left(\\frac{nR}{p}\\right) T$.<br>Trong hệ tọa độ $(V, T)$, đường đẳng áp có độ dốc càng lớn thì áp suất $p$ càng nhỏ (hoặc kẻ đường thẳng đứng đẳng nhiệt $T = \\text{const}$ cắt đường $p_2$ ở phía trên đường $p_1$, tức $V_2 \\gt V_1 \\implies p_2 \\lt p_1$, hay $p_1 \\gt p_2$). Chọn đáp án <b>A</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-275",
@@ -341,8 +355,9 @@
     "correct": "C",
     "giaiThich": "Nội dung định luật Charles cho quá trình đẳng áp ($p = \\text{const}$): Thể tích của một lượng khí xác định tỉ lệ thuận với nhiệt độ tuyệt đối $T$ ($V \\sim T$ hay $\\frac{V}{T} = \\text{const}$).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-314",
@@ -364,8 +379,9 @@
     "correct": "B",
     "giaiThich": "Xét đồ thị trong hệ tọa độ $(P, T)$:<br>• <b>Quá trình (1) $\\to$ (2):</b> Đun nóng đẳng áp ($P = P_1 = \\text{const}$), nhiệt độ tuyệt đối tăng gấp đôi từ $T_1$ lên $T_2 = 2T_1$ $\\implies$ đoạn thẳng nằm ngang hướng sang phải.<br>• <b>Quá trình (2) $\\to$ (3):</b> Làm lạnh đẳng tích về nhiệt độ ban đầu $T_1$: trong hệ $(P, T)$, đường đẳng tích là đoạn thẳng có phần kéo dài đi qua gốc tọa độ $O$, hướng về gốc từ $T_2 = 2T_1$ xuống $T_1$ (áp suất giảm một nửa về $P_3$).<br>Chỉ có <b>Hình 2</b> biểu diễn chính xác hai quá trình này.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-337",
@@ -387,8 +403,9 @@
     "correct": "A",
     "giaiThich": "Giọt thủy ngân nằm trong đoạn ống thủy tinh nằm ngang thông với khí quyển ở đầu hở bên phải. Khi làm nóng hoặc làm nguội bình cầu từ từ, giọt thủy ngân tự do dịch chuyển sao cho áp suất khí trong bình cầu luôn cân bằng với áp suất khí quyển bên ngoài ($p = p_{\\text{kq}} = \\text{const}$). Vậy đây là quá trình <b>đẳng áp</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-347",
@@ -410,8 +427,9 @@
     "correct": "B",
     "giaiThich": "Phân tích đồ thị trong hệ trục tọa độ $(p, T)$:<br>• <b>Giai đoạn (1) $\\to$ (2):</b> Đường thẳng có phần kéo dài đi qua gốc $0$ $\\implies$ quá trình đẳng tích ($V = \\text{const}$), nhiệt độ và áp suất cùng tăng ($T_0 \\to 2T_0$, $p_0 \\to 2p_0$): đây là quá trình <b>nung nóng đẳng tích</b>.<br>• <b>Giai đoạn (2) $\\to$ (3):</b> Đoạn thẳng đứng vuông góc với trục $OT$ $\\implies$ nhiệt độ không đổi ($T = \\text{const}$), áp suất giảm từ $2p_0$ xuống $p_0$ nên thể tích khí tăng: đây là quá trình <b>dãn đẳng nhiệt</b>.<br>Chọn đáp án <b>B</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-350",
@@ -433,8 +451,9 @@
     "correct": "D",
     "giaiThich": "Trong hệ tọa độ $(p, V)$:<br>• <b>Giai đoạn 1 (biến đổi đẳng áp đến $2V_0$):</b> Áp suất giữ nguyên bằng $p_0$, thể tích tăng từ $V_0$ đến $2V_0$ $\\implies$ đoạn thẳng nằm ngang sang phải.<br>• <b>Giai đoạn 2 (nén đẳng nhiệt về thể tích ban đầu $V_0$):</b> Nhiệt độ giữ không đổi ở $2T_0$, thể tích giảm từ $2V_0$ về $V_0$ nên áp suất tăng từ $p_0$ lên $2p_0$ theo nhánh đường cong <b>hyperbol</b> dốc lên bên trái.<br>Do đó <b>Hình 4</b> diễn tả đúng toàn bộ quá trình trên.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C2-CD08-358",
@@ -456,8 +475,9 @@
     "correct": "B",
     "giaiThich": "Định luật Charles phát biểu: Khi áp suất của một khối lượng khí xác định giữ không đổi, thể tích của khí tỉ lệ thuận với nhiệt độ tuyệt đối $T$ của nó ($\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-502",
@@ -479,8 +499,9 @@
     "correct": "A",
     "giaiThich": "Quan sát chiều dòng điện trên hai nhánh ống dây và áp dụng quy tắc nắm tay phải (bốn ngón tay khum theo chiều dòng điện qua vòng dây, ngón cái choãi ra chỉ chiều đường sức từ trong lòng lõi sắt — tức chiều từ cực Nam đến cực Bắc):<br>• Nhánh dưới (đầu B): mặt trước dòng điện hướng từ dưới-phải sang trên-trái $\\implies$ đường sức hướng sang trái (đi vào B), nên đầu <b>B là cực từ nam (S)</b>.<br>• Nhánh trên (đầu A): mặt trước dòng điện đi xuống $\\implies$ đường sức hướng sang phải (đi ra từ A), nên đầu <b>A là cực từ bắc (N)</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-503",
@@ -502,8 +523,9 @@
     "correct": "A",
     "giaiThich": "Cảm ứng từ trong lòng ống dây điện từ là $B = 4\\pi \\cdot 10^{-7} \\mu \\frac{N}{l} I$. Vì $B$ tỉ lệ thuận với cường độ dòng điện $I$ và số vòng dây $N$, nên muốn tăng từ trường của nam châm điện ta phải <b>tăng cường độ dòng điện và tăng số vòng dây</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-505",
@@ -525,8 +547,9 @@
     "correct": "A",
     "giaiThich": "• Nam châm $P$ rơi tự do không qua vòng dẫn nên không chịu lực cản từ.<br>• Vòng của $R$ bị cắt hở nên tuy có suất điện động cảm ứng nhưng mạch hở, không có dòng điện cảm ứng ($i_c = 0$), do đó không có lực từ cản trở: $R$ rơi cùng gia tốc $g$ như $P$.<br>• Vòng của $Q$ kín nên xuất hiện dòng điện cảm ứng. Theo định luật Lenz, dòng cảm ứng tạo lực từ hướng lên chống lại chuyển động rơi của $Q$, làm $Q$ rơi chậm hơn.<br>Vậy <b>$P$ và $R$ chạm đất cùng lúc, sau đó là $Q$</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-516",
@@ -540,16 +563,17 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Có hai thanh kim loại bằng sắt, bề ngoài giống nhau. Khi đặt chúng gần nhau thì chúng luôn hút nhau. Kết luận nào sau đây về hai thanh đó là đúng?",
-    "optA": "Đó là hai thanh nam châm.",
-    "optB": "Một thanh là nam châm, thanh còn lại là thanh sắt.",
-    "optC": "Có thể là hai thanh nam châm, cũng có thể là hai thanh sắt.",
-    "optD": "Có thể là hai thanh nam châm, cũng có thể là một thanh nam châm và một thanh sắt.",
-    "correct": "B",
-    "giaiThich": "• Nếu cả hai là thanh sắt thường (chưa nhiễm từ), chúng không hút nhau.<br>• Nếu cả hai là thanh nam châm, khi đặt các cực cùng tên gần nhau chúng sẽ đẩy nhau (không thể luôn hút nhau).<br>• Chỉ có trường hợp <b>một thanh là nam châm, thanh còn lại là thanh sắt</b> thì dù đặt đầu nào lại gần chúng cũng luôn hút nhau.",
+    "question": "Nhận định nào sau đây là không đúng khi nói về tương tác từ giữa các vật?",
+    "optA": "Dòng điện có thể tác dụng lực lên nam châm.",
+    "optB": "Nam châm có thể tác dụng lực lên dòng điện.",
+    "optC": "Hai dòng điện có thể tương tác với nhau.",
+    "optD": "Hai dòng điện không thể tương tác với nhau.",
+    "correct": "D",
+    "giaiThich": "Tương tác từ là tương tác xảy ra giữa nam châm với nam châm, giữa dòng điện với nam châm và <strong>giữa hai dòng điện với nhau</strong> (hai dây dẫn thẳng song song mang dòng điện hút nhau khi cùng chiều và đẩy nhau khi ngược chiều). Do đó nhận định hai dòng điện không thể tương tác với nhau là không đúng. Chọn <strong>D</strong>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-521",
@@ -571,8 +595,9 @@
     "correct": "B",
     "giaiThich": "Từ thông qua khung dây là $\\Phi = BS\\cos\\alpha$ và suất điện động cảm ứng là $e = -\\Phi'(t) = \\omega BS\\sin\\alpha$.<br>Tại vị trí <b>2 và 4</b> trên hình, mặt phẳng khung dây $MNPQ$ vuông góc với các đường sức từ $\\vec{B}$ ($\\alpha = 0^\\circ$ hoặc $180^\\circ$), khi đó độ lớn từ thông $|\\Phi|$ đạt cực đại nên đạo hàm $\\frac{d\\Phi}{dt} = 0$, tức suất điện động xoay chiều bằng $0$.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-522",
@@ -594,8 +619,9 @@
     "correct": "D",
     "giaiThich": "Áp dụng định luật Lenz: Khi cực Bắc (N) của thanh nam châm dịch chuyển ra xa đầu 1 của ống dây, từ thông gửi qua ống dây giảm dần.<br>Để chống lại sự giảm này, đầu 1 của ống dây trở thành <b>cực Nam (S)</b> để <b>hút cực Bắc</b> thanh nam châm lại. Nhìn trực diện vào mặt Nam của ống dây, dòng điện cảm ứng chạy <b>cùng chiều kim đồng hồ</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-526",
@@ -617,8 +643,9 @@
     "correct": "A",
     "giaiThich": "Khi đóng công tắc, dòng điện đi ra từ cực dương (bản dài bên trái nguồn) lên vòng dây phía trái theo hướng đi lên ở mặt trước ống dây.<br>Áp dụng quy tắc nắm tay phải: đường sức từ trong lòng ống dây hướng sang trái $\\implies$ đầu bên trái là cực Bắc (N), đầu bên phải (gần cực N của kim nam châm) là <b>cực Nam (S)</b>. Vì khác cực nên kim nam châm <b>bị hút sang trái</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-546",
@@ -640,8 +667,9 @@
     "correct": "A",
     "giaiThich": "Vòng dây tròn $(C)$ nằm trong mặt phẳng song song $Oxz$, quay quanh trục đối xứng của nó song song với $Oy$ (trục nam châm). Trong suốt quá trình quay, vị trí của vòng dây đối với các đường sức từ của nam châm hoàn toàn đối xứng và không thay đổi, do đó từ thông qua $(C)$ không đổi ($\\Delta\\Phi = 0$) $\\implies$ <b>không có dòng điện cảm ứng</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-557",
@@ -655,7 +683,7 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Phát biểu nào sau đây là sai?",
+    "question": "Khi nói về từ trường, điện trường và cảm ứng điện từ, phát biểu nào sau đây là sai?",
     "optA": "Tương tác giữa dòng điện với dòng điện là tương tác từ.",
     "optB": "Cảm ứng từ đặc trưng cho từ trường tại một điểm trong từ trường về mặt tác dụng lực.",
     "optC": "Xung quanh một điện tích đứng yên có điện trường và từ trường.",
@@ -663,8 +691,9 @@
     "correct": "C",
     "giaiThich": "Xung quanh một điện tích <b>đứng yên</b> chỉ tồn tại điện trường tĩnh, <b>không có từ trường</b> (từ trường chỉ sinh ra xung quanh điện tích chuyển động hoặc nam châm). Vậy phát biểu <b>C</b> là sai.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD10-571",
@@ -686,8 +715,9 @@
     "correct": "A",
     "giaiThich": "Điện trường biến thiên sinh ra từ trường xoáy và từ trường biến thiên sinh ra điện trường xoáy; trường thống nhất gồm hai thành phần liên quan mật thiết với nhau này gọi là <b>điện từ trường</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-506",
@@ -709,8 +739,9 @@
     "correct": "C",
     "giaiThich": "Áp dụng công thức lực từ tác dụng lên đoạn dây dẫn mang dòng điện đặt trong từ trường đều:<br>$$F = B I l \\sin\\alpha \\implies l = \\frac{F}{B I \\sin\\alpha}$$<br>Thay số: $l = \\frac{1,65}{0,35 \\cdot 14,5 \\cdot \\sin 30^\\circ} \\approx 0,65\\text{ m}$. Chọn đáp án <b>C</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-509",
@@ -732,8 +763,9 @@
     "correct": "A",
     "giaiThich": "Từ công thức lực từ $F = B I l \\sin\\alpha$, suy ra:<br>$$\\sin\\alpha = \\frac{F}{B I l} = \\frac{2,1}{0,25 \\cdot 12 \\cdot 1,4} = 0,5 \\implies \\alpha = 30^\\circ.$$<br>Giá trị gần nhất trong các phương án là $29^\\circ$ (đáp án <b>A</b>).",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-515",
@@ -755,8 +787,9 @@
     "correct": "A",
     "giaiThich": "Đổi $l = 50\\text{ cm} = 0,50\\text{ m}$, $\\alpha = 90^\\circ \\implies \\sin 90^\\circ = 1$.<br>Áp dụng công thức lực từ $F = B I l \\sin\\alpha$:<br>$$B = \\frac{F}{I l} = \\frac{3,0}{10,0 \\cdot 0,50} = 0,60\\text{ T}.$$",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-523",
@@ -770,16 +803,17 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Đối với sự lan truyền sóng điện từ thì",
-    "optA": "vectơ cường độ điện trường $\\vec{E}$ cùng phương với phương truyền sóng còn vectơ cảm ứng từ $\\vec{B}$ vuông góc với vectơ cường độ điện trường $\\vec{E}$.",
-    "optB": "vectơ cường độ điện trường $\\vec{E}$ và vectơ cảm ứng từ $\\vec{B}$ luôn cùng phương với phương truyền sóng.",
-    "optC": "vectơ cường độ điện trường $\\vec{E}$ và vectơ cảm ứng từ $\\vec{B}$ luôn vuông góc với phương truyền sóng.",
-    "optD": "vectơ cảm ứng từ $\\vec{B}$ cùng phương với phương truyền sóng còn vectơ cường độ điện trường $\\vec{E}$ vuông góc với vectơ cảm ứng từ $\\vec{B}$.",
-    "correct": "C",
-    "giaiThich": "Sóng điện từ là sóng ngang: tại mọi điểm trên phương truyền sóng, hai vectơ cường độ điện trường $\\vec{E}$ và cảm ứng từ $\\vec{B}$ vuông góc với nhau và <b>cùng vuông góc với phương truyền sóng $\\vec{v}$</b>.",
+    "question": "Chọn câu đúng khi nói về quy tắc bàn tay trái.",
+    "optA": "Đặt bàn tay trái sao cho các đường sức từ đâm xuyên vào lòng bàn tay, chiều từ cổ tay đến các ngón tay trùng với chiều dòng điện, ngón cái choãi ra $90^\\circ$ chỉ chiều lực từ tác dụng lên đoạn dòng điện.",
+    "optB": "Đặt bàn tay trái sao cho các đường sức từ đâm xuyên vào lòng bàn tay, chiều từ cổ tay đến các ngón tay trùng với chiều lực từ tác dụng lên đoạn dòng điện, ngón cái choãi ra $90^\\circ$ chỉ chiều dòng điện.",
+    "optC": "Đặt bàn tay trái sao cho lực từ tác dụng lên đoạn dòng điện đâm xuyên vào lòng bàn tay, chiều từ cổ tay đến các ngón tay trùng với chiều các đường sức từ, ngón cái choãi ra $90^\\circ$ chỉ chiều dòng điện.",
+    "optD": "Đặt bàn tay trái sao cho lực từ tác dụng lên đoạn dòng điện đâm xuyên vào lòng bàn tay, chiều từ cổ tay đến các ngón tay chỉ chiều dòng điện, ngón cái choãi ra $90^\\circ$ trùng với chiều các đường sức từ.",
+    "correct": "A",
+    "giaiThich": "Theo <strong>quy tắc bàn tay trái</strong> xác định chiều lực từ tác dụng lên đoạn dây dẫn mang dòng điện: đặt bàn tay trái duỗi thẳng sao cho các đường sức từ hướng vào lòng bàn tay, chiều từ cổ tay đến bốn ngón tay trùng với chiều dòng điện $I$, khi đó ngón cái choãi ra $90^\\circ$ chỉ <strong>chiều của lực từ $\\vec{F}$</strong>. Chọn <strong>A</strong>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-528",
@@ -801,8 +835,9 @@
     "correct": "B",
     "giaiThich": "Để xác định chiều của lực từ $\\vec{F}$ tác dụng lên đoạn dây dẫn mang dòng điện đặt trong từ trường đều $\\vec{B}$, người ta sử dụng <b>quy tắc bàn tay trái</b>: đặt bàn tay trái duỗi thẳng sao cho các đường cảm ứng từ hướng vào lòng bàn tay, chiều từ cổ tay đến bốn ngón tay chỉ chiều dòng điện, khi đó ngón tay cái choãi ra $90^\\circ$ chỉ chiều lực từ.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-535",
@@ -824,14 +859,15 @@
     "correct": "B",
     "giaiThich": "• Chu vi sợi dây: $C = 4a = 4 \\cdot 0,157 = 0,628\\text{ m}$.<br>• Diện tích hình vuông ban đầu: $S_1 = a^2 = 0,157^2 \\approx 0,02465\\text{ m}^2$.<br>• Bán kính hình tròn sau: $r = \\frac{C}{2\\pi} = \\frac{0,628}{2\\pi} = 0,10\\text{ m} \\implies S_2 = \\pi r^2 \\approx 0,03142\\text{ m}^2$.<br>• Độ lớn suất điện động cảm ứng trung bình:<br>$$|e_c| = B \\cdot \\frac{|S_2 - S_1|}{\\Delta t} = 0,6 \\cdot \\frac{0,03142 - 0,02465}{0,5} \\approx 8,1 \\cdot 10^{-3}\\text{ V} = 8,1\\text{ mV}.$$<br>• Vì diện tích khung tăng nên từ thông xuyên vào tờ giấy tăng; theo định luật Lenz, cảm ứng từ $\\vec{B}_c$ hướng ra ngoài tờ giấy $\\implies$ dòng cảm ứng chạy <b>ngược chiều kim đồng hồ</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-536",
     "loai": "TN",
     "tnType": "LT",
-    "mucDo": "VD",
+    "mucDo": "NB",
     "chuong": "CHƯƠNG 3 – TỪ TRƯỜNG",
     "baiHoc": "B22. CẢM ỨNG TỪ - LỰC TỪ",
     "subTopic": "CD11 – Cảm ứng từ (Tesla), Lực từ đoạn dây & Lực Lorentz",
@@ -839,16 +875,17 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Một đoạn dây dẫn dài $l = 0,2\\text{ m}$ đặt trong từ trường đều sao cho dây dẫn hợp với véctơ cảm ứng từ $\\vec{B}$ một góc $\\alpha = 30^\\circ$. Biết dòng điện qua dây là $I = 20\\text{ A}$, cảm ứng từ $B = 2 \\cdot 10^{-4}\\text{ T}$. Lực từ tác dụng lên đoạn dây dẫn có độ lớn là",
-    "optA": "$2 \\cdot 10^{-3}\\text{ N}$.",
-    "optB": "$10^{-3}\\text{ N}$.",
-    "optC": "$4 \\cdot 10^{-4}\\text{ N}$.",
-    "optD": "$10^{-4}\\text{ N}$.",
-    "correct": "C",
-    "giaiThich": "Áp dụng công thức lực từ tác dụng lên đoạn dây dẫn mang dòng điện:<br>$$F = B I l \\sin\\alpha = 2 \\cdot 10^{-4} \\cdot 20 \\cdot 0,2 \\cdot \\sin 30^\\circ = 4 \\cdot 10^{-4}\\text{ N}.$$<br>Chọn đáp án <b>C</b>.",
+    "question": "Chọn câu đúng trong các câu sau khi nói về phương của lực từ tác dụng lên đoạn dây dẫn mang dòng điện.",
+    "optA": "Nằm trong mặt phẳng chứa đoạn dòng điện và cảm ứng từ, vuông góc với cảm ứng từ.",
+    "optB": "Vuông góc với mặt phẳng chứa đoạn dòng điện và vectơ cảm ứng từ.",
+    "optC": "Chỉ vuông góc với đoạn dòng điện, không phụ thuộc phương cảm ứng từ.",
+    "optD": "Chỉ vuông góc với vectơ cảm ứng từ, song song với đoạn dòng điện.",
+    "correct": "B",
+    "giaiThich": "Lực từ $\\vec{F}$ tác dụng lên đoạn dây dẫn mang dòng điện đặt trong từ trường đều có <strong>phương vuông góc với mặt phẳng chứa đoạn dây dẫn mang dòng điện và vectơ cảm ứng từ $\\vec{B}$</strong> (tức vuông góc đồng thời với cả dây dẫn và $\\vec{B}$). Chọn <strong>B</strong>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-538",
@@ -870,8 +907,9 @@
     "correct": "A",
     "giaiThich": "Đoạn dây $AC$ có độ dài $l_{AC} = 20\\text{ cm} = 0,2\\text{ m}$ đặt vuông góc với vectơ cảm ứng từ $\\vec{B}$ ($\\alpha = 90^\\circ$).<br>Độ lớn lực từ tác dụng lên đoạn dây $AC$ là:<br>$$F_{AC} = B I l_{AC} \\sin 90^\\circ = 0,1 \\cdot 5 \\cdot 0,2 \\cdot 1 = 0,1\\text{ N}.$$",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-539",
@@ -893,8 +931,9 @@
     "correct": "D",
     "giaiThich": "Vì khung dây kín đặt hoàn toàn trong từ trường đều nên hợp lực từ tác dụng lên cả mạch kín bằng $\\vec{0}$ ($\\vec{F}_{CA} + \\vec{F}_{AD} + \\vec{F}_{DC} = \\vec{0}$), do đó khung đứng yên.<br>Dòng điện chạy theo chiều $C \\to A \\to D \\to C$ (cùng chiều kim đồng hồ) trong từ trường $\\vec{B}$ hướng vào trong mặt phẳng hình vẽ. Áp dụng quy tắc bàn tay trái cho từng cạnh thấy cả ba lực $\\vec{F}_{CA}$ (hướng xuống), $\\vec{F}_{AD}$ (hướng sang trái), $\\vec{F}_{DC}$ (hướng chéo lên phải) đều hướng từ trong ra ngoài khung dây $\\implies$ làm cho khung <b>đứng yên nhưng có xu hướng phình to hơn</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD11-547",
@@ -908,16 +947,17 @@
     "modelId": "",
     "hinhAnh": "",
     "deBaiChung": "",
-    "question": "Sóng điện từ là quá trình lan truyền của điện từ trường biến thiên trong không gian. Khi nói về quan hệ giữa điện trường và từ trường của điện từ trường trên thì kết luận nào sau đây là đúng?",
-    "optA": "Vectơ cường độ điện trường và cảm ứng từ cùng phương và cùng độ lớn.",
-    "optB": "Tại mỗi điểm của không gian, điện trường và từ trường luôn luôn dao động ngược pha.",
-    "optC": "Tại mỗi điểm của không gian, điện trường và từ trường luôn luôn dao động lệch pha nhau $\\pi/2\\text{ rad}$.",
-    "optD": "Điện trường và từ trường biến thiên theo thời gian với cùng chu kì.",
-    "correct": "D",
-    "giaiThich": "Trong sóng điện từ, tại mỗi điểm của không gian, dao động của điện trường $\\vec{E}$ và từ trường $\\vec{B}$ luôn <b>đồng pha với nhau</b> (cùng tần số, <b>cùng chu kì</b>) và có phương dao động vuông góc với nhau.",
+    "question": "Phương của vectơ cảm ứng từ tại một điểm trong từ trường",
+    "optA": "luôn nằm ngang, trùng với phương của kim nam châm tại điểm đó.",
+    "optB": "luôn thẳng đứng, trùng với phương của kim nam châm tại điểm đó.",
+    "optC": "trùng với phương của kim nam châm nhỏ nằm cân bằng tại điểm đó.",
+    "optD": "vuông góc với phương của kim nam châm nhỏ nằm cân bằng tại điểm đó.",
+    "correct": "C",
+    "giaiThich": "Tại mỗi điểm trong từ trường, hướng của từ trường (tức hướng của vectơ cảm ứng từ $\\vec{B}$) được quy ước là <strong>hướng Nam – Bắc của kim nam châm nhỏ nằm cân bằng</strong> tại điểm đó; do vậy phương của $\\vec{B}$ trùng với phương của kim nam châm nằm cân bằng tại điểm đang xét. Chọn <strong>C</strong>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-531",
@@ -939,8 +979,9 @@
     "correct": "A",
     "giaiThich": "Gọi $R$ là bán kính khung tròn, cạnh khung vuông là $a = 2R$ và tốc độ biến thiên cảm ứng từ là $k = \\frac{\\Delta B}{\\Delta t}$.<br>• Với khung tròn: diện tích $S_{\\text{tr}} = \\pi R^2$, điện trở $R_{\\text{tr}} = \\rho\\frac{2\\pi R}{s}$ $\\implies I_{\\text{tr}} = \\frac{|e_{\\text{tr}}|}{R_{\\text{tr}}} = \\frac{k \\pi R^2}{\\rho \\frac{2\\pi R}{s}} = \\frac{k R s}{2\\rho}$.<br>• Với khung vuông: diện tích $S_{\\text{v}} = a^2 = 4R^2$, điện trở $R_{\\text{v}} = \\rho\\frac{4a}{s} = \\rho\\frac{8R}{s}$ $\\implies I_{\\text{v}} = \\frac{k \\cdot 4R^2}{\\rho \\frac{8R}{s}} = \\frac{k R s}{2\\rho}$.<br>Vậy tỉ số dòng điện cảm ứng là $\\frac{I_{\\text{tr}}}{I_{\\text{v}}} = 1:1$.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-533",
@@ -962,8 +1003,9 @@
     "correct": "A",
     "giaiThich": "Đổi diện tích vòng dây $S = 50\\text{ dm}^2 = 0,5\\text{ m}^2$; $\\vec{B} \\parallel \\vec{n} \\implies \\alpha = 0^\\circ$.<br>Quan sát đồ thị $B(t)$: tại thời điểm $t = 0,5\\text{ s}$ ta đọc được cảm ứng từ $B = 0,25\\text{ T}$.<br>Từ thông qua vòng dây tại thời điểm $t = 0,5\\text{ s}$ là:<br>$$\\Phi = B S \\cos 0^\\circ = 0,25 \\cdot 0,5 = 0,125\\text{ Wb}.$$",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-544",
@@ -985,8 +1027,9 @@
     "correct": "B",
     "giaiThich": "Đổi diện tích $S = 20\\text{ cm}^2 = 20 \\cdot 10^{-4}\\text{ m}^2$.<br>Từ thông cực đại qua một vòng dây đạt được khi mặt phẳng vòng dây vuông góc với đường sức từ ($\\cos\\alpha = 1$):<br>$$\\Phi_{\\max} = B \\cdot S = 0,1 \\cdot 20 \\cdot 10^{-4} = 2 \\cdot 10^{-4}\\text{ Wb} = 0,2\\text{ mWb}.$$",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-545",
@@ -1008,8 +1051,9 @@
     "correct": "B",
     "giaiThich": "Khi đẩy thanh nam châm đi vào lòng cuộn dây, số đường sức từ xuyên qua các vòng dây tăng dần (từ thông tăng dần) nên sinh ra dòng điện cảm ứng làm kim ampe kế lệch khác $0$.<br>Khi nam châm dừng hẳn bên trong cuộn dây, từ thông không còn biến thiên nữa (không đổi) nên dòng điện cảm ứng bằng $0$.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-553",
@@ -1031,8 +1075,9 @@
     "correct": "C",
     "giaiThich": "Theo định nghĩa từ thông gửi qua một khung dây phẳng có diện tích $S$ đặt trong từ trường đều $\\vec{B}$, với $\\alpha = (\\vec{n}, \\vec{B})$:<br>$$\\Phi = B S \\cos\\alpha.$$<br>Chọn đáp án <b>C</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-554",
@@ -1054,8 +1099,9 @@
     "correct": "C",
     "giaiThich": "Theo định luật Faraday, độ lớn suất điện động cảm ứng bằng tốc độ biến thiên từ thông: $|e_c| = \\left|\\frac{\\Delta\\phi}{\\Delta t}\\right|$.<br>• Trong khoảng thời gian từ $0$ đến $t_0$: đồ thị $\\phi(t)$ là đường thẳng xiên góc $\\implies$ tốc độ biến thiên không đổi nên suất điện động cảm ứng <b>bằng một hằng số</b>.<br>• Sau thời gian $t_0$: đồ thị $\\phi(t)$ nằm ngang ($\\phi = \\text{const}$) $\\implies \\Delta\\phi = 0$, nên suất điện động cảm ứng <b>bằng $0$</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-556",
@@ -1075,10 +1121,11 @@
     "optC": "Từ thông qua cuộn sơ cấp nhỏ hơn cuộn thứ cấp, dòng điện qua cuộn sơ cấp lớn hơn dòng điện qua cuộn thứ cấp.",
     "optD": "Từ thông qua cuộn sơ cấp nhỏ hơn cuộn thứ cấp, dòng điện qua cuộn sơ cấp nhỏ hơn dòng điện qua cuộn thứ cấp.",
     "correct": "C",
-    "giaiThich": "Vì đây là <b>máy tăng áp lí tưởng</b> nên số vòng dây sơ cấp ít hơn thứ cấp ($N_1 < N_2$) và hiệu suất $100\\%$:<br>• Từ thông qua mỗi vòng dây là như nhau ($\\Phi_0$), nên từ thông toàn phần gửi qua cả cuộn dây tỉ lệ với số vòng: $\\Phi_1 = N_1\\Phi_0 < N_2\\Phi_0 = \\Phi_2$.<br>• Mặt khác, đối với máy biến áp lí tưởng ta có công suất $P_1 = P_2 \\implies \\frac{I_1}{I_2} = \\frac{U_2}{U_1} = \\frac{N_2}{N_1} > 1 \\implies I_1 > I_2$.<br>Vậy chọn đáp án <b>C</b>.",
+    "giaiThich": "Vì đây là <b>máy tăng áp lí tưởng</b> nên số vòng dây sơ cấp ít hơn thứ cấp ($N_1 \\lt N_2$) và hiệu suất $100\\%$:<br>• Từ thông qua mỗi vòng dây là như nhau ($\\Phi_0$), nên từ thông toàn phần gửi qua cả cuộn dây tỉ lệ với số vòng: $\\Phi_1 = N_1\\Phi_0 \\lt N_2\\Phi_0 = \\Phi_2$.<br>• Mặt khác, đối với máy biến áp lí tưởng ta có công suất $P_1 = P_2 \\implies \\frac{I_1}{I_2} = \\frac{U_2}{U_1} = \\frac{N_2}{N_1} \\gt 1 \\implies I_1 \\gt I_2$.<br>Vậy chọn đáp án <b>C</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-563",
@@ -1100,8 +1147,9 @@
     "correct": "C",
     "giaiThich": "Độ lớn của suất điện động cảm ứng xuất hiện trong mạch kín theo định luật Faraday:<br>$$|e_c| = \\left|\\frac{\\Delta\\Phi}{\\Delta t}\\right| = \\frac{0,8}{0,2} = 4\\text{ V}.$$<br>Chọn đáp án <b>C</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-564",
@@ -1121,10 +1169,11 @@
     "optC": "$P$ nhanh nhất, $Q$ rơi chậm nhất.",
     "optD": "$R$ rơi nhanh nhất, $P$ chậm nhất.",
     "correct": "D",
-    "giaiThich": "Khi nam châm rơi qua ống có cùng kích thước, vật liệu nào có điện trở suất càng nhỏ thì dòng điện cảm ứng (dòng Fu-cô) sinh ra càng lớn $\\implies$ lực hãm từ càng mạnh $\\implies$ nam châm rơi càng chậm.<br>Vì $\\rho_{\\text{Đồng}} < \\rho_{\\text{Chì}} \\ll \\rho_{\\text{Cao su}}$ nên:<br>• Trong ống cao su (cách điện), hầu như không có dòng Fu-cô $\\implies$ nam châm <b>$R$ rơi nhanh nhất</b>.<br>• Trong ống đồng, dòng Fu-cô mạnh nhất $\\implies$ nam châm <b>$P$ rơi chậm nhất</b>.",
+    "giaiThich": "Khi nam châm rơi qua ống có cùng kích thước, vật liệu nào có điện trở suất càng nhỏ thì dòng điện cảm ứng (dòng Fu-cô) sinh ra càng lớn $\\implies$ lực hãm từ càng mạnh $\\implies$ nam châm rơi càng chậm.<br>Vì $\\rho_{\\text{Đồng}} \\lt \\rho_{\\text{Chì}} \\ll \\rho_{\\text{Cao su}}$ nên:<br>• Trong ống cao su (cách điện), hầu như không có dòng Fu-cô $\\implies$ nam châm <b>$R$ rơi nhanh nhất</b>.<br>• Trong ống đồng, dòng Fu-cô mạnh nhất $\\implies$ nam châm <b>$P$ rơi chậm nhất</b>.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-STAGE-C3-CD12-565",
@@ -1146,7 +1195,8 @@
     "correct": "A",
     "giaiThich": "Máy biến áp biến đổi điện áp hiệu dụng của dòng điện xoay chiều mà không làm thay đổi tần số, hoạt động dựa trên <b>hiện tượng cảm ứng điện từ</b> giữa cuộn sơ cấp và cuộn thứ cấp ghép trên chung lõi thép kĩ thuật.",
     "chatLuong": "tinh",
-    "isApproved": false,
-    "isStaging50": true
+    "isApproved": true,
+    "isStaging50": true,
+    "reviewStatus": "APPROVED"
   }
 ]

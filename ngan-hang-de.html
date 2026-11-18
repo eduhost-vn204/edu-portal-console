@@ -16,9 +16,10 @@
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/100-mohinh-tln-chinhthuc.js"></script>
     <script src="assets/tln-thuc-te-models.js"></script>
-    <script src="assets/staging-tn220-models.js?v=20261118-lt220full"></script>
-    <script src="assets/staging-tn50-models.js?v=20261118-tnbt"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-lt270"></script>
+    <script src="assets/staging-tn50-models.js?v=20261118-lt270"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
+    <script src="assets/tn270-lt-bank-pack.js?v=20261118-lt270"></script>
     <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/ds106-bank-pack.js?v=20261118-ds200-v2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1701,12 +1702,14 @@
                 <select id="nh-f-model" onchange="bankFiltersChanged()">
                     <option value="">🎬 Mọi câu (Có &amp; chưa có mô hình)</option>
                     <option value="HAS_MODEL">🎬 Chỉ câu CÓ Mô hình Canvas / Thực tế</option>
+                    <option value="NEW_LT_MODEL_59">🎬 Vừa đẩy 18/11: 59 câu LT CÓ Mô hình Canvas</option>
+                    <option value="NEW_LT_270">🆕 Vừa đẩy 18/11: 270 câu TN Lý thuyết (220 + 50)</option>
                     <option value="NEW_BT_90">🆕 Vừa đẩy 18/11: 90 câu Bài tập (VLXT-TN220-BT)</option>
                     <option value="NEW_BT_MODEL_14">🚀 Vừa đẩy 18/11: 14 câu BT CÓ Mô hình Canvas</option>
                     <option value="NEW_DS_106">🧪 Vừa đẩy 18/11: 106 câu Đúng/Sai mới (VLXT-DS-VD28)</option>
                     <option value="NO_MODEL">⬜ Chưa có Mô hình</option>
                 </select>
-                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING hoặc MH-TN220..." oninput="bankSearchChanged()">
+                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING, MH-TN50 hoặc MH-TN220..." oninput="bankSearchChanged()">
             </div>
             <!-- THANH THỐNG KÊ CHỦ ĐỀ CON (PHẲNG, SẮC NÉT, KHÔNG AI GLOW) -->
             <div id="nh-subtopic-summary-bar" class="nh-subtopic-bar" style="display:none"></div>
@@ -8139,6 +8142,7 @@ async function syncApprovedAuditToServer(silent) {
     if (!silent) {
         if (typeof syncApprovedTn220BtToServer === 'function') await syncApprovedTn220BtToServer(silent);
         if (typeof syncApprovedDs106ToServer === 'function') await syncApprovedDs106ToServer(silent);
+        if (typeof syncApprovedTn270LtToServer === 'function') await syncApprovedTn270LtToServer(silent);
     }
     const groupMap = {};
     const addToGroup = (id, baiHoc, tnType, subTopic) => {
@@ -8517,6 +8521,36 @@ function applyBankRows(rows){
             }
         });
     }
+    // Hợp nhất gói 270 câu TN Lý thuyết (220 Đợt Mới + 50 Chương 2-3, kèm 59 mô hình Canvas 60 FPS) — Đủ 16/16 CĐ
+    if (Array.isArray(window.VLXT_TN270_LT_BANK) && window.VLXT_TN270_LT_BANK.length > 0) {
+        const ltMetaMap = new Map();
+        const existingLtIds = new Set(filteredRaw.map(q => String(q.id || '').trim()));
+        window.VLXT_TN270_LT_BANK.forEach(ltQ => {
+            if (ltQ && ltQ.id) ltMetaMap.set(String(ltQ.id).trim(), ltQ);
+        });
+        filteredRaw.forEach(q => {
+            const meta = ltMetaMap.get(String(q.id || '').trim());
+            if (meta) {
+                q.tnType = 'LT';
+                if (meta.subTopic) q.subTopic = meta.subTopic;
+                if (meta.baiHoc) q.baiHoc = meta.baiHoc;
+                if (meta.chuong) q.chuong = meta.chuong;
+                if (meta.batchId) q.batchId = meta.batchId;
+                if (meta.chatLuong) q.chatLuong = meta.chatLuong;
+                if (meta.hinhAnh && !q.hinhAnh) q.hinhAnh = meta.hinhAnh;
+                if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
+                if (meta.modelId && !/data-model-id=/i.test(String(q.question || ''))) {
+                    q.question = String(q.question || '').trim() + `\n<div class="vlxt-model-slot" data-model-id="${nhEsc(meta.modelId)}"></div>`;
+                }
+            }
+        });
+        window.VLXT_TN270_LT_BANK.forEach(ltQ => {
+            if (ltQ && ltQ.id && !existingLtIds.has(String(ltQ.id).trim())) {
+                filteredRaw.push({ ...ltQ });
+                existingLtIds.add(String(ltQ.id).trim());
+            }
+        });
+    }
     bankData = filteredRaw.map(q => normalizeQuestionTaxonomy(q));
     if (getAdminKey() && !localStorage.getItem(SYNC_STORAGE_KEY)) {
         setTimeout(() => syncApprovedAuditToServer(true), 1200);
@@ -8526,6 +8560,9 @@ function applyBankRows(rows){
     }
     if (getAdminKey() && !localStorage.getItem('vlxt_ds106_bank_synced_v2')) {
         setTimeout(() => syncApprovedDs106ToServer(true), 3600);
+    }
+    if (getAdminKey() && !localStorage.getItem('vlxt_tn270_lt_bank_synced_v1')) {
+        setTimeout(() => syncApprovedTn270LtToServer(true), 4600);
     }
     bankLoaded = true;
     bankSel.clear();
@@ -8606,6 +8643,42 @@ async function syncApprovedDs106ToServer(silent) {
         if (!silent) toast('Chưa đồng bộ được gói 106 câu ĐS lên Cloud: ' + e.message, 'err');
     } finally {
         _ds106SyncInFlight = false;
+    }
+}
+
+let _tn270LtSyncInFlight = false;
+async function syncApprovedTn270LtToServer(silent) {
+    if (_tn270LtSyncInFlight) return;
+    const key = getAdminKey();
+    if (!key || !Array.isArray(window.VLXT_TN270_LT_BANK) || !window.VLXT_TN270_LT_BANK.length) return;
+    const missingQs = window.VLXT_TN270_LT_BANK.filter(ltQ => {
+        const srv = _rawServerTaxonomyById[ltQ.id];
+        return !srv || srv.tnType !== 'LT' || srv.subTopic !== String(ltQ.subTopic || '').trim();
+    });
+    if (!missingQs.length) {
+        try { localStorage.setItem('vlxt_tn270_lt_bank_synced_v1', '1'); } catch (e) {}
+        return;
+    }
+    _tn270LtSyncInFlight = true;
+    try {
+        const res = await postAdminWriteJson({
+            action: 'importnganhang',
+            dryRun: false,
+            batchId: 'BATCH_TN270_LT_OFFICIAL_20261118',
+            questions: missingQs
+        });
+        if (res && res.ok) {
+            try { localStorage.setItem('vlxt_tn270_lt_bank_synced_v1', '1'); } catch (e) {}
+            missingQs.forEach(q => {
+                _rawServerTaxonomyById[q.id] = { baiHoc: q.baiHoc || '', tnType: 'LT', subTopic: q.subTopic || '', optA: String(q.optA || '').trim() };
+            });
+            try { await adminDbDelete('nganhang'); } catch (e) {}
+            if (!silent) toast('<i class="fa-solid fa-circle-check"></i> Đã đồng bộ ' + missingQs.length + ' câu TN Lý thuyết (220 + 50) &amp; 59 mô hình Canvas lên Google Sheets!', 'ok');
+        }
+    } catch (e) {
+        if (!silent) toast('Chưa đồng bộ được gói 270 câu TN Lý thuyết lên Cloud: ' + e.message, 'err');
+    } finally {
+        _tn270LtSyncInFlight = false;
     }
 }
 
@@ -8816,6 +8889,9 @@ function syncModelFilterOnTypeChange(activeFt){
     if (fmod && activeFt !== 'DS' && fmod.value === 'NEW_DS_106') {
         fmod.value = '';
     }
+    if (fmod && activeFt && activeFt !== 'TN_LT' && (fmod.value === 'NEW_LT_270' || fmod.value === 'NEW_LT_MODEL_59')) {
+        fmod.value = '';
+    }
 }
 
 function onBankLoaiFilterChanged(){
@@ -8902,6 +8978,12 @@ function toggleDsSortMode(){
     bankFiltersChanged();
 }
 
+let _nhLtSortMode = 'NEW_MODEL_FIRST';
+function toggleLtSortMode(){
+    _nhLtSortMode = (_nhLtSortMode === 'NEW_MODEL_FIRST') ? 'SHEET_ORDER' : 'NEW_MODEL_FIRST';
+    bankFiltersChanged();
+}
+
 function selectSubtopicChip(subVal){
     const ssub = document.getElementById('nh-f-subtopic');
     const ft = document.getElementById('nh-f-tntype');
@@ -8909,6 +8991,18 @@ function selectSubtopicChip(subVal){
     const sb = document.getElementById('nh-f-bai');
     const sc = document.getElementById('nh-f-chuong');
     const fmod = document.getElementById('nh-f-model');
+    if (subVal === '__LT_MODEL_ONLY__' || subVal === '__LT_NEW_270__') {
+        if (ssub) ssub.value = '';
+        if (ft) ft.value = 'TN_LT';
+        if (fl) fl.value = 'TN';
+        if (fmod) {
+            const targetMod = (subVal === '__LT_MODEL_ONLY__') ? 'NEW_LT_MODEL_59' : 'NEW_LT_270';
+            fmod.value = (fmod.value === targetMod) ? '' : targetMod;
+        }
+        updateBankSubtopicOptions(sb ? sb.value : '', '');
+        bankFiltersChanged();
+        return;
+    }
     if (subVal === '__BT_MODE__') {
         if (ssub) ssub.value = '';
         if (fmod) fmod.value = '';
@@ -8990,6 +9084,9 @@ function selectSubtopicChip(subVal){
         return;
     }
     const nextVal = (ssub.value === subVal) ? '' : subVal;
+    if (subVal === '' && fmod && (fmod.value === 'NEW_LT_270' || fmod.value === 'NEW_LT_MODEL_59')) {
+        fmod.value = '';
+    }
     if (nextVal) {
         if (ft) ft.value = 'TN_LT';
         if (fl) fl.value = 'TN';
@@ -9220,11 +9317,17 @@ function renderSubtopicSummaryBar(){
         ? (dsChNum ? ` · 📋 ${dsRows.length} ĐS Ch.${dsChNum}` : ` · 📋 ${dsRows.length} ĐS Ch.1–4`)
         : '';
 
+    const fmodLtDef = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
+    const ltNewCnt = ltRows.filter(isNewPushedLtBatch).length;
+    const ltNewModelCnt = ltRows.filter(q => isNewPushedLtBatch(q) && isQuestionHasModel(q)).length;
+    const ltSortBtnText = _nhLtSortMode === 'NEW_MODEL_FIRST'
+        ? '⇅ Đang xếp: Mới & Có mô hình lên đầu'
+        : '⇅ Đang xếp: Thứ tự gốc Sheet';
     let html = `<div class="nh-subtopic-bar-head">
         <span><i class="fa-solid fa-sitemap" style="color:#0f766e"></i> ${nhEsc(scopeTitle)} (bấm chip để lọc · mốc ≥ 50 câu cho 50 đề):</span>
         <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📘 ${ltRows.length} LT${dsTagText} · 🧮 ${btRows.length} Tính toán chưa chia${exportBtnHtml}${syncPillHtml}</span>
     </div><div class="nh-subtopic-chips">`;
-    html += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' ? 'active' : ''}" onclick="selectSubtopicChip('')">
+    html += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' && fmodLtDef !== 'NEW_LT_MODEL_59' && fmodLtDef !== 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('')">
         <span>${nhEsc(resetLabel)}</span>
         <span class="stc-count">${scopeRows.length}</span>
     </button>`;
@@ -9240,6 +9343,23 @@ function renderSubtopicSummaryBar(){
             <span class="stc-count"${countBadgeStyle}>${nhEsc(countText)}</span>
         </button>`;
     });
+    if (ltNewModelCnt > 0) {
+        html += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_MODEL_59' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 59 câu TN Lý thuyết có Mô hình Canvas 60 FPS vừa đẩy (32 ST220 + 27 TN50)">
+            <span>🎬 ${ltNewModelCnt} Câu LT Có Mô Hình Canvas</span>
+            <span class="stc-count">${ltNewModelCnt}</span>
+        </button>`;
+    }
+    if (ltNewCnt > 0) {
+        html += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_NEW_270__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 270 câu TN Lý thuyết vừa đẩy đợt 18/11/2026 (220 Đợt Mới + 50 Chương 2-3)">
+            <span>🆕 ${ltNewCnt} Câu LT Vừa Đẩy (18/11)</span>
+            <span class="stc-count">${ltNewCnt}</span>
+        </button>`;
+    }
+    if (ft === 'TN_LT' && ltNewCnt > 0) {
+        html += `<button type="button" class="nh-subtopic-chip ${_nhLtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleLtSortMode()" title="Chuyển giữa xếp câu mới &amp; có mô hình lên trang đầu hoặc giữ nguyên thứ tự gốc trên Sheet">
+            <span>${ltSortBtnText}</span>
+        </button>`;
+    }
     if (dsRows.length > 0) {
         const fmodValDsDef = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
         const dsNewCntDef = dsRows.filter(isNewPushedDsBatch).length;
@@ -9328,6 +9448,12 @@ function isNewPushedDsBatch(q){
     if (!q) return false;
     return String(q.batchId || '').trim() === 'BATCH_DS106_OFFICIAL_20261118' || String(q.id || '').trim().startsWith('VLXT-DS-VD28-');
 }
+function isNewPushedLtBatch(q){
+    if (!q) return false;
+    const bid = String(q.batchId || '').trim();
+    const qid = String(q.id || '').trim();
+    return bid === 'BATCH_TN270_LT_OFFICIAL_20261118' || qid.startsWith('VLXT-ST220-') || qid.startsWith('VLXT-STAGE-');
+}
 
 function getBankFilterState(){
     const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
@@ -9364,6 +9490,8 @@ function doesQuestionMatchBankFilter(q, st){
 
     let matchMod = true;
     if (f.fmod === 'HAS_MODEL') matchMod = isQuestionHasModel(q);
+    else if (f.fmod === 'NEW_LT_MODEL_59') matchMod = isNewPushedLtBatch(q) && isQuestionHasModel(q);
+    else if (f.fmod === 'NEW_LT_270') matchMod = isNewPushedLtBatch(q);
     else if (f.fmod === 'NEW_BT_90') matchMod = isNewPushedBtBatch(q);
     else if (f.fmod === 'NEW_BT_MODEL_14') matchMod = isNewPushedBtBatch(q) && isQuestionHasModel(q);
     else if (f.fmod === 'NEW_DS_106') matchMod = isNewPushedDsBatch(q);
@@ -9423,9 +9551,21 @@ function getBtPriorityRank(q){
     return 3;
 }
 
+function getLtPriorityRank(q){
+    const isNew = isNewPushedLtBatch(q);
+    const hasMod = isQuestionHasModel(q);
+    if (isNew && hasMod) return 0;
+    if (isNew) return 1;
+    if (hasMod) return 2;
+    return 3;
+}
+
 function bankFiltered(){
     const st = getBankFilterState();
     const rows = bankData.filter(q => doesQuestionMatchBankFilter(q, st));
+    if (st.ftn === 'TN_LT' && _nhLtSortMode === 'NEW_MODEL_FIRST') {
+        return rows.slice().sort((a, b) => getLtPriorityRank(a) - getLtPriorityRank(b));
+    }
     if (st.ftn === 'TN_BT' && _nhBtSortMode === 'NEW_MODEL_FIRST') {
         return rows.slice().sort((a, b) => getBtPriorityRank(a) - getBtPriorityRank(b));
     }
@@ -9538,7 +9678,7 @@ function bankRowHtml(q,withCheck){
     const modelBadge = modelIdVal
         ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.38);font-family:'DM Mono',monospace" title="Mô hình chuyển động trực quan nhúng trực tiếp"><i class="fa-solid fa-cubes"></i> ${nhEsc(modelIdVal)}</span>`
         : '';
-    const newBatchBadge = (isNewPushedBtBatch(q) || isNewPushedDsBatch(q))
+    const newBatchBadge = (isNewPushedBtBatch(q) || isNewPushedDsBatch(q) || isNewPushedLtBatch(q))
         ? `<span class="nh-badge" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.4);font-weight:700" title="Câu hỏi thuộc đợt vừa đẩy chính thức ngày 18/11/2026"><i class="fa-solid fa-bolt"></i> Mới đẩy 18/11</span>`
         : '';
 
@@ -10252,7 +10392,7 @@ function computeAutoPickPlan(opts){
 
     const extraPickedSubs = [];
     if (isOfficial18) {
-        const slot17Prefs = ['CD01', 'CD04', 'CD02', 'CD03', 'CD05'].map(c => TOPIC_16_BY_CODE[c]).filter(Boolean);
+        const slot17Prefs = ['CD01', 'CD04', 'CD02', 'CD08', 'CD05', 'CD03'].map(c => TOPIC_16_BY_CODE[c]).filter(Boolean);
         const slot18Prefs = ['CD16', 'CD13', 'CD11', 'CD14', 'CD10', 'CD12'].map(c => TOPIC_16_BY_CODE[c]).filter(Boolean);
         [slot17Prefs, slot18Prefs].forEach((prefList, idx) => {
             let bestSub = null;

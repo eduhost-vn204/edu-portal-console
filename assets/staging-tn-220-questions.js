@@ -1,4 +1,4 @@
-// VLXT Staging 220 Pure Theory Pool (130 existing + 90 harvested pure TN-LT)
+// VLXT 220 Pure Theory Pool — ĐÃ DUYỆT & ĐẨY CHÍNH THỨC LÊN NGÂN HÀNG ĐỀ (18/11/2026)
 window.VLXT_STAGING_220_QUESTIONS = [
   {
     "id": "VLXT-ST220-C1-CD05-001",
@@ -18,7 +18,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nội năng của chất khí không thay đổi",
     "optD": "nội năng của chất khí giảm xuống",
     "correct": "B",
-    "giaiThich": "Khi hơ nóng ống nghiệm, khối khí nhận nhiệt lượng ($Q > 0 $) làm động năng chuyển động nhiệt của các phân tử khí tăng, tức <strong>nội năng của chất khí tăng lên</strong> ($\\Delta U > 0$). Nhiệt độ và áp suất khí trong ống tăng mạnh cho đến khi lực đẩy vượt quá lực giữ nút, làm nút bật ra. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi hơ nóng ống nghiệm, khối khí nhận nhiệt lượng ($Q \\gt 0 $) làm động năng chuyển động nhiệt của các phân tử khí tăng, tức <strong>nội năng của chất khí tăng lên</strong> ($\\Delta U \\gt 0$). Nhiệt độ và áp suất khí trong ống tăng mạnh cho đến khi lực đẩy vượt quá lực giữ nút, làm nút bật ra. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-002",
@@ -38,7 +40,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nội năng của nước tăng lên.",
     "optD": "nội năng của quả cầu và nước đều tăng.",
     "correct": "A",
-    "giaiThich": "Khi thả quả cầu kim loại ở nhiệt độ phòng vào nước nóng, xảy ra sự truyền nhiệt từ vật nóng hơn (nước) sang vật lạnh hơn (quả cầu). Đến khi cân bằng nhiệt, nhiệt độ nước giảm nhẹ còn nhiệt độ quả cầu tăng lên, do đó <strong>nội năng của quả cầu tăng lên</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi thả quả cầu kim loại ở nhiệt độ phòng vào nước nóng, xảy ra sự truyền nhiệt từ vật nóng hơn (nước) sang vật lạnh hơn (quả cầu). Đến khi cân bằng nhiệt, nhiệt độ nước giảm nhẹ còn nhiệt độ quả cầu tăng lên, do đó <strong>nội năng của quả cầu tăng lên</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-003",
@@ -58,7 +62,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nội năng của chất khí không thay đổi.",
     "optD": "Quả bóng nhận nhiệt và sinh công.",
     "correct": "B",
-    "giaiThich": "Khi ngâm quả bóng bàn bị móp vào nước nóng, không khí bên trong quả bóng nhận nhiệt lượng nên nhiệt độ tăng, làm <strong>nội năng của chất khí tăng lên</strong> và các phân tử chuyển động nhanh hơn. Áp suất khí trong bóng tăng lớn hơn áp suất bên ngoài, đẩy phần vỏ bị móp phồng trở lại. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi ngâm quả bóng bàn bị móp vào nước nóng, không khí bên trong quả bóng nhận nhiệt lượng nên nhiệt độ tăng, làm <strong>nội năng của chất khí tăng lên</strong> và các phân tử chuyển động nhanh hơn. Áp suất khí trong bóng tăng lớn hơn áp suất bên ngoài, đẩy phần vỏ bị móp phồng trở lại. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-004",
@@ -78,7 +84,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "sự truyền nội năng từ vật này sang vật khác.",
     "optD": "sự truyền động năng của các phân tử này sang các phân tử khác.",
     "correct": "D",
-    "giaiThich": "Cơ chế vi mô của sự dẫn nhiệt trong vật chất là quá trình va chạm trực tiếp giữa các hạt: các phân tử ở vùng có nhiệt độ cao dao động/chuyển động nhanh va chạm và <strong>truyền động năng cho các phân tử lân cận</strong> ở vùng nhiệt độ thấp hơn. Nhiệt độ không phải là đại lượng truyền trực tiếp. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Cơ chế vi mô của sự dẫn nhiệt trong vật chất là quá trình va chạm trực tiếp giữa các hạt: các phân tử ở vùng có nhiệt độ cao dao động/chuyển động nhanh va chạm và <strong>truyền động năng cho các phân tử lân cận</strong> ở vùng nhiệt độ thấp hơn. Nhiệt độ không phải là đại lượng truyền trực tiếp. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-005",
@@ -93,12 +101,14 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "modelId": "",
     "hinhAnh": "",
     "question": "Biểu thức mô tả đúng quá trình chất khi vừa nhận nhiệt lượng, vừa nhận công là:",
-    "optA": "$\\Delta U=A+Q(A>0, Q<0)$",
-    "optB": "$\\Delta U=A+Q(A<0, Q>0).$",
-    "optC": "$\\Delta U=A+Q(A>0, Q>0)$",
-    "optD": "$\\Delta U=Q (Q>0).$",
+    "optA": "$\\Delta U=A+Q(A\\gt 0, Q\\lt 0)$",
+    "optB": "$\\Delta U=A+Q(A\\lt 0, Q\\gt 0).$",
+    "optC": "$\\Delta U=A+Q(A\\gt 0, Q\\gt 0)$",
+    "optD": "$\\Delta U=Q (Q\\gt 0).$",
     "correct": "C",
-    "giaiThich": "Theo Định luật I nhiệt động lực học $\\Delta U = A + Q $ với quy ước dấu chuẩn: khi chất khí <strong>nhận công</strong> từ bên ngoài thì $ A > 0 $, và khi chất khí <strong>nhận nhiệt lượng</strong> thì $ Q > 0$. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo Định luật I nhiệt động lực học $\\Delta U = A + Q $ với quy ước dấu chuẩn: khi chất khí <strong>nhận công</strong> từ bên ngoài thì $ A \\gt 0 $, và khi chất khí <strong>nhận nhiệt lượng</strong> thì $ Q \\gt 0$. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-006",
@@ -118,7 +128,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Viên nước đá tan chảy khi đưa ra khỏi tủ lạnh.",
     "optD": "Không khí trong săm xe nóng lên do lốp xe ma sát với mặt đường.",
     "correct": "D",
-    "giaiThich": "Khi xe chạy trên đường, lực ma sát giữa lốp xe và mặt đường <strong>thực hiện công</strong> cơ học làm tăng nội năng của lốp và không khí trong săm, khiến nhiệt độ của chúng tăng lên. Các phương án A, B, C đều là quá trình truyền nhiệt (bức xạ nhiệt hoặc tiếp xúc nguồn nhiệt). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi xe chạy trên đường, lực ma sát giữa lốp xe và mặt đường <strong>thực hiện công</strong> cơ học làm tăng nội năng của lốp và không khí trong săm, khiến nhiệt độ của chúng tăng lên. Các phương án A, B, C đều là quá trình truyền nhiệt (bức xạ nhiệt hoặc tiếp xúc nguồn nhiệt). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-007",
@@ -138,7 +150,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "ban đầu tăng, sau đó giảm.",
     "optD": "luôn không đổi.",
     "correct": "A",
-    "giaiThich": "Nội năng của một hệ phụ thuộc vào nhiệt độ và thể tích. Khi giữ thể tích không đổi ($A = 0$) và tăng nhiệt độ của hệ, động năng trung bình của các phân tử tăng lên nên <strong>nội năng của hệ tăng</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Nội năng của một hệ phụ thuộc vào nhiệt độ và thể tích. Khi giữ thể tích không đổi ($A = 0$) và tăng nhiệt độ của hệ, động năng trung bình của các phân tử tăng lên nên <strong>nội năng của hệ tăng</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-008",
@@ -158,7 +172,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Q > 0 và A<0",
     "optD": "Q < 0 và A < 0",
     "correct": "D",
-    "giaiThich": "Theo quy ước dấu trong công thức Định luật I nhiệt động lực học $\\Delta U = A + Q $: khối khí <strong>truyền (tỏa) nhiệt lượng</strong> ra ngoài nên $ Q < 0 $, và khối khí <strong>thực hiện công</strong> lên vật khác nên $ A < 0$. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Theo quy ước dấu trong công thức Định luật I nhiệt động lực học $\\Delta U = A + Q $: khối khí <strong>truyền (tỏa) nhiệt lượng</strong> ra ngoài nên $ Q \\lt 0 $, và khối khí <strong>thực hiện công</strong> lên vật khác nên $ A \\lt 0$. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-009",
@@ -178,7 +194,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Băng tan.",
     "optD": "Sóng thần.",
     "correct": "C",
-    "giaiThich": "Lốc xoáy, bão nhiệt đới và sóng thần đều giải phóng nội năng khổng lồ tạo thành công cơ học chuyển dời khối khí hoặc khối nước. Ngược lại, <strong>băng tan</strong> là quá trình chuyển thể (nóng chảy) xảy ra chủ yếu do hấp thụ nhiệt lượng (truyền nhiệt). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Lốc xoáy, bão nhiệt đới và sóng thần đều giải phóng nội năng khổng lồ tạo thành công cơ học chuyển dời khối khí hoặc khối nước. Ngược lại, <strong>băng tan</strong> là quá trình chuyển thể (nóng chảy) xảy ra chủ yếu do hấp thụ nhiệt lượng (truyền nhiệt). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-010",
@@ -198,7 +216,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tỏa nhiệt và nội năng giảm.",
     "optD": "Nhận công và tỏa nhiệt.",
     "correct": "B",
-    "giaiThich": "Trong hệ thức $\\Delta U = A + Q $: dấu $ Q > 0 $ biểu thị chất khí <strong>nhận nhiệt lượng</strong> từ môi trường, còn dấu $ A < 0$ biểu thị chất khí <strong>sinh công</strong> (thực hiện công đẩy vật khác). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong hệ thức $\\Delta U = A + Q $: dấu $ Q \\gt 0 $ biểu thị chất khí <strong>nhận nhiệt lượng</strong> từ môi trường, còn dấu $ A \\lt 0$ biểu thị chất khí <strong>sinh công</strong> (thực hiện công đẩy vật khác). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-011",
@@ -218,7 +238,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Từ nhiệt độ môi trường.",
     "optD": "Từ nội năng của không khí xung quanh.",
     "correct": "B",
-    "giaiThich": "Khi xoa hai tay vào nhau trong ngày lạnh, lực ma sát <strong>thực hiện công cơ học</strong> ($A > 0$) trực tiếp lên da tay, chuyển hóa cơ năng thành nội năng làm bàn tay ấm lên nhanh chóng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi xoa hai tay vào nhau trong ngày lạnh, lực ma sát <strong>thực hiện công cơ học</strong> ($A \\gt 0$) trực tiếp lên da tay, chuyển hóa cơ năng thành nội năng làm bàn tay ấm lên nhanh chóng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-013",
@@ -238,7 +260,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "oát (W).",
     "optD": "jun (J).",
     "correct": "D",
-    "giaiThich": "Nội năng là một dạng năng lượng của vật (gồm tổng động năng và thế năng tương tác của các phân tử cấu tạo nên vật). Trong hệ đo lường quốc tế SI, đơn vị của năng lượng và nội năng là <strong>jun (J)</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Nội năng là một dạng năng lượng của vật (gồm tổng động năng và thế năng tương tác của các phân tử cấu tạo nên vật). Trong hệ đo lường quốc tế SI, đơn vị của năng lượng và nội năng là <strong>jun (J)</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-015",
@@ -258,7 +282,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nước có nhiệt dung riêng lớn hơn không khí.",
     "optD": "Nước có nhiệt dung riêng nhỏ hơn không khí.",
     "correct": "C",
-    "giaiThich": "Theo công thức $Q = mc\\Delta t $, với cùng một khối lượng chất làm mát và độ tăng nhiệt độ cho phép, chất nào có <strong>nhiệt dung riêng $ c $ càng lớn</strong> thì thu được nhiệt lượng càng lớn. Nước có nhiệt dung riêng rất lớn ($\\approx 4180\\text{ J/(kg}\\cdot\\text{K)}$), vượt trội so với không khí, nên làm mát hiệu quả động cơ công suất lớn. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo công thức $Q = mc\\Delta t $, với cùng một khối lượng chất làm mát và độ tăng nhiệt độ cho phép, chất nào có <strong>nhiệt dung riêng $ c $ càng lớn</strong> thì thu được nhiệt lượng càng lớn. Nước có nhiệt dung riêng rất lớn ($\\approx 4180\\text{ J/(kg}\\cdot\\text{K)}$), vượt trội so với không khí, nên làm mát hiệu quả động cơ công suất lớn. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-017",
@@ -278,7 +304,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Vật thực hiện công: A < 0; vật truyền nhiệt: Q > 0.",
     "optD": "Vật nhận công: A < 0; vật nhận nhiệt: Q < 0.",
     "correct": "B",
-    "giaiThich": "Trong công thức Định luật I nhiệt động lực học $\\Delta U = A + Q $: quy ước chuẩn là đại lượng nào <strong>hệ nhận vào mang dấu dương</strong> ($ A > 0 $ khi vật nhận công; $ Q > 0$ khi vật nhận nhiệt), còn truyền/thực hiện ra ngoài mang dấu âm. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong công thức Định luật I nhiệt động lực học $\\Delta U = A + Q $: quy ước chuẩn là đại lượng nào <strong>hệ nhận vào mang dấu dương</strong> ($ A \\gt 0 $ khi vật nhận công; $ Q \\gt 0$ khi vật nhận nhiệt), còn truyền/thực hiện ra ngoài mang dấu âm. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-018",
@@ -298,7 +326,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nhiệt lượng vật nhận được.",
     "optD": "nội năng của vật.",
     "correct": "C",
-    "giaiThich": "Vì $t_2 > t_1 $ nên độ tăng nhiệt độ $\\Delta t = t_2 - t_1 > 0 $. Do đó biểu thức $ Q = mc(t_2 - t_1) > 0 $ dùng để xác định <strong>nhiệt lượng vật nhận được</strong> để tăng nhiệt độ từ $ t_1 $ lên $ t_2$. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Vì $t_2 \\gt t_1 $ nên độ tăng nhiệt độ $\\Delta t = t_2 - t_1 \\gt 0 $. Do đó biểu thức $ Q = mc(t_2 - t_1) \\gt 0 $ dùng để xác định <strong>nhiệt lượng vật nhận được</strong> để tăng nhiệt độ từ $ t_1 $ lên $ t_2$. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-LT01",
@@ -318,7 +348,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 2.",
     "optD": "Hình 1.",
     "correct": "A",
-    "giaiThich": "Nội năng $U$ phụ thuộc vào nhiệt độ và thể tích của vật. Ở hình 1 (đốt nến), hình 2 (hơ thanh kim loại trên ngọn lửa) và hình 3 (thả thanh đồng nóng vào cốc nước) đều có sự truyền nhiệt làm nhiệt độ của vật thay đổi, nên nội năng thay đổi. Riêng hình 4 không có sự trao đổi công hay nhiệt với bên ngoài nên <strong>nội năng của vật không thay đổi</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Nội năng $U$ phụ thuộc vào nhiệt độ và thể tích của vật. Ở hình 1 (đốt nến), hình 2 (hơ thanh kim loại trên ngọn lửa) và hình 3 (thả thanh đồng nóng vào cốc nước) đều có sự truyền nhiệt làm nhiệt độ của vật thay đổi, nên nội năng thay đổi. Riêng hình 4 không có sự trao đổi công hay nhiệt với bên ngoài nên <strong>nội năng của vật không thay đổi</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-LT02",
@@ -338,7 +370,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 4.",
     "optD": "Hình 1.",
     "correct": "B",
-    "giaiThich": "Xét dấu độ biến thiên nội năng $\\Delta U = A + Q$: Hình 1 (bơm xe — khí bị nén nhận công $A > 0$), Hình 3 (kéo căng lò xo — vật nhận công $A > 0$) và Hình 4 (cọ xát làm nóng — nhận công $A > 0$) đều làm nội năng tăng ($\\Delta U > 0$). Riêng Hình 2 là tô phở nóng đặt trong không khí đang tỏa nhiệt ra môi trường ($Q < 0$), nên <strong>nội năng đang giảm</strong> ($\\Delta U < 0$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Xét dấu độ biến thiên nội năng $\\Delta U = A + Q$: Hình 1 (bơm xe — khí bị nén nhận công $A \\gt 0$), Hình 3 (kéo căng lò xo — vật nhận công $A \\gt 0$) và Hình 4 (cọ xát làm nóng — nhận công $A \\gt 0$) đều làm nội năng tăng ($\\Delta U \\gt 0$). Riêng Hình 2 là tô phở nóng đặt trong không khí đang tỏa nhiệt ra môi trường ($Q \\lt 0$), nên <strong>nội năng đang giảm</strong> ($\\Delta U \\lt 0$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-LT03",
@@ -358,7 +392,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nhiệt dung riêng.",
     "optD": "nhiệt nóng chảy riêng.",
     "correct": "A",
-    "giaiThich": "Theo nguyên lí truyền nhiệt, nhiệt lượng tự truyền từ vật có nhiệt độ cao hơn sang vật có nhiệt độ thấp hơn. Khi hai vật tiếp xúc với nhau mà không có sự trao đổi nhiệt ($Q = 0$), chúng đang ở trạng thái cân bằng nhiệt nên <strong>phải có cùng nhiệt độ</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo nguyên lí truyền nhiệt, nhiệt lượng tự truyền từ vật có nhiệt độ cao hơn sang vật có nhiệt độ thấp hơn. Khi hai vật tiếp xúc với nhau mà không có sự trao đổi nhiệt ($Q = 0$), chúng đang ở trạng thái cân bằng nhiệt nên <strong>phải có cùng nhiệt độ</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-LT04",
@@ -378,7 +414,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\Delta U=A$.",
     "optD": "$A+Q=0$.",
     "correct": "A",
-    "giaiThich": "Định luật I nhiệt động lực học phát biểu: độ biến thiên nội năng của hệ bằng tổng công $A$ và nhiệt lượng $Q$ mà hệ nhận được: $\\Delta U = A + Q$. Các hệ thức còn lại chỉ đúng trong những trường hợp đặc biệt (đẳng tích $A=0$, đoạn nhiệt $Q=0$ hoặc đẳng nhiệt khí lí tưởng $\\Delta U=0$). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Định luật I nhiệt động lực học phát biểu: độ biến thiên nội năng của hệ bằng tổng công $A$ và nhiệt lượng $Q$ mà hệ nhận được: $\\Delta U = A + Q$. Các hệ thức còn lại chỉ đúng trong những trường hợp đặc biệt (đẳng tích $A=0$, đoạn nhiệt $Q=0$ hoặc đẳng nhiệt khí lí tưởng $\\Delta U=0$). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C1-CD05-LT05",
@@ -398,7 +436,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "(1) nhiệt độ; (2) khối lượng riêng.",
     "optD": "(1) khối lượng; (2) khối lượng.",
     "correct": "B",
-    "giaiThich": "Nội năng của hệ gồm động năng chuyển động nhiệt của các phân tử (phụ thuộc vào <strong>nhiệt độ</strong>) và thế năng tương tác giữa chúng (phụ thuộc vào khoảng cách trung bình giữa các phân tử, tức phụ thuộc vào <strong>thể tích</strong>). Do đó (1) là <strong>nhiệt độ</strong> và (2) là <strong>thể tích</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Nội năng của hệ gồm động năng chuyển động nhiệt của các phân tử (phụ thuộc vào <strong>nhiệt độ</strong>) và thế năng tương tác giữa chúng (phụ thuộc vào khoảng cách trung bình giữa các phân tử, tức phụ thuộc vào <strong>thể tích</strong>). Do đó (1) là <strong>nhiệt độ</strong> và (2) là <strong>thể tích</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-024",
@@ -418,7 +458,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Giảm",
     "optD": "Thay đổi",
     "correct": "A",
-    "giaiThich": "Định luật Boyle phát biểu rằng: trong quá trình biến đổi đẳng nhiệt (<strong>nhiệt độ không đổi</strong>) của một lượng khí xác định, áp suất tỉ lệ nghịch với thể tích ($pV = \\text{hằng số}$). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Định luật Boyle phát biểu rằng: trong quá trình biến đổi đẳng nhiệt (<strong>nhiệt độ không đổi</strong>) của một lượng khí xác định, áp suất tỉ lệ nghịch với thể tích ($pV = \\text{hằng số}$). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-026",
@@ -438,7 +480,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Tăng gấp ba",
     "correct": "B",
-    "giaiThich": "Theo định luật Boyle ở nhiệt độ không đổi: $p \\sim \\frac{1}{V}$ ($ pV = \\text{hằng số}$). Khi thể tích giảm đi một nửa ($ V_2 = \\frac{V_1}{2}$) thì áp suất <strong>tăng gấp đôi</strong> ($ p_2 = 2p_1$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định luật Boyle ở nhiệt độ không đổi: $p \\sim \\frac{1}{V}$ ($ pV = \\text{hằng số}$). Khi thể tích giảm đi một nửa ($ V_2 = \\frac{V_1}{2}$) thì áp suất <strong>tăng gấp đôi</strong> ($ p_2 = 2p_1$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-027",
@@ -458,7 +502,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "V/T= hằng số",
     "optD": "p/T= hằng số",
     "correct": "A",
-    "giaiThich": "Trong quá trình đẳng nhiệt ($T = \\text{const}$) của một khối lượng khí lí tưởng xác định, tích của áp suất $ p $ và thể tích $ V $ luôn không đổi: <strong>$ pV = \\text{hằng số}$</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trong quá trình đẳng nhiệt ($T = \\text{const}$) của một khối lượng khí lí tưởng xác định, tích của áp suất $ p $ và thể tích $ V $ luôn không đổi: <strong>$ pV = \\text{hằng số}$</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-033",
@@ -478,7 +524,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Pascal",
     "optD": "Joule",
     "correct": "C",
-    "giaiThich": "Trong hệ đơn vị quốc tế SI, áp suất ($p = F/S $) được đo bằng <strong>Pascal ($ ext{Pa}$)</strong> ($ 1\\text{ Pa} = 1\\text{ N/m}^2$). Lít đo thể tích, Kelvin đo nhiệt độ, còn Joule đo năng lượng/công. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong hệ đơn vị quốc tế SI, áp suất ($p = F/S $) được đo bằng <strong>Pascal ($ ext{Pa}$)</strong> ($ 1\\text{ Pa} = 1\\text{ N/m}^2$). Lít đo thể tích, Kelvin đo nhiệt độ, còn Joule đo năng lượng/công. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-037",
@@ -498,7 +546,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Kelvin",
     "optD": "Pascal",
     "correct": "B",
-    "giaiThich": "Đơn vị đo thể tích thường dùng là mét khối ($ext\\,\\text{m}^{3}$) hoặc <strong>Lít</strong> ($ 1\\text{ lít} = 10^{-3}\\text{ m}^3$). Bar và Pascal là đơn vị áp suất; Kelvin là đơn vị nhiệt độ. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Đơn vị đo thể tích thường dùng là mét khối ($ext\\,\\text{m}^{3}$) hoặc <strong>Lít</strong> ($ 1\\text{ lít} = 10^{-3}\\text{ m}^3$). Bar và Pascal là đơn vị áp suất; Kelvin là đơn vị nhiệt độ. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT01",
@@ -518,7 +568,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Bằng không",
     "correct": "B",
-    "giaiThich": "Khi nén một khối khí (thể tích $V$ giảm), số phân tử trong một đơn vị thể tích tăng lên, dẫn đến tần suất va chạm lên thành bình tăng. Theo định luật Boyle ($pV = \\text{hằng số}$ khi nhiệt độ không đổi), thể tích giảm thì <strong>áp suất khí tăng</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi nén một khối khí (thể tích $V$ giảm), số phân tử trong một đơn vị thể tích tăng lên, dẫn đến tần suất va chạm lên thành bình tăng. Theo định luật Boyle ($pV = \\text{hằng số}$ khi nhiệt độ không đổi), thể tích giảm thì <strong>áp suất khí tăng</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT02",
@@ -538,7 +590,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích khí trong xi lanh không đổi.",
     "optD": "Áp suất khí trong xi lanh không đổi.",
     "correct": "B",
-    "giaiThich": "Thí nghiệm kiểm chứng định luật Boyle khảo sát quá trình biến đổi <strong>đẳng nhiệt</strong> ($T = \\text{hằng số}$). Dịch chuyển pit-tông rất từ từ giúp khối khí kịp trao đổi nhiệt với môi trường xung quanh để <strong>nhiệt độ khí trong xi lanh không đổi</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Thí nghiệm kiểm chứng định luật Boyle khảo sát quá trình biến đổi <strong>đẳng nhiệt</strong> ($T = \\text{hằng số}$). Dịch chuyển pit-tông rất từ từ giúp khối khí kịp trao đổi nhiệt với môi trường xung quanh để <strong>nhiệt độ khí trong xi lanh không đổi</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT03",
@@ -558,7 +612,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 3",
     "optD": "Cả 3 hình trên",
     "correct": "D",
-    "giaiThich": "Từ định luật Boyle $pV = \\text{hằng số} \\Rightarrow p = \\text{hằng số}\\cdot\\frac{1}{V}$: Hình 1 biểu diễn $(p, \\frac{1}{V})$ là đường thẳng kéo dài qua gốc tọa độ; Hình 2 biểu diễn $(V, \\frac{1}{p})$ là đường thẳng kéo dài qua gốc tọa độ; Hình 3 biểu diễn $(p, V)$ là nhánh hypebol. Như vậy <strong>cả 3 hình trên</strong> đều diễn tả đúng định luật Boyle. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Từ định luật Boyle $pV = \\text{hằng số} \\Rightarrow p = \\text{hằng số}\\cdot\\frac{1}{V}$: Hình 1 biểu diễn $(p, \\frac{1}{V})$ là đường thẳng kéo dài qua gốc tọa độ; Hình 2 biểu diễn $(V, \\frac{1}{p})$ là đường thẳng kéo dài qua gốc tọa độ; Hình 3 biểu diễn $(p, V)$ là nhánh hypebol. Như vậy <strong>cả 3 hình trên</strong> đều diễn tả đúng định luật Boyle. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT04",
@@ -578,7 +634,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "không thay đổi",
     "optD": "tăng, không tỉ lệ với áp suất",
     "correct": "B",
-    "giaiThich": "Ở nhiệt độ không đổi, theo thuyết động học phân tử $p = \\frac{1}{3}nm\\overline{v^2} = nkT$, suy ra mật độ phân tử khí $n = \\frac{p}{kT}$ tỉ lệ thuận với áp suất $p$. Khi khí dãn nở đẳng nhiệt ($V$ tăng $\\Rightarrow p$ giảm), <strong>mật độ phân tử giảm tỉ lệ thuận với áp suất</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Ở nhiệt độ không đổi, theo thuyết động học phân tử $p = \\frac{1}{3}nm\\overline{v^2} = nkT$, suy ra mật độ phân tử khí $n = \\frac{p}{kT}$ tỉ lệ thuận với áp suất $p$. Khi khí dãn nở đẳng nhiệt ($V$ tăng $\\Rightarrow p$ giảm), <strong>mật độ phân tử giảm tỉ lệ thuận với áp suất</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT05",
@@ -598,7 +656,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khi thể tích khối khí tăng thì áp suất giảm",
     "optD": "nhiệt độ khối khí tăng thì áp suất tăng",
     "correct": "D",
-    "giaiThich": "Quá trình đẳng nhiệt có nhiệt độ khối khí không đổi ($T = \\text{hằng số}$) và theo định luật Boyle ($pV = \\text{hằng số}$), áp suất và thể tích tỉ lệ nghịch với nhau. Phát biểu \\\"nhiệt độ khối khí tăng thì áp suất tăng\\\" trái với điều kiện đẳng nhiệt. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Quá trình đẳng nhiệt có nhiệt độ khối khí không đổi ($T = \\text{hằng số}$) và theo định luật Boyle ($pV = \\text{hằng số}$), áp suất và thể tích tỉ lệ nghịch với nhau. Phát biểu \\\"nhiệt độ khối khí tăng thì áp suất tăng\\\" trái với điều kiện đẳng nhiệt. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT06",
@@ -618,7 +678,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{V}{T}$ = hằng số.",
     "optD": "$pV = \\text{hằng số}$.",
     "correct": "D",
-    "giaiThich": "Định luật Boyle phát biểu: trong quá trình đẳng nhiệt của một lượng khí lí tưởng xác định, áp suất tỉ lệ nghịch với thể tích, tức là tích $pV = \\text{hằng số}$. Các biểu thức $\\frac{p}{T} = \\text{hằng số}$ và $\\frac{V}{T} = \\text{hằng số}$ ứng với đẳng tích và đẳng áp. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Định luật Boyle phát biểu: trong quá trình đẳng nhiệt của một lượng khí lí tưởng xác định, áp suất tỉ lệ nghịch với thể tích, tức là tích $pV = \\text{hằng số}$. Các biểu thức $\\frac{p}{T} = \\text{hằng số}$ và $\\frac{V}{T} = \\text{hằng số}$ ứng với đẳng tích và đẳng áp. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT07",
@@ -638,7 +700,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "số phân tử khí trong một đơn vị thể tích giảm",
     "optD": "áp suất khí tăng lên.",
     "correct": "C",
-    "giaiThich": "Khi giãn nở khí đẳng nhiệt, thể tích $V$ tăng lên trong khi tổng số phân tử $N$ không đổi, nên mật độ phân tử $n = \\frac{N}{V}$ (số phân tử khí trong một đơn vị thể tích) <strong>giảm</strong> (đồng thời áp suất và khối lượng riêng đều giảm). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Khi giãn nở khí đẳng nhiệt, thể tích $V$ tăng lên trong khi tổng số phân tử $N$ không đổi, nên mật độ phân tử $n = \\frac{N}{V}$ (số phân tử khí trong một đơn vị thể tích) <strong>giảm</strong> (đồng thời áp suất và khối lượng riêng đều giảm). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT08",
@@ -658,7 +722,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tăng tỉ lệ với bình phương áp suất.",
     "optD": "giảm tỉ lệ nghịch với áp suất.",
     "correct": "A",
-    "giaiThich": "Ở nhiệt độ không đổi, $p = nkT \\Rightarrow n = \\frac{p}{kT}$. Do $T = \\text{hằng số}$, khi nén khí đẳng nhiệt thì áp suất $p$ tăng và số phân tử trong một đơn vị thể tích $n$ <strong>tăng tỉ lệ thuận với áp suất</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Ở nhiệt độ không đổi, $p = nkT \\Rightarrow n = \\frac{p}{kT}$. Do $T = \\text{hằng số}$, khi nén khí đẳng nhiệt thì áp suất $p$ tăng và số phân tử trong một đơn vị thể tích $n$ <strong>tăng tỉ lệ thuận với áp suất</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT09",
@@ -678,7 +744,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Áp suất giảm, nhiệt độ tỉ lệ nghịch với áp suất.",
     "optD": "Áp suất giảm, nhiệt độ không đổi.",
     "correct": "A",
-    "giaiThich": "Quá trình đẳng nhiệt xảy ra ở nhiệt độ không đổi; khi nén một lượng khí lí tưởng trong xi lanh (thể tích $V$ giảm), theo định luật Boyle $pV = \\text{hằng số}$ thì <strong>áp suất tăng, nhiệt độ không đổi</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Quá trình đẳng nhiệt xảy ra ở nhiệt độ không đổi; khi nén một lượng khí lí tưởng trong xi lanh (thể tích $V$ giảm), theo định luật Boyle $pV = \\text{hằng số}$ thì <strong>áp suất tăng, nhiệt độ không đổi</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT10",
@@ -698,7 +766,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "với khí thực.",
     "optD": "khi nhiệt độ thấp.",
     "correct": "A",
-    "giaiThich": "Các định luật chất khí lí tưởng nói chung và định luật Boyle ($pV = \\text{hằng số}$) nói riêng mô tả chính xác <strong>đối với khí lí tưởng</strong> (hoặc khí thực ở áp suất không quá cao và nhiệt độ không quá thấp). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Các định luật chất khí lí tưởng nói chung và định luật Boyle ($pV = \\text{hằng số}$) nói riêng mô tả chính xác <strong>đối với khí lí tưởng</strong> (hoặc khí thực ở áp suất không quá cao và nhiệt độ không quá thấp). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT11",
@@ -718,7 +788,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nhiệt độ không đổi.",
     "optD": "Cả thể tích và nhiệt độ thay đổi.",
     "correct": "C",
-    "giaiThich": "Định luật Boyle phát biểu mối liên hệ giữa áp suất $p$ và thể tích $V$ của một lượng khí xác định khi biến đổi trạng thái trong điều kiện <strong>nhiệt độ không đổi</strong> (quá trình đẳng nhiệt). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Định luật Boyle phát biểu mối liên hệ giữa áp suất $p$ và thể tích $V$ của một lượng khí xác định khi biến đổi trạng thái trong điều kiện <strong>nhiệt độ không đổi</strong> (quá trình đẳng nhiệt). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT12",
@@ -738,7 +810,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không liên quan",
     "optD": "Tỉ lệ với bình phương của nhau",
     "correct": "B",
-    "giaiThich": "Khi giữ nguyên nhiệt độ của một lượng khí xác định, theo định luật Boyle $p_1V_1 = p_2V_2 \\Rightarrow p = \\frac{\\text{hằng số}}{V}$, tức là áp suất và thể tích <strong>tỉ lệ nghịch</strong> với nhau. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi giữ nguyên nhiệt độ của một lượng khí xác định, theo định luật Boyle $p_1V_1 = p_2V_2 \\Rightarrow p = \\frac{\\text{hằng số}}{V}$, tức là áp suất và thể tích <strong>tỉ lệ nghịch</strong> với nhau. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT13",
@@ -758,7 +832,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$V \\propto p$.",
     "optD": "$p \\propto \\frac{1}{V}$.",
     "correct": "C",
-    "giaiThich": "Trong quá trình đẳng nhiệt ($pV = \\text{hằng số}$), $p$ tỉ lệ nghịch với $V$ ($p \\propto \\frac{1}{V}$) và $p_1V_1 = p_3V_3$. Quan hệ $V \\propto p$ (tỉ lệ thuận) <strong>không phải</strong> là hệ thức của định luật Boyle. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong quá trình đẳng nhiệt ($pV = \\text{hằng số}$), $p$ tỉ lệ nghịch với $V$ ($p \\propto \\frac{1}{V}$) và $p_1V_1 = p_3V_3$. Quan hệ $V \\propto p$ (tỉ lệ thuận) <strong>không phải</strong> là hệ thức của định luật Boyle. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT14",
@@ -778,7 +854,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$D \\propto \\frac{1}{p}$",
     "optD": "$pD = \\text{hằng số}$",
     "correct": "A",
-    "giaiThich": "Với khối lượng khí xác định $m$ không đổi, khối lượng riêng $D = \\frac{m}{V} \\Rightarrow V = \\frac{m}{D}$. Theo định luật Boyle khi nhiệt độ không đổi: $p_1V_1 = p_2V_2 \\Leftrightarrow \\frac{p_1}{D_1} = \\frac{p_2}{D_2} \\Leftrightarrow p_1 D_2 = p_2 D_1$. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Với khối lượng khí xác định $m$ không đổi, khối lượng riêng $D = \\frac{m}{V} \\Rightarrow V = \\frac{m}{D}$. Theo định luật Boyle khi nhiệt độ không đổi: $p_1V_1 = p_2V_2 \\Leftrightarrow \\frac{p_1}{D_1} = \\frac{p_2}{D_2} \\Leftrightarrow p_1 D_2 = p_2 D_1$. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD07-LT15",
@@ -798,7 +876,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khi áp suất không đổi",
     "optD": "Khi tất cả các thông số đều thay đổi",
     "correct": "A",
-    "giaiThich": "Định luật Boyle ($pV = \\text{hằng số}$) chỉ áp dụng cho quá trình biến đổi đẳng nhiệt của một lượng khí xác định, tức là <strong>khi nhiệt độ không đổi</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Định luật Boyle ($pV = \\text{hằng số}$) chỉ áp dụng cho quá trình biến đổi đẳng nhiệt của một lượng khí xác định, tức là <strong>khi nhiệt độ không đổi</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-043",
@@ -818,7 +898,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình b.",
     "optD": "Hình d.",
     "correct": "B",
-    "giaiThich": "Trong quá trình đẳng áp ($p = \\text{const}, \\frac{V}{T} = \\text{const}$): Hình a ($ p-V $ nằm ngang, $ p = \\text{const}$), Hình b ($ V-t(^\\circ\\text{C}) $ cắt trục hoành tại $-273^\\circ\\text{C}$), và Hình d ($ V-T(\\text{K}) $ qua gốc $ O $) đều đúng. Riêng <strong>Hình c</strong> là đường thẳng đứng trên $ p-V $ ($ V = \\text{const}$), biểu diễn quá trình <strong>đẳng tích</strong>, không phù hợp quá trình đẳng áp. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong quá trình đẳng áp ($p = \\text{const}, \\frac{V}{T} = \\text{const}$): Hình a ($ p-V $ nằm ngang, $ p = \\text{const}$), Hình b ($ V-t(^\\circ\\text{C}) $ cắt trục hoành tại $-273^\\circ\\text{C}$), và Hình d ($ V-T(\\text{K}) $ qua gốc $ O $) đều đúng. Riêng <strong>Hình c</strong> là đường thẳng đứng trên $ p-V $ ($ V = \\text{const}$), biểu diễn quá trình <strong>đẳng tích</strong>, không phù hợp quá trình đẳng áp. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-044",
@@ -838,7 +920,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 2.",
     "optD": "Hình 3.",
     "correct": "D",
-    "giaiThich": "Hình 1 ($V-t(^\\circ\\text{C}) $), Hình 2 ($ p-V $ nằm ngang $ p = \\text{const}$) và Hình 4 ($ V-T(\\text{K}) $ qua gốc $ O $) đều mô tả quá trình đẳng áp. Riêng <strong>Hình 3</strong> trên đồ thị $ p-V $ có $ V = \\text{const}$ là quá trình <strong>đẳng tích</strong>, không mô tả quá trình đẳng áp. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hình 1 ($V-t(^\\circ\\text{C}) $), Hình 2 ($ p-V $ nằm ngang $ p = \\text{const}$) và Hình 4 ($ V-T(\\text{K}) $ qua gốc $ O $) đều mô tả quá trình đẳng áp. Riêng <strong>Hình 3</strong> trên đồ thị $ p-V $ có $ V = \\text{const}$ là quá trình <strong>đẳng tích</strong>, không mô tả quá trình đẳng áp. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-045",
@@ -858,7 +942,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nhiệt độ tuyệt đối",
     "optD": "Áp suất",
     "correct": "C",
-    "giaiThich": "Định luật Charles phát biểu rằng: khi áp suất của một lượng khí xác định không đổi, thể tích $V $ của khối khí tỉ lệ thuận với <strong>nhiệt độ tuyệt đối $ T $</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Định luật Charles phát biểu rằng: khi áp suất của một lượng khí xác định không đổi, thể tích $V $ của khối khí tỉ lệ thuận với <strong>nhiệt độ tuyệt đối $ T $</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-046",
@@ -878,7 +964,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích",
     "optD": "Nội năng",
     "correct": "C",
-    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái của một lượng khí trong đó <strong>thể tích $V $ giữ không đổi</strong> ($ V = \\text{const}$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái của một lượng khí trong đó <strong>thể tích $V $ giữ không đổi</strong> ($ V = \\text{const}$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-047",
@@ -898,7 +986,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tăng",
     "optD": "Không liên quan",
     "correct": "C",
-    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), khi áp suất không đổi và nhiệt độ tuyệt đối của khí tăng thì <strong>thể tích của khí tăng tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), khi áp suất không đổi và nhiệt độ tuyệt đối của khí tăng thì <strong>thể tích của khí tăng tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-048",
@@ -918,7 +1008,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Không xác định",
     "correct": "B",
-    "giaiThich": "Trong quá trình đẳng tích của một lượng khí xác định, áp suất tỉ lệ thuận với nhiệt độ tuyệt đối theo định luật Gay-Lussac ($\\frac{p}{T} = \\text{hằng số}$), nên khi nhiệt độ tăng thì <strong>áp suất tăng</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong quá trình đẳng tích của một lượng khí xác định, áp suất tỉ lệ thuận với nhiệt độ tuyệt đối theo định luật Gay-Lussac ($\\frac{p}{T} = \\text{hằng số}$), nên khi nhiệt độ tăng thì <strong>áp suất tăng</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-050",
@@ -938,7 +1030,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Độ F",
     "optD": "Joule (J)",
     "correct": "B",
-    "giaiThich": "Trong hệ đơn vị quốc tế SI, nhiệt độ tuyệt đối ($T $) được đo bằng <strong>Kelvin (K)</strong> ($ T(\\text{K}) = t(^\\circ\\text{C}) + 273{,}15$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong hệ đơn vị quốc tế SI, nhiệt độ tuyệt đối ($T $) được đo bằng <strong>Kelvin (K)</strong> ($ T(\\text{K}) = t(^\\circ\\text{C}) + 273{,}15$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-051",
@@ -958,7 +1052,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Giảm gấp đôi",
     "correct": "A",
-    "giaiThich": "Theo định luật Gay-Lussac cho quá trình đẳng tích ($\\frac{p}{T} = \\text{const}$), khi nhiệt độ tuyệt đối $ T $ tăng gấp đôi thì áp suất $ p$ cũng <strong>tăng gấp đôi</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo định luật Gay-Lussac cho quá trình đẳng tích ($\\frac{p}{T} = \\text{const}$), khi nhiệt độ tuyệt đối $ T $ tăng gấp đôi thì áp suất $ p$ cũng <strong>tăng gấp đôi</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-054",
@@ -978,7 +1074,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Bằng 0",
     "optD": "Không xác định",
     "correct": "C",
-    "giaiThich": "Trong quá trình đẳng tích, thể tích chất khí không thay đổi ($\\Delta V = 0 $), nên công cơ học thực hiện bởi khí là <strong>$ A' = p\\Delta V = 0$</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong quá trình đẳng tích, thể tích chất khí không thay đổi ($\\Delta V = 0 $), nên công cơ học thực hiện bởi khí là <strong>$ A' = p\\Delta V = 0$</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-056",
@@ -998,7 +1096,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khối lượng giảm",
     "optD": "Khối lượng tăng",
     "correct": "A",
-    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), với một lượng khí cố định ở áp suất không đổi, thể tích giảm khi <strong>nhiệt độ của khí giảm</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), với một lượng khí cố định ở áp suất không đổi, thể tích giảm khi <strong>nhiệt độ của khí giảm</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-057",
@@ -1018,7 +1118,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nhiệt độ",
     "optD": "Khối lượng",
     "correct": "C",
-    "giaiThich": "Đối với khí lí tưởng (bỏ qua thế năng tương tác giữa các phân tử), nội năng $U $ chỉ là tổng động năng chuyển động nhiệt của các phân tử, nên <strong>chỉ phụ thuộc vào nhiệt độ</strong> ($ T$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Đối với khí lí tưởng (bỏ qua thế năng tương tác giữa các phân tử), nội năng $U $ chỉ là tổng động năng chuyển động nhiệt của các phân tử, nên <strong>chỉ phụ thuộc vào nhiệt độ</strong> ($ T$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-062",
@@ -1038,7 +1140,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nhiệt độ phòng",
     "optD": "Nhiệt độ sôi",
     "correct": "A",
-    "giaiThich": "Mốc <strong>$0\\text{ K}$</strong> là điểm không của thang <strong>nhiệt độ tuyệt đối</strong> (độ không tuyệt đối, $-273{,}15^\\circ\\text{C}$), tại đó động năng chuyển động tịnh tiến của các phân tử đạt giá trị tối thiểu về mặt cổ điển. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Mốc <strong>$0\\text{ K}$</strong> là điểm không của thang <strong>nhiệt độ tuyệt đối</strong> (độ không tuyệt đối, $-273{,}15^\\circ\\text{C}$), tại đó động năng chuyển động tịnh tiến của các phân tử đạt giá trị tối thiểu về mặt cổ điển. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-064",
@@ -1058,7 +1162,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tăng ít hơn gấp đôi",
     "optD": "Giảm ít hơn 2 lần",
     "correct": "D",
-    "giaiThich": "Vì $p \\sim T = t(^\\circ\\text{C}) + 273 $, nếu nhiệt độ Celsius giảm một nửa ($ t_2 = t_1/2 $ với $ t_1 > 0 $) thì tỉ số $\\frac{p_2}{p_1} = \\frac{t_1/2 + 273}{t_1 + 273} > \\frac{1}{2}$, tức áp suất <strong>giảm ít hơn 2 lần</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Vì $p \\sim T = t(^\\circ\\text{C}) + 273 $, nếu nhiệt độ Celsius giảm một nửa ($ t_2 = t_1/2 $ với $ t_1 \\gt 0 $) thì tỉ số $\\frac{p_2}{p_1} = \\frac{t_1/2 + 273}{t_1 + 273} \\gt \\frac{1}{2}$, tức áp suất <strong>giảm ít hơn 2 lần</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-068",
@@ -1078,7 +1184,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nội năng của khí tăng",
     "optD": "Áp suất của khí giảm",
     "correct": "C",
-    "giaiThich": "Nội năng của khí lí tưởng tỉ lệ thuận với nhiệt độ tuyệt đối của khí. Khi nhiệt độ tăng trong quá trình đẳng tích, <strong>nội năng của khí tăng</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Nội năng của khí lí tưởng tỉ lệ thuận với nhiệt độ tuyệt đối của khí. Khi nhiệt độ tăng trong quá trình đẳng tích, <strong>nội năng của khí tăng</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-069",
@@ -1098,7 +1206,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Áp suất và nhiệt độ",
     "optD": "Khối lượng và thể tích",
     "correct": "B",
-    "giaiThich": "Định luật Charles thiết lập mối liên hệ giữa <strong>thể tích ($V $) và nhiệt độ tuyệt đối ($ T$)</strong> của một lượng khí xác định khi giữ áp suất không đổi. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Định luật Charles thiết lập mối liên hệ giữa <strong>thể tích ($V $) và nhiệt độ tuyệt đối ($ T$)</strong> của một lượng khí xác định khi giữ áp suất không đổi. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-070",
@@ -1118,7 +1228,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Đường cong đi qua gốc tọa độ",
     "optD": "Đường cong không đi qua gốc tọa độ",
     "correct": "A",
-    "giaiThich": "Từ $\\frac{p}{T} = \\text{const} \\implies p = \\text{const} \\cdot T $. Do đó đồ thị biểu diễn áp suất $ p $ theo nhiệt độ tuyệt đối $ T $ trong hệ tọa độ $ (p, T)$ là <strong>đường thẳng có đường kéo dài đi qua gốc tọa độ</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ $\\frac{p}{T} = \\text{const} \\implies p = \\text{const} \\cdot T $. Do đó đồ thị biểu diễn áp suất $ p $ theo nhiệt độ tuyệt đối $ T $ trong hệ tọa độ $ (p, T)$ là <strong>đường thẳng có đường kéo dài đi qua gốc tọa độ</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-073",
@@ -1138,7 +1250,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Tăng gấp bốn lần",
     "correct": "B",
-    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), khi áp suất không đổi mà nhiệt độ tuyệt đối giảm đi một nửa ($ T_2 = T_1/2$) thì thể tích của khí cũng <strong>giảm đi một nửa</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định luật Charles ($\\frac{V}{T} = \\text{const}$), khi áp suất không đổi mà nhiệt độ tuyệt đối giảm đi một nửa ($ T_2 = T_1/2$) thì thể tích của khí cũng <strong>giảm đi một nửa</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-075",
@@ -1158,7 +1272,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Dương và không đổi",
     "optD": "Không xác định",
     "correct": "C",
-    "giaiThich": "Vì $p = k T $ với hằng số tỉ lệ $ k = \\frac{nR}{V} > 0 $, nên đường đẳng tích trên mặt phẳng tọa độ $ (p, T)$ là một đoạn thẳng hướng đi lên, có <strong>độ dốc dương và không đổi</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Vì $p = k T $ với hằng số tỉ lệ $ k = \\frac{nR}{V} \\gt 0 $, nên đường đẳng tích trên mặt phẳng tọa độ $ (p, T)$ là một đoạn thẳng hướng đi lên, có <strong>độ dốc dương và không đổi</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-077",
@@ -1178,7 +1294,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Bằng 0",
     "optD": "Không đổi",
     "correct": "C",
-    "giaiThich": "Theo phép ngoại suy tuyến tính của định luật Charles ($V = kT $), tại mốc nhiệt độ không tuyệt đối giả định $ T = 0\\text{ K}$ ($-273{,}15^\\circ\\text{C}$), <strong>thể tích khí lí tưởng tiệm cận bằng 0</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo phép ngoại suy tuyến tính của định luật Charles ($V = kT $), tại mốc nhiệt độ không tuyệt đối giả định $ T = 0\\text{ K}$ ($-273{,}15^\\circ\\text{C}$), <strong>thể tích khí lí tưởng tiệm cận bằng 0</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-081",
@@ -1198,7 +1316,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Kelvin (K)",
     "optD": "Joule (J)",
     "correct": "C",
-    "giaiThich": "Trong biểu thức tỉ lệ thuận của định luật Charles ($\\frac{V}{T} = \\text{hằng số}$), nhiệt độ bắt buộc là nhiệt độ tuyệt đối có đơn vị <strong>Kelvin (K)</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong biểu thức tỉ lệ thuận của định luật Charles ($\\frac{V}{T} = \\text{hằng số}$), nhiệt độ bắt buộc là nhiệt độ tuyệt đối có đơn vị <strong>Kelvin (K)</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-097",
@@ -1218,7 +1338,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Định luật Charles cho biết quan hệ áp suất p và nhiệt độ tuyệt đối $T(K)$.",
     "optD": "Định luật Charles cho biết quan hệ giữa thể tích V và nhiệt độ tuyệt đối $T(K)$.",
     "correct": "D",
-    "giaiThich": "Định luật Charles phát biểu về quá trình <strong>đẳng áp</strong> ($p = \\text{hằng số}$), thiết lập mối liên hệ tỉ lệ thuận giữa <strong>thể tích $ V $ và nhiệt độ tuyệt đối $ T(\\text{K}) $</strong> (còn đường đẳng áp trên đồ thị $ V-T $ là đường thẳng kéo dài đi qua gốc $ O $, không song song trục $ OT$). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Định luật Charles phát biểu về quá trình <strong>đẳng áp</strong> ($p = \\text{hằng số}$), thiết lập mối liên hệ tỉ lệ thuận giữa <strong>thể tích $ V $ và nhiệt độ tuyệt đối $ T(\\text{K}) $</strong> (còn đường đẳng áp trên đồ thị $ V-T $ là đường thẳng kéo dài đi qua gốc $ O $, không song song trục $ OT$). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-101",
@@ -1238,7 +1360,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "của khí trong quá trình đẳng áp nhỏ hơn trong quá trình đẳng tích.",
     "optD": "của khí trong quá trình đẳng áp và trong quá trình đẳng tích là như nhau.",
     "correct": "B",
-    "giaiThich": "Theo Định luật I nhiệt động lực học ($Q = \\Delta U + A'$): khi nung đẳng tích thì $ A' = 0 \\implies Q_V = \\Delta U $; khi nung đẳng áp để tăng cùng nhiệt độ $ 1\\text{ K}$ (cùng $\\Delta U $), khí còn dãn nở sinh công $ A' > 0 \\implies Q_p = \\Delta U + A' > Q_V $. Do đó <strong>nhiệt dung riêng đẳng áp luôn lớn hơn đẳng tích</strong> ($ c_p > c_V$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo Định luật I nhiệt động lực học ($Q = \\Delta U + A'$): khi nung đẳng tích thì $ A' = 0 \\implies Q_V = \\Delta U $; khi nung đẳng áp để tăng cùng nhiệt độ $ 1\\text{ K}$ (cùng $\\Delta U $), khí còn dãn nở sinh công $ A' \\gt 0 \\implies Q_p = \\Delta U + A' \\gt Q_V $. Do đó <strong>nhiệt dung riêng đẳng áp luôn lớn hơn đẳng tích</strong> ($ c_p \\gt c_V$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-102",
@@ -1258,7 +1382,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích của bóng bay tăng",
     "optD": "Bóng bay nổ ngay lập tức",
     "correct": "C",
-    "giaiThich": "Khi đặt bóng bay vào nước nóng, không khí bên trong bóng nhận nhiệt và tăng nhiệt độ ở áp suất xấp xỉ áp suất khí quyển bên ngoài (gần như đẳng áp), khiến <strong>thể tích khí trong bóng bay tăng lên</strong> theo định luật Charles. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Khi đặt bóng bay vào nước nóng, không khí bên trong bóng nhận nhiệt và tăng nhiệt độ ở áp suất xấp xỉ áp suất khí quyển bên ngoài (gần như đẳng áp), khiến <strong>thể tích khí trong bóng bay tăng lên</strong> theo định luật Charles. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-103",
@@ -1278,7 +1404,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích giảm",
     "optD": "Áp suất tăng",
     "correct": "C",
-    "giaiThich": "Pit-tông di chuyển tự do giữ áp suất khí không đổi (quá trình đẳng áp). Khi làm lạnh, nhiệt độ giảm làm chuyển động nhiệt yếu đi và <strong>thể tích khí trong xi lanh giảm</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Pit-tông di chuyển tự do giữ áp suất khí không đổi (quá trình đẳng áp). Khi làm lạnh, nhiệt độ giảm làm chuyển động nhiệt yếu đi và <strong>thể tích khí trong xi lanh giảm</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT01",
@@ -1298,7 +1426,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "thước đo chiều dài",
     "optD": "đồng hồ đo thời gian",
     "correct": "A",
-    "giaiThich": "Quan sát sơ đồ thí nghiệm minh họa định luật Charles gồm: (1) xilanh chứa khí đặt trong cốc nước nóng, (2) <strong>nhiệt kế điện tử</strong> cắm đầu dò vào nước để đo nhiệt độ khối khí, pit-tông di chuyển tự do để giữ áp suất bằng áp suất khí quyển. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Quan sát sơ đồ thí nghiệm minh họa định luật Charles gồm: (1) xilanh chứa khí đặt trong cốc nước nóng, (2) <strong>nhiệt kế điện tử</strong> cắm đầu dò vào nước để đo nhiệt độ khối khí, pit-tông di chuyển tự do để giữ áp suất bằng áp suất khí quyển. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT02",
@@ -1313,12 +1443,14 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "modelId": "MH-TN220-C2-33",
     "hinhAnh": "assets/images/staging-220/q220_lt_007.png",
     "question": "Trên đồ thị V - T vẽ hai đường đẳng áp của cùng một khối lượng khí xác định. Thông tin nào sau đây là đúng?",
-    "optA": "$p_1 > p_2$.",
-    "optB": "$p_1 < p_2$.",
+    "optA": "$p_1 \\gt p_2$.",
+    "optB": "$p_1 \\lt p_2$.",
     "optC": "$p_1 = p_2$.",
     "optD": "$p_1 \\ge p_2$.",
     "correct": "B",
-    "giaiThich": "Kẻ một đường đẳng nhiệt $T = \\text{hằng số}$ cắt hai đường đẳng áp tại hai trạng thái có $V_1 > V_2$. Theo định luật Boyle ở cùng nhiệt độ, $p_1V_1 = p_2V_2 \\Rightarrow p_1 < p_2$ (hay đường đẳng áp có độ dốc $\\frac{V}{T} = \\frac{nR}{p}$ càng lớn thì áp suất càng nhỏ). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Kẻ một đường đẳng nhiệt $T = \\text{hằng số}$ cắt hai đường đẳng áp tại hai trạng thái có $V_1 \\gt V_2$. Theo định luật Boyle ở cùng nhiệt độ, $p_1V_1 = p_2V_2 \\Rightarrow p_1 \\lt p_2$ (hay đường đẳng áp có độ dốc $\\frac{V}{T} = \\frac{nR}{p}$ càng lớn thì áp suất càng nhỏ). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT03",
@@ -1333,12 +1465,14 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "modelId": "MH-TN220-C2-34",
     "hinhAnh": "assets/images/staging-220/q220_lt_008.png",
     "question": "Trên đồ thị V - T biểu diễn hai trạng thái (1) và (2) của cùng một khối lượng khí xác định. Gọi áp suất của các trạng thái (1), (2) lần lượt là $p_{1}$, $p_{2}$. Thông tin nào sau đây là đúng?",
-    "optA": "$p_1 > p_2$.",
-    "optB": "$p_1 < p_2$.",
+    "optA": "$p_1 \\gt p_2$.",
+    "optB": "$p_1 \\lt p_2$.",
     "optC": "$p_1 = p_2$.",
     "optD": "$p_1 \\ge p_2$.",
     "correct": "B",
-    "giaiThich": "Trên đồ thị $(V, T)$, trạng thái (1) và (2) nằm trên cùng đường thẳng đứng nên có cùng nhiệt độ $T_1 = T_2$, trong khi thể tích $V_1 > V_2$. Áp dụng định luật Boyle cho hai trạng thái cùng nhiệt độ: $p_1V_1 = p_2V_2 \\Rightarrow p_1 < p_2$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trên đồ thị $(V, T)$, trạng thái (1) và (2) nằm trên cùng đường thẳng đứng nên có cùng nhiệt độ $T_1 = T_2$, trong khi thể tích $V_1 \\gt V_2$. Áp dụng định luật Boyle cho hai trạng thái cùng nhiệt độ: $p_1V_1 = p_2V_2 \\Rightarrow p_1 \\lt p_2$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT04",
@@ -1358,7 +1492,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "đường cong giảm",
     "optD": "đường cong tăng",
     "correct": "B",
-    "giaiThich": "Theo định luật Gay-Lussac (hoặc hệ quả phương trình trạng thái khi $V = \\text{hằng số}$), $\\frac{p}{T} = \\text{hằng số} \\Rightarrow p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$. Do đó trong đồ thị $(p, T)$, đường đẳng tích là <strong>đường thẳng dốc lên</strong> (có đường kéo dài đi qua gốc tọa độ $O$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định luật Gay-Lussac (hoặc hệ quả phương trình trạng thái khi $V = \\text{hằng số}$), $\\frac{p}{T} = \\text{hằng số} \\Rightarrow p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$. Do đó trong đồ thị $(p, T)$, đường đẳng tích là <strong>đường thẳng dốc lên</strong> (có đường kéo dài đi qua gốc tọa độ $O$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT05",
@@ -1378,7 +1514,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thổi không khí vào một quả bóng bay.",
     "optD": "Quả bóng bàn bị bẹp nhúng vào nước nóng, phồng lên như cũ.",
     "correct": "B",
-    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái giữ nguyên thể tích của lượng khí xác định. Đun nóng khí trong một <strong>xilanh kín</strong> có thể tích không đổi thuộc quá trình đẳng tích (trong khi xilanh hở là đẳng áp, thổi bóng hay bóng phồng lại đều thay đổi thể tích). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái giữ nguyên thể tích của lượng khí xác định. Đun nóng khí trong một <strong>xilanh kín</strong> có thể tích không đổi thuộc quá trình đẳng tích (trong khi xilanh hở là đẳng áp, thổi bóng hay bóng phồng lại đều thay đổi thể tích). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT06",
@@ -1393,12 +1531,14 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "modelId": "MH-TN220-C2-35",
     "hinhAnh": "assets/images/staging-220/q220_lt_011.png",
     "question": "Biểu diễn hai đường đẳng tích của cùng một khối lượng không khí trong hệ tọa độ (p - T). Mối quan hệ đúng về các thể tích $V_{1}$, $V_{2}$ là:",
-    "optA": "$V_1 > V_2$",
-    "optB": "$V_1 < V_2$",
+    "optA": "$V_1 \\gt V_2$",
+    "optB": "$V_1 \\lt V_2$",
     "optC": "$V_1 = V_2$",
     "optD": "$V_1 \\ge V_2$",
     "correct": "B",
-    "giaiThich": "Kẻ đường thẳng đứng $T = \\text{hằng số}$ cắt hai đường đẳng tích trên đồ thị $(p, T)$: đường (1) ứng với áp suất lớn hơn ($p_1 > p_2$). Ở cùng nhiệt độ, $p_1V_1 = p_2V_2 \\Rightarrow V_1 < V_2$ (đường đẳng tích có hệ số góc $\\frac{p}{T} = \\frac{nR}{V}$ càng lớn thì $V$ càng nhỏ). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Kẻ đường thẳng đứng $T = \\text{hằng số}$ cắt hai đường đẳng tích trên đồ thị $(p, T)$: đường (1) ứng với áp suất lớn hơn ($p_1 \\gt p_2$). Ở cùng nhiệt độ, $p_1V_1 = p_2V_2 \\Rightarrow V_1 \\lt V_2$ (đường đẳng tích có hệ số góc $\\frac{p}{T} = \\frac{nR}{V}$ càng lớn thì $V$ càng nhỏ). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT07",
@@ -1418,7 +1558,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$p_{3}$",
     "optD": "$p_{4}$",
     "correct": "A",
-    "giaiThich": "Trên đồ thị $(V, T)$, đường đẳng áp có hệ số góc $\\tan\\alpha = \\frac{V}{T} = \\frac{nR}{p}$, tỉ lệ nghịch với áp suất $p$. Đường thẳng nằm thấp nhất (độ dốc nhỏ nhất) ứng với áp suất lớn nhất. Quan sát hình vẽ thấy đường $p_1$ nằm thấp nhất, suy ra <strong>$p_1$ ứng với áp suất cao nhất</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trên đồ thị $(V, T)$, đường đẳng áp có hệ số góc $\\tan\\alpha = \\frac{V}{T} = \\frac{nR}{p}$, tỉ lệ nghịch với áp suất $p$. Đường thẳng nằm thấp nhất (độ dốc nhỏ nhất) ứng với áp suất lớn nhất. Quan sát hình vẽ thấy đường $p_1$ nằm thấp nhất, suy ra <strong>$p_1$ ứng với áp suất cao nhất</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT08",
@@ -1438,7 +1580,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Quá trình đun nóng đẳng tích.",
     "optD": "Quá trình làm lạnh đẳng áp.",
     "correct": "B",
-    "giaiThich": "Đồ thị $(V, T)$ là đoạn thẳng có đường kéo dài đi qua gốc tọa độ $O$, chứng tỏ $\\frac{V}{T} = \\text{hằng số}$ (quá trình đẳng áp). Mũi tên hướng từ trái sang phải biểu thị $T$ và $V$ đều tăng, tức là <strong>quá trình đun nóng đẳng áp</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Đồ thị $(V, T)$ là đoạn thẳng có đường kéo dài đi qua gốc tọa độ $O$, chứng tỏ $\\frac{V}{T} = \\text{hằng số}$ (quá trình đẳng áp). Mũi tên hướng từ trái sang phải biểu thị $T$ và $V$ đều tăng, tức là <strong>quá trình đun nóng đẳng áp</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT09",
@@ -1458,7 +1602,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 2",
     "optD": "Hình 1",
     "correct": "D",
-    "giaiThich": "Trong quá trình đẳng áp ($p = \\text{hằng số}$), thể tích khí tỉ lệ bậc nhất với nhiệt độ Celsius $t\\,(^\\circ\\text{C})$ theo công thức $V = V_0(1 + \\alpha t)$ với $\\alpha \\approx \\frac{1}{273}\\,\\text{K}^{-1}$, nên đường biểu diễn trong hệ $(V, t^\\circ\\text{C})$ là đường thẳng cắt trục tung tại $V_0$ và có phần kéo dài cắt trục hoành tại $-273^\\circ\\text{C}$ (<strong>Hình 1</strong>). Hình 2 và 4 sai vì vẽ trục $T\\,(\\text{K})$ nhưng lại cắt tại $-273$, còn Hình 3 là đồ thị đẳng tích trên $(p, t^\\circ\\text{C})$. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Trong quá trình đẳng áp ($p = \\text{hằng số}$), thể tích khí tỉ lệ bậc nhất với nhiệt độ Celsius $t\\,(^\\circ\\text{C})$ theo công thức $V = V_0(1 + \\alpha t)$ với $\\alpha \\approx \\frac{1}{273}\\,\\text{K}^{-1}$, nên đường biểu diễn trong hệ $(V, t^\\circ\\text{C})$ là đường thẳng cắt trục tung tại $V_0$ và có phần kéo dài cắt trục hoành tại $-273^\\circ\\text{C}$ (<strong>Hình 1</strong>). Hình 2 và 4 sai vì vẽ trục $T\\,(\\text{K})$ nhưng lại cắt tại $-273$, còn Hình 3 là đồ thị đẳng tích trên $(p, t^\\circ\\text{C})$. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT10",
@@ -1478,7 +1624,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tỉ lệ nghịch với nhiệt độ tuyệt đối",
     "optD": "tỉ lệ thuận với nhiệt độ Celcius",
     "correct": "A",
-    "giaiThich": "Theo phương trình trạng thái của một lượng khí lí tưởng xác định: $\\frac{pV}{T} = \\text{hằng số}$, suy ra tích áp suất và thể tích $pV$ <strong>tỉ lệ thuận với nhiệt độ tuyệt đối</strong> $T$ (theo thang Kelvin, không phải thang Celsius). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo phương trình trạng thái của một lượng khí lí tưởng xác định: $\\frac{pV}{T} = \\text{hằng số}$, suy ra tích áp suất và thể tích $pV$ <strong>tỉ lệ thuận với nhiệt độ tuyệt đối</strong> $T$ (theo thang Kelvin, không phải thang Celsius). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT11",
@@ -1498,7 +1646,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "đường hypechol.",
     "optD": "đường thẳng song song với trục Op.",
     "correct": "B",
-    "giaiThich": "Từ phương trình quá trình đẳng tích $\\frac{p}{T} = \\text{hằng số}$ ($T$ tính theo Kelvin), áp suất $p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$. Vì vậy đường đẳng tích trong hệ tọa độ $(p, T)$ là một <strong>đường thẳng có đường kéo dài đi qua gốc tọa độ $O$</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Từ phương trình quá trình đẳng tích $\\frac{p}{T} = \\text{hằng số}$ ($T$ tính theo Kelvin), áp suất $p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$. Vì vậy đường đẳng tích trong hệ tọa độ $(p, T)$ là một <strong>đường thẳng có đường kéo dài đi qua gốc tọa độ $O$</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT12",
@@ -1518,7 +1668,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "không đổi.",
     "optD": "giảm đến cực tiểu rồi tăng lên.",
     "correct": "A",
-    "giaiThich": "Khi nung nóng đẳng áp một khối lượng khí xác định, theo định luật Charles $\\frac{V}{T} = \\text{hằng số}$, nhiệt độ $T$ tăng nên thể tích $V$ của khối khí tăng lên. Do số phân tử khí không đổi mà thể tích tăng nên khoảng cách trung bình giữa các phân tử khí <strong>tăng lên</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi nung nóng đẳng áp một khối lượng khí xác định, theo định luật Charles $\\frac{V}{T} = \\text{hằng số}$, nhiệt độ $T$ tăng nên thể tích $V$ của khối khí tăng lên. Do số phân tử khí không đổi mà thể tích tăng nên khoảng cách trung bình giữa các phân tử khí <strong>tăng lên</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT13",
@@ -1538,7 +1690,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "không đổi.",
     "optD": "tăng đến cực đại rồi giảm đi.",
     "correct": "A",
-    "giaiThich": "Khi giữ áp suất không đổi và làm giảm nhiệt độ, theo định luật Charles ($V \\propto T$) thì thể tích $V$ của khối khí giảm đi. Với khối lượng khí $m$ không đổi, khối lượng riêng $\\rho = \\frac{m}{V}$ sẽ <strong>tăng lên</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi giữ áp suất không đổi và làm giảm nhiệt độ, theo định luật Charles ($V \\propto T$) thì thể tích $V$ của khối khí giảm đi. Với khối lượng khí $m$ không đổi, khối lượng riêng $\\rho = \\frac{m}{V}$ sẽ <strong>tăng lên</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT14",
@@ -1558,7 +1712,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích tỉ lệ nghịch với áp suất.",
     "optD": "Nhiệt độ tỉ lệ thuận với áp suất.",
     "correct": "B",
-    "giaiThich": "Quá trình đẳng áp là quá trình biến đổi trạng thái khi áp suất giữ không đổi. Theo định luật Charles ($\\frac{V}{T} = \\text{hằng số}$), trong quá trình đẳng áp <strong>thể tích tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Quá trình đẳng áp là quá trình biến đổi trạng thái khi áp suất giữ không đổi. Theo định luật Charles ($\\frac{V}{T} = \\text{hằng số}$), trong quá trình đẳng áp <strong>thể tích tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT15",
@@ -1578,7 +1734,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "thể tích của khí tăng, tỉ lệ thuận với nhiệt độ tuyệt đối.",
     "optD": "thể tích của khí tăng, tỉ lệ thuận với nhiệt độ Celsius.",
     "correct": "C",
-    "giaiThich": "Theo định luật Charles áp dụng cho quá trình dãn nở đẳng áp ($p = \\text{hằng số}$), ta có $\\frac{V}{T} = \\text{hằng số}$, nên khi khí dãn nở (thể tích tăng) thì nhiệt độ tuyệt đối $T$ tăng tương ứng, nghĩa là <strong>thể tích tăng và tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo định luật Charles áp dụng cho quá trình dãn nở đẳng áp ($p = \\text{hằng số}$), ta có $\\frac{V}{T} = \\text{hằng số}$, nên khi khí dãn nở (thể tích tăng) thì nhiệt độ tuyệt đối $T$ tăng tương ứng, nghĩa là <strong>thể tích tăng và tỉ lệ thuận với nhiệt độ tuyệt đối</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT16",
@@ -1598,7 +1756,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{\\rho_1}{T_1} = \\frac{\\rho_2}{T_2}$",
     "optD": "$\\rho_1 \\cdot T_2 = \\rho_2 \\cdot T_1$",
     "correct": "A",
-    "giaiThich": "Theo định luật Charles trong quá trình đẳng áp: $\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$. Mặt khác khối lượng riêng $\\rho = \\frac{m}{V} \\Rightarrow \\frac{V_1}{V_2} = \\frac{\\rho_2}{\\rho_1}$. Kết hợp hai hệ thức ta được $\\frac{\\rho_1}{\\rho_2} = \\frac{T_2}{T_1}$ (tức $\\rho_1 T_1 = \\rho_2 T_2$). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo định luật Charles trong quá trình đẳng áp: $\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$. Mặt khác khối lượng riêng $\\rho = \\frac{m}{V} \\Rightarrow \\frac{V_1}{V_2} = \\frac{\\rho_2}{\\rho_1}$. Kết hợp hai hệ thức ta được $\\frac{\\rho_1}{\\rho_2} = \\frac{T_2}{T_1}$ (tức $\\rho_1 T_1 = \\rho_2 T_2$). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT17",
@@ -1618,7 +1778,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khối lượng riêng giảm",
     "optD": "Khối lượng riêng có thể tăng hoặc giảm",
     "correct": "C",
-    "giaiThich": "Ở áp suất không đổi, khi nhiệt độ tuyệt đối $T$ tăng thì thể tích $V$ của khối khí tăng lên ($V \\propto T$). Vì khối lượng $m$ của khí không đổi nên khối lượng riêng $\\rho = \\frac{m}{V}$ sẽ <strong>giảm</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Ở áp suất không đổi, khi nhiệt độ tuyệt đối $T$ tăng thì thể tích $V$ của khối khí tăng lên ($V \\propto T$). Vì khối lượng $m$ của khí không đổi nên khối lượng riêng $\\rho = \\frac{m}{V}$ sẽ <strong>giảm</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT18",
@@ -1638,7 +1800,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Giảm một nửa",
     "optD": "Giảm một phần tư",
     "correct": "C",
-    "giaiThich": "Trong quá trình đẳng áp, $V \\propto T$ nên khi nhiệt độ tuyệt đối $T$ tăng gấp đôi thì thể tích $V$ tăng gấp đôi. Vì $\\rho = \\frac{m}{V}$ tỉ lệ nghịch với $V$ (khối lượng $m$ không đổi), nên khối lượng riêng của khí sẽ <strong>giảm một nửa</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong quá trình đẳng áp, $V \\propto T$ nên khi nhiệt độ tuyệt đối $T$ tăng gấp đôi thì thể tích $V$ tăng gấp đôi. Vì $\\rho = \\frac{m}{V}$ tỉ lệ nghịch với $V$ (khối lượng $m$ không đổi), nên khối lượng riêng của khí sẽ <strong>giảm một nửa</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT19",
@@ -1658,7 +1822,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$p = p_0\\frac{T}{T_0}$.",
     "optD": "$p = p_0\\frac{T_0}{T}$.",
     "correct": "C",
-    "giaiThich": "Khí đựng trong bình kín dung tích không đổi thực hiện quá trình đẳng tích. Theo định luật Gay-Lussac, $\\frac{p}{T} = \\frac{p_0}{T_0} \\Rightarrow p = p_0 \\frac{T}{T_0}$. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Khí đựng trong bình kín dung tích không đổi thực hiện quá trình đẳng tích. Theo định luật Gay-Lussac, $\\frac{p}{T} = \\frac{p_0}{T_0} \\Rightarrow p = p_0 \\frac{T}{T_0}$. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT20",
@@ -1678,7 +1844,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Thể tích giảm ba lần, khối lượng riêng tăng ba lần",
     "optD": "Thể tích tăng ba lần, khối lượng riêng tăng ba lần",
     "correct": "A",
-    "giaiThich": "Ở áp suất không đổi, theo định luật Charles $V \\propto T$: khi $T$ tăng lên 3 lần thì <strong>thể tích tăng ba lần</strong>. Do $\\rho = \\frac{m}{V}$ và $m$ không đổi, nên <strong>khối lượng riêng giảm ba lần</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Ở áp suất không đổi, theo định luật Charles $V \\propto T$: khi $T$ tăng lên 3 lần thì <strong>thể tích tăng ba lần</strong>. Do $\\rho = \\frac{m}{V}$ và $m$ không đổi, nên <strong>khối lượng riêng giảm ba lần</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT21",
@@ -1698,7 +1866,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "trạng thái của một lượng khí nhất định khi nhiệt độ không đổi.",
     "optD": "khối lượng của một khối khí khi thể tích không đổi.",
     "correct": "B",
-    "giaiThich": "Theo định nghĩa, quá trình đẳng tích là quá trình biến đổi trạng thái của một <strong>lượng khí nhất định khi thể tích được giữ không đổi</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định nghĩa, quá trình đẳng tích là quá trình biến đổi trạng thái của một <strong>lượng khí nhất định khi thể tích được giữ không đổi</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT22",
@@ -1718,7 +1888,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "pV.",
     "optD": "$\\frac{V}{p}$.",
     "correct": "D",
-    "giaiThich": "Khi làm lạnh đẳng tích một lượng khí lí tưởng xác định, thể tích $V$, khối lượng $m$ và mật độ phân tử $n = \\frac{N}{V}$ đều không đổi; nhiệt độ giảm làm áp suất $p$ giảm nên $pV$ giảm. Do $p$ giảm mà $V$ không đổi nên thương số <strong>$\\frac{V}{p}$ tăng dần</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi làm lạnh đẳng tích một lượng khí lí tưởng xác định, thể tích $V$, khối lượng $m$ và mật độ phân tử $n = \\frac{N}{V}$ đều không đổi; nhiệt độ giảm làm áp suất $p$ giảm nên $pV$ giảm. Do $p$ giảm mà $V$ không đổi nên thương số <strong>$\\frac{V}{p}$ tăng dần</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT23",
@@ -1738,7 +1910,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Áp suất",
     "optD": "Không có đáp án đúng",
     "correct": "C",
-    "giaiThich": "Bình kín có thể tích không đổi nên khi đun nóng khí bên trong, khí thực hiện quá trình đẳng tích. Nhiệt độ tuyệt đối $T$ tăng kéo theo <strong>áp suất khí tăng</strong> ($\\frac{p}{T} = \\text{hằng số}$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Bình kín có thể tích không đổi nên khi đun nóng khí bên trong, khí thực hiện quá trình đẳng tích. Nhiệt độ tuyệt đối $T$ tăng kéo theo <strong>áp suất khí tăng</strong> ($\\frac{p}{T} = \\text{hằng số}$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT24",
@@ -1758,7 +1932,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "áp suất không đổi.",
     "optD": "thể tích thay đổi.",
     "correct": "A",
-    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái của một lượng khí xác định sao cho trong suốt quá trình <strong>thể tích không đổi</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Quá trình đẳng tích là quá trình biến đổi trạng thái của một lượng khí xác định sao cho trong suốt quá trình <strong>thể tích không đổi</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT25",
@@ -1778,7 +1954,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Chỉ (3), (1) đúng.",
     "optD": "Cả (1), (2) và (3) đúng.",
     "correct": "D",
-    "giaiThich": "Hai chất khí dễ dàng khuếch tán và trộn lẫn đều vào nhau do hội tụ cả ba yếu tố: các phân tử luôn chuyển động nhiệt hỗn loạn (1), không xảy ra phản ứng hóa học làm biến tính khí (2), và giữa các phân tử khí có khoảng trống rộng lớn để xen lẫn vào nhau (3). Do đó <strong>cả (1), (2) và (3) đều đúng</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hai chất khí dễ dàng khuếch tán và trộn lẫn đều vào nhau do hội tụ cả ba yếu tố: các phân tử luôn chuyển động nhiệt hỗn loạn (1), không xảy ra phản ứng hóa học làm biến tính khí (2), và giữa các phân tử khí có khoảng trống rộng lớn để xen lẫn vào nhau (3). Do đó <strong>cả (1), (2) và (3) đều đúng</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT26",
@@ -1798,7 +1976,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Áp suất toàn phần của hỗn hợp có phản ứng hóa học bằng áp suất riêng phần của các khí.",
     "optD": "Áp suất toàn phần của hỗn hợp bằng tổng áp suất ban đầu của các khí.",
     "correct": "B",
-    "giaiThich": "Theo định luật Dalton về hỗn hợp khí ở cùng nhiệt độ và thể tích xác định, <strong>áp suất toàn phần của hỗn hợp khí không phản ứng hóa học với nhau bằng tổng áp suất riêng phần</strong> của từng khí thành phần trong hỗn hợp. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định luật Dalton về hỗn hợp khí ở cùng nhiệt độ và thể tích xác định, <strong>áp suất toàn phần của hỗn hợp khí không phản ứng hóa học với nhau bằng tổng áp suất riêng phần</strong> của từng khí thành phần trong hỗn hợp. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT27",
@@ -1813,12 +1993,14 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "modelId": "",
     "hinhAnh": "",
     "question": "Trường hợp nào sau đây ứng với quá trình đẳng tích khi nhiệt độ tăng?",
-    "optA": "$\\Delta U = Q$ với $Q > 0$",
-    "optB": "$\\Delta U = Q + A$ với $A > 0$",
-    "optC": "$\\Delta U = Q + A$ với $A < 0$",
-    "optD": "$\\Delta U = Q$ với $Q < 0$.",
+    "optA": "$\\Delta U = Q$ với $Q \\gt 0$",
+    "optB": "$\\Delta U = Q + A$ với $A \\gt 0$",
+    "optC": "$\\Delta U = Q + A$ với $A \\lt 0$",
+    "optD": "$\\Delta U = Q$ với $Q \\lt 0$.",
     "correct": "A",
-    "giaiThich": "Trong quá trình đẳng tích ($V = \\text{hằng số}$), khí không thực hiện hay nhận công ($A = 0$). Áp dụng định luật I NĐLH $\\Delta U = A + Q$ ta có $\\Delta U = Q$. Khi nhiệt độ tăng, nội năng tăng ($\\Delta U > 0$), nên khí nhận nhiệt lượng với <strong>$Q > 0$</strong> ($\\Delta U = Q$ với $Q > 0$). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trong quá trình đẳng tích ($V = \\text{hằng số}$), khí không thực hiện hay nhận công ($A = 0$). Áp dụng định luật I NĐLH $\\Delta U = A + Q$ ta có $\\Delta U = Q$. Khi nhiệt độ tăng, nội năng tăng ($\\Delta U \\gt 0$), nên khí nhận nhiệt lượng với <strong>$Q \\gt 0$</strong> ($\\Delta U = Q$ với $Q \\gt 0$). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT28",
@@ -1838,7 +2020,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "bọt khí nổi lên từ đáy một hồ nước.",
     "optD": "mở lọ nước hoa và mùi nước hoa lan tỏa khắp phòng.",
     "correct": "A",
-    "giaiThich": "Trong săm xe đạp đã bơm căng, thể tích không khí bên trong gần như không đổi trước khi nổ; khi để ngoài nắng, nhiệt độ tăng làm áp suất tăng mạnh (quá trình đẳng tích) dẫn đến nổ săm. Các quá trình còn lại thể tích thay đổi đáng kể. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trong săm xe đạp đã bơm căng, thể tích không khí bên trong gần như không đổi trước khi nổ; khi để ngoài nắng, nhiệt độ tăng làm áp suất tăng mạnh (quá trình đẳng tích) dẫn đến nổ săm. Các quá trình còn lại thể tích thay đổi đáng kể. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT29",
@@ -1858,7 +2042,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khi áp suất của một khối lượng khí xác định giữ không đổi thì thể tích của khí tỉ lệ nghịch với nhiệt độ tuyệt đối của nó.",
     "optD": "Khi áp suất của một khối lượng khí xác định giữ không đổi thì thể tích của khí tỉ lệ thuận với nhiệt độ tuyệt đối của nó.",
     "correct": "D",
-    "giaiThich": "Định luật Charles nêu mối liên hệ giữa thể tích và nhiệt độ khi áp suất không đổi: <strong>khi áp suất của một khối lượng khí xác định giữ không đổi thì thể tích của khí tỉ lệ thuận với nhiệt độ tuyệt đối của nó</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Định luật Charles nêu mối liên hệ giữa thể tích và nhiệt độ khi áp suất không đổi: <strong>khi áp suất của một khối lượng khí xác định giữ không đổi thì thể tích của khí tỉ lệ thuận với nhiệt độ tuyệt đối của nó</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT30",
@@ -1878,7 +2064,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$nT$.",
     "optD": "$\\frac{n}{T}$.",
     "correct": "B",
-    "giaiThich": "Trong quá trình đẳng tích, thể tích $V$ và số phân tử $N$ đều không đổi nên mật độ $n$ không đổi, trong khi khi làm nóng thì $T$ và $p$ cùng tăng tỉ lệ thuận ($p = nkT \\Rightarrow \\frac{p}{T} = nk = \\text{hằng số}$). Vì vậy đại lượng không đổi là <strong>$\\frac{p}{T}$</strong> (chú ý $n/p$, $nT$, $n/T$ đều thay đổi khi $p, T$ tăng). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong quá trình đẳng tích, thể tích $V$ và số phân tử $N$ đều không đổi nên mật độ $n$ không đổi, trong khi khi làm nóng thì $T$ và $p$ cùng tăng tỉ lệ thuận ($p = nkT \\Rightarrow \\frac{p}{T} = nk = \\text{hằng số}$). Vì vậy đại lượng không đổi là <strong>$\\frac{p}{T}$</strong> (chú ý $n/p$, $nT$, $n/T$ đều thay đổi khi $p, T$ tăng). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT31",
@@ -1898,7 +2086,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Quá trình (3-4)",
     "optD": "Quá trình (4-1)",
     "correct": "A",
-    "giaiThich": "Trên hệ tọa độ $(p, T)$, đường đẳng tích ($\\frac{p}{T} = \\text{hằng số}$) phải là đường thẳng <strong>có đường kéo dài đi qua gốc tọa độ $O$</strong>. Quan sát đồ thị thấy chỉ đoạn <strong>$(1-2)$</strong> có nét đứt kéo dài đi qua $O$, còn $(2-3)$ và $(4-1)$ nằm ngang là đẳng áp, $(3-4)$ kéo dài không qua $O$. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trên hệ tọa độ $(p, T)$, đường đẳng tích ($\\frac{p}{T} = \\text{hằng số}$) phải là đường thẳng <strong>có đường kéo dài đi qua gốc tọa độ $O$</strong>. Quan sát đồ thị thấy chỉ đoạn <strong>$(1-2)$</strong> có nét đứt kéo dài đi qua $O$, còn $(2-3)$ và $(4-1)$ nằm ngang là đẳng áp, $(3-4)$ kéo dài không qua $O$. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT32",
@@ -1918,7 +2108,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 3",
     "optD": "Hình 4",
     "correct": "D",
-    "giaiThich": "Xét từng hình theo định luật Charles ($\\frac{V}{T} = \\text{hằng số}$ khi $p = \\text{hằng số}$): Hình 1 là $(p,T)$ qua $O$ (đẳng tích); Hình 2 là $(p,V)$ thẳng đứng (đẳng tích); Hình 3 là $(p,V)$ hypebol (đẳng nhiệt); <strong>Hình 4</strong> là đồ thị $(V, T)$ thẳng qua gốc $O$, biểu diễn đúng quá trình đẳng áp. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Xét từng hình theo định luật Charles ($\\frac{V}{T} = \\text{hằng số}$ khi $p = \\text{hằng số}$): Hình 1 là $(p,T)$ qua $O$ (đẳng tích); Hình 2 là $(p,V)$ thẳng đứng (đẳng tích); Hình 3 là $(p,V)$ hypebol (đẳng nhiệt); <strong>Hình 4</strong> là đồ thị $(V, T)$ thẳng qua gốc $O$, biểu diễn đúng quá trình đẳng áp. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT33",
@@ -1938,7 +2130,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 2",
     "optD": "Hình 3",
     "correct": "C",
-    "giaiThich": "Đường đẳng áp ($p = \\text{hằng số}$, $\\frac{V}{T} = \\text{hằng số}$): Hình 1 trên $(V, p)$ là đường thẳng vuông góc trục $Op$ ($p$ không đổi — đúng); <strong>Hình 2</strong> trên $(p, T)$ là đường thẳng đi qua gốc $O$ ($\\frac{p}{T} = \\text{hằng số}$, đây là đường <strong>đẳng tích</strong>, không phải đẳng áp!); Hình 3 trên $(p, T)$ nằm ngang ($p$ không đổi — đúng); Hình 4 trên $(T, V)$ qua gốc $O$ ($\\frac{T}{V} = \\text{hằng số}$ — đúng). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Đường đẳng áp ($p = \\text{hằng số}$, $\\frac{V}{T} = \\text{hằng số}$): Hình 1 trên $(V, p)$ là đường thẳng vuông góc trục $Op$ ($p$ không đổi — đúng); <strong>Hình 2</strong> trên $(p, T)$ là đường thẳng đi qua gốc $O$ ($\\frac{p}{T} = \\text{hằng số}$, đây là đường <strong>đẳng tích</strong>, không phải đẳng áp!); Hình 3 trên $(p, T)$ nằm ngang ($p$ không đổi — đúng); Hình 4 trên $(T, V)$ qua gốc $O$ ($\\frac{T}{V} = \\text{hằng số}$ — đúng). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT34",
@@ -1958,7 +2152,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$ và $\\frac{V_2}{p_2} = \\frac{V_3}{p_3}$",
     "optD": "$\\frac{V_1}{p_1} = \\frac{V_2}{p_2}$ và $V_2 = V_3$",
     "correct": "A",
-    "giaiThich": "Từ $(V_1, T_1) \\to (V_2, T_2)$ là quá trình đẳng áp, theo định luật Charles có $\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$. Từ $(V_2, T_2) \\to (V_3, T_3)$ là quá trình đẳng tích, theo định luật Gay-Lussac có $\\frac{p_2}{T_2} = \\frac{p_3}{T_3}$. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ $(V_1, T_1) \\to (V_2, T_2)$ là quá trình đẳng áp, theo định luật Charles có $\\frac{V_1}{T_1} = \\frac{V_2}{T_2}$. Từ $(V_2, T_2) \\to (V_3, T_3)$ là quá trình đẳng tích, theo định luật Gay-Lussac có $\\frac{p_2}{T_2} = \\frac{p_3}{T_3}$. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT35",
@@ -1978,7 +2174,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình 1 và Hình 2.",
     "optD": "Hình 4 và Hình 1.",
     "correct": "A",
-    "giaiThich": "Xét từng đồ thị: Hình 1 trên $(V, T)$ thẳng đứng là đẳng nhiệt ($T = \\text{hằng số}$); <strong>Hình 2</strong> trên $(p, T)$ nằm ngang ($p = \\text{hằng số}$) là đẳng áp; <strong>Hình 3</strong> trên $(V, T)$ đi qua gốc $O$ ($\\frac{V}{T} = \\text{hằng số}$) là đẳng áp; Hình 4 trên $(p, T)$ qua gốc $O$ là đẳng tích. Do đó <strong>Hình 2 và Hình 3</strong> biểu diễn đúng quá trình đẳng áp. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Xét từng đồ thị: Hình 1 trên $(V, T)$ thẳng đứng là đẳng nhiệt ($T = \\text{hằng số}$); <strong>Hình 2</strong> trên $(p, T)$ nằm ngang ($p = \\text{hằng số}$) là đẳng áp; <strong>Hình 3</strong> trên $(V, T)$ đi qua gốc $O$ ($\\frac{V}{T} = \\text{hằng số}$) là đẳng áp; Hình 4 trên $(p, T)$ qua gốc $O$ là đẳng tích. Do đó <strong>Hình 2 và Hình 3</strong> biểu diễn đúng quá trình đẳng áp. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT36",
@@ -1998,7 +2196,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Áp suất khí không đổi",
     "optD": "Số phân tử khí trong một đơn vị thể tích tăng ti lệ thuận với nhiệt độ",
     "correct": "B",
-    "giaiThich": "Khi làm nóng đẳng tích một lượng khí xác định, thể tích $V$ và số phân tử $N$ của khối khí đều giữ nguyên không đổi, nên mật độ phân tử $n = \\frac{N}{V}$ (số phân tử khí trong một đơn vị thể tích) <strong>không đổi</strong> (trong khi áp suất tăng tỉ lệ thuận với $T$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi làm nóng đẳng tích một lượng khí xác định, thể tích $V$ và số phân tử $N$ của khối khí đều giữ nguyên không đổi, nên mật độ phân tử $n = \\frac{N}{V}$ (số phân tử khí trong một đơn vị thể tích) <strong>không đổi</strong> (trong khi áp suất tăng tỉ lệ thuận với $T$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT37",
@@ -2018,7 +2218,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nghịch với nhiệt độ Celsius.",
     "optD": "thuận với áp suất.",
     "correct": "B",
-    "giaiThich": "Nội dung định luật Charles khẳng định: trong quá trình đẳng áp của một lượng khí nhất định, thể tích <strong>tỉ lệ thuận với nhiệt độ tuyệt đối</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Nội dung định luật Charles khẳng định: trong quá trình đẳng áp của một lượng khí nhất định, thể tích <strong>tỉ lệ thuận với nhiệt độ tuyệt đối</strong> ($\\frac{V}{T} = \\text{hằng số}$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT38",
@@ -2038,7 +2240,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tích của áp suất và nhiệt độ tuyệt đối là một hằng số.",
     "optD": "Thương số của áp suất và nhiệt độ tuyệt đối là một hằng số.",
     "correct": "C",
-    "giaiThich": "Trong quá trình đẳng tích ($V = \\text{hằng số}$), áp suất $p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$, nghĩa là thương số $\\frac{p}{T} = \\text{hằng số}$ và đồ thị $(p, T)$ là đường thẳng qua $O$. Phát biểu \\\"tích $pT$ là hằng số\\\" là <strong>sai</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong quá trình đẳng tích ($V = \\text{hằng số}$), áp suất $p$ tỉ lệ thuận với nhiệt độ tuyệt đối $T$, nghĩa là thương số $\\frac{p}{T} = \\text{hằng số}$ và đồ thị $(p, T)$ là đường thẳng qua $O$. Phát biểu \\\"tích $pT$ là hằng số\\\" là <strong>sai</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD08-LT39",
@@ -2058,7 +2262,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "bằng bốn lần giá trị ban đầu.",
     "optD": "bằng hai lần giá trị ban đầu.",
     "correct": "D",
-    "giaiThich": "Trong quá trình nung nóng đẳng áp, theo định luật Charles ta có $\\frac{V_2}{V_1} = \\frac{T_2}{T_1}$. Nếu nhiệt độ tuyệt đối tăng lên hai lần ($T_2 = 2T_1$) thì thể tích của khối khí cũng tăng lên và <strong>bằng hai lần giá trị ban đầu</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Trong quá trình nung nóng đẳng áp, theo định luật Charles ta có $\\frac{V_2}{V_1} = \\frac{T_2}{T_1}$. Nếu nhiệt độ tuyệt đối tăng lên hai lần ($T_2 = 2T_1$) thì thể tích của khối khí cũng tăng lên và <strong>bằng hai lần giá trị ban đầu</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-111",
@@ -2078,7 +2284,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{{p}_{1}{T}_{1}}{{V}_{1}} =\\frac{{p}_{2}{T}_{2}}{{V}_{2}}$",
     "optD": "$\\frac{{T}_{1}{V}_{1}}{{p}_{1}} =\\frac{{T}_{2}{V}_{2}}{{p}_{2}}$",
     "correct": "A",
-    "giaiThich": "Khi xét hai trạng thái của cùng một khối lượng khí lí tưởng xác định, phương trình trạng thái cho đại lượng $\\frac{pV}{T}$ bảo toàn, tức viết dưới dạng <strong>$\\frac{p_1 V_1}{T_1} = \\frac{p_2 V_2}{T_2}$</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi xét hai trạng thái của cùng một khối lượng khí lí tưởng xác định, phương trình trạng thái cho đại lượng $\\frac{pV}{T}$ bảo toàn, tức viết dưới dạng <strong>$\\frac{p_1 V_1}{T_1} = \\frac{p_2 V_2}{T_2}$</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT01",
@@ -2098,7 +2306,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{p_1}{T_1} = \\frac{p_2}{T_2}$.",
     "optD": "$p_1V_1 = p_2V_2$.",
     "correct": "A",
-    "giaiThich": "Phương trình trạng thái của một khối lượng khí lí tưởng xác định liên hệ áp suất $p$, thể tích $V$ và nhiệt độ tuyệt đối $T$ giữa hai trạng thái bất kì có dạng: $\\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2}$. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Phương trình trạng thái của một khối lượng khí lí tưởng xác định liên hệ áp suất $p$, thể tích $V$ và nhiệt độ tuyệt đối $T$ giữa hai trạng thái bất kì có dạng: $\\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2}$. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT02",
@@ -2118,7 +2328,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{V}{T}=$ hằng số.",
     "optD": "$\\frac{pV}{T}=$ hằng số.",
     "correct": "D",
-    "giaiThich": "Từ phương trình Clapeyron $pV = nRT$, với một khối lượng khí xác định thì số mol $n$ không đổi và $R$ là hằng số khí lí tưởng, suy ra $\\frac{pV}{T} = nR = \\text{hằng số}$. Đây chính là phương trình trạng thái khí lí tưởng. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Từ phương trình Clapeyron $pV = nRT$, với một khối lượng khí xác định thì số mol $n$ không đổi và $R$ là hằng số khí lí tưởng, suy ra $\\frac{pV}{T} = nR = \\text{hằng số}$. Đây chính là phương trình trạng thái khí lí tưởng. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT03",
@@ -2138,7 +2350,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nhiệt độ tuyệt đối, thể tích và áp suất.",
     "optD": "nhiệt độ tuyệt đối và áp suất.",
     "correct": "C",
-    "giaiThich": "Phương trình trạng thái $\\frac{pV}{T} = \\text{hằng số}$ thiết lập mối liên hệ đồng thời giữa cả ba thông số trạng thái của một lượng khí lí tưởng xác định: <strong>nhiệt độ tuyệt đối $T$, thể tích $V$ và áp suất $p$</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Phương trình trạng thái $\\frac{pV}{T} = \\text{hằng số}$ thiết lập mối liên hệ đồng thời giữa cả ba thông số trạng thái của một lượng khí lí tưởng xác định: <strong>nhiệt độ tuyệt đối $T$, thể tích $V$ và áp suất $p$</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT04",
@@ -2158,7 +2372,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{p_1}{T_1} = \\frac{p_2}{T_2}$",
     "optD": "$p_1V_1 = p_2V_2$",
     "correct": "A",
-    "giaiThich": "Với một lượng khí lí tưởng xác định chuyển từ trạng thái 1 sang trạng thái 2, thương số $\\frac{pV}{T}$ không đổi, tức là $\\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2}$. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Với một lượng khí lí tưởng xác định chuyển từ trạng thái 1 sang trạng thái 2, thương số $\\frac{pV}{T}$ không đổi, tức là $\\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2}$. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT05",
@@ -2178,7 +2394,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tích của áp suất và thể tích chia cho số mol ở 0$^\\circ\\text{C}$.",
     "optD": "tích của áp suất và thể tích của 1 mol khí ở nhiệt độ bất kì.",
     "correct": "A",
-    "giaiThich": "Từ phương trình Clapeyron $pV = nRT$, với $n = 1\\text{ mol}$ khí ta rút ra $R = \\frac{pV}{T}$. Như vậy hằng số khí lí tưởng $R$ bằng <strong>tích của áp suất và thể tích của $1\\text{ mol}$ khí ở nhiệt độ bất kì chia cho nhiệt độ tuyệt đối đó</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ phương trình Clapeyron $pV = nRT$, với $n = 1\\text{ mol}$ khí ta rút ra $R = \\frac{pV}{T}$. Như vậy hằng số khí lí tưởng $R$ bằng <strong>tích của áp suất và thể tích của $1\\text{ mol}$ khí ở nhiệt độ bất kì chia cho nhiệt độ tuyệt đối đó</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT06",
@@ -2198,7 +2416,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\frac{pV}{RT}$",
     "optD": "$\\frac{RT}{pV}$",
     "correct": "C",
-    "giaiThich": "Áp dụng phương trình Clapeyron cho $n$ mol khí lí tưởng trong khối cầu cứng: $pV = nRT \\Rightarrow n = \\frac{pV}{RT}$. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Áp dụng phương trình Clapeyron cho $n$ mol khí lí tưởng trong khối cầu cứng: $pV = nRT \\Rightarrow n = \\frac{pV}{RT}$. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT07",
@@ -2218,7 +2438,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$pV = MRT$",
     "optD": "$pV = nR/T$",
     "correct": "A",
-    "giaiThich": "Phương trình trạng thái khí lí tưởng dạng Clapeyron – Mendeleev liên hệ áp suất $p$, thể tích $V$, nhiệt độ tuyệt đối $T$ và số mol khí $n$ qua hằng số khí $R$ là: <strong>$pV = nRT$</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Phương trình trạng thái khí lí tưởng dạng Clapeyron – Mendeleev liên hệ áp suất $p$, thể tích $V$, nhiệt độ tuyệt đối $T$ và số mol khí $n$ qua hằng số khí $R$ là: <strong>$pV = nRT$</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT08",
@@ -2238,7 +2460,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Không đổi",
     "optD": "Không thể xác định",
     "correct": "B",
-    "giaiThich": "Từ phương trình trạng thái $pV = nRT$ với lượng khí xác định ($n$ không đổi): khi áp suất $p$ không đổi mà nhiệt độ $T$ tăng thì $V = \\frac{nRT}{p}$ <strong>tăng</strong> tỉ lệ thuận với $T$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Từ phương trình trạng thái $pV = nRT$ với lượng khí xác định ($n$ không đổi): khi áp suất $p$ không đổi mà nhiệt độ $T$ tăng thì $V = \\frac{nRT}{p}$ <strong>tăng</strong> tỉ lệ thuận với $T$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C2-CD09-LT09",
@@ -2258,7 +2482,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Kelvin (K)",
     "optD": "Rankine (°R)",
     "correct": "C",
-    "giaiThich": "Trong phương trình Clapeyron $pV = nRT$ (cũng như mọi phương trình trạng thái của khí lí tưởng), nhiệt độ tuyệt đối $T$ phải được đo bằng đơn vị chuẩn SI là <strong>Kelvin ($\\text{K}$)</strong> (tránh nhầm với $^\\circ\\text{C}$ hay $^\\circ\\text{F}$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong phương trình Clapeyron $pV = nRT$ (cũng như mọi phương trình trạng thái của khí lí tưởng), nhiệt độ tuyệt đối $T$ phải được đo bằng đơn vị chuẩn SI là <strong>Kelvin ($\\text{K}$)</strong> (tránh nhầm với $^\\circ\\text{C}$ hay $^\\circ\\text{F}$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-115",
@@ -2278,7 +2504,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "A là cực từ nam, B là cực từ bắc",
     "optD": "A là cực từ bắc, B là cực từ nam",
     "correct": "D",
-    "giaiThich": "Quan sát hình vẽ thấy cực Bắc ($N $) của kim nam châm bị hút nghiêng về phía đầu $ B $ của thanh nam châm. Theo tính chất tương tác giữa hai cực từ khác tên thì hút nhau, suy ra <strong>đầu $ B $ là cực từ Nam ($ S $)</strong> và <strong>đầu $ A $ là cực từ Bắc ($ N$)</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Quan sát hình vẽ thấy cực Bắc ($N $) của kim nam châm bị hút nghiêng về phía đầu $ B $ của thanh nam châm. Theo tính chất tương tác giữa hai cực từ khác tên thì hút nhau, suy ra <strong>đầu $ B $ là cực từ Nam ($ S $)</strong> và <strong>đầu $ A $ là cực từ Bắc ($ N$)</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-116",
@@ -2298,7 +2526,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Cả (A) và (B) đều là cực Bắc.",
     "optD": "Cả (A)và (B) đều là cực Nam.",
     "correct": "A",
-    "giaiThich": "Theo quy ước chiều đường sức từ bên ngoài nam châm: đường sức đi <strong>ra từ cực Bắc ($N $) và đi vào ở cực Nam ($ S $)</strong>. Mũi tên trên các đường sức hướng từ $ (A) $ sang $ (B) $, do đó <strong>$ (A) $ là cực Bắc và $ (B)$ là cực Nam</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo quy ước chiều đường sức từ bên ngoài nam châm: đường sức đi <strong>ra từ cực Bắc ($N $) và đi vào ở cực Nam ($ S $)</strong>. Mũi tên trên các đường sức hướng từ $ (A) $ sang $ (B) $, do đó <strong>$ (A) $ là cực Bắc và $ (B)$ là cực Nam</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-117",
@@ -2318,7 +2548,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Điểm (1).",
     "optD": "Điểm (4).",
     "correct": "C",
-    "giaiThich": "Tại nơi nào từ trường mạnh hơn thì các đường sức từ được vẽ dày (mau) hơn, nơi nào yếu hơn thì đường sức vẽ thưa hơn. Quan sát 4 vị trí, khoảng cách giữa các đường sức tại <strong>điểm (1)</strong> hẹp nhất (mau nhất) nên từ trường tại $(1)$ mạnh nhất. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Tại nơi nào từ trường mạnh hơn thì các đường sức từ được vẽ dày (mau) hơn, nơi nào yếu hơn thì đường sức vẽ thưa hơn. Quan sát 4 vị trí, khoảng cách giữa các đường sức tại <strong>điểm (1)</strong> hẹp nhất (mau nhất) nên từ trường tại $(1)$ mạnh nhất. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-118",
@@ -2338,7 +2570,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Cực N chỉ về hướng đông.",
     "optD": "Cực N chỉ về hướng nam.",
     "correct": "A",
-    "giaiThich": "Trái Đất tương đương một nam châm khổng lồ có cực từ Nam nằm gần cực Bắc địa lí (và cực từ Bắc gần cực Nam địa lí). Do đó khi kim nam châm nằm cân bằng tự do trong từ trường Trái Đất, <strong>cực Bắc ($N$) của kim luôn chỉ về hướng Bắc địa lí</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trái Đất tương đương một nam châm khổng lồ có cực từ Nam nằm gần cực Bắc địa lí (và cực từ Bắc gần cực Nam địa lí). Do đó khi kim nam châm nằm cân bằng tự do trong từ trường Trái Đất, <strong>cực Bắc ($N$) của kim luôn chỉ về hướng Bắc địa lí</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-119",
@@ -2358,7 +2592,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "điểm A.",
     "optD": "điểm B.",
     "correct": "A",
-    "giaiThich": "Độ lớn cảm ứng từ tỉ lệ với mật độ đường sức từ. Trên hình vẽ đường sức của thanh nam châm, hai vùng sát hai cực $A, B, C $ có đường sức dày đặc, còn <strong>điểm $ D$</strong> nằm trên vòng cung ngoài cùng xa hai cực nhất nên đường sức thưa nhất, từ trường yếu nhất. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Độ lớn cảm ứng từ tỉ lệ với mật độ đường sức từ. Trên hình vẽ đường sức của thanh nam châm, hai vùng sát hai cực $A, B, C $ có đường sức dày đặc, còn <strong>điểm $ D$</strong> nằm trên vòng cung ngoài cùng xa hai cực nhất nên đường sức thưa nhất, từ trường yếu nhất. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-120",
@@ -2378,7 +2614,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Kim nam châm chỉ hướng Bắc – Nam.",
     "optD": "Kim nam châm bị lệch khỏi vị trí ban đầu.",
     "correct": "D",
-    "giaiThich": "Khi đóng công tắc dòng điện chạy qua đoạn dây dẫn tạo ra từ trường xung quanh dây dẫn (thí nghiệm Oersted). Từ trường này tác dụng lực từ làm <strong>kim nam châm bị lệch khỏi vị trí định hướng ban đầu</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi đóng công tắc dòng điện chạy qua đoạn dây dẫn tạo ra từ trường xung quanh dây dẫn (thí nghiệm Oersted). Từ trường này tác dụng lực từ làm <strong>kim nam châm bị lệch khỏi vị trí định hướng ban đầu</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-121",
@@ -2398,7 +2636,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Xe máy.",
     "optD": "Tàu đệm từ.",
     "correct": "D",
-    "giaiThich": "Tàu đệm từ hoạt động dựa trên lực đẩy và lực hút mạnh giữa <strong>các cực từ</strong> của nam châm điện siêu dẫn trên thân tàu và hệ thống từ trường trên đường ray, giúp tàu nâng lơ lửng không ma sát và tiến về phía trước. Các thiết bị còn lại dùng nhiệt năng hay bức xạ điện từ. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Tàu đệm từ hoạt động dựa trên lực đẩy và lực hút mạnh giữa <strong>các cực từ</strong> của nam châm điện siêu dẫn trên thân tàu và hệ thống từ trường trên đường ray, giúp tàu nâng lơ lửng không ma sát và tiến về phía trước. Các thiết bị còn lại dùng nhiệt năng hay bức xạ điện từ. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-122",
@@ -2418,7 +2658,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Điện trường và từ trường không đổi theo thời gian cùng có các đường sức là những đường cong khép kín.",
     "optD": "Đường sức của điện trường xoáy là các đường cong kín bao quanh các đường sức từ của từ trường biến thiên.",
     "correct": "C",
-    "giaiThich": "Theo hệ thức Maxwell: từ trường biến thiên sinh ra điện trường xoáy có đường sức khép kín, còn điện trường biến thiên sinh ra từ trường có đường sức khép kín. Tuy nhiên <strong>điện trường tĩnh không đổi (điện trường đều / điện trường của điện tích đứng yên) có đường sức hở (không khép kín)</strong>, không giống từ trường. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo hệ thức Maxwell: từ trường biến thiên sinh ra điện trường xoáy có đường sức khép kín, còn điện trường biến thiên sinh ra từ trường có đường sức khép kín. Tuy nhiên <strong>điện trường tĩnh không đổi (điện trường đều / điện trường của điện tích đứng yên) có đường sức hở (không khép kín)</strong>, không giống từ trường. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-123",
@@ -2438,7 +2680,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Xung quanh một ống dây điện",
     "optD": "Xung quanh chỗ có tia lửa điện.",
     "correct": "D",
-    "giaiThich": "Điện từ trường chỉ xuất hiện nơi có điện trường hoặc từ trường biến thiên theo thời gian. Xung quanh <strong>nơi có tia lửa điện</strong>, cường độ dòng điện thay đổi đột ngột rất nhanh tạo thành từ trường và điện trường biến thiên (sóng điện từ), còn điện tích đứng yên hay dòng không đổi chỉ tạo trường tĩnh không biến thiên. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Điện từ trường chỉ xuất hiện nơi có điện trường hoặc từ trường biến thiên theo thời gian. Xung quanh <strong>nơi có tia lửa điện</strong>, cường độ dòng điện thay đổi đột ngột rất nhanh tạo thành từ trường và điện trường biến thiên (sóng điện từ), còn điện tích đứng yên hay dòng không đổi chỉ tạo trường tĩnh không biến thiên. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-124",
@@ -2458,7 +2702,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "giữa hai bản tụ điện có điện tích không đổi.",
     "optD": "của các điện tích đứng yên.",
     "correct": "A",
-    "giaiThich": "Khác với điện trường tĩnh của các điện tích đứng yên (đường sức xuất phát từ điện tích dương, kết thúc ở điện tích âm hoặc vô cực), <strong>điện trường xoáy</strong> do từ trường biến thiên sinh ra luôn có <strong>đường sức là các đường cong kín</strong> bao quanh các đường sức từ. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khác với điện trường tĩnh của các điện tích đứng yên (đường sức xuất phát từ điện tích dương, kết thúc ở điện tích âm hoặc vô cực), <strong>điện trường xoáy</strong> do từ trường biến thiên sinh ra luôn có <strong>đường sức là các đường cong kín</strong> bao quanh các đường sức từ. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-125",
@@ -2478,7 +2724,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nam châm chuyển động",
     "optD": "dòng điện",
     "correct": "A",
-    "giaiThich": "Từ trường của nam châm chỉ tác dụng lực từ lên nam châm khác, dòng điện hoặc hạt mang điện đang chuyển động. Nam châm <strong>không tương tác với các điện tích đứng yên</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ trường của nam châm chỉ tác dụng lực từ lên nam châm khác, dòng điện hoặc hạt mang điện đang chuyển động. Nam châm <strong>không tương tác với các điện tích đứng yên</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-126",
@@ -2498,7 +2746,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "mọi vật chuyển động trong từ trường đó.",
     "optD": "các nam châm hoặc dòng điện đặt trong nó.",
     "correct": "D",
-    "giaiThich": "Tính chất cơ bản của từ trường là khả năng <strong>tác dụng lực từ lên nam châm hoặc dòng điện</strong> đặt trong nó (với điện tích thì chỉ tác dụng lực Lorentz khi điện tích chuyển động cắt đường sức từ, không tác dụng lên điện tích đứng yên). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Tính chất cơ bản của từ trường là khả năng <strong>tác dụng lực từ lên nam châm hoặc dòng điện</strong> đặt trong nó (với điện tích thì chỉ tác dụng lực Lorentz khi điện tích chuyển động cắt đường sức từ, không tác dụng lên điện tích đứng yên). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-127",
@@ -2518,7 +2768,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "(I), (IV).",
     "optD": "(I), (III).",
     "correct": "C",
-    "giaiThich": "Từ trường tồn tại xung quanh <strong>dòng điện (I)</strong> và <strong>điện tích chuyển động (IV)</strong> (tạo dòng điện đối lưu). Ngược lại, xung quanh điện tích hoặc quả cầu nhiễm điện đứng yên ((II) và (III)) chỉ tồn tại điện trường tĩnh. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Từ trường tồn tại xung quanh <strong>dòng điện (I)</strong> và <strong>điện tích chuyển động (IV)</strong> (tạo dòng điện đối lưu). Ngược lại, xung quanh điện tích hoặc quả cầu nhiễm điện đứng yên ((II) và (III)) chỉ tồn tại điện trường tĩnh. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-128",
@@ -2538,7 +2790,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "lực điện tác dụng lên một điện tích chuyển động trong nó.",
     "optD": "lực từ tác dụng lên một nam châm hay một dòng điện đặt trong nó.",
     "correct": "D",
-    "giaiThich": "Từ trường là dạng vật chất tồn tại xung quanh dòng điện hoặc nam châm, mà biểu hiện cụ thể và cơ bản nhất là <strong>tác dụng lực từ lên một nam châm hay một dòng điện khác đặt trong nó</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Từ trường là dạng vật chất tồn tại xung quanh dòng điện hoặc nam châm, mà biểu hiện cụ thể và cơ bản nhất là <strong>tác dụng lực từ lên một nam châm hay một dòng điện khác đặt trong nó</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-129",
@@ -2558,7 +2812,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Cảm ứng từ tại một điểm đặc trưng cho từ trường về mặt tác dụng lực từ tại điểm đó.",
     "optD": "Từ trường tác dụng lực từ lên một điện tích đứng yên.",
     "correct": "C",
-    "giaiThich": "Véc-tơ cảm ứng từ $\\vec{B}$ tại một điểm là đại lượng vật lí đặc trưng cho từ trường về phương diện <strong>tác dụng lực từ tại điểm đó</strong> (A, D sai vì từ trường không do điện tích đứng yên tạo ra và không tác dụng lực từ lên chúng; B sai vì lực từ vuông góc với $\\vec{B}$ chứ không tiếp tuyến). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Véc-tơ cảm ứng từ $\\vec{B}$ tại một điểm là đại lượng vật lí đặc trưng cho từ trường về phương diện <strong>tác dụng lực từ tại điểm đó</strong> (A, D sai vì từ trường không do điện tích đứng yên tạo ra và không tác dụng lực từ lên chúng; B sai vì lực từ vuông góc với $\\vec{B}$ chứ không tiếp tuyến). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-130",
@@ -2578,7 +2834,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "một ống dây điện.",
     "optD": "vị trí có tia lửa điện.",
     "correct": "D",
-    "giaiThich": "Trường điện từ (sự kết hợp liên thông giữa điện trường và từ trường biến thiên) xuất hiện xung quanh <strong>vị trí có tia lửa điện</strong> do dòng phóng điện biến thiên rất nhanh theo thời gian. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Trường điện từ (sự kết hợp liên thông giữa điện trường và từ trường biến thiên) xuất hiện xung quanh <strong>vị trí có tia lửa điện</strong> do dòng phóng điện biến thiên rất nhanh theo thời gian. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-131",
@@ -2598,7 +2856,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "nam châm vĩnh cửu.",
     "optD": "dòng điện.",
     "correct": "A",
-    "giaiThich": "Từ trường không tác dụng lực từ lên <strong>điện tích đứng yên</strong> ($F = |q|vB\\sin\\alpha = 0 $ khi $ v = 0$), trong khi có tương tác với nam châm, dòng điện và điện tích chuyển động. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ trường không tác dụng lực từ lên <strong>điện tích đứng yên</strong> ($F = |q|vB\\sin\\alpha = 0 $ khi $ v = 0$), trong khi có tương tác với nam châm, dòng điện và điện tích chuyển động. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-132",
@@ -2618,7 +2878,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Bàn là điện.",
     "optD": "Nam châm điện.",
     "correct": "C",
-    "giaiThich": "Loa điện động, la bàn và nam châm điện đều vận hành dựa trên từ trường hoặc tương tác từ. Riêng <strong>bàn là điện</strong> hoạt động chủ yếu nhờ hiệu ứng <strong>tỏa nhiệt Joule-Lenz</strong> trên dây điện trở, không phải ứng dụng của từ trường. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Loa điện động, la bàn và nam châm điện đều vận hành dựa trên từ trường hoặc tương tác từ. Riêng <strong>bàn là điện</strong> hoạt động chủ yếu nhờ hiệu ứng <strong>tỏa nhiệt Joule-Lenz</strong> trên dây điện trở, không phải ứng dụng của từ trường. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-133",
@@ -2638,7 +2900,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "xung quanh dòng điện thẳng dài",
     "optD": "xung quanh dòng điện tròn",
     "correct": "B",
-    "giaiThich": "Từ trường đều (có các đường sức thẳng, song song, cách đều nhau và véc-tơ $\\vec{B}$ giống nhau tại mọi điểm) tồn tại ở <strong>phần không gian bên trong lòng một ống dây dài</strong> (hoặc giữa hai cực nam châm chữ U phẳng) khi có dòng điện không đổi chạy qua. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Từ trường đều (có các đường sức thẳng, song song, cách đều nhau và véc-tơ $\\vec{B}$ giống nhau tại mọi điểm) tồn tại ở <strong>phần không gian bên trong lòng một ống dây dài</strong> (hoặc giữa hai cực nam châm chữ U phẳng) khi có dòng điện không đổi chạy qua. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD10-LT01",
@@ -2658,7 +2922,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Các đường sức từ không cắt nhau.",
     "optD": "Tính chất cơ bản của từ trường là tác dụng lực từ lên nam châm hay dòng điện đặt trong nó.",
     "correct": "A",
-    "giaiThich": "Đường sức từ luôn là các <strong>đường cong kín</strong> (đi từ cực Bắc ra ngoài đến cực Nam và khép kín bên trong nam châm, hoặc bao quanh dây dẫn mang dòng điện), chúng không có điểm đầu hay điểm cuối. Do đó phát biểu \\\"là những đường cong không khép kín\\\" là <strong>không đúng</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Đường sức từ luôn là các <strong>đường cong kín</strong> (đi từ cực Bắc ra ngoài đến cực Nam và khép kín bên trong nam châm, hoặc bao quanh dây dẫn mang dòng điện), chúng không có điểm đầu hay điểm cuối. Do đó phát biểu \\\"là những đường cong không khép kín\\\" là <strong>không đúng</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-139",
@@ -2678,7 +2944,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "giảm 3 lần.",
     "optD": "không đổi.",
     "correct": "A",
-    "giaiThich": "Vì $\\Phi = NBS\\cos\\alpha $ tỉ lệ bậc nhất với cảm ứng từ $ B $ ($\\alpha = 0^\\circ \\implies \\cos\\alpha = 1 $), nên khi giữ nguyên diện tích, số vòng và tăng cảm ứng từ lên $ 3$ lần thì từ thông qua các vòng dây cũng <strong>tăng 3 lần</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Vì $\\Phi = NBS\\cos\\alpha $ tỉ lệ bậc nhất với cảm ứng từ $ B $ ($\\alpha = 0^\\circ \\implies \\cos\\alpha = 1 $), nên khi giữ nguyên diện tích, số vòng và tăng cảm ứng từ lên $ 3$ lần thì từ thông qua các vòng dây cũng <strong>tăng 3 lần</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-140",
@@ -2698,7 +2966,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "3.",
     "optD": "4.",
     "correct": "C",
-    "giaiThich": "Theo biểu thức từ thông qua cuộn dây gồm $N $ vòng dây $\\Phi = NBS\\cos\\alpha $, các biện pháp làm tăng từ thông gồm: (1) tăng số vòng $ N $, (3) tăng tiết diện $ S $, và (4) tăng độ lớn cảm ứng từ $ B$ (3 trường hợp). Thay đổi đường kính tiết diện sợi dây dẫn (2) không làm thay đổi công thức từ thông. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo biểu thức từ thông qua cuộn dây gồm $N $ vòng dây $\\Phi = NBS\\cos\\alpha $, các biện pháp làm tăng từ thông gồm: (1) tăng số vòng $ N $, (3) tăng tiết diện $ S $, và (4) tăng độ lớn cảm ứng từ $ B$ (3 trường hợp). Thay đổi đường kính tiết diện sợi dây dẫn (2) không làm thay đổi công thức từ thông. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-141",
@@ -2718,7 +2988,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "mạch điện được đặt trong một từ trường không đều.",
     "optD": "từ thông qua mạch điện biến thiên theo thời gian.",
     "correct": "D",
-    "giaiThich": "Điều kiện cần và đủ để xuất hiện dòng điện cảm ứng trong một mạch dẫn kín là <strong>từ thông qua diện tích giới hạn bởi mạch kín đó phải biến thiên theo thời gian</strong> ($\\Delta \\Phi \\ne 0$). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Điều kiện cần và đủ để xuất hiện dòng điện cảm ứng trong một mạch dẫn kín là <strong>từ thông qua diện tích giới hạn bởi mạch kín đó phải biến thiên theo thời gian</strong> ($\\Delta \\Phi \\ne 0$). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-142",
@@ -2738,7 +3010,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "độ lớn của diện tích mặt S.",
     "optD": "độ lớn của tiết diện dây dẫn.",
     "correct": "D",
-    "giaiThich": "Theo công thức định nghĩa $\\Phi = B S \\cos\\alpha $, từ thông qua mặt kín $ S $ chỉ phụ thuộc vào cảm ứng từ $ B $, diện tích mặt $ S $ và góc nghiêng $\\alpha = (\\vec{n}, \\vec{B})$, hoàn toàn <strong>không phụ thuộc vào tiết diện của sợi dây dẫn</strong> cấu tạo nên khung. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Theo công thức định nghĩa $\\Phi = B S \\cos\\alpha $, từ thông qua mặt kín $ S $ chỉ phụ thuộc vào cảm ứng từ $ B $, diện tích mặt $ S $ và góc nghiêng $\\alpha = (\\vec{n}, \\vec{B})$, hoàn toàn <strong>không phụ thuộc vào tiết diện của sợi dây dẫn</strong> cấu tạo nên khung. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-143",
@@ -2758,7 +3032,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tăng 4 lần.",
     "optD": "giảm 2 lần.",
     "correct": "A",
-    "giaiThich": "Khi véc-tơ pháp tuyến $\\vec{n}$ vuông góc với đường sức từ $\\vec{B}$ ($\\alpha = 90^\\circ $), ta có $\\cos 90^\\circ = 0 $, nên $\\Phi = BS\\cos 90^\\circ = 0 $. Dù cảm ứng từ $ B$ có tăng gấp đôi thì <strong>từ thông vẫn bằng 0</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi véc-tơ pháp tuyến $\\vec{n}$ vuông góc với đường sức từ $\\vec{B}$ ($\\alpha = 90^\\circ $), ta có $\\cos 90^\\circ = 0 $, nên $\\Phi = BS\\cos 90^\\circ = 0 $. Dù cảm ứng từ $ B$ có tăng gấp đôi thì <strong>từ thông vẫn bằng 0</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-144",
@@ -2778,7 +3054,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Từ thông qua vòng dây có sự biến đổi.",
     "optD": "Nam châm chuyển động xuyên qua vòng dây.",
     "correct": "A",
-    "giaiThich": "Khi thanh nam châm chuyển động tịnh tiến theo phương song song với mặt phẳng chứa vòng dây hoặc tại vị trí góc nghiêng không thay đổi đối xứng sao cho số đường sức xuyên qua vòng giữ nguyên không đổi, từ thông không biến thiên nên <strong>không xuất hiện dòng điện cảm ứng</strong> (các trường hợp B, C, D đều làm thay đổi từ thông). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi thanh nam châm chuyển động tịnh tiến theo phương song song với mặt phẳng chứa vòng dây hoặc tại vị trí góc nghiêng không thay đổi đối xứng sao cho số đường sức xuyên qua vòng giữ nguyên không đổi, từ thông không biến thiên nên <strong>không xuất hiện dòng điện cảm ứng</strong> (các trường hợp B, C, D đều làm thay đổi từ thông). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-146",
@@ -2798,7 +3076,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "(3), (4).",
     "optD": "(1), (4).",
     "correct": "A",
-    "giaiThich": "Phát biểu (1) sai vì số lượng đường sức từ xuyên qua mạch càng <strong>lớn</strong> thì từ thông càng lớn; phát biểu (2) sai vì đơn vị của từ thông trong hệ SI là <strong>weber ($ext{Wb}$)</strong>, còn tesla ($ ext{T}$) là đơn vị cảm ứng từ. Hai phát biểu (3) và (4) hoàn toàn chính xác. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Phát biểu (1) sai vì số lượng đường sức từ xuyên qua mạch càng <strong>lớn</strong> thì từ thông càng lớn; phát biểu (2) sai vì đơn vị của từ thông trong hệ SI là <strong>weber ($ext{Wb}$)</strong>, còn tesla ($ ext{T}$) là đơn vị cảm ứng từ. Hai phát biểu (3) và (4) hoàn toàn chính xác. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-147",
@@ -2818,7 +3098,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Đưa một cực của acquy từ ngoài vào trong cuộn dây dẫn kín.",
     "optD": "Đưa một nam châm từ ngoài vào trong một cuộn dây dẫn kín.",
     "correct": "D",
-    "giaiThich": "Khi đưa một thanh nam châm từ ngoài vào trong lòng cuộn dây dẫn kín, số đường sức từ xuyên qua tiết diện cuộn dây thay đổi liên tục làm từ thông biến thiên, sinh ra <strong>dòng điện cảm ứng</strong>. Đặt cố định nam châm hay đưa cực ắc quy tĩnh vào không làm từ thông thay đổi. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi đưa một thanh nam châm từ ngoài vào trong lòng cuộn dây dẫn kín, số đường sức từ xuyên qua tiết diện cuộn dây thay đổi liên tục làm từ thông biến thiên, sinh ra <strong>dòng điện cảm ứng</strong>. Đặt cố định nam châm hay đưa cực ắc quy tĩnh vào không làm từ thông thay đổi. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-148",
@@ -2838,7 +3120,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "hợp với mặt phẳng khung dây góc 0°.",
     "optD": "hợp với mặt phẳng khung dây góc 40°.",
     "correct": "A",
-    "giaiThich": "Từ $\\Phi = BS\\cos\\alpha $ với $\\alpha = (\\vec{n}, \\vec{B}) $: từ thông đạt giá trị cực đại ($\\Phi_{\\max} = BS $) khi $\\cos\\alpha = 1 \\iff \\alpha = 0^\\circ $, nghĩa là véc-tơ pháp tuyến song song $\\vec{B}$, tức các đường sức từ <strong>vuông góc với mặt phẳng khung dây</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ $\\Phi = BS\\cos\\alpha $ với $\\alpha = (\\vec{n}, \\vec{B}) $: từ thông đạt giá trị cực đại ($\\Phi_{\\max} = BS $) khi $\\cos\\alpha = 1 \\iff \\alpha = 0^\\circ $, nghĩa là véc-tơ pháp tuyến song song $\\vec{B}$, tức các đường sức từ <strong>vuông góc với mặt phẳng khung dây</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-149",
@@ -2858,7 +3142,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "chỉ tồn tại trong mạch kín trong thời gian từ thông qua mạch kín đó biến thiên.",
     "optD": "có chiều phụ thuộc chiều biến thiên từ thông qua mạch kín.",
     "correct": "B",
-    "giaiThich": "Dòng điện cảm ứng luôn có <strong>chiều tuân theo định luật Lenz</strong> (phụ thuộc chiều tăng hay giảm của từ thông) và <strong>cường độ tỉ lệ với tốc độ biến thiên từ thông</strong> ($|i_c| = \\frac{1}{R}\\left|\\frac{\\Delta\\Phi}{\\Delta t}\\right|$). Do đó phát biểu nói chiều và cường độ không phụ thuộc chiều và tốc độ biến thiên là sai. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Dòng điện cảm ứng luôn có <strong>chiều tuân theo định luật Lenz</strong> (phụ thuộc chiều tăng hay giảm của từ thông) và <strong>cường độ tỉ lệ với tốc độ biến thiên từ thông</strong> ($|i_c| = \\frac{1}{R}\\left|\\frac{\\Delta\\Phi}{\\Delta t}\\right|$). Do đó phát biểu nói chiều và cường độ không phụ thuộc chiều và tốc độ biến thiên là sai. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-150",
@@ -2878,7 +3164,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tia sét phóng ra tia lửa điện làm cháy mạch.",
     "optD": "dòng điện trong sét có cường độ mạnh, tạo ra từ trường mạnh biến thiên rất chậm gây ra dòng điện tự cảm ở các mạch điện gần đó.",
     "correct": "A",
-    "giaiThich": "Dòng điện tia sét có cường độ hàng chục nghìn ampe biến thiên cực nhanh trong khoảng thời gian microgiây, sinh ra từ trường mạnh biến thiên nhanh đột ngột xung quanh, làm xuất hiện <strong>suất điện động và dòng điện cảm ứng rất lớn</strong> trong các mạch điện gần đó gây nổ cầu chì hay hỏng thiết bị đo. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Dòng điện tia sét có cường độ hàng chục nghìn ampe biến thiên cực nhanh trong khoảng thời gian microgiây, sinh ra từ trường mạnh biến thiên nhanh đột ngột xung quanh, làm xuất hiện <strong>suất điện động và dòng điện cảm ứng rất lớn</strong> trong các mạch điện gần đó gây nổ cầu chì hay hỏng thiết bị đo. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-151",
@@ -2898,7 +3186,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "đổi chiều sau mỗi một phần tư vòng.",
     "optD": "không đổi chiều.",
     "correct": "B",
-    "giaiThich": "Khi khung dây quay đều quanh trục vuông góc với từ trường đều, từ thông biến thiên điều hòa $\\Phi = \\Phi_0\\cos(\\omega t + \\varphi) $ nên suất điện động cảm ứng $ e = \\omega \\Phi_0\\sin(\\omega t + \\varphi) $ là hàm sin đổi dấu $ 2$ lần trong một chu kì, tức <strong>đổi chiều sau mỗi nửa vòng quay</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi khung dây quay đều quanh trục vuông góc với từ trường đều, từ thông biến thiên điều hòa $\\Phi = \\Phi_0\\cos(\\omega t + \\varphi) $ nên suất điện động cảm ứng $ e = \\omega \\Phi_0\\sin(\\omega t + \\varphi) $ là hàm sin đổi dấu $ 2$ lần trong một chu kì, tức <strong>đổi chiều sau mỗi nửa vòng quay</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-152",
@@ -2918,7 +3208,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "cường độ của dòng điện cảm ứng xuất hiện trong một mạch điện kín.",
     "optD": "sự biến thiên của từ thông qua một mạch điện kín, phẳng.",
     "correct": "B",
-    "giaiThich": "Định luật Lenz phát biểu về <strong>chiều của dòng điện cảm ứng</strong>: dòng điện cảm ứng xuất hiện trong mạch kín có chiều sao cho từ trường cảm ứng có tác dụng chống lại sự biến thiên của từ thông ban đầu qua mạch kín đó (còn độ lớn do định luật Faraday xác định). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Định luật Lenz phát biểu về <strong>chiều của dòng điện cảm ứng</strong>: dòng điện cảm ứng xuất hiện trong mạch kín có chiều sao cho từ trường cảm ứng có tác dụng chống lại sự biến thiên của từ thông ban đầu qua mạch kín đó (còn độ lớn do định luật Faraday xác định). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-153",
@@ -2938,7 +3230,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "được sinh bởi nguồn điện hóa học",
     "optD": "được sinh bởi dòng điện cảm ứng.",
     "correct": "B",
-    "giaiThich": "Theo định nghĩa, <strong>suất điện động cảm ứng</strong> là suất điện động <strong>sinh ra dòng điện cảm ứng trong mạch kín</strong> khi từ thông qua mạch biến thiên theo thời gian. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định nghĩa, <strong>suất điện động cảm ứng</strong> là suất điện động <strong>sinh ra dòng điện cảm ứng trong mạch kín</strong> khi từ thông qua mạch biến thiên theo thời gian. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-154",
@@ -2958,7 +3252,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "góc tạo bởi pháp tuyến và véc tơ cảm ứng từ.",
     "optD": "nhiệt độ môi trường.",
     "correct": "D",
-    "giaiThich": "Từ thông $\\Phi = B S \\cos\\alpha $ chỉ phụ thuộc vào cảm ứng từ $ B $, diện tích mặt $ S $ và góc hợp bởi pháp tuyến $\\vec{n}$ với $\\vec{B}$, hoàn toàn <strong>không phụ thuộc vào nhiệt độ môi trường</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Từ thông $\\Phi = B S \\cos\\alpha $ chỉ phụ thuộc vào cảm ứng từ $ B $, diện tích mặt $ S $ và góc hợp bởi pháp tuyến $\\vec{n}$ với $\\vec{B}$, hoàn toàn <strong>không phụ thuộc vào nhiệt độ môi trường</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-155",
@@ -2978,7 +3274,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "toả nhiệt trên điện trở.",
     "optD": "hấp thụ năng lượng bức xạ điện từ.",
     "correct": "B",
-    "giaiThich": "<strong>Bếp điện từ</strong> hoạt động dựa trên <strong>hiện tượng cảm ứng điện từ</strong>: cuộn dây dưới mặt bếp sinh ra từ trường biến thiên xuyên qua đáy nồi kim loại, làm phát sinh dòng điện cảm ứng xoáy (dòng Foucault) trực tiếp làm nóng đáy nồi. Vậy chọn <strong>B</strong>."
+    "giaiThich": "<strong>Bếp điện từ</strong> hoạt động dựa trên <strong>hiện tượng cảm ứng điện từ</strong>: cuộn dây dưới mặt bếp sinh ra từ trường biến thiên xuyên qua đáy nồi kim loại, làm phát sinh dòng điện cảm ứng xoáy (dòng Foucault) trực tiếp làm nóng đáy nồi. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-156",
@@ -2998,7 +3296,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Từ thông qua mặt S chỉ phụ thuộc diện tích của mặt S, không phụ thuộc góc nghiêng của mặt đó so với hướng của các đường sức từ",
     "optD": "Từ thông qua mặt S được đo bằng đơn vị vêbe ($1 Wb=1 T\\cdot \\,\\text{m}^{2}$), và có giá trị lớn nhất khi mặt này vuông góc với các đường sức từ",
     "correct": "C",
-    "giaiThich": "Theo công thức định nghĩa $\\Phi = BS\\cos\\alpha $, từ thông qua mặt $ S $ phụ thuộc cả cảm ứng từ $ B $, diện tích $ S $ và <strong>góc nghiêng $\\alpha$</strong> giữa mặt khung so với đường sức từ. Do đó khẳng định nói từ thông không phụ thuộc góc nghiêng là sai. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo công thức định nghĩa $\\Phi = BS\\cos\\alpha $, từ thông qua mặt $ S $ phụ thuộc cả cảm ứng từ $ B $, diện tích $ S $ và <strong>góc nghiêng $\\alpha$</strong> giữa mặt khung so với đường sức từ. Do đó khẳng định nói từ thông không phụ thuộc góc nghiêng là sai. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-157",
@@ -3018,7 +3318,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tỉ lệ với chu vi đường giới hạn diện tích S",
     "optD": "là giá trị cảm ứng từ B tại nơi đặt diện tích S.",
     "correct": "B",
-    "giaiThich": "Khi $\\vec{B}$ vuông góc với mặt phẳng diện tích $ S $, độ lớn từ thông qua diện tích đó tỉ lệ thuận trực tiếp với <strong>số lượng đường sức từ xuyên qua toàn bộ diện tích $ S $</strong> (còn số đường sức trên $ 1 $ đơn vị diện tích biểu thị độ lớn cảm ứng từ $ B$). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi $\\vec{B}$ vuông góc với mặt phẳng diện tích $ S $, độ lớn từ thông qua diện tích đó tỉ lệ thuận trực tiếp với <strong>số lượng đường sức từ xuyên qua toàn bộ diện tích $ S $</strong> (còn số đường sức trên $ 1 $ đơn vị diện tích biểu thị độ lớn cảm ứng từ $ B$). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-159",
@@ -3038,7 +3340,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "động lượng.",
     "optD": "khối lượng.",
     "correct": "A",
-    "giaiThich": "Theo Định luật Lenz, dòng điện cảm ứng luôn sinh ra từ trường chống lại sự biến thiên đã sinh ra nó; đó chính là sự thể hiện của <strong>định luật bảo toàn và chuyển hóa năng lượng</strong> (để duy trì chuyển động tương đối làm biến thiên từ thông, ngoại lực phải thực hiện công thắng lực từ cản, công này chuyển hóa thành điện năng cảm ứng). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo Định luật Lenz, dòng điện cảm ứng luôn sinh ra từ trường chống lại sự biến thiên đã sinh ra nó; đó chính là sự thể hiện của <strong>định luật bảo toàn và chuyển hóa năng lượng</strong> (để duy trì chuyển động tương đối làm biến thiên từ thông, ngoại lực phải thực hiện công thắng lực từ cản, công này chuyển hóa thành điện năng cảm ứng). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-160",
@@ -3058,7 +3362,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "(C) chuyển động trong một mặt phẳng vuông góc với đường sức từ.",
     "optD": "(C) chuyển động tịnh tiến.",
     "correct": "A",
-    "giaiThich": "Từ thông $\\Phi = BS\\cos\\alpha $ chỉ biến thiên khi một trong ba yếu tố $ B, S, \\alpha $ thay đổi. Khi cho mạch kín (C) quay quanh một <strong>trục nằm trong mặt phẳng khung và không song song với đường sức từ</strong>, góc $\\alpha = (\\vec{n}, \\vec{B}) $ biến thiên liên tục theo thời gian nên $\\Phi $ biến thiên. Các trường hợp B, C, D giữ nguyên góc $\\alpha$ trong từ trường đều. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Từ thông $\\Phi = BS\\cos\\alpha $ chỉ biến thiên khi một trong ba yếu tố $ B, S, \\alpha $ thay đổi. Khi cho mạch kín (C) quay quanh một <strong>trục nằm trong mặt phẳng khung và không song song với đường sức từ</strong>, góc $\\alpha = (\\vec{n}, \\vec{B}) $ biến thiên liên tục theo thời gian nên $\\Phi $ biến thiên. Các trường hợp B, C, D giữ nguyên góc $\\alpha$ trong từ trường đều. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-162",
@@ -3078,7 +3384,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "cho mạch kín di chuyển lại gần nam châm.",
     "optD": "quay khung dây trong mặt phẳng vuông góc với trục nam châm.",
     "correct": "D",
-    "giaiThich": "Khi quay khung dây phẳng ngay <strong>trong mặt phẳng vuông góc với trục nam châm</strong> (tức trục quay vuông góc mặt khung và song song đường sức từ), góc nghiêng $\\alpha = 0^\\circ$ không thay đổi nên số đường sức xuyên qua mặt phẳng khung và <strong>từ thông qua mạch kín giữ nguyên không đổi</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi quay khung dây phẳng ngay <strong>trong mặt phẳng vuông góc với trục nam châm</strong> (tức trục quay vuông góc mặt khung và song song đường sức từ), góc nghiêng $\\alpha = 0^\\circ$ không thay đổi nên số đường sức xuyên qua mặt phẳng khung và <strong>từ thông qua mạch kín giữ nguyên không đổi</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-164",
@@ -3098,7 +3406,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Có độ lớn luôn không đổi.",
     "optD": "Có độ lớn tuân theo định luật Faraday.",
     "correct": "C",
-    "giaiThich": "Theo Định luật Faraday $|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$, suất điện động cảm ứng <strong>có độ lớn tỉ lệ với tốc độ biến thiên từ thông</strong>, không nhất thiết luôn có độ lớn không đổi (ví dụ khi từ thông biến thiên điều hòa hay phi tuyến thì $ e_c$ thay đổi theo thời gian). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo Định luật Faraday $|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$, suất điện động cảm ứng <strong>có độ lớn tỉ lệ với tốc độ biến thiên từ thông</strong>, không nhất thiết luôn có độ lớn không đổi (ví dụ khi từ thông biến thiên điều hòa hay phi tuyến thì $ e_c$ thay đổi theo thời gian). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-167",
@@ -3118,7 +3428,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tỉ lệ với tốc độ biến thiên từ thông qua mạch",
     "optD": "Chỉ xuất hiện khi có sự biến thiên từ thông qua mạch",
     "correct": "B",
-    "giaiThich": "Suất điện động cảm ứng chỉ xuất hiện khi có sự <strong>biến thiên từ thông</strong> ($\\frac{\\Delta \\Phi}{\\Delta t} \\ne 0 $). Nếu có từ thông lớn nhưng giữ hoàn toàn không đổi theo thời gian ($\\Delta \\Phi = 0 $) thì suất điện động cảm ứng bằng $ 0$. Do đó phát biểu B là không đúng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Suất điện động cảm ứng chỉ xuất hiện khi có sự <strong>biến thiên từ thông</strong> ($\\frac{\\Delta \\Phi}{\\Delta t} \\ne 0 $). Nếu có từ thông lớn nhưng giữ hoàn toàn không đổi theo thời gian ($\\Delta \\Phi = 0 $) thì suất điện động cảm ứng bằng $ 0$. Do đó phát biểu B là không đúng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-171",
@@ -3138,7 +3450,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khối thủy ngân nằm trong từ trường biến thiên.",
     "optD": "Khối lưu huỳnh nằm trong từ trường biến thiên.",
     "correct": "D",
-    "giaiThich": "Dòng điện Foucault (dòng điện xoáy cảm ứng) chỉ xuất hiện trong khối <strong>vật dẫn điện</strong> (như đồng, nhôm, thủy ngân) khi đặt trong từ trường biến thiên hoặc chuyển động cắt đường sức từ. <strong>Lưu huỳnh</strong> là chất cách điện nên không thể hình thành dòng điện Foucault. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Dòng điện Foucault (dòng điện xoáy cảm ứng) chỉ xuất hiện trong khối <strong>vật dẫn điện</strong> (như đồng, nhôm, thủy ngân) khi đặt trong từ trường biến thiên hoặc chuyển động cắt đường sức từ. <strong>Lưu huỳnh</strong> là chất cách điện nên không thể hình thành dòng điện Foucault. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-172",
@@ -3158,7 +3472,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tạo với diện tích đã cho một góc không đổi.",
     "optD": "tạo với diện tích đã cho một góc 180°.",
     "correct": "A",
-    "giaiThich": "Theo quy ước hình học, véc-tơ pháp tuyến $\\vec{n}$ của một mặt phẳng diện tích $ S $ là véc-tơ có <strong>phương vuông góc với mặt phẳng chứa diện tích $ S$</strong> đó. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo quy ước hình học, véc-tơ pháp tuyến $\\vec{n}$ của một mặt phẳng diện tích $ S $ là véc-tơ có <strong>phương vuông góc với mặt phẳng chứa diện tích $ S$</strong> đó. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-173",
@@ -3178,7 +3494,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "đúc khối kim loại không có phần rỗng bên trong.",
     "optD": "sơn phủ lên khối kim loại một lớp sơn cách điện.",
     "correct": "A",
-    "giaiThich": "Để giảm hao phí nhiệt do dòng điện Foucault sinh ra trong lõi thép của biến áp hay động cơ điện, người ta <strong>chia khối kim loại thành nhiều lá mỏng ghép sát nhau có phủ sơn cách điện xen kẽ</strong>, nhằm tăng điện trở cản trở mạch vòng dòng xoáy. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Để giảm hao phí nhiệt do dòng điện Foucault sinh ra trong lõi thép của biến áp hay động cơ điện, người ta <strong>chia khối kim loại thành nhiều lá mỏng ghép sát nhau có phủ sơn cách điện xen kẽ</strong>, nhằm tăng điện trở cản trở mạch vòng dòng xoáy. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-174",
@@ -3198,7 +3516,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Nồi cơm điện.",
     "optD": "Bếp từ.",
     "correct": "C",
-    "giaiThich": "Bếp từ, quạt điện (lõi stato/rôto trong từ trường xoay chiều) và lò vi sóng (linh kiện từ/biến áp cao áp) đều có từ trường biến thiên tác dụng lên lõi/vật dẫn gây dòng Foucault; ngược lại <strong>nồi cơm điện</strong> truyền thống đun nóng chủ yếu bằng mâm nhiệt điện trở thuần một pha tĩnh/thuần trở, không vận hành dựa trên cảm ứng từ xoáy. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Bếp từ, quạt điện (lõi stato/rôto trong từ trường xoay chiều) và lò vi sóng (linh kiện từ/biến áp cao áp) đều có từ trường biến thiên tác dụng lên lõi/vật dẫn gây dòng Foucault; ngược lại <strong>nồi cơm điện</strong> truyền thống đun nóng chủ yếu bằng mâm nhiệt điện trở thuần một pha tĩnh/thuần trở, không vận hành dựa trên cảm ứng từ xoáy. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-176",
@@ -3218,7 +3538,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Máy bơm nước",
     "optD": "Biến thế",
     "correct": "A",
-    "giaiThich": "Quạt điện, máy bơm nước và máy biến thế đều phải hạn chế dòng điện Foucault vì nó gây tỏa nhiệt hao phí. Riêng <strong>bếp từ</strong> trực tiếp tận dụng tác dụng tỏa nhiệt mạnh của <strong>dòng điện Foucault</strong> sinh ra ngay trong đáy nồi nhiễm từ để nấu chín thức ăn. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Quạt điện, máy bơm nước và máy biến thế đều phải hạn chế dòng điện Foucault vì nó gây tỏa nhiệt hao phí. Riêng <strong>bếp từ</strong> trực tiếp tận dụng tác dụng tỏa nhiệt mạnh của <strong>dòng điện Foucault</strong> sinh ra ngay trong đáy nồi nhiễm từ để nấu chín thức ăn. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-178",
@@ -3238,7 +3560,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "điện trường xoáy.",
     "optD": "điện từ trường.",
     "correct": "C",
-    "giaiThich": "Theo luận điểm thứ nhất của Maxwell: tại mọi điểm trong không gian nơi có <strong>từ trường biến thiên theo thời gian</strong>, xung quanh nó luôn xuất hiện một <strong>điện trường xoáy</strong> có các đường sức khép kín. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo luận điểm thứ nhất của Maxwell: tại mọi điểm trong không gian nơi có <strong>từ trường biến thiên theo thời gian</strong>, xung quanh nó luôn xuất hiện một <strong>điện trường xoáy</strong> có các đường sức khép kín. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-180",
@@ -3258,7 +3582,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "hiện tượng từ hóa cuộn dây.",
     "optD": "hiện tượng siêu dẫn.",
     "correct": "B",
-    "giaiThich": "Hiện tượng xuất hiện dòng điện cảm ứng trong mạch dẫn kín mỗi khi từ thông xuyên qua mạch kín đó biến thiên theo thời gian được gọi là <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Hiện tượng xuất hiện dòng điện cảm ứng trong mạch dẫn kín mỗi khi từ thông xuyên qua mạch kín đó biến thiên theo thời gian được gọi là <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-181",
@@ -3278,7 +3604,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$\\Phi = BS\\tan\\alpha$",
     "optD": "$\\Phi = BS\\cot\\alpha$",
     "correct": "B",
-    "giaiThich": "Theo định nghĩa, từ thông qua diện tích $S $ phẳng đặt trong từ trường đều $\\vec{B}$ là đại lượng vô hướng được xác định bởi công thức <strong>$\\Phi = B S \\cos\\alpha $</strong>, với $\\alpha = (\\vec{n}, \\vec{B}) $ là góc hợp bởi véc-tơ cảm ứng từ và véc-tơ pháp tuyến của mặt $ S$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo định nghĩa, từ thông qua diện tích $S $ phẳng đặt trong từ trường đều $\\vec{B}$ là đại lượng vô hướng được xác định bởi công thức <strong>$\\Phi = B S \\cos\\alpha $</strong>, với $\\alpha = (\\vec{n}, \\vec{B}) $ là góc hợp bởi véc-tơ cảm ứng từ và véc-tơ pháp tuyến của mặt $ S$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-182",
@@ -3298,7 +3626,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Wb.",
     "optD": "T.",
     "correct": "C",
-    "giaiThich": "Trong hệ đo lường quốc tế SI, đơn vị của từ thông là <strong>weber</strong>, kí hiệu là <strong>$ext{Wb}$</strong> ($ 1\\text{ Wb} = 1\\text{ T}\\cdot\\text{m}^2$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong hệ đo lường quốc tế SI, đơn vị của từ thông là <strong>weber</strong>, kí hiệu là <strong>$ext{Wb}$</strong> ($ 1\\text{ Wb} = 1\\text{ T}\\cdot\\text{m}^2$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT01",
@@ -3318,7 +3648,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Dòng điện chạy qua R từ P đến Q.",
     "optD": "Dòng điện chạy qua $R$ từ $Q$ đến $P$.",
     "correct": "A",
-    "giaiThich": "Khi nam châm quay từ vị trí nằm ngang qua một vòng hoàn chỉnh trong khe lõi sắt mềm, từ thông qua cuộn dây đổi dấu biến thiên tuần hoàn theo hai nửa chu kì ngược pha nhau: nửa vòng đầu từ thông giảm/tăng theo một chiều tạo dòng cảm ứng chạy qua điện trở $R$ theo chiều từ $P$ đến $Q$ (theo định luật Lenz), nửa vòng sau biến thiên từ thông đảo chiều khiến dòng điện cảm ứng <strong>đổi chiều</strong>. Do đó dòng qua $R$ đi <strong>từ $P$ đến $Q$, rồi đổi chiều</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Khi nam châm quay từ vị trí nằm ngang qua một vòng hoàn chỉnh trong khe lõi sắt mềm, từ thông qua cuộn dây đổi dấu biến thiên tuần hoàn theo hai nửa chu kì ngược pha nhau: nửa vòng đầu từ thông giảm/tăng theo một chiều tạo dòng cảm ứng chạy qua điện trở $R$ theo chiều từ $P$ đến $Q$ (theo định luật Lenz), nửa vòng sau biến thiên từ thông đảo chiều khiến dòng điện cảm ứng <strong>đổi chiều</strong>. Do đó dòng qua $R$ đi <strong>từ $P$ đến $Q$, rồi đổi chiều</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT02",
@@ -3338,7 +3670,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "độ lớn của vectơ cảm ứng từ.",
     "optD": "độ lớn diện tích của mặt $S$.",
     "correct": "B",
-    "giaiThich": "Từ thông qua diện tích phẳng $S$ đặt trong từ trường đều là $\\Phi = B S \\cos\\alpha$, nên chỉ phụ thuộc vào độ lớn cảm ứng từ $B$, diện tích mặt $S$ và góc $\\alpha$ (độ nghiêng giữa mặt phẳng $S$ và $\\vec{B}$), <strong>không phụ thuộc</strong> vào chu vi của đường giới hạn mặt $S$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Từ thông qua diện tích phẳng $S$ đặt trong từ trường đều là $\\Phi = B S \\cos\\alpha$, nên chỉ phụ thuộc vào độ lớn cảm ứng từ $B$, diện tích mặt $S$ và góc $\\alpha$ (độ nghiêng giữa mặt phẳng $S$ và $\\vec{B}$), <strong>không phụ thuộc</strong> vào chu vi của đường giới hạn mặt $S$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT03",
@@ -3358,7 +3692,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "không có dòng điện cảm ứng vì từ thông qua khung không biến đổi.",
     "optD": "xuất hiện dòng điện cảm ứng có chiều $ABCD$.",
     "correct": "D",
-    "giaiThich": "Trong mạch điện, biến trở mắc theo đoạn từ đầu bên trái đến con chạy. Khi dịch chuyển con chạy về bên phải, chiều dài phần biến trở tham gia mạch tăng $\\Rightarrow$ điện trở mạch tăng $\\Rightarrow$ cường độ dòng điện qua ống dây giảm $\\Rightarrow$ từ thông do ống dây gửi qua khung $ABCD$ (đường sức từ hướng thẳng đứng xuống dưới xuyên qua mặt khung) giảm. Theo định luật Lenz, dòng cảm ứng trong khung có chiều sao cho từ trường cảm ứng hướng xuống để chống lại sự giảm từ thông; áp dụng quy tắc nắm tay phải (nhìn từ trên xuống) suy ra dòng cảm ứng chạy theo chiều <strong>$ABCD$</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Trong mạch điện, biến trở mắc theo đoạn từ đầu bên trái đến con chạy. Khi dịch chuyển con chạy về bên phải, chiều dài phần biến trở tham gia mạch tăng $\\Rightarrow$ điện trở mạch tăng $\\Rightarrow$ cường độ dòng điện qua ống dây giảm $\\Rightarrow$ từ thông do ống dây gửi qua khung $ABCD$ (đường sức từ hướng thẳng đứng xuống dưới xuyên qua mặt khung) giảm. Theo định luật Lenz, dòng cảm ứng trong khung có chiều sao cho từ trường cảm ứng hướng xuống để chống lại sự giảm từ thông; áp dụng quy tắc nắm tay phải (nhìn từ trên xuống) suy ra dòng cảm ứng chạy theo chiều <strong>$ABCD$</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT04",
@@ -3378,7 +3714,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "giảm 4 lần.",
     "optD": "giảm 2 lần.",
     "correct": "C",
-    "giaiThich": "Suất điện động cực đại cảm ứng trong khung dây quay đều trong từ trường đều là $E_0 = \\omega N B S = \\frac{2\\pi N B S}{T}$. Để tăng biên độ $E_0$ lên $4$ lần (giữ nguyên $N, B, S$), cần tăng tốc độ góc $\\omega$ lên $4$ lần, tương ứng với <strong>chu kì quay $T$ phải giảm $4$ lần</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Suất điện động cực đại cảm ứng trong khung dây quay đều trong từ trường đều là $E_0 = \\omega N B S = \\frac{2\\pi N B S}{T}$. Để tăng biên độ $E_0$ lên $4$ lần (giữ nguyên $N, B, S$), cần tăng tốc độ góc $\\omega$ lên $4$ lần, tương ứng với <strong>chu kì quay $T$ phải giảm $4$ lần</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT05",
@@ -3398,7 +3736,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "có độ lớn không đổi.",
     "optD": "đảo ngược chiều.",
     "correct": "A",
-    "giaiThich": "Theo định luật Faraday về cảm ứng điện từ, độ lớn suất điện động cảm ứng tỉ lệ thuận với tốc độ biến thiên từ thông: $|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$. Khi di chuyển thanh nam châm nhanh hơn, thời gian biến thiên $\\Delta t$ giảm khiến tốc độ biến thiên từ thông lớn hơn, nên cường độ dòng điện cảm ứng trong ống dây <strong>có độ lớn tăng lên</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo định luật Faraday về cảm ứng điện từ, độ lớn suất điện động cảm ứng tỉ lệ thuận với tốc độ biến thiên từ thông: $|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$. Khi di chuyển thanh nam châm nhanh hơn, thời gian biến thiên $\\Delta t$ giảm khiến tốc độ biến thiên từ thông lớn hơn, nên cường độ dòng điện cảm ứng trong ống dây <strong>có độ lớn tăng lên</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT06",
@@ -3418,7 +3758,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Khung đang chuyển động ở ngoài vào trong vùng MNPQ hoặc ở trong MNPQ ra ngoài.",
     "optD": "Khung đang chuyển động ở trong vùng MNPQ.",
     "correct": "C",
-    "giaiThich": "Dòng điện cảm ứng chỉ xuất hiện trong mạch kín khi từ thông $\\Phi = B S \\cos\\alpha$ qua khung biến thiên theo thời gian. Khi khung đi hoàn toàn ngoài vùng từ trường ($\\Phi = 0$) hoặc chuyển động tịnh tiến hoàn toàn bên trong vùng từ trường đều ($\\Phi = BS = \\text{hằng số}$), từ thông không đổi nên không có dòng cảm ứng. Chỉ khi khung <strong>đang đi từ ngoài vào vùng MNPQ hoặc từ trong MNPQ ra ngoài</strong> thì diện tích phần khung nằm trong từ trường thay đổi làm từ thông biến thiên, sinh ra dòng điện cảm ứng. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Dòng điện cảm ứng chỉ xuất hiện trong mạch kín khi từ thông $\\Phi = B S \\cos\\alpha$ qua khung biến thiên theo thời gian. Khi khung đi hoàn toàn ngoài vùng từ trường ($\\Phi = 0$) hoặc chuyển động tịnh tiến hoàn toàn bên trong vùng từ trường đều ($\\Phi = BS = \\text{hằng số}$), từ thông không đổi nên không có dòng cảm ứng. Chỉ khi khung <strong>đang đi từ ngoài vào vùng MNPQ hoặc từ trong MNPQ ra ngoài</strong> thì diện tích phần khung nằm trong từ trường thay đổi làm từ thông biến thiên, sinh ra dòng điện cảm ứng. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT07",
@@ -3438,7 +3780,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "quang năng.",
     "optD": "nhiệt năng.",
     "correct": "B",
-    "giaiThich": "Để dịch chuyển thanh nam châm lại gần hoặc ra xa cuộn dây kín, ngoại lực phải thực hiện công cơ học thắng lực từ chống lại chuyển động (theo định luật Lenz). Phần công <strong>cơ năng</strong> đó được chuyển hóa thành <strong>điện năng</strong> của dòng điện cảm ứng trong mạch kín. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Để dịch chuyển thanh nam châm lại gần hoặc ra xa cuộn dây kín, ngoại lực phải thực hiện công cơ học thắng lực từ chống lại chuyển động (theo định luật Lenz). Phần công <strong>cơ năng</strong> đó được chuyển hóa thành <strong>điện năng</strong> của dòng điện cảm ứng trong mạch kín. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT08",
@@ -3458,7 +3802,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "độ lớn của từ thông qua mạch kín đó.",
     "optD": "độ lớn của từ trường gửi qua mạch kín đó.",
     "correct": "A",
-    "giaiThich": "Theo định luật Faraday về cảm ứng điện từ, độ lớn của suất điện động cảm ứng xuất hiện trong một mạch kín <strong>tỉ lệ thuận với tốc độ biến thiên của từ thông</strong> qua mạch kín đó ($|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Theo định luật Faraday về cảm ứng điện từ, độ lớn của suất điện động cảm ứng xuất hiện trong một mạch kín <strong>tỉ lệ thuận với tốc độ biến thiên của từ thông</strong> qua mạch kín đó ($|e_c| = \\left|\\frac{\\Delta \\Phi}{\\Delta t}\\right|$). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT09",
@@ -3478,7 +3824,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "số đường sức từ xuyên qua một diện tích nào đó trong từ trường.",
     "optD": "độ lớn của cảm ứng từ sinh ra bởi từ trường của một nam châm.",
     "correct": "C",
-    "giaiThich": "Về ý nghĩa vật lí, khái niệm từ thông ($\\Phi = BS\\cos\\alpha$) dùng để diễn tả <strong>số đường sức từ xuyên qua một diện tích nào đó trong từ trường</strong> (còn mật độ đường sức từ biểu thị độ lớn cảm ứng từ $B$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Về ý nghĩa vật lí, khái niệm từ thông ($\\Phi = BS\\cos\\alpha$) dùng để diễn tả <strong>số đường sức từ xuyên qua một diện tích nào đó trong từ trường</strong> (còn mật độ đường sức từ biểu thị độ lớn cảm ứng từ $B$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT10",
@@ -3498,7 +3846,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "sao cho từ trường cảm ứng luôn cùng chiều với từ trường ngoài.",
     "optD": "sao cho từ trường cảm ứng luôn ngược chiều với từ trường ngoài",
     "correct": "B",
-    "giaiThich": "Nội dung định luật Lenz khẳng định: dòng điện cảm ứng xuất hiện trong mạch kín có chiều <strong>sao cho từ trường cảm ứng do nó sinh ra có tác dụng chống lại sự biến thiên của từ thông ban đầu qua mạch</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Nội dung định luật Lenz khẳng định: dòng điện cảm ứng xuất hiện trong mạch kín có chiều <strong>sao cho từ trường cảm ứng do nó sinh ra có tác dụng chống lại sự biến thiên của từ thông ban đầu qua mạch</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT11",
@@ -3518,7 +3868,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khẳng định dòng điện cảm ứng xuất hiện khi từ thông qua mạch kín biến thiên do kết quả của một chuyển động nào đó thì từ trường cảm ứng có tác dụng chống lại chuyển động này.",
     "optD": "cho phép xác định lượng nhiệt toả ra trong vật dẫn có dòng điện chạy qua.",
     "correct": "D",
-    "giaiThich": "Định luật Lenz cho phép xác định chiều dòng điện cảm ứng dựa trên sự chống lại nguyên nhân biến thiên từ thông hay chuyển động tương đối (hệ quả bảo toàn năng lượng). Lượng nhiệt tỏa ra trong vật dẫn được xác định bằng định luật Joule–Lenz ($Q = I^2 R t$), <strong>không phải</strong> bằng định luật Lenz. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Định luật Lenz cho phép xác định chiều dòng điện cảm ứng dựa trên sự chống lại nguyên nhân biến thiên từ thông hay chuyển động tương đối (hệ quả bảo toàn năng lượng). Lượng nhiệt tỏa ra trong vật dẫn được xác định bằng định luật Joule–Lenz ($Q = I^2 R t$), <strong>không phải</strong> bằng định luật Lenz. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT12",
@@ -3538,7 +3890,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "là giá trị của cảm ứng từ $B$ tại nơi đặt diện tích $S$.",
     "optD": "tỉ lệ với số đường sức qua diện tích S.",
     "correct": "D",
-    "giaiThich": "Khi mặt phẳng diện tích $S$ đặt vuông góc với cảm ứng từ $\\vec{B}$ ($\\alpha = 0^\\circ \\Rightarrow \\cos\\alpha = 1$), từ thông $\\Phi = BS$ <strong>tỉ lệ với tổng số đường sức từ xuyên qua toàn bộ diện tích $S$</strong> (không phải trên một đơn vị diện tích, vì đại lượng đó là $B$). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi mặt phẳng diện tích $S$ đặt vuông góc với cảm ứng từ $\\vec{B}$ ($\\alpha = 0^\\circ \\Rightarrow \\cos\\alpha = 1$), từ thông $\\Phi = BS$ <strong>tỉ lệ với tổng số đường sức từ xuyên qua toàn bộ diện tích $S$</strong> (không phải trên một đơn vị diện tích, vì đại lượng đó là $B$). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT13",
@@ -3558,7 +3912,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "biến thiên theo thời gian.",
     "optD": "không đổi theo thời gian.",
     "correct": "C",
-    "giaiThich": "Theo định nghĩa hiện tượng cảm ứng điện từ của Faraday, trong khung dây dẫn kín chỉ xuất hiện dòng điện cảm ứng khi <strong>từ thông gửi qua mặt khung dây biến thiên theo thời gian</strong> ($\\frac{\\Delta \\Phi}{\\Delta t} \\ne 0$). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo định nghĩa hiện tượng cảm ứng điện từ của Faraday, trong khung dây dẫn kín chỉ xuất hiện dòng điện cảm ứng khi <strong>từ thông gửi qua mặt khung dây biến thiên theo thời gian</strong> ($\\frac{\\Delta \\Phi}{\\Delta t} \\ne 0$). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT14",
@@ -3578,7 +3934,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "việc sử dụng trường quay",
     "optD": "tác dụng của lực từ",
     "correct": "B",
-    "giaiThich": "Khi dây đàn kim loại của ghi-ta điện dao động trong từ trường của nam châm nhỏ bên trong pickup, nó làm biến thiên từ thông qua cuộn dây cuốn quanh nam châm đó, sinh ra suất điện động cảm ứng biến điệu theo âm thanh. Do đó ghi-ta điện hoạt động dựa trên <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Khi dây đàn kim loại của ghi-ta điện dao động trong từ trường của nam châm nhỏ bên trong pickup, nó làm biến thiên từ thông qua cuộn dây cuốn quanh nam châm đó, sinh ra suất điện động cảm ứng biến điệu theo âm thanh. Do đó ghi-ta điện hoạt động dựa trên <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT15",
@@ -3598,7 +3956,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "trong động cơ điện chống lại sự quay của động cơ làm giảm công suất của động cơ.",
     "optD": "trong công tơ điện có tác dụng làm cho đĩa ngừng quay nhanh khi ngắt thiết bị dùng điện.",
     "correct": "B",
-    "giaiThich": "Dòng điện Foucault gây hiệu ứng tỏa nhiệt (có hại trong lõi máy biến áp, động cơ vì làm hao phí năng lượng, nhưng lại rất có lợi trong bếp từ hay phanh điện từ, phanh đĩa công tơ điện). Kết luận chung chung dòng điện Foucault \\\"là dòng điện có hại\\\" là <strong>sai</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Dòng điện Foucault gây hiệu ứng tỏa nhiệt (có hại trong lõi máy biến áp, động cơ vì làm hao phí năng lượng, nhưng lại rất có lợi trong bếp từ hay phanh điện từ, phanh đĩa công tơ điện). Kết luận chung chung dòng điện Foucault \\\"là dòng điện có hại\\\" là <strong>sai</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT16",
@@ -3618,7 +3978,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "hiện tượng cảm ứng điện từ.",
     "optD": "hiện tượng quang điện.",
     "correct": "C",
-    "giaiThich": "Khi bánh xe đạp quay làm rôto nam châm của đinamô quay đều trước lõi sắt có cuộn dây, từ thông qua cuộn dây biến thiên tuần hoàn tạo ra dòng điện thắp sáng đèn xe đạp. Đây là ứng dụng trực tiếp của <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Khi bánh xe đạp quay làm rôto nam châm của đinamô quay đều trước lõi sắt có cuộn dây, từ thông qua cuộn dây biến thiên tuần hoàn tạo ra dòng điện thắp sáng đèn xe đạp. Đây là ứng dụng trực tiếp của <strong>hiện tượng cảm ứng điện từ</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C3-CD12-LT17",
@@ -3638,7 +4000,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Bếp từ có thể làm nóng đồ ăn trực tiếp mà không cần nồi.",
     "optD": "Bếp từ chỉ hoạt động với nồi có đáy làm từ vật liệu nhiễm từ.",
     "correct": "D",
-    "giaiThich": "Bếp từ dùng cuộn dây dẫn dòng điện xoay chiều cao tần tạo ra từ trường biến thiên nhanh; từ trường này xuyên qua đáy nồi bằng vật liệu nhiễm từ (sắt, inox nhiễm từ) sinh ra dòng điện Foucault mạnh làm nóng trực tiếp đáy nồi. Vì vậy bếp từ <strong>chỉ hoạt động với nồi có đáy làm từ vật liệu nhiễm từ</strong> (dòng không đổi không gây biến thiên từ thông, và thực phẩm không dẫn từ nên không nóng trực tiếp nếu thiếu nồi). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Bếp từ dùng cuộn dây dẫn dòng điện xoay chiều cao tần tạo ra từ trường biến thiên nhanh; từ trường này xuyên qua đáy nồi bằng vật liệu nhiễm từ (sắt, inox nhiễm từ) sinh ra dòng điện Foucault mạnh làm nóng trực tiếp đáy nồi. Vì vậy bếp từ <strong>chỉ hoạt động với nồi có đáy làm từ vật liệu nhiễm từ</strong> (dòng không đổi không gây biến thiên từ thông, và thực phẩm không dẫn từ nên không nóng trực tiếp nếu thiếu nồi). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-184",
@@ -3658,7 +4022,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "13",
     "optD": "1",
     "correct": "B",
-    "giaiThich": "Quan sát lõi hạt nhân ở tâm mô hình nguyên tử trên hình vẽ, ta thấy có $13 $ proton (13p) và $ 14 $ neutron (14n). Số nucleon trong hạt nhân chính là tổng số proton và neutron: $ A = Z + N = 13 + 14 = 27$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Quan sát lõi hạt nhân ở tâm mô hình nguyên tử trên hình vẽ, ta thấy có $13 $ proton (13p) và $ 14 $ neutron (14n). Số nucleon trong hạt nhân chính là tổng số proton và neutron: $ A = Z + N = 13 + 14 = 27$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-185",
@@ -3678,7 +4044,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "đơn vị eV/$c^{2}$ hoặc MeV/$c^{2}$",
     "optD": "đơn vị khối lượng nguyên tử (u)",
     "correct": "B",
-    "giaiThich": "Trong vật lí hạt nhân, khối lượng có thể đo bằng kilôgam, gam, đơn vị khối lượng nguyên tử ($u $ hay amu), hoặc theo hệ thức Einstein ($ m = E/c^2 $) bằng $\\text{eV}/c^2 $, $\\text{MeV}/c^2 $. Riêng <strong>$\\text{MeV}$ là đơn vị đo năng lượng</strong>, không phải đơn vị khối lượng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Trong vật lí hạt nhân, khối lượng có thể đo bằng kilôgam, gam, đơn vị khối lượng nguyên tử ($u $ hay amu), hoặc theo hệ thức Einstein ($ m = E/c^2 $) bằng $\\text{eV}/c^2 $, $\\text{MeV}/c^2 $. Riêng <strong>$\\text{MeV}$ là đơn vị đo năng lượng</strong>, không phải đơn vị khối lượng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-186",
@@ -3698,7 +4066,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Số khối A chính là số nuclôn tạo nên hạt nhân.",
     "optD": "Hạt nhân trung hòa về điện.",
     "correct": "D",
-    "giaiThich": "Hạt nhân nguyên tử được cấu tạo từ $Z $ proton mang điện tích dương ($+e $) và $ N = A - Z $ neutron không mang điện. Do đó <strong>hạt nhân luôn mang điện tích dương $+Ze$</strong>, chỉ có toàn bộ nguyên tử (gồm hạt nhân và vỏ electron) mới trung hòa về điện. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hạt nhân nguyên tử được cấu tạo từ $Z $ proton mang điện tích dương ($+e $) và $ N = A - Z $ neutron không mang điện. Do đó <strong>hạt nhân luôn mang điện tích dương $+Ze$</strong>, chỉ có toàn bộ nguyên tử (gồm hạt nhân và vỏ electron) mới trung hòa về điện. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-187",
@@ -3718,7 +4088,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khối lượng electron bằng khối lượng proton.",
     "optD": "khối lượng nơtrơn bằng khối lượng electron.",
     "correct": "A",
-    "giaiThich": "Mỗi proton mang điện tích $+e $ và mỗi electron mang điện tích $-e$ (neutron trung hòa điện). Vì toàn bộ nguyên tử trung hòa điện nên <strong>số proton trong hạt nhân phải bằng số electron ở lớp vỏ</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Mỗi proton mang điện tích $+e $ và mỗi electron mang điện tích $-e$ (neutron trung hòa điện). Vì toàn bộ nguyên tử trung hòa điện nên <strong>số proton trong hạt nhân phải bằng số electron ở lớp vỏ</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-188",
@@ -3738,7 +4110,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Tổng trị số điện tích âm của electron trong lớp vỏ nguyên tử bằng tổng trị số điện tích dương của proton nằm trong hạt nhân nguyên tử",
     "optD": "Khối lượng tuyệt đối của nguyên tử bằng tổng số khối lượng của proton và nơtron trong hạt nhân",
     "correct": "D",
-    "giaiThich": "Ngoài tổng khối lượng proton và neutron trong hạt nhân (cộng thêm khối lượng nhỏ của vỏ electron), khi các nucleon liên kết tạo thành hạt nhân luôn xảy ra <strong>độ hụt khối</strong> ($\\Delta m > 0$), nên khối lượng thực tế của hạt nhân nhỏ hơn tổng khối lượng các nucleon riêng lẻ cộng lại. Vậy nhận định D sai. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Ngoài tổng khối lượng proton và neutron trong hạt nhân (cộng thêm khối lượng nhỏ của vỏ electron), khi các nucleon liên kết tạo thành hạt nhân luôn xảy ra <strong>độ hụt khối</strong> ($\\Delta m \\gt 0$), nên khối lượng thực tế của hạt nhân nhỏ hơn tổng khối lượng các nucleon riêng lẻ cộng lại. Vậy nhận định D sai. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-189",
@@ -3758,7 +4132,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Mô hình nguyên tử Rutherford - Bohr.",
     "optD": "Mô hình nguyên tử Newton.",
     "correct": "C",
-    "giaiThich": "Mô hình nguyên tử trong đó hạt nhân rất nhỏ mang điện dương nằm ở tâm còn các electron mang điện âm chuyển động trên các quỹ đạo xác định xung quanh tựa như các hành tinh quay quanh Mặt Trời được gọi là <strong>mô hình hành tinh nguyên tử Rutherford - Bohr</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Mô hình nguyên tử trong đó hạt nhân rất nhỏ mang điện dương nằm ở tâm còn các electron mang điện âm chuyển động trên các quỹ đạo xác định xung quanh tựa như các hành tinh quay quanh Mặt Trời được gọi là <strong>mô hình hành tinh nguyên tử Rutherford - Bohr</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-190",
@@ -3778,7 +4154,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "không chuyển động.",
     "optD": "theo quỹ đạo hình số tám.",
     "correct": "B",
-    "giaiThich": "Theo mô hình hành tinh nguyên tử Rutherford-Bohr, các electron chuyển động xung quanh hạt nhân nằm ở tâm <strong>trên những quỹ đạo tròn hoặc elip xác định (giống các hành tinh quay quanh Mặt Trời)</strong> với các trạng thái dừng tương ứng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Theo mô hình hành tinh nguyên tử Rutherford-Bohr, các electron chuyển động xung quanh hạt nhân nằm ở tâm <strong>trên những quỹ đạo tròn hoặc elip xác định (giống các hành tinh quay quanh Mặt Trời)</strong> với các trạng thái dừng tương ứng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-191",
@@ -3798,7 +4176,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tiên đề về các trạng thái dừng và tiên đề về hấp thụ - bức xạ năng lượng.",
     "optD": "tiên đề về mức năng lượng và sự kìm hãm các nguyên tử chuyển động.",
     "correct": "C",
-    "giaiThich": "Năm 1913, Niels Bohr giữ mô hình hành tinh nguyên tử Rutherford nhưng bổ sung hai tiên đề lượng tử nổi tiếng là <strong>tiên đề về các trạng thái dừng</strong> (electron không bức xạ khi ở quỹ đạo dừng) và <strong>tiên đề về sự bức xạ và hấp thụ năng lượng của nguyên tử</strong>. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Năm 1913, Niels Bohr giữ mô hình hành tinh nguyên tử Rutherford nhưng bổ sung hai tiên đề lượng tử nổi tiếng là <strong>tiên đề về các trạng thái dừng</strong> (electron không bức xạ khi ở quỹ đạo dừng) và <strong>tiên đề về sự bức xạ và hấp thụ năng lượng của nguyên tử</strong>. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-192",
@@ -3818,7 +4198,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Bằng tổng số proton và nơtron trong hạt nhân",
     "optD": "Cả A và B",
     "correct": "A",
-    "giaiThich": "Trong bảng tuần hoàn các nguyên tố hóa học, các nguyên tố được sắp xếp theo chiều tăng dần của điện tích hạt nhân $Z$, tức <strong>số thứ tự (số hiệu nguyên tử) đúng bằng số proton</strong> trong hạt nhân nguyên tử. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Trong bảng tuần hoàn các nguyên tố hóa học, các nguyên tố được sắp xếp theo chiều tăng dần của điện tích hạt nhân $Z$, tức <strong>số thứ tự (số hiệu nguyên tử) đúng bằng số proton</strong> trong hạt nhân nguyên tử. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-193",
@@ -3838,7 +4220,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "cùng số prôtôn nhưng số nơtron khác nhau.",
     "optD": "cùng số nuclôn nhưng số prôtôn khác nhau.",
     "correct": "C",
-    "giaiThich": "<strong>Các đồng vị</strong> của cùng một nguyên tố hóa học là những hạt nhân có <strong>cùng số proton ($Z $)</strong> nhưng có <strong>số neutron ($ N $) khác nhau</strong>, dẫn đến số khối $ A = Z + N$ khác nhau. Vậy chọn <strong>C</strong>."
+    "giaiThich": "<strong>Các đồng vị</strong> của cùng một nguyên tố hóa học là những hạt nhân có <strong>cùng số proton ($Z $)</strong> nhưng có <strong>số neutron ($ N $) khác nhau</strong>, dẫn đến số khối $ A = Z + N$ khác nhau. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-194",
@@ -3858,7 +4242,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khối lượng nguyên tử.",
     "optD": "số các đồng vị.",
     "correct": "A",
-    "giaiThich": "Tính chất hóa học của một nguyên tử chủ yếu được quyết định bởi cấu hình electron lớp vỏ ngoài cùng, mà số electron bằng số proton $Z $, nên phụ thuộc trực tiếp vào <strong>nguyên tử số ($ Z$)</strong> (không phụ thuộc số khối hay số neutron). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Tính chất hóa học của một nguyên tử chủ yếu được quyết định bởi cấu hình electron lớp vỏ ngoài cùng, mà số electron bằng số proton $Z $, nên phụ thuộc trực tiếp vào <strong>nguyên tử số ($ Z$)</strong> (không phụ thuộc số khối hay số neutron). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-195",
@@ -3878,7 +4264,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Các chất đồng vị có cùng cả tính chất vật lí lẫn tính chất hoá học.",
     "optD": "Các chất đồng vị không có cùng tính chất vật lí và tính chất hoá học.",
     "correct": "B",
-    "giaiThich": "Các đồng vị của cùng một nguyên tố hóa học có cùng số proton ($Z $) nên có cùng số electron và cấu hình electron, do đó <strong>có cùng tính chất hóa học</strong>, nhưng có số khối $ A$ khác nhau nên khác nhau về một số tính chất vật lí (như khối lượng riêng, độ bền hạt nhân). Vậy chọn <strong>B</strong>."
+    "giaiThich": "Các đồng vị của cùng một nguyên tố hóa học có cùng số proton ($Z $) nên có cùng số electron và cấu hình electron, do đó <strong>có cùng tính chất hóa học</strong>, nhưng có số khối $ A$ khác nhau nên khác nhau về một số tính chất vật lí (như khối lượng riêng, độ bền hạt nhân). Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-196",
@@ -3898,7 +4286,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "pôzitron.",
     "optD": "nơtrinô.",
     "correct": "B",
-    "giaiThich": "Hiđro có ba đồng vị tự nhiên: $^{1}_{1}\\text{H}$ (proti), <strong>$^{2}_{1}\\text{H}$ (đơteri — deuterium)</strong> và $^{3}_{1}\\text{H}$ (triti — tritium). Vậy đồng vị nặng $^{2}_{1}\\text{H}$ gọi là <strong>đơteri</strong>. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Hiđro có ba đồng vị tự nhiên: $^{1}_{1}\\text{H}$ (proti), <strong>$^{2}_{1}\\text{H}$ (đơteri — deuterium)</strong> và $^{3}_{1}\\text{H}$ (triti — tritium). Vậy đồng vị nặng $^{2}_{1}\\text{H}$ gọi là <strong>đơteri</strong>. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-197",
@@ -3918,7 +4308,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khối lượng của 1 nguyên tử $^{12}_{6}C$",
     "optD": "1/12 khối lượng của 1 nguyên tử $^{12}_{6}C$",
     "correct": "D",
-    "giaiThich": "Theo quy ước chuẩn quốc tế trong vật lí và hóa học, đơn vị khối lượng nguyên tử ($1\\text{ amu}$, kí hiệu $ u $) có giá trị đúng bằng <strong>$\\frac{1}{12}$ khối lượng của một nguyên tử đồng vị cacbon $^{12}_{6}\\text{C}$</strong> (trung hòa). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Theo quy ước chuẩn quốc tế trong vật lí và hóa học, đơn vị khối lượng nguyên tử ($1\\text{ amu}$, kí hiệu $ u $) có giá trị đúng bằng <strong>$\\frac{1}{12}$ khối lượng của một nguyên tử đồng vị cacbon $^{12}_{6}\\text{C}$</strong> (trung hòa). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-198",
@@ -3938,7 +4330,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "tính chất vật lý.",
     "optD": "số nucleon.",
     "correct": "B",
-    "giaiThich": "Vì có cùng số hiệu nguyên tử $Z$ (cùng số proton nên cùng số electron vỏ nguyên tử), các nguyên tử đồng vị nằm ở cùng một ô trong bảng tuần hoàn và <strong>có cùng tính chất hóa học</strong>, còn khác nhau về số neutron và số nucleon. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Vì có cùng số hiệu nguyên tử $Z$ (cùng số proton nên cùng số electron vỏ nguyên tử), các nguyên tử đồng vị nằm ở cùng một ô trong bảng tuần hoàn và <strong>có cùng tính chất hóa học</strong>, còn khác nhau về số neutron và số nucleon. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-199",
@@ -3958,7 +4352,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "${}_{7}^{14}N$",
     "optD": "${}_{2}^{4}He$",
     "correct": "D",
-    "giaiThich": "Trong thí nghiệm tán xạ trên lá vàng mỏng của Rutherford, chùm tia $\\alpha $ gồm các <strong>hạt $\\alpha $, có bản chất là hạt nhân nguyên tử heli $^{4}_{2}\\text{He}$</strong> mang điện tích $+2e $ và số khối $ 4$. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Trong thí nghiệm tán xạ trên lá vàng mỏng của Rutherford, chùm tia $\\alpha $ gồm các <strong>hạt $\\alpha $, có bản chất là hạt nhân nguyên tử heli $^{4}_{2}\\text{He}$</strong> mang điện tích $+2e $ và số khối $ 4$. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-200",
@@ -3978,7 +4374,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "6 proton và 8 neutron.",
     "optD": "8 proton, 6 neutron và 8 electron.",
     "correct": "C",
-    "giaiThich": "Theo kí hiệu hạt nhân $^{A}_{Z}\\text{X}$ cho biết $^{14}_{6}\\text{C}$ có nguyên tử số $ Z = 6 $ (tức <strong>$ 6 $ proton</strong>) và số khối $ A = 14 $. Số neutron trong hạt nhân là $ N = A - Z = 14 - 6 = 8 $ (tức <strong>$ 8$ neutron</strong>; hạt nhân không chứa electron). Vậy chọn <strong>C</strong>."
+    "giaiThich": "Theo kí hiệu hạt nhân $^{A}_{Z}\\text{X}$ cho biết $^{14}_{6}\\text{C}$ có nguyên tử số $ Z = 6 $ (tức <strong>$ 6 $ proton</strong>) và số khối $ A = 14 $. Số neutron trong hạt nhân là $ N = A - Z = 14 - 6 = 8 $ (tức <strong>$ 8$ neutron</strong>; hạt nhân không chứa electron). Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-201",
@@ -3998,7 +4396,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "${}_{49}^{112}X$.",
     "optD": "${}_{62}^{112}X$.",
     "correct": "B",
-    "giaiThich": "Đồng vị của cùng nguyên tố thiếc (có số hiệu nguyên tử $Z = 50 $) phải là hạt nhân có <strong>cùng chỉ số dưới $ Z = 50 $</strong>, còn chỉ số khối $ A $ khác $ 112 $. Quan sát các phương án, chỉ có <strong>$^{114}_{50}\\text{X}$</strong> thỏa mãn $ Z = 50$. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Đồng vị của cùng nguyên tố thiếc (có số hiệu nguyên tử $Z = 50 $) phải là hạt nhân có <strong>cùng chỉ số dưới $ Z = 50 $</strong>, còn chỉ số khối $ A $ khác $ 112 $. Quan sát các phương án, chỉ có <strong>$^{114}_{50}\\text{X}$</strong> thỏa mãn $ Z = 50$. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-202",
@@ -4018,7 +4418,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Chỉ (3).",
     "optD": "Chỉ (1) và (2).",
     "correct": "B",
-    "giaiThich": "Hai đồng vị $^{35}_{17}\\text{Cl}$ và $^{37}_{17}\\text{Cl}$ có cùng số proton ($ Z = 17 $) nên có <strong>cùng tính chất hóa học</strong> (loại 1 và 3). Chúng chỉ khác nhau về <strong>số neutron</strong> ($ 35 - 17 = 18 $ so với $ 37 - 17 = 20$) nên chỉ phát biểu (2) đúng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Hai đồng vị $^{35}_{17}\\text{Cl}$ và $^{37}_{17}\\text{Cl}$ có cùng số proton ($ Z = 17 $) nên có <strong>cùng tính chất hóa học</strong> (loại 1 và 3). Chúng chỉ khác nhau về <strong>số neutron</strong> ($ 35 - 17 = 18 $ so với $ 37 - 17 = 20$) nên chỉ phát biểu (2) đúng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-203",
@@ -4038,7 +4440,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "khối lượng của neutron.",
     "optD": "$\\frac{1}{12}$ khối lượng của hạt nhân carbon ${ }_{6}^{12}C$.",
     "correct": "D",
-    "giaiThich": "Đơn vị khối lượng nguyên tử ($1\\text{ amu}$) theo định nghĩa quốc tế bằng <strong>$\\frac{1}{12}$ khối lượng của một nguyên tử trung hòa $^{12}_{6}\\text{C}$</strong> (trong bảng câu chuẩn THPT viết tương đương với mẫu đồng vị cacbon-12). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Đơn vị khối lượng nguyên tử ($1\\text{ amu}$) theo định nghĩa quốc tế bằng <strong>$\\frac{1}{12}$ khối lượng của một nguyên tử trung hòa $^{12}_{6}\\text{C}$</strong> (trong bảng câu chuẩn THPT viết tương đương với mẫu đồng vị cacbon-12). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-204",
@@ -4058,7 +4462,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Số proton của hạt nhân ${ }_{6}^{12}C$ lớn hơn số proton của hạt nhân ${ }_{6}^{14}C$.",
     "optD": "Số neutron của hạt nhân ${ }_{6}^{12}C$ nhỏ hơn số neutron của hạt nhân ${ }_{6}^{14}C$.",
     "correct": "D",
-    "giaiThich": "Hạt nhân $^{12}_{6}\\text{C}$ có $ Z = 6 $ proton và $ N_1 = 12 - 6 = 6 $ neutron. Hạt nhân $^{14}_{6}\\text{C}$ có $ Z = 6 $ proton và $ N_2 = 14 - 6 = 8 $ neutron. Vì vậy <strong>số neutron của $^{12}_{6}\\text{C}$ nhỏ hơn số neutron của $^{14}_{6}\\text{C}$</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hạt nhân $^{12}_{6}\\text{C}$ có $ Z = 6 $ proton và $ N_1 = 12 - 6 = 6 $ neutron. Hạt nhân $^{14}_{6}\\text{C}$ có $ Z = 6 $ proton và $ N_2 = 14 - 6 = 8 $ neutron. Vì vậy <strong>số neutron của $^{12}_{6}\\text{C}$ nhỏ hơn số neutron của $^{14}_{6}\\text{C}$</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-205",
@@ -4078,7 +4484,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "số khối.",
     "optD": "khối lượng.",
     "correct": "B",
-    "giaiThich": "Các hạt nhân đồng vị thuộc cùng một nguyên tố nên luôn có cùng số proton ($Z $), suy ra có <strong>cùng điện tích hạt nhân ($+Ze$)</strong>, nhưng khác nhau về số neutron, số khối và khối lượng. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Các hạt nhân đồng vị thuộc cùng một nguyên tố nên luôn có cùng số proton ($Z $), suy ra có <strong>cùng điện tích hạt nhân ($+Ze$)</strong>, nhưng khác nhau về số neutron, số khối và khối lượng. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD14-LT01",
@@ -4098,7 +4506,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "chứa cùng số neutron N nhưng có số proton Z khác nhau.",
     "optD": "chứa cùng số khối A nhưng có số proton Z khác nhau.",
     "correct": "A",
-    "giaiThich": "Các đồng vị là những nguyên tử có hạt nhân <strong>chứa cùng số proton $Z$</strong> (cùng vị trí trong bảng tuần hoàn và cùng tính chất hóa học) <strong>nhưng có số neutron $N$ khác nhau</strong>, dẫn đến số khối $A = Z + N$ khác nhau. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Các đồng vị là những nguyên tử có hạt nhân <strong>chứa cùng số proton $Z$</strong> (cùng vị trí trong bảng tuần hoàn và cùng tính chất hóa học) <strong>nhưng có số neutron $N$ khác nhau</strong>, dẫn đến số khối $A = Z + N$ khác nhau. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-206",
@@ -4118,7 +4528,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Hình c.",
     "optD": "Hình d.",
     "correct": "B",
-    "giaiThich": "Đường cong năng lượng liên kết riêng $E_{\\text{lkr}}$ theo số khối $ A $ bắt đầu từ $ 0 $ ($ A=1 $), tăng vọt rất nhanh ở các hạt nhân nhẹ, đạt cực đại (khoảng $ 8{,}8\\text{ MeV/nucleon}$) ở vùng trung bình ($ A \\approx 50 - 70$) rồi giảm thoai thoải dần với các hạt nhân nặng. Đường đồ thị <strong>Hình b</strong> mô tả đúng quy luật này. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Đường cong năng lượng liên kết riêng $E_{\\text{lkr}}$ theo số khối $ A $ bắt đầu từ $ 0 $ ($ A=1 $), tăng vọt rất nhanh ở các hạt nhân nhẹ, đạt cực đại (khoảng $ 8{,}8\\text{ MeV/nucleon}$) ở vùng trung bình ($ A \\approx 50 - 70$) rồi giảm thoai thoải dần với các hạt nhân nặng. Đường đồ thị <strong>Hình b</strong> mô tả đúng quy luật này. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-208",
@@ -4138,7 +4550,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "độ hụt khối của hạt nhân.",
     "optD": "năng lượng liên kết của hạt nhân.",
     "correct": "D",
-    "giaiThich": "Biểu thức $[Z m_p + (A - Z)m_n - m_X]$ chính là độ hụt khối $\\Delta m $ của hạt nhân $^{A}_{Z}\\text{X}$. Nhân với $ c^2 $ ta được <strong>$ W_{\\text{lk}} = \\Delta m c^2 $</strong>, gọi là <strong>năng lượng liên kết của hạt nhân</strong> (nếu chia thêm cho $ A$ mới gọi là năng lượng liên kết riêng). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Biểu thức $[Z m_p + (A - Z)m_n - m_X]$ chính là độ hụt khối $\\Delta m $ của hạt nhân $^{A}_{Z}\\text{X}$. Nhân với $ c^2 $ ta được <strong>$ W_{\\text{lk}} = \\Delta m c^2 $</strong>, gọi là <strong>năng lượng liên kết của hạt nhân</strong> (nếu chia thêm cho $ A$ mới gọi là năng lượng liên kết riêng). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-209",
@@ -4158,7 +4572,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "60 < A < 150.",
     "optD": "80 < A < 160.",
     "correct": "A",
-    "giaiThich": "Các hạt nhân có năng lượng liên kết riêng lớn nhất và bền vững nhất trong tự nhiên thuộc vùng khối lượng trung bình có số khối nằm trong khoảng <strong>$50 < A < 80$</strong> (điển hình như Fe, Ni, Cu...). Vậy chọn <strong>A</strong>."
+    "giaiThich": "Các hạt nhân có năng lượng liên kết riêng lớn nhất và bền vững nhất trong tự nhiên thuộc vùng khối lượng trung bình có số khối nằm trong khoảng <strong>$50 \\lt A \\lt 80$</strong> (điển hình như Fe, Ni, Cu...). Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-210",
@@ -4178,7 +4594,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Sắt.",
     "optD": "Urani.",
     "correct": "C",
-    "giaiThich": "Trong bảng phân bố hạt nhân bền vững (vùng $50 < A < 80 $), sắt (<strong>$^{56}_{26}\\text{Fe}$</strong>) nằm ngay vùng đỉnh của đường cong năng lượng liên kết riêng (khoảng $ 8{,}8\\text{ MeV/nucleon}$), vượt trội so với heli, cacbon hay urani. Vậy chọn <strong>C</strong>."
+    "giaiThich": "Trong bảng phân bố hạt nhân bền vững (vùng $50 \\lt A \\lt 80 $), sắt (<strong>$^{56}_{26}\\text{Fe}$</strong>) nằm ngay vùng đỉnh của đường cong năng lượng liên kết riêng (khoảng $ 8{,}8\\text{ MeV/nucleon}$), vượt trội so với heli, cacbon hay urani. Vậy chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-211",
@@ -4198,7 +4616,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Độ hụt khối của một hạt nhân luôn khác không.",
     "optD": "Khối lượng của một hạt nhân luôn lớn hơn tổng khối lượng của các nuclôn cấu tạo thành hạt nhân đó.",
     "correct": "D",
-    "giaiThich": "Khi các nucleon riêng lẻ kết hợp tạo thành hạt nhân, luôn có một phần năng lượng giải phóng ra ngoài tương ứng độ hụt khối $\\Delta m > 0 $, nên khối lượng $ m $ của hạt nhân <strong>luôn nhỏ hơn tổng khối lượng các nucleon tạo thành nó</strong> ($ m < m_0$). Khẳng định D nói \"luôn lớn hơn\" là sai. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Khi các nucleon riêng lẻ kết hợp tạo thành hạt nhân, luôn có một phần năng lượng giải phóng ra ngoài tương ứng độ hụt khối $\\Delta m \\gt 0 $, nên khối lượng $ m $ của hạt nhân <strong>luôn nhỏ hơn tổng khối lượng các nucleon tạo thành nó</strong> ($ m \\lt m_0$). Khẳng định D nói \"luôn lớn hơn\" là sai. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-212",
@@ -4218,7 +4638,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Lực hạt nhân có bán kính tác dụng khoảng $10^{−15}$ m.",
     "optD": "Lực hạt nhân có cường độ rất lớn so với lực điện từ và lực hấp dẫn.",
     "correct": "B",
-    "giaiThich": "<strong>Lực hạt nhân</strong> là lực tương tác mạnh giữa các nucleon (proton với proton, neutron với neutron, proton với neutron) có cường độ rất lớn và bán kính tác dụng cực ngắn cỡ $10^{-15}\\text{ m}$, hoàn toàn <strong>không phụ thuộc vào điện tích</strong> của nucleon. Vậy chọn <strong>B</strong>."
+    "giaiThich": "<strong>Lực hạt nhân</strong> là lực tương tác mạnh giữa các nucleon (proton với proton, neutron với neutron, proton với neutron) có cường độ rất lớn và bán kính tác dụng cực ngắn cỡ $10^{-15}\\text{ m}$, hoàn toàn <strong>không phụ thuộc vào điện tích</strong> của nucleon. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-213",
@@ -4238,7 +4660,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Giữa prôtôn và nơtron không có lực tác dụng",
     "optD": "Giữa các nuclôn có lực hút rất lớn",
     "correct": "D",
-    "giaiThich": "Hạt nhân $^{4}_{2}\\text{He}$ bền vững mặc dù chứa hai proton tích điện dương đẩy nhau theo lực tĩnh điện Coulomb. Điều đó chứng tỏ <strong>giữa các nucleon trong hạt nhân tồn tại lực hút (lực hạt nhân) có cường độ rất lớn</strong>, thắng được lực đẩy tĩnh điện. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hạt nhân $^{4}_{2}\\text{He}$ bền vững mặc dù chứa hai proton tích điện dương đẩy nhau theo lực tĩnh điện Coulomb. Điều đó chứng tỏ <strong>giữa các nucleon trong hạt nhân tồn tại lực hút (lực hạt nhân) có cường độ rất lớn</strong>, thắng được lực đẩy tĩnh điện. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-214",
@@ -4258,7 +4682,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "m >$m_{0}$.",
     "optD": "m <$m_{0}$.",
     "correct": "D",
-    "giaiThich": "Vì luôn có độ hụt khối $\\Delta m = m_0 - m > 0 $ và năng lượng liên kết $\\Delta E = (m_0 - m)c^2 > 0 $, nên khối lượng $ m $ của hạt nhân tạo thành <strong>luôn nhỏ hơn tổng khối lượng $ m_0 $ của các nucleon tự do</strong> ($ m < m_0$). Vậy chọn <strong>D</strong>."
+    "giaiThich": "Vì luôn có độ hụt khối $\\Delta m = m_0 - m \\gt 0 $ và năng lượng liên kết $\\Delta E = (m_0 - m)c^2 \\gt 0 $, nên khối lượng $ m $ của hạt nhân tạo thành <strong>luôn nhỏ hơn tổng khối lượng $ m_0 $ của các nucleon tự do</strong> ($ m \\lt m_0$). Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-215",
@@ -4278,7 +4704,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "$W_{\\text{lk}} = m^2 c$",
     "optD": "$W_{\\text{lk}} = \\Delta m^2 c^2$",
     "correct": "B",
-    "giaiThich": "Năng lượng liên kết của hạt nhân $^{A}_{Z}\\text{X}$ đặc trưng cho mức độ tỏa năng lượng khi liên kết $ Z $ proton và $ (A-Z) $ neutron thành hạt nhân, được tính theo công thức <strong>$ W_{\\text{lk}} = \\Delta m c^2 $</strong> với $\\Delta m$ là độ hụt khối. Vậy chọn <strong>B</strong>."
+    "giaiThich": "Năng lượng liên kết của hạt nhân $^{A}_{Z}\\text{X}$ đặc trưng cho mức độ tỏa năng lượng khi liên kết $ Z $ proton và $ (A-Z) $ neutron thành hạt nhân, được tính theo công thức <strong>$ W_{\\text{lk}} = \\Delta m c^2 $</strong> với $\\Delta m$ là độ hụt khối. Vậy chọn <strong>B</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-216",
@@ -4298,7 +4726,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "7,1MeV/ nuclon.",
     "optD": "6,8MeV/nuclon.",
     "correct": "A",
-    "giaiThich": "Các hạt nhân bền vững nhất (vùng $50 < A < 80 $ quanh $^{56}\\text{Fe}, ^{62}\\text{Ni}$) có năng lượng liên kết riêng $ E_{\\text{lkr}} = \\frac{W_{\\text{lk}}}{A}$ đạt cực đại vào cỡ <strong>$ 8{,}8\\text{ MeV/nucleon}$</strong>. Vậy chọn <strong>A</strong>."
+    "giaiThich": "Các hạt nhân bền vững nhất (vùng $50 \\lt A \\lt 80 $ quanh $^{56}\\text{Fe}, ^{62}\\text{Ni}$) có năng lượng liên kết riêng $ E_{\\text{lkr}} = \\frac{W_{\\text{lk}}}{A}$ đạt cực đại vào cỡ <strong>$ 8{,}8\\text{ MeV/nucleon}$</strong>. Vậy chọn <strong>A</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-217",
@@ -4318,7 +4748,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "có năng lượng liên kết bằng 0.",
     "optD": "kém bền vững nhất.",
     "correct": "D",
-    "giaiThich": "Hạt nhân $^{1}_{1}\\text{H}$ chỉ gồm $ 1 $ proton duy nhất nên không phải hệ nhiều hạt liên kết: có điện tích $+e $, không có độ hụt khối và $ W_{\\text{lk}} = 0$, nhưng nó <strong>rất bền vững</strong> (proton là hạt đơn ổn định, không tự phân rã). Do đó ý nói \"kém bền vững nhất\" là sai. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Hạt nhân $^{1}_{1}\\text{H}$ chỉ gồm $ 1 $ proton duy nhất nên không phải hệ nhiều hạt liên kết: có điện tích $+e $, không có độ hụt khối và $ W_{\\text{lk}} = 0$, nhưng nó <strong>rất bền vững</strong> (proton là hạt đơn ổn định, không tự phân rã). Do đó ý nói \"kém bền vững nhất\" là sai. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-220",
@@ -4338,7 +4770,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "${ }_{26}^{56}Fe;{ }_{25}^{55}Mn;{ }_{27}^{59}Co$",
     "optD": "${ }_{25}^{55}Mn;{ }_{27}^{59}Co;{ }_{26}^{56}Fe$",
     "correct": "D",
-    "giaiThich": "Mức độ bền vững của hạt nhân tăng theo năng lượng liên kết riêng $E_{\\text{lkr}}$. Trên đỉnh đường cong bền vững ($ A \\approx 56-62 $), $^{56}_{26}\\text{Fe}$ ($ E_{\\text{lkr}} \\approx 8{,}79\\text{ MeV/nuclon}$) bền vững hơn $^{59}_{27}\\text{Co}$ ($\\approx 8{,}77\\text{ MeV/nuclon}$) và cả hai đều bền vững hơn $^{55}_{25}\\text{Mn}$ ($\\approx 8{,}76\\text{ MeV/nuclon}$). Vậy thứ tự bền vững tăng dần là <strong>$^{55}_{25}\\text{Mn};\\; ^{59}_{27}\\text{Co};\\; ^{56}_{26}\\text{Fe}$</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Mức độ bền vững của hạt nhân tăng theo năng lượng liên kết riêng $E_{\\text{lkr}}$. Trên đỉnh đường cong bền vững ($ A \\approx 56-62 $), $^{56}_{26}\\text{Fe}$ ($ E_{\\text{lkr}} \\approx 8{,}79\\text{ MeV/nuclon}$) bền vững hơn $^{59}_{27}\\text{Co}$ ($\\approx 8{,}77\\text{ MeV/nuclon}$) và cả hai đều bền vững hơn $^{55}_{25}\\text{Mn}$ ($\\approx 8{,}76\\text{ MeV/nuclon}$). Vậy thứ tự bền vững tăng dần là <strong>$^{55}_{25}\\text{Mn};\\; ^{59}_{27}\\text{Co};\\; ^{56}_{26}\\text{Fe}$</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-LT01",
@@ -4358,7 +4792,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "năng lượng liên kết càng lớn",
     "optD": "năng lượng liên kết riêng càng lớn",
     "correct": "D",
-    "giaiThich": "Để đánh giá mức độ bền vững của một hạt nhân (năng lượng liên kết tính trung bình trên mỗi nucleon), người ta dùng <strong>năng lượng liên kết riêng</strong> ($\\varepsilon = \\frac{W_{\\text{lk}}}{A}$). Hạt nhân có <strong>năng lượng liên kết riêng càng lớn thì càng bền vững</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Để đánh giá mức độ bền vững của một hạt nhân (năng lượng liên kết tính trung bình trên mỗi nucleon), người ta dùng <strong>năng lượng liên kết riêng</strong> ($\\varepsilon = \\frac{W_{\\text{lk}}}{A}$). Hạt nhân có <strong>năng lượng liên kết riêng càng lớn thì càng bền vững</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-LT02",
@@ -4378,7 +4814,9 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "lực tĩnh điện.",
     "optD": "lực tương tác mạnh.",
     "correct": "D",
-    "giaiThich": "Các nucleon (proton và neutron) liên kết chặt chẽ trong phạm vi bán kính hạt nhân khoảng $10^{-15}\\text{ m}$ nhờ lực hút cực mạnh vượt trội so với lực đẩy tĩnh điện giữa các proton; bản chất của lực hạt nhân chính là <strong>lực tương tác mạnh</strong>. Vậy chọn <strong>D</strong>."
+    "giaiThich": "Các nucleon (proton và neutron) liên kết chặt chẽ trong phạm vi bán kính hạt nhân khoảng $10^{-15}\\text{ m}$ nhờ lực hút cực mạnh vượt trội so với lực đẩy tĩnh điện giữa các proton; bản chất của lực hạt nhân chính là <strong>lực tương tác mạnh</strong>. Vậy chọn <strong>D</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   },
   {
     "id": "VLXT-ST220-C4-CD15-LT03",
@@ -4398,6 +4836,8 @@ window.VLXT_STAGING_220_QUESTIONS = [
     "optC": "Là lực liên kết giữa hạt nhân và các êlectron quanh hạt nhân giúp nguyên tử bền vững.",
     "optD": "Là lực hút rất mạnh giữa các nuclôn, có bản chất khác lực tĩnh điện và lực hấp dẫn.",
     "correct": "C",
-    "giaiThich": "Lực hạt nhân là lực tương tác mạnh chỉ tác dụng giữa các nucleon trong phạm vi kích thước hạt nhân ($\\sim 10^{-15}\\text{ m}$) và không phụ thuộc điện tích. Lực giữ các electron chuyển động quanh hạt nhân là lực hút tĩnh điện (lực Coulomb), <strong>không phải</strong> lực hạt nhân. Vậy phát biểu C sai; chọn <strong>C</strong>."
+    "giaiThich": "Lực hạt nhân là lực tương tác mạnh chỉ tác dụng giữa các nucleon trong phạm vi kích thước hạt nhân ($\\sim 10^{-15}\\text{ m}$) và không phụ thuộc điện tích. Lực giữ các electron chuyển động quanh hạt nhân là lực hút tĩnh điện (lực Coulomb), <strong>không phải</strong> lực hạt nhân. Vậy phát biểu C sai; chọn <strong>C</strong>.",
+    "isApproved": true,
+    "reviewStatus": "APPROVED"
   }
 ];

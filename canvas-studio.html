@@ -14,22 +14,23 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.244 Câu & Các Gói Staging Chuyên Biệt -->
-    <script src="assets/ngan-hang-3048-questions.js?v=20261118-ds200-v2"></script>
+    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.514 Câu & Các Gói Đã Nạp Chính Thức -->
+    <script src="assets/ngan-hang-3048-questions.js?v=20261118-lt270"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
+    <script src="assets/tn270-lt-bank-pack.js?v=20261118-lt270"></script>
     <script src="assets/ds106-bank-pack.js?v=20261118-ds200-v2"></script>
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
-    <script src="assets/staging-c2-c3-questions.js?v=20261118-sync50"></script>
-    <script src="assets/staging-tn-220-questions.js?v=20261118-lt220full"></script>
+    <script src="assets/staging-c2-c3-questions.js?v=20261118-lt270"></script>
+    <script src="assets/staging-tn-220-questions.js?v=20261118-lt270"></script>
     <script src="assets/staging-ds-106-questions.js?v=20261118-ds200-v2"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
-    <script src="assets/staging-tn50-models.js?v=20261118-tn50models"></script>
-    <script src="assets/staging-tn220-models.js?v=20261118-lt220full"></script>
+    <script src="assets/staging-tn50-models.js?v=20261118-lt270"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-lt270"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1186,9 +1187,9 @@
             <div class="selector-group">
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
                 <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
-                    <option value="P1_STAGING_220">🚀 46 Mô Hình Đợt 220 (14 BT Đã Nạp NH &amp; 32 LT Chờ Duyệt)</option>
+                    <option value="P1_STAGING_220">🚀 46 Mô Hình Đợt 220 (14 BT &amp; 32 LT — Đã Nạp Ngân Hàng)</option>
                     <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Đợt Mới (Đã Nạp Ngân Hàng)</option>
-                    <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 &amp; C3 Có Hình)</option>
+                    <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 &amp; C3 — Đã Nạp Ngân Hàng)</option>
                     <option value="P2_ORIGINAL_94">🧪 94 Mô Hình Đúng / Sai Gốc (Đã Nạp)</option>
                     <option value="P2_ALL">🌟 Toàn Bộ 200 Mô Hình Đúng / Sai (94 Gốc + 106 Mới Đã Nạp)</option>
                     <option value="P1">📘 Phần 1: Trắc Nghiệm ABCD (Các mô hình TN)</option>
@@ -1340,14 +1341,12 @@
                 <div class="selector-group">
                     <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
-                        <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
-                            <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Lý Thuyết — 220 Câu TN-LT Tinh Tuyển (C1–C4)</option>
-                            <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 &amp; 3)</option>
-                        </optgroup>
-                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.244 CÂU)">
-                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.244 Câu)</option>
-                            <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
+                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.514 CÂU)">
+                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.514 Câu)</option>
+                            <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.574 Câu — Đủ 16/16 CĐ)</option>
                             <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.370 Câu)</option>
+                            <option value="STAGING_220" selected>🚀 Riêng 220 Câu TN-LT Đợt Mới (Đã Nạp NH)</option>
+                            <option value="STAGING_50">📘 Riêng 50 Câu TN-LT Ch.2–3 (Đã Nạp NH)</option>
                             <option value="DS">🧪 Đúng / Sai Thực Nghiệm (200 Câu Mô Hình Canvas)</option>
                             <option value="STAGING_DS_106">🧪 Riêng 106 Câu Đúng/Sai Đợt Mới (Đã Nạp NH)</option>
                             <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
@@ -2767,7 +2766,8 @@ YÊU CẦU TINH CHỈNH:
         const list = Array.isArray(bankRows) ? bankRows.slice() : [];
         const packs = [
             ...(Array.isArray(window.VLXT_TN220_BT_BANK) ? window.VLXT_TN220_BT_BANK : []),
-            ...(Array.isArray(window.VLXT_DS106_BANK) ? window.VLXT_DS106_BANK : [])
+            ...(Array.isArray(window.VLXT_DS106_BANK) ? window.VLXT_DS106_BANK : []),
+            ...(Array.isArray(window.VLXT_TN270_LT_BANK) ? window.VLXT_TN270_LT_BANK : [])
         ];
         if (!packs.length) return list;
         const idxById = new Map();
@@ -2782,7 +2782,8 @@ YÊU CẦU TINH CHỈNH:
                 } else {
                     if (!target.modelId && itemQ.modelId) target.modelId = itemQ.modelId;
                     if (itemQ.subTopic) target.subTopic = itemQ.subTopic;
-                    if (itemQ.baiHoc && itemQ.loai === 'DS') target.baiHoc = itemQ.baiHoc;
+                    if (itemQ.tnType && !target.tnType) target.tnType = itemQ.tnType;
+                    if (itemQ.baiHoc && (itemQ.loai === 'DS' || itemQ.tnType === 'LT')) target.baiHoc = itemQ.baiHoc;
                 }
             } else {
                 list.push({ ...itemQ });
@@ -2793,7 +2794,7 @@ YÊU CẦU TINH CHỈNH:
     }
 
 function initStagingSystem() {
-        // Nạp nguồn Ngân Hàng Đề chính thức (3.244 câu, tự hợp nhất gói TN220-BT & DS-106 mới đẩy)
+        // Nạp nguồn Ngân Hàng Đề chính thức (3.514 câu, tự hợp nhất gói TN220-BT, DS-106 & TN270-LT)
         const rawBank = mergeTn220BtPackIntoBankList(window.VLXT_NGANHANG_3048 || []);
         const poolBank = rawBank.map(q => Object.assign({}, q, { isFromBank: true }));
 
@@ -2806,6 +2807,12 @@ function initStagingSystem() {
         // Tự động gán nhãn mô hình cho Canvas Studio nếu có
         if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
             Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
+        }
+        if (window.VLXT_TN220_CAPTIONS && typeof window.VLXT_TN220_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_TN220_CAPTIONS);
+        }
+        if (window.VLXT_TN50_CAPTIONS && typeof window.VLXT_TN50_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_TN50_CAPTIONS);
         }
         poolStagingDS106.forEach(q => {
             if (q.modelId && typeof MODEL_CAPTIONS !== 'undefined' && !MODEL_CAPTIONS[q.modelId]) {
