@@ -1,3 +1,30 @@
+## Bàn giao gần nhất (18/11/2026 08:35)
+- **Hoàn Thiện Trọn Bộ 106/106 Mô Hình Canvas 1-1 Độc Bản Chữ Lớn & Chuẩn Hóa Tinh 106 Câu Đúng/Sai (`MH-STAGING-C1-01` .. `MH-STAGING-C4-34`)**:
+- **Mục tiêu**: Tiếp nối 2 mẫu thí điểm (`MH-STAGING-C1-01` & `MH-STAGING-C1-02`) được Thầy duyệt, hoàn tất nốt **104 mô hình & câu hỏi Đúng/Sai còn lại** thành trọn bộ **106/106 mô hình Canvas 60 FPS độc bản tự chủ** với cỡ chữ lớn sắc nét theo yêu cầu của Thầy (*"ngon rất tốt làm tiếp 104 cái còn lại, cố gắng đừng để các chữ bị nhỏ quá là được"*), khôi phục 100% công thức OMML/OLE MathType, làm sạch toàn bộ ảnh đề gốc và hoàn chỉnh 424 khối lời giải KaTeX trên **Canvas Motion Studio** (`canvas-studio.html`).
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`)**:
+  - Commit mã: `99a88a5` (`feat(studio): build all 106 bespoke high-visibility DS canvas models and audit 106 questions`).
+  - `assets/staging-ds-models.js`: Thay thế toàn bộ 11 hàm template chung (`simCalorimeterHeat`, `simHeatingCurve`, ...) và wrapper `_rawSource` bằng **106 hàm vẽ độc bản hoàn toàn tự chủ** (`33 C1 + 21 C2 + 18 C3 + 34 C4`); mọi helper khai báo cục bộ bên trong thân hàm; nền phẳng `#060b19 -> #0a1226`, khung logic `780×305` (Retina `2x` `1560×610`), sàn cỡ chữ thông thường `>= 14.5px` bold (`14px` ở hộp tiêu đề `C1-01`; chỉ số phụ hạt nhân/vật lý `12.5px–13.5px`), `0` AI Glow (`shadowBlur = 0`), cốc/bình hở miệng trên, biến thiên sawtooth 1 chiều, Zero Data Leakage.
+  - `assets/staging-ds-106-questions.json` & `assets/staging-ds-106-questions.js`: Chuẩn hóa Tinh **106/106 câu Đúng/Sai** (`taxonomy`, `baiHoc`, `subTopic`, `caption`, `simType`), khôi phục 100% công thức bị rớt từ Word OMML/MathType, nhúng bảng số liệu HTML `.vstep-data-table` cho các câu có bảng (`011, 012, 013, 019, 020, 035, 073`), và thay sạch 100% placeholder bằng **424 khối** (`106 × 4`) lời giải chi tiết `.exp-stmt-item` kèm `.vlxt-math-callout`.
+  - `assets/images/staging-ds/*`: Làm sạch **70 ảnh đề gốc** tham chiếu trực tiếp trong 106 câu — khôi phục ảnh sạch đúng đề cho `018_p6.png`, `046_p11.png`, `055.png` (lực kế tròn treo khung dây `PQ`), `060.png` (cuộn dây + điện kế), `068_p3.png`, `072.png` (nam châm chữ U trên cân điện tử & đồ thị `m(I)`), đồng thời đặt `hinhAnh: ""` cho các ảnh nháp mực xanh hoặc dính nhầm câu (`003_p2, 017, 053, 058.jpeg, 069, 079, 084, 086, 088, 089, 093, 094, 099`).
+  - `canvas-studio.html`: Cập nhật cache-busting `?v=20261118-bespoke106` cho `staging-ds-106-questions.js` và `staging-ds-models.js`.
+- **5 câu đã hiệu chỉnh đáp án gốc (`correct`) sai hiển nhiên so với vật lý & lời giải đề gốc** (để Thầy kiểm tra lại khi duyệt):
+  1. `VLXT-DS-VD28-016`: `SSĐS` $\to$ **`ĐĐSĐ`** (đồ thị chì nóng chảy $327^\circ\text{C}$ tại $N$ và sôi $1749^\circ\text{C}$ tại $Q$).
+  2. `VLXT-DS-VD28-046`: `ĐĐSĐ` $\to$ **`SĐSĐ`** (ý a tính $p_1 = p_0 + F_{\text{ms}}/S \approx 113\,710\text{ Pa} \neq 117\,760\text{ Pa}$, khớp bảng đáp án gốc đầu `GIẢI ĐỀ THI THỬ SỐ 2.docx`).
+  3. `VLXT-DS-VD28-078`: `SĐĐS` $\to$ **`SĐSĐ`** (ý c năng lượng $1\text{ g}$ He là $4{,}17\cdot 10^{11}\text{ J} \neq 31{,}5\cdot 10^{19}\text{ J}$; ý d $^{2}_{1}\text{H}, ^{3}_{1}\text{H}$ là đồng vị hydrogen).
+  4. `VLXT-DS-VD28-083`: `ĐĐĐĐ` $\to$ **`ĐSĐĐ`** (ý b nói bức xạ $\beta$ từ Triti không gây nguy hiểm cho người là Sai theo chính hướng dẫn giải gốc).
+  5. `VLXT-DS-VD28-086`: `SĐSĐ` $\to$ **`SĐSS`** (ý d tuổi Trái Đất khi $^{235}_{92}\text{U}$ còn $0{,}1\%$ tính ra $\approx 8{,}33\text{ tỉ năm} \neq 7{,}7\text{ tỉ năm}$).
+- **Kiểm tra 5 cổng đã chạy (sau chỉnh sửa cuối)**:
+  - **Cổng 1 (Syntax & Uniqueness)**: `node -c assets/staging-ds-models.js`, `node -c assets/staging-ds-106-questions.js`, inline `<script>` của `canvas-studio.html` và `</html>` PASS; `106` modelId đăng ký, `106` thân hàm độc nhất; `git diff --cached --check` PASS, không chứa secret.
+  - **Cổng 2 (Font & No-Glow)**: `shadowBlur: 0 violations`; không có font chữ thường `< 14px` (duy nhất 1 chuỗi phụ `ms cực đại` dưới chữ `F` tại `C2-13` là `13px`).
+  - **Cổng 3 (Data, KaTeX & Asset)**: `dataIssues: 0`, `htmlAngleWarnings: 0`, `70/70` ảnh `hinhAnh` tồn tại và nạp `ok: true` (`brokenImgs: []`), `0` placeholder, `0` `.wmf`.
+  - **Cổng 4 (Playwright Chromium Retina 2x Audit)**: `qCount: 106`, `stagingModelCount: 106`, `Runtime errors: 0`, `Text-bounds violations ([1.5..778.5]×[1.5..303.5]): 0` qua cả 2 mốc `t = 0.8s` và `t = 4.6s` (212 lượt vẽ); Tab 1 (`Câu 1 / 106`, bảng `.vstep-data-table` & KaTeX `0` lỗi), Tab 2 (`#sel-model` đủ `106` lựa chọn), `Console Errors: 0`, `Page Errors: 0`.
+  - **Cổng 5 (Visual Spot-Check)**: Mở xem trực tiếp 8 ảnh Retina 2x đại diện 4 chương (`C1-02`, `C1-16`, `C2-05`, `C2-13`, `C3-01`, `C3-18`, `C4-01`, `C4-19`), đã sửa 2 chi tiết nhỏ ở `C2-13` (`p₀ =`) và `C4-19` (`I-128, Z = 53`) và kiểm chứng lại bằng ảnh.
+- **Điều phải giữ nguyên**:
+  - Giữ toàn bộ 106 câu ở trạng thái **Staging Preview** trên `canvas-studio.html`; tuyệt đối không nạp trực tiếp vào Ngân Hàng Đề production nếu chưa có lệnh duyệt của Thầy.
+  - Không dùng `shadowBlur`, giữ chữ lớn sắc nét và bảo toàn cấu trúc 94 mô hình gốc + 27 mô hình TN50.
+- **Việc còn lại**:
+  - Chờ Thầy duyệt trực tiếp **106 câu & 106 mô hình Đúng/Sai** (đặc biệt lưu ý 5 câu đã hiệu chỉnh đáp án gốc nêu trên) trên `canvas-studio.html` trước khi chốt nạp ngân hàng chính thức.
+
 ## Bàn giao gần nhất (18/11/2026 07:20)
 - **Hoàn Thiện 27 Mô Hình Canvas 1-1 Độc Bản & Kiểm Toán Toàn Diện 50 Câu Trắc Nghiệm Chờ Duyệt (`MH-TN50-C2-*` & `MH-TN50-C3-*`)**:
 - **Mục tiêu**: Thực hiện chỉ đạo của Thầy Nguyễn Xuân Trường (*"làm lại mô hình cho 50 câu này xem thử câu nào có hình thì làm đúng theo yêu cầu"*): đối chiếu toàn bộ 50 câu trắc nghiệm (`Chương 2. Khí lý tưởng - 250 câu.docx` & `Chương 3. Từ trường - 250 câu.docx`), làm sạch hoàn toàn ảnh Word gán nhầm/thiếu, khôi phục công thức OMML/đáp án bị rớt, và thiết kế 27 mô hình Canvas 2D 60 FPS độc bản khớp 1-1 hình đề Word gốc.
