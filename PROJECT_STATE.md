@@ -1,3 +1,21 @@
+## Bàn giao gần nhất (18/11/2026 07:20)
+- **Hoàn Thiện 27 Mô Hình Canvas 1-1 Độc Bản & Kiểm Toán Toàn Diện 50 Câu Trắc Nghiệm Chờ Duyệt (`MH-TN50-C2-*` & `MH-TN50-C3-*`)**:
+- **Mục tiêu**: Thực hiện chỉ đạo của Thầy Nguyễn Xuân Trường (*"làm lại mô hình cho 50 câu này xem thử câu nào có hình thì làm đúng theo yêu cầu"*): đối chiếu toàn bộ 50 câu trắc nghiệm (`Chương 2. Khí lý tưởng - 250 câu.docx` & `Chương 3. Từ trường - 250 câu.docx`), làm sạch hoàn toàn ảnh Word gán nhầm/thiếu, khôi phục công thức OMML/đáp án bị rớt, và thiết kế 27 mô hình Canvas 2D 60 FPS độc bản khớp 1-1 hình đề Word gốc.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`)**:
+  - Commit mã: `583cec6` (`feat(studio): build 27 bespoke 1-1 canvas models for 50 staging MCQs and fix word image/OMML alignment`).
+  - `assets/images/staging/`: Trích xuất bổ sung 4 ảnh đề chùm từ Word gốc (`q_528_0.jpg`, `q_533_0.jpg`, `q_538_0.jpg`, `q_544_0.jpg`) và xóa 3 ảnh bị gán nhầm cho câu thuần chữ (`q_506_0.jpg`, `q_523_0.jpg`, `q_565_0.jpg`).
+  - `assets/staging-c2-c3-questions.json` & `assets/staging-c2-c3-questions.js`: Xây dựng lại sạch 50 câu gồm đúng **27 câu có hình/biểu đồ gắn `modelId` + `hinhAnh`** (`9` Chương 2 + `18` Chương 3) và **23 câu thuần chữ để rỗng** `modelId`/`hinhAnh`; khôi phục công thức OMML bị rớt (`255, 258, 266, 269, 314, 347, 350, 502..565`), tách `deBaiChung` câu chùm khỏi `optD` của câu trước, sửa đáp án câu `266` (`D`).
+  - `assets/staging-tn50-models.js`: Mới — đăng ký 27 hàm vẽ Canvas 60 FPS tự chủ hoàn toàn (`MH-TN50-C2-251, 258, 274, 255, 269, 314, 337, 347, 350` và `MH-TN50-C3-502, 503, 505, 521, 522, 526, 546, 528, 535, 538, 539, 531, 533, 544, 545, 554, 556, 564`), tuân thủ Retina 2x `780×305`, EdTech phẳng không AI Glow và Zero Data Leakage.
+  - `canvas-studio.html`: Nạp `assets/staging-tn50-models.js?v=20261118-tn50models`, thêm phân nhóm `P1_STAGING_50` trong `#sel-part`, lọc Chương (`ALL`/27, `C2`/9, `C3`/18), hiển thị `deBaiChung`, sửa TN ABCD editor (`toggleModelQuestionTf`/`updateModelQuestionTfButtons`), và chuyển 1-click về `STAGING_50`.
+- **Kiểm tra đã chạy**:
+  - `node -c` đạt exit code 0 trên `staging-tn50-models.js`, `staging-c2-c3-questions.js` và inline `<script>` (`Inline <script> syntax OK count: 1`); `After </html> length: 0`; `Total: 50, WithModel: 27, TextOnly: 23, Registered: 27, EmptyOpts: 0, LeakedOpts: 0, MissingReg: 0, shadowBlurHits: 0`; `git diff --check` đạt exit code 0.
+  - Playwright High-DPI (`deviceScaleFactor: 2`, `1440×900`) tại `http://127.0.0.1:<port>/canvas-studio.html`: exit code 0, 0 console/page errors, 0 404 URLs; Tab 1 `STAGING_50` đủ 50 câu (câu 251/528 hiện Canvas `1560×610` + ảnh Word gốc, câu thuần chữ 254/277 ẩn Canvas); Tab 2 `P1_STAGING_50` đủ 27 mô hình (`C2=9`, `C3=18`), 27/27 mô hình vẽ không lỗi qua 5 mốc `t` & Hot-Reload + chuyển Tab 1 thành công; đã mở xem trực tiếp toàn bộ 14 ảnh PNG 2x và sửa triệt để 4 điểm chạm chữ (`C2-251, C2-258, C2-337, C3-521`).
+- **Điều phải giữ nguyên**:
+  - Chỉ gắn `modelId` và `hinhAnh` cho đúng 27 câu có hình/biểu đồ thật trong Word gốc; 23 câu thuần chữ giữ nguyên chế độ không Canvas.
+  - Không làm lộ đáp án trên Canvas đối chứng (không ghi `p`, `1/V` lên `C2-251`; không tô nổi hình đúng ở `C2-314`, `C2-350`; không ghi cực `N/S` hay đáp án `C3-502..564`).
+- **Việc còn lại**:
+  - Thầy nghiệm thu bộ 50 câu trắc nghiệm + 27 mô hình Canvas trên `canvas-studio.html`; tiếp tục hoàn thiện **104/106 mô hình Đúng/Sai còn lại** (`MH-STAGING-C1-03..C4-34`) sau khi Thầy chốt 2 mẫu thí điểm đầu.
+
 ## Bàn giao gần nhất (18/11/2026 06:33)
 - **Xây Dựng Chuẩn Mực 2 Mô Hình Đúng/Sai Đầu Tiên (`MH-STAGING-C1-01` & `MH-STAGING-C1-02`) Theo Đúng Quy Chuẩn 94 Mô Hình Đã Duyệt & Nâng Cấp Retina 2x DPI Trên Studio**:
 - **Mục tiêu**: Thực hiện chỉ đạo của Thầy Nguyễn Xuân Trường: đọc lại toàn bộ `VLXT_MOTION_SPEC.md`, `assets/canvas-core-helpers.js`, `assets/mo-hinh-thuc-te-models.js` và đề Word gốc `10. ĐỀ SỐ 10.docx` để hiểu nguyên lý thiết kế 94 mô hình đã duyệt, từ đó làm chuẩn xác và test trước **2 câu đầu** trong gói 106 câu Đúng/Sai mới (`VLXT-DS-VD28-001` & `VLXT-DS-VD28-002`).
