@@ -1395,6 +1395,902 @@
             ctx.fillText(b.lb, bx + bw / 2, 262);
         });
     });
+
+    // === 19 BỔ SUNG MÔ HÌNH ĐỢT 220 (MH-TN220-C1-28 .. MH-TN220-C3-46) ===
+    function bgGrid(ctx, w, h) {
+        const bg = ctx.createLinearGradient(0, 0, 0, h);
+        bg.addColorStop(0, '#060b19');
+        bg.addColorStop(1, '#0a1226');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(56,189,248,0.045)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 26) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+        for (let y = 0; y < h; y += 26) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    }
+
+    function arrowHead(ctx, x1, y1, x2, y2, size, col) {
+        const a = Math.atan2(y2 - y1, x2 - x1);
+        ctx.fillStyle = col || '#e2e8f0';
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - size * Math.cos(a - 0.42), y2 - size * Math.sin(a - 0.42));
+        ctx.lineTo(x2 - size * Math.cos(a + 0.42), y2 - size * Math.sin(a + 0.42));
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function panelCard(ctx, x, y, pw, ph, label, sub) {
+        ctx.fillStyle = 'rgba(15,23,42,0.88)';
+        ctx.strokeStyle = 'rgba(71,85,105,0.65)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.roundRect(x, y, pw, ph, 10);
+        ctx.fill();
+        ctx.stroke();
+        if (label) {
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = '800 14px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, x + pw / 2, y + ph - (sub ? 24 : 11));
+        }
+        if (sub) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '600 11.5px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(sub, x + pw / 2, y + ph - 8);
+        }
+    }
+
+    function drawMiniAxes(ctx, ox, oy, lenX, lenY, xLb, yLb, oLb) {
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + lenX, oy); ctx.stroke();
+        arrowHead(ctx, ox, oy, ox + lenX, oy, 7, '#94a3b8');
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, oy - lenY); ctx.stroke();
+        arrowHead(ctx, ox, oy, ox, oy - lenY, 7, '#94a3b8');
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '700 13px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(oLb || 'O', ox - 4, oy + 14);
+        ctx.textAlign = 'left';
+        ctx.fillText(yLb, ox + 7, oy - lenY + 8);
+        ctx.textAlign = 'center';
+        ctx.fillText(xLb, ox + lenX - 8, oy + 17);
+    }
+
+    function drawOpenBeaker(ctx, x, y, bw, bh, waterRatio, tempCol) {
+        // Open-top U-shape beaker (left rim -> bottom -> right rim, no closed top lid)
+        const r = 6;
+        if (waterRatio > 0) {
+            const wh = bh * waterRatio;
+            ctx.fillStyle = tempCol || 'rgba(56,189,248,0.22)';
+            ctx.beginPath();
+            ctx.rect(x + 2, y + bh - wh, bw - 4, wh - 2);
+            ctx.fill();
+            ctx.strokeStyle = tempCol ? 'rgba(251,146,60,0.6)' : 'rgba(56,189,248,0.65)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(x + 2, y + bh - wh);
+            ctx.lineTo(x + bw - 2, y + bh - wh);
+            ctx.stroke();
+        }
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - 3, y);
+        ctx.lineTo(x, y + 4);
+        ctx.lineTo(x, y + bh - r);
+        ctx.quadraticCurveTo(x, y + bh, x + r, y + bh);
+        ctx.lineTo(x + bw - r, y + bh);
+        ctx.quadraticCurveTo(x + bw, y + bh, x + bw, y + bh - r);
+        ctx.lineTo(x + bw, y + 4);
+        ctx.lineTo(x + bw + 3, y);
+        ctx.stroke();
+    }
+
+    // 28. MH-TN220-C1-28 — 4 quá trình (Mài kim loại, Nấu thức ăn, Làm lạnh vật, Đưa vật lên cao)
+    window.VLXTModels.register('MH-TN220-C1-28', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const defs = [
+            { lb: 'Hình 1', sub: 'Mài kim loại' },
+            { lb: 'Hình 2', sub: 'Nấu thức ăn' },
+            { lb: 'Hình 3', sub: 'Làm lạnh vật' },
+            { lb: 'Hình 4', sub: 'Đưa vật lên cao' }
+        ];
+        defs.forEach((d, i) => panelCard(ctx, sx + i * (pw + gap), y0, pw, ph, d.lb, d.sub));
+
+        // Hình 1: Mài kim loại (đĩa quay + tia lửa sawtooth)
+        const c1 = sx + pw / 2;
+        ctx.fillStyle = '#475569'; ctx.fillRect(c1 - 54, 154, 108, 22);
+        ctx.fillStyle = '#64748b'; ctx.fillRect(c1 - 32, 146, 64, 10);
+        const gx = c1 - 4, gy = 112;
+        ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(gx, gy, 34, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(gx, gy, 10, 0, Math.PI * 2); ctx.fill();
+        for (let k = 0; k < 4; k++) {
+            const ang = t * 8 + k * Math.PI / 2;
+            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(gx + Math.cos(ang)*14, gy + Math.sin(ang)*14);
+            ctx.lineTo(gx + Math.cos(ang)*28, gy + Math.sin(ang)*28); ctx.stroke();
+        }
+        const sp = (t * 1.4) % 1;
+        for (let s = 0; s < 5; s++) {
+            const prog = (sp + s * 0.2) % 1;
+            const px = gx - 16 - prog * 56, py = 145 - Math.sin(prog * 2.2) * (12 + s * 6) + prog * 18;
+            ctx.strokeStyle = s % 2 ? '#fde047' : '#fb923c'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + 9, py + 4); ctx.stroke();
+        }
+
+        // Hình 2: Nấu thức ăn (ngọn lửa xanh + chảo + hơi bốc 1 chiều)
+        const c2 = sx + (pw + gap) + pw / 2;
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(c2 - 58, 178, 116, 14);
+        for (let f = -2; f <= 2; f++) {
+            const fl = Math.sin(t * 10 + f) * 2;
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath(); ctx.moveTo(c2 + f * 12, 160 + fl); ctx.lineTo(c2 + f * 12 - 5, 178); ctx.lineTo(c2 + f * 12 + 5, 178); ctx.closePath(); ctx.fill();
+        }
+        ctx.fillStyle = '#334155'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(c2 - 48, 134); ctx.lineTo(c2 - 36, 160); ctx.lineTo(c2 + 36, 160); ctx.lineTo(c2 + 48, 134); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(c2 - 46, 136); ctx.lineTo(c2 - 72, 124); ctx.stroke();
+        const st2 = (t * 0.6) % 1;
+        for (let i = -1; i <= 1; i++) {
+            const sy = 126 - st2 * 44;
+            ctx.strokeStyle = `rgba(226,232,240,${0.85 * (1 - st2)})`; ctx.lineWidth = 1.8;
+            ctx.beginPath(); ctx.moveTo(c2 + i * 18, sy); ctx.quadraticCurveTo(c2 + i * 18 + 6, sy - 8, c2 + i * 18, sy - 16); ctx.stroke();
+        }
+
+        // Hình 3: Làm lạnh vật (chậu đá hở miệng + 2 chai lạnh)
+        const c3 = sx + 2 * (pw + gap) + pw / 2;
+        drawOpenBeaker(ctx, c3 - 54, 116, 108, 86, 0.72, 'rgba(125,211,252,0.22)');
+        for (let b = -1; b <= 1; b += 2) {
+            ctx.save(); ctx.translate(c3 + b * 20, 136); ctx.rotate(b * 0.22);
+            ctx.fillStyle = '#16a34a'; ctx.strokeStyle = '#86efac'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.roundRect(-11, -34, 22, 72, 6); ctx.fill(); ctx.stroke();
+            ctx.fillRect(-5, -52, 10, 20);
+            ctx.restore();
+        }
+        ctx.fillStyle = 'rgba(224,242,254,0.8)';
+        [[-34,174],[0,180],[32,172],[-18,164],[20,160]].forEach(([ix, iy]) => {
+            ctx.fillRect(c3 + ix - 6, iy, 12, 10);
+        });
+
+        // Hình 4: Đưa vật lên cao (cần cẩu nâng thùng hàng sawtooth 1 chiều)
+        const c4 = sx + 3 * (pw + gap) + pw / 2;
+        ctx.fillStyle = '#eab308'; ctx.fillRect(c4 + 8, 170, 52, 26);
+        ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(c4 + 18, 198, 10, 0, Math.PI * 2); ctx.arc(c4 + 48, 198, 10, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(c4 + 34, 170); ctx.lineTo(c4 - 28, 76); ctx.stroke();
+        const lift = (t * 0.35) % 1;
+        const boxY = 178 - lift * 76;
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.moveTo(c4 - 28, 76); ctx.lineTo(c4 - 28, boxY); ctx.stroke();
+        ctx.fillStyle = '#38bdf8'; ctx.strokeStyle = '#bae6fd'; ctx.lineWidth = 1.5;
+        ctx.fillRect(c4 - 44, boxY, 32, 24); ctx.strokeRect(c4 - 44, boxY, 32, 24);
+        arrowHead(ctx, c4 - 56, boxY + 24, c4 - 56, boxY - 4, 6, '#38bdf8');
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(c4 - 56, boxY + 24); ctx.lineTo(c4 - 56, boxY - 2); ctx.stroke();
+    });
+
+    // 29. MH-TN220-C1-29 — Nội năng đang giảm (4 tình huống Hình 1..4)
+    window.VLXTModels.register('MH-TN220-C1-29', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const defs = [
+            { lb: 'Hình 1', sub: 'Ấm nước đun bếp' },
+            { lb: 'Hình 2', sub: 'Tô phở nóng tỏa nhiệt' },
+            { lb: 'Hình 3', sub: 'Mài nhẵn mối hàn' },
+            { lb: 'Hình 4', sub: 'Đá lạnh trong cốc' }
+        ];
+        defs.forEach((d, i) => panelCard(ctx, sx + i * (pw + gap), y0, pw, ph, d.lb, d.sub));
+
+        // Hình 1: Ấm nước trên bếp lửa
+        const c1 = sx + pw / 2;
+        const fl = Math.sin(t * 12) * 3;
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath(); ctx.moveTo(c1, 140 + fl); ctx.quadraticCurveTo(c1 + 26, 174, c1, 192); ctx.quadraticCurveTo(c1 - 26, 174, c1, 140 + fl); ctx.fill();
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath(); ctx.moveTo(c1, 156 + fl * 0.5); ctx.quadraticCurveTo(c1 + 12, 176, c1, 190); ctx.quadraticCurveTo(c1 - 12, 176, c1, 156 + fl * 0.5); ctx.fill();
+        ctx.fillStyle = '#64748b'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.roundRect(c1 - 34, 102, 68, 44, 14); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(c1, 102, 22, Math.PI, 0); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(c1 + 34, 120); ctx.lineTo(c1 + 48, 106); ctx.stroke();
+
+        // Hình 2: Tô phở nóng tỏa nhiệt ra không khí
+        const c2 = sx + (pw + gap) + pw / 2;
+        ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.arc(c2, 144, 48, 0, Math.PI); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.ellipse(c2, 144, 45, 10, 0, 0, Math.PI * 2); ctx.fill();
+        const st = (t * 0.5) % 1;
+        for (let i = -1; i <= 1; i++) {
+            const yTop = 132 - st * 52;
+            ctx.strokeStyle = `rgba(248,113,113,${0.9 * (1 - st)})`; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(c2 + i * 20, yTop + 18); ctx.quadraticCurveTo(c2 + i * 20 + 7, yTop + 9, c2 + i * 20, yTop); ctx.stroke();
+            arrowHead(ctx, c2 + i * 20, yTop + 6, c2 + i * 20, yTop - 3, 5, `rgba(248,113,113,${0.9 * (1 - st)})`);
+        }
+
+        // Hình 3: Mài nhẵn mối hàn
+        const c3 = sx + 2 * (pw + gap) + pw / 2;
+        ctx.fillStyle = '#475569'; ctx.fillRect(c3 - 56, 158, 112, 26);
+        ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.arc(c3 + 4, 122, 30, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        const sp3 = (t * 1.5) % 1;
+        for (let s = 0; s < 4; s++) {
+            const p = (sp3 + s * 0.25) % 1;
+            const px = c3 - 10 - p * 48, py = 152 - Math.sin(p * 2.5) * (10 + s * 5) + p * 12;
+            ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + 8, py + 3); ctx.stroke();
+        }
+
+        // Hình 4: Đá lạnh trong cốc thủy tinh hở miệng (nhận nhiệt từ môi trường)
+        const c4 = sx + 3 * (pw + gap) + pw / 2;
+        drawOpenBeaker(ctx, c4 - 38, 92, 76, 102, 0.78, 'rgba(56,189,248,0.2)');
+        ctx.fillStyle = 'rgba(224,242,254,0.85)'; ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 1.2;
+        [[-16,104,22,22],[6,100,20,20],[-8,128,24,20],[-22,150,20,18],[4,152,22,20]].forEach(([bx,by,bw,bh]) => {
+            ctx.fillRect(c4 + bx, by, bw, bh); ctx.strokeRect(c4 + bx, by, bw, bh);
+        });
+    });
+
+    // 30. MH-TN220-C2-30 — Thí nghiệm kiểm chứng định luật Boyle (đồng hồ (1), khí (2), pit-tông (3), tay quay (4))
+    window.VLXTModels.register('MH-TN220-C2-30', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        // Nền giá gỗ thí nghiệm
+        ctx.fillStyle = '#ca8a04'; ctx.strokeStyle = '#fde047'; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.roundRect(40, 222, 520, 30, 6); ctx.fill(); ctx.stroke();
+
+        // Chuyển động dịch pit-tông RẤT TỪ TỪ qua lại nhẹ giữa 1 và 2
+        const s = 0.5 - 0.5 * Math.cos(t * 0.7);
+        const pisX = 335 + s * 95; // V thay đổi từ nhỏ (nén) đến lớn (giãn)
+        const lenAir = pisX - 235;
+        const pVal = Math.min(4.8, Math.max(0.8, 220 / lenAir)); // bar-like reading
+
+        // Ống nối áp kế bên trái
+        ctx.fillStyle = '#eab308'; ctx.fillRect(142, 148, 36, 74);
+        ctx.fillRect(178, 166, 58, 16);
+
+        // (1) Áp kế hình tròn
+        const gx = 160, gy = 98, gr = 56;
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(gx, gy, gr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(gx, gy, gr - 6, 0, Math.PI * 2); ctx.fill();
+        for (let k = 0; k <= 4; k++) {
+            const a = Math.PI * 0.8 + k * 0.45 * Math.PI;
+            ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(gx + Math.cos(a) * 38, gy + Math.sin(a) * 38);
+            ctx.lineTo(gx + Math.cos(a) * 46, gy + Math.sin(a) * 46); ctx.stroke();
+        }
+        const na = Math.PI * 0.8 + ((pVal - 0.8) / 4.0) * 1.8 * Math.PI;
+        ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(gx + Math.cos(na) * 40, gy + Math.sin(na) * 40); ctx.stroke();
+        ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(gx, gy, 5, 0, Math.PI * 2); ctx.fill();
+
+        // Nhiệt kế điện tử 26.5°C gắn trên giá ống khí (chứng tỏ T không đổi)
+        ctx.fillStyle = '#020617'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+        ctx.fillRect(210, 108, 66, 30); ctx.strokeRect(210, 108, 66, 30);
+        ctx.fillStyle = '#38bdf8'; ctx.font = '800 13px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('26.5°C', 243, 128);
+
+        // (2) Xilanh chia độ trong suốt + phân tử khí bên trong
+        ctx.fillStyle = 'rgba(56,189,248,0.18)';
+        ctx.fillRect(236, 146, lenAir, 56);
+        ctx.fillStyle = 'rgba(148,163,184,0.08)';
+        ctx.fillRect(pisX, 146, 515 - pisX, 56);
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+        ctx.strokeRect(236, 146, 280, 56);
+        for (let x = 250; x <= 500; x += 15) {
+            ctx.beginPath(); ctx.moveTo(x, 146); ctx.lineTo(x, x % 30 === 0 ? 156 : 151); ctx.stroke();
+        }
+        ctx.fillStyle = '#38bdf8';
+        for (let i = 0; i < 12; i++) {
+            const mx = 244 + ((i * 37 + t * 52 * (i % 2 ? 1 : -1) + 4000) % Math.max(20, lenAir - 16));
+            const my = 156 + ((i * 19 + Math.sin(t * 3 + i) * 14 + 200) % 38);
+            ctx.beginPath(); ctx.arc(mx, my, 2.5, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Đầu pit-tông & (3) trục ren pit-tông & (4) tay quay
+        ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+        ctx.fillRect(pisX, 147, 14, 54); ctx.strokeRect(pisX, 147, 14, 54);
+        ctx.fillStyle = '#64748b'; ctx.fillRect(pisX + 14, 169, 680 - (pisX + 14), 10);
+        // Khớp phải cố định trục
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(512, 136, 12, 86);
+        // (4) Tay quay tròn ở bên phải
+        const wx = 682, wy = 174;
+        ctx.fillStyle = '#cbd5e1'; ctx.strokeStyle = '#475569'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.ellipse(wx, wy, 12, 46, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        const hy = wy + Math.sin(t * 1.4) * 34;
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(wx + 8, hy - 5, 34, 10);
+
+        // Callouts (1), (2), (3), (4) khớp chuẩn ảnh gốc
+        const calls = [
+            { px: 204, py: 70, lx: 238, ly: 42, txt: '(1)' },
+            { px: 288, py: 174, lx: 318, ly: 96, txt: '(2)' },
+            { px: 432, py: 174, lx: 465, ly: 96, txt: '(3)' },
+            { px: 678, py: 136, lx: 636, ly: 88, txt: '(4)' }
+        ];
+        calls.forEach(c => {
+            ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.moveTo(c.px, c.py); ctx.lineTo(c.lx, c.ly + 6); ctx.stroke();
+            ctx.fillStyle = '#fbbf24'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center'; ctx.fillText(c.txt, c.lx, c.ly);
+        });
+    });
+
+    // 31. MH-TN220-C2-31 — 3 đồ thị định luật Boyle: Hình 1 (V theo 1/p), Hình 2 (V theo p), Hình 3 (p theo 1/V)
+    window.VLXTModels.register('MH-TN220-C2-31', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 230, ph = 256, gap = 22, sx = 23, y0 = 24;
+        const defs = ['Hình 1', 'Hình 2', 'Hình 3'];
+        defs.forEach((lb, i) => panelCard(ctx, sx + i * (pw + gap), y0, pw, ph, lb));
+        const prog = (t * 0.4) % 1;
+
+        // Hình 1: V theo 1/p (đường thẳng kéo dài qua O)
+        {
+            const ox = sx + 48, oy = 216;
+            drawMiniAxes(ctx, ox, oy, 146, 152, '1/p', 'V', 'O');
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + 34, oy - 36); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.moveTo(ox + 34, oy - 36); ctx.lineTo(ox + 122, oy - 130); ctx.stroke();
+            const dx = ox + 34 + prog * 88, dy = oy - 36 - prog * 94;
+            ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(dx, dy, 4.5, 0, Math.PI * 2); ctx.fill();
+        }
+        // Hình 2: V theo p (nhánh hypebol)
+        {
+            const ox = sx + (pw + gap) + 48, oy = 216;
+            drawMiniAxes(ctx, ox, oy, 146, 152, 'p', 'V', 'O');
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            for (let k = 0; k <= 40; k++) {
+                const u = 0.18 + (k / 40) * 0.78;
+                const px = ox + u * 130, py = oy - (20 / u);
+                if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            const uDot = 0.22 + prog * 0.7;
+            ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + uDot * 130, oy - (20 / uDot), 4.5, 0, Math.PI * 2); ctx.fill();
+        }
+        // Hình 3: p theo 1/V (đường thẳng kéo dài qua O)
+        {
+            const ox = sx + 2 * (pw + gap) + 48, oy = 216;
+            drawMiniAxes(ctx, ox, oy, 146, 152, '1/V', 'p', 'O');
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + 34, oy - 36); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.moveTo(ox + 34, oy - 36); ctx.lineTo(ox + 122, oy - 130); ctx.stroke();
+            const dx = ox + 34 + prog * 88, dy = oy - 36 - prog * 94;
+            ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(dx, dy, 4.5, 0, Math.PI * 2); ctx.fill();
+        }
+    });
+
+    // 32. MH-TN220-C2-32 — Thí nghiệm Charles: ống khí (1), nhiệt kế (2), giọt chỉ dấu (3), cốc (4)(5), giá đỡ (6)
+    window.VLXTModels.register('MH-TN220-C2-32', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        // (6) Giá đỡ chữ A bên trái
+        ctx.fillStyle = '#1e293b'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(85, 250); ctx.lineTo(205, 232); ctx.lineTo(295, 252); ctx.lineTo(145, 266); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(198, 34, 9, 204);
+        ctx.fillRect(160, 96, 206, 9);
+        ctx.fillStyle = '#475569'; ctx.fillRect(193, 90, 20, 21); ctx.fillRect(354, 88, 22, 24);
+
+        // Cốc chính chứa nước + (4) và (5) cốc thủy tinh hở miệng đặt bên phải
+        drawOpenBeaker(ctx, 326, 146, 94, 108, 0.72, 'rgba(56,189,248,0.22)');
+        drawOpenBeaker(ctx, 474, 146, 94, 108, 0.65, 'rgba(56,189,248,0.16)');
+        drawOpenBeaker(ctx, 614, 146, 94, 108, 0.65, 'rgba(251,146,60,0.18)');
+
+        // (1) Ống thủy tinh xilanh cắm trong cốc nước
+        ctx.fillStyle = 'rgba(226,232,240,0.12)'; ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
+        ctx.fillRect(356, 46, 20, 186); ctx.strokeRect(356, 46, 20, 186);
+        // (3) Giọt chất lỏng chỉ dấu dịch nhẹ
+        const dy = 216 - Math.sin(t * 1.4) * 5;
+        ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.ellipse(366, dy, 6, 5, 0, 0, Math.PI * 2); ctx.fill();
+
+        // (2) Nhiệt kế điện tử kẹp song song với (1)
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.6;
+        ctx.fillRect(326, 102, 22, 54); ctx.strokeRect(326, 102, 22, 54);
+        ctx.fillStyle = '#38bdf8'; ctx.fillRect(330, 110, 14, 24);
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(337, 156); ctx.lineTo(337, 218); ctx.stroke();
+
+        // Nhãn (1)..(6) giữ nguyên chú thích trong đề thi
+        const tags = [
+            { tx: 408, ty: 120, px: 376, py: 120, s: '(1)' },
+            { tx: 292, ty: 136, px: 326, py: 126, s: '(2)' },
+            { tx: 392, ty: 274, px: 368, py: 222, s: '(3)' },
+            { tx: 521, ty: 124, px: 521, py: 146, s: '(4)' },
+            { tx: 661, ty: 124, px: 661, py: 146, s: '(5)' },
+            { tx: 142, ty: 170, px: 198, py: 170, s: '(6)' }
+        ];
+        tags.forEach(tg => {
+            ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(tg.tx, tg.ty); ctx.lineTo(tg.px, tg.py); ctx.stroke();
+            ctx.fillStyle = '#fbbf24'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center'; ctx.fillText(tg.s, tg.tx + (tg.tx < tg.px ? -14 : (tg.tx > tg.px ? 14 : 0)), tg.ty - (tg.ty === 124 ? 6 : -4));
+        });
+    });
+
+    // 33. MH-TN220-C2-33 — Hai đường đẳng áp p1, p2 trên đồ thị (V, T)
+    window.VLXTModels.register('MH-TN220-C2-33', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 160, 18, 460, 268, '');
+        const ox = 250, oy = 248;
+        drawMiniAxes(ctx, ox, oy, 315, 200, 'T', 'V', 'O');
+        const p = (t * 0.45) % 1;
+        const lines = [
+            { x1: 35, y1: 39, x2: 185, y2: 204, col: '#38bdf8', lb: 'p1', sub: 'p₁' },
+            { x1: 55, y1: 30, x2: 268, y2: 148, col: '#fbbf24', lb: 'p2', sub: 'p₂' }
+        ];
+        lines.forEach(l => {
+            ctx.strokeStyle = l.col; ctx.lineWidth = 1.8; ctx.setLineDash([5, 5]);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + l.x1, oy - l.y1); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.8;
+            ctx.beginPath(); ctx.moveTo(ox + l.x1, oy - l.y1); ctx.lineTo(ox + l.x2, oy - l.y2); ctx.stroke();
+            ctx.fillStyle = l.col; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'left'; ctx.fillText(l.sub, ox + l.x2 + 8, oy - l.y2 + 6);
+            const dx = ox + l.x1 + p * (l.x2 - l.x1), dy = oy - l.y1 - p * (l.y2 - l.y1);
+            ctx.beginPath(); ctx.arc(dx, dy, 5, 0, Math.PI * 2); ctx.fill();
+        });
+    });
+
+    // 34. MH-TN220-C2-34 — Hai trạng thái (1) và (2) cùng nhiệt độ trên đồ thị (V, T)
+    window.VLXTModels.register('MH-TN220-C2-34', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 165, 18, 450, 268, '');
+        const ox = 250, oy = 248, tx = 410;
+        drawMiniAxes(ctx, ox, oy, 305, 200, 'T', 'V', 'O');
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+        ctx.beginPath(); ctx.moveTo(tx, oy); ctx.lineTo(tx, 76); ctx.stroke(); ctx.setLineDash([]);
+        const pulse = 5 + Math.sin(t * 4) * 1.2;
+        [{ y: 112, lb: '(1)', col: '#38bdf8' }, { y: 174, lb: '(2)', col: '#fbbf24' }].forEach(pt => {
+            ctx.fillStyle = pt.col; ctx.beginPath(); ctx.arc(tx, pt.y, pulse, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#e2e8f0'; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'left'; ctx.fillText(pt.lb, tx + 14, pt.y + 6);
+        });
+    });
+
+    // 35. MH-TN220-C2-35 — Hai đường đẳng tích V1, V2 trên đồ thị (p, T)
+    window.VLXTModels.register('MH-TN220-C2-35', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 160, 18, 460, 268, '');
+        const ox = 250, oy = 248;
+        drawMiniAxes(ctx, ox, oy, 315, 200, 'T', 'p', 'O');
+        const p = (t * 0.45) % 1;
+        [
+            { x1: 42, y1: 40, x2: 196, y2: 186, col: '#38bdf8', sub: 'V₁' },
+            { x1: 60, y1: 31, x2: 266, y2: 138, col: '#fbbf24', sub: 'V₂' }
+        ].forEach(l => {
+            ctx.strokeStyle = l.col; ctx.lineWidth = 1.8; ctx.setLineDash([5, 5]);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + l.x1, oy - l.y1); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.8;
+            ctx.beginPath(); ctx.moveTo(ox + l.x1, oy - l.y1); ctx.lineTo(ox + l.x2, oy - l.y2); ctx.stroke();
+            ctx.fillStyle = l.col; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'left'; ctx.fillText(l.sub, ox + l.x2 + 8, oy - l.y2 + 6);
+            ctx.beginPath(); ctx.arc(ox + l.x1 + p * (l.x2 - l.x1), oy - l.y1 - p * (l.y2 - l.y1), 5, 0, Math.PI * 2); ctx.fill();
+        });
+    });
+
+    // 36. MH-TN220-C2-36 — Bốn đường đẳng áp p4, p3, p2, p1 trên đồ thị (V, T)
+    window.VLXTModels.register('MH-TN220-C2-36', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 160, 18, 460, 268, '');
+        const ox = 250, oy = 248;
+        drawMiniAxes(ctx, ox, oy, 315, 200, 'T', 'V', 'O');
+        const prog = (t * 0.42) % 1;
+        const rays = [
+            { ang: 1.24, r1: 48, r2: 192, lb: 'p₄', col: '#38bdf8' },
+            { ang: 0.96, r1: 52, r2: 205, lb: 'p₃', col: '#a78bfa' },
+            { ang: 0.62, r1: 58, r2: 222, lb: 'p₂', col: '#34d399' },
+            { ang: 0.28, r1: 68, r2: 245, lb: 'p₁', col: '#fbbf24' }
+        ];
+        rays.forEach(ry => {
+            const c = Math.cos(ry.ang), s = Math.sin(ry.ang);
+            ctx.strokeStyle = ry.col; ctx.lineWidth = 1.6; ctx.setLineDash([5, 5]);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + c * ry.r1, oy - s * ry.r1); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.moveTo(ox + c * ry.r1, oy - s * ry.r1); ctx.lineTo(ox + c * ry.r2, oy - s * ry.r2); ctx.stroke();
+            ctx.fillStyle = ry.col; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText(ry.lb, ox + c * ry.r2 + 8, oy - s * ry.r2 + 5);
+            const rp = ry.r1 + prog * (ry.r2 - ry.r1);
+            ctx.beginPath(); ctx.arc(ox + c * rp, oy - s * rp, 4, 0, Math.PI * 2); ctx.fill();
+        });
+    });
+
+    // 37. MH-TN220-C2-37 — Biến đổi (1) -> (2) trên đồ thị V(lít) - T(K)
+    window.VLXTModels.register('MH-TN220-C2-37', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 145, 18, 490, 268, '');
+        const ox = 232, oy = 248;
+        drawMiniAxes(ctx, ox, oy, 340, 198, 'T (K)', 'V (lít)', 'O');
+        const p1 = { x: ox + 96, y: oy - 62 }, p2 = { x: ox + 258, y: oy - 166 };
+        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ox, p1.y); ctx.lineTo(p1.x, p1.y); ctx.lineTo(p1.x, oy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ox, p2.y); ctx.lineTo(p2.x, p2.y); ctx.lineTo(p2.x, oy); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+        arrowHead(ctx, p1.x, p1.y, mx + 12, my - 7.7, 9, '#38bdf8');
+        const pr = (t * 0.45) % 1;
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(p1.x + pr * (p2.x - p1.x), p1.y + pr * (p2.y - p1.y), 5.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '700 13.5px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'right'; ctx.fillText('V₁', ox - 8, p1.y + 4); ctx.fillText('V₂', ox - 8, p2.y + 4);
+        ctx.textAlign = 'center'; ctx.fillText('T₁', p1.x, oy + 16); ctx.fillText('T₂', p2.x, oy + 16);
+        ctx.fillText('(1)', p1.x + 14, p1.y + 18); ctx.fillText('(2)', p2.x - 10, p2.y - 12);
+    });
+
+    // 38. MH-TN220-C2-38 — 4 đồ thị Hình 1..Hình 4 (-273 trên t°C vs T(K))
+    window.VLXTModels.register('MH-TN220-C2-38', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const specs4 = [
+            { lb: 'Hình 1', xl: 't (°C)', yl: 'V', v0: 'V₀' },
+            { lb: 'Hình 2', xl: 'T (K)',  yl: 'V', v0: 'V₀' },
+            { lb: 'Hình 3', xl: 't (°C)', yl: 'p', v0: 'p₀' },
+            { lb: 'Hình 4', xl: 'T (K)',  yl: 'p', v0: 'p₀' }
+        ];
+        const prog = (t * 0.42) % 1;
+        specs4.forEach((sp, i) => {
+            const x0 = sx + i * (pw + gap);
+            panelCard(ctx, x0, y0, pw, ph, sp.lb);
+            const ox = x0 + 66, oy = 208, zX = x0 + 22, topY = 104, endX = x0 + 156;
+            // Trục ngang từ -273 qua O
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.moveTo(zX - 8, oy); ctx.lineTo(endX, oy); ctx.stroke();
+            arrowHead(ctx, ox, oy, endX, oy, 6, '#94a3b8');
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox, 68); ctx.stroke();
+            arrowHead(ctx, ox, oy, ox, 68, 6, '#94a3b8');
+            // Đường nét đứt từ -273 lên V0/p0, nét liền từ V0/p0 đi lên
+            const midY = 160;
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(zX, oy); ctx.lineTo(ox, midY); ctx.stroke();
+            ctx.setLineDash([]); ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.moveTo(ox, midY); ctx.lineTo(endX - 12, topY); ctx.stroke();
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath(); ctx.arc(ox + prog * (endX - 12 - ox), midY + prog * (topY - midY), 4, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#e2e8f0'; ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('−273', zX, oy + 16); ctx.fillText('O', ox, oy + 16); ctx.fillText(sp.xl, endX - 10, oy + 16);
+            ctx.textAlign = 'right'; ctx.fillText(sp.v0, ox - 5, midY + 4);
+            ctx.textAlign = 'left'; ctx.fillText(sp.yl, ox + 7, 74);
+        });
+    });
+
+    // 39. MH-TN220-C2-39 — Chu trình hình bình hành (1)-(2)-(3)-(4) trên (p, T)
+    window.VLXTModels.register('MH-TN220-C2-39', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        panelCard(ctx, 145, 18, 490, 268, '');
+        const ox = 232, oy = 248;
+        drawMiniAxes(ctx, ox, oy, 345, 198, 'T (K)', 'p (Pa)', 'O');
+        const p1 = { x: ox + 84, y: oy - 64 }, p2 = { x: ox + 168, y: oy - 128 },
+              p3 = { x: ox + 302, y: oy - 128 }, p4 = { x: ox + 218, y: oy - 64 };
+        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ox, p1.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ox, p2.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.8;
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.lineTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.closePath(); ctx.stroke();
+        const segs = [[p1,p2],[p2,p3],[p3,p4],[p4,p1]];
+        const u = (t * 0.8) % 4, idx = Math.floor(u), fr = u - idx;
+        const [a, b] = segs[idx];
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(a.x + fr*(b.x-a.x), a.y + fr*(b.y-a.y), 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('1', p1.x - 10, p1.y + 18); ctx.fillText('2', p2.x - 4, p2.y - 10);
+        ctx.fillText('3', p3.x + 12, p3.y - 8); ctx.fillText('4', p4.x + 10, p4.y + 18);
+    });
+
+    // 40. MH-TN220-C2-40 — 4 đồ thị Hình 1..4 kiểm tra đường đẳng áp
+    window.VLXTModels.register('MH-TN220-C2-40', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const defs = [
+            { lb: 'Hình 1', xl: 'T', yl: 'p', kind: 'ray' },
+            { lb: 'Hình 2', xl: 'V', yl: 'p', kind: 'vert' },
+            { lb: 'Hình 3', xl: 'V', yl: 'p', kind: 'hyp' },
+            { lb: 'Hình 4', xl: 'T', yl: 'V', kind: 'ray' }
+        ];
+        const p = (t * 0.45) % 1;
+        defs.forEach((d, i) => {
+            const x0 = sx + i * (pw + gap);
+            panelCard(ctx, x0, y0, pw, ph, d.lb);
+            const ox = x0 + 36, oy = 212;
+            drawMiniAxes(ctx, ox, oy, 114, 134, d.xl, d.yl, 'O');
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2.6;
+            if (d.kind === 'ray') {
+                ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + 26, oy - 30); ctx.stroke();
+                ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(ox + 26, oy - 30); ctx.lineTo(ox + 92, oy - 108); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 26 + p * 66, oy - 30 - p * 78, 4, 0, Math.PI * 2); ctx.fill();
+            } else if (d.kind === 'vert') {
+                ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ox + 58, oy); ctx.lineTo(ox + 58, oy - 24); ctx.stroke();
+                ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(ox + 58, oy - 24); ctx.lineTo(ox + 58, oy - 108); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 58, oy - 24 - p * 84, 4, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.beginPath();
+                for (let k = 0; k <= 30; k++) {
+                    const u = 0.18 + (k / 30) * 0.78;
+                    const px = ox + u * 102, py = oy - (18 / u);
+                    if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                const u = 0.22 + p * 0.68;
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + u * 102, oy - (18 / u), 4, 0, Math.PI * 2); ctx.fill();
+            }
+        });
+    });
+
+    // 41. MH-TN220-C2-41 — 4 đồ thị Hình 1..4 (tìm hình không đúng đường đẳng áp)
+    window.VLXTModels.register('MH-TN220-C2-41', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const defs = [
+            { lb: 'Hình 1', xl: 'p', yl: 'V', kind: 'vert' },
+            { lb: 'Hình 2', xl: 'T', yl: 'p', kind: 'ray' },
+            { lb: 'Hình 3', xl: 'T', yl: 'p', kind: 'horiz' },
+            { lb: 'Hình 4', xl: 'V', yl: 'T', kind: 'ray' }
+        ];
+        const p = (t * 0.45) % 1;
+        defs.forEach((d, i) => {
+            const x0 = sx + i * (pw + gap);
+            panelCard(ctx, x0, y0, pw, ph, d.lb);
+            const ox = x0 + 36, oy = 212;
+            drawMiniAxes(ctx, ox, oy, 114, 134, d.xl, d.yl, 'O');
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.6;
+            if (d.kind === 'vert') {
+                ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ox + 56, oy); ctx.lineTo(ox + 56, oy - 30); ctx.stroke();
+                ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(ox + 56, oy - 30); ctx.lineTo(ox + 56, oy - 110); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 56, oy - 30 - p * 80, 4, 0, Math.PI * 2); ctx.fill();
+            } else if (d.kind === 'horiz') {
+                ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ox, oy - 66); ctx.lineTo(ox + 26, oy - 66); ctx.stroke();
+                ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(ox + 26, oy - 66); ctx.lineTo(ox + 98, oy - 66); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 26 + p * 72, oy - 66, 4, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + 26, oy - 34); ctx.stroke();
+                ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(ox + 26, oy - 34); ctx.lineTo(ox + 86, oy - 112); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 26 + p * 60, oy - 34 - p * 78, 4, 0, Math.PI * 2); ctx.fill();
+            }
+        });
+    });
+
+    // 42. MH-TN220-C2-42 — 4 đồ thị Hình 1..4 (chọn các hình đẳng áp)
+    window.VLXTModels.register('MH-TN220-C2-42', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const pw = 176, ph = 266, gap = 14, sx = 17, y0 = 20;
+        const defs = [
+            { lb: 'Hình 1', xl: 'T', yl: 'V', kind: 'vert' },
+            { lb: 'Hình 2', xl: 'T', yl: 'p', kind: 'horiz' },
+            { lb: 'Hình 3', xl: 'T', yl: 'V', kind: 'ray' },
+            { lb: 'Hình 4', xl: 'T', yl: 'p', kind: 'ray' }
+        ];
+        const p = (t * 0.45) % 1;
+        defs.forEach((d, i) => {
+            const x0 = sx + i * (pw + gap);
+            panelCard(ctx, x0, y0, pw, ph, d.lb);
+            const ox = x0 + 36, oy = 212;
+            drawMiniAxes(ctx, ox, oy, 114, 134, d.xl, d.yl, 'O');
+            if (d.kind === 'vert') {
+                ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(ox, oy - 28); ctx.lineTo(ox + 56, oy - 28); ctx.lineTo(ox + 56, oy); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(ox, oy - 102); ctx.lineTo(ox + 56, oy - 102); ctx.stroke();
+                ctx.setLineDash([]); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3.2;
+                ctx.beginPath(); ctx.moveTo(ox + 56, oy - 28); ctx.lineTo(ox + 56, oy - 102); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 56, oy - 28 - p * 74, 4, 0, Math.PI * 2); ctx.fill();
+            } else if (d.kind === 'horiz') {
+                ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(ox + 28, oy - 68); ctx.lineTo(ox + 28, oy); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(ox + 92, oy - 68); ctx.lineTo(ox + 92, oy); ctx.stroke();
+                ctx.setLineDash([]); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3.2;
+                ctx.beginPath(); ctx.moveTo(ox + 28, oy - 68); ctx.lineTo(ox + 92, oy - 68); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 28 + p * 64, oy - 68, 4, 0, Math.PI * 2); ctx.fill();
+            } else {
+                ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + 34, oy - 34); ctx.stroke();
+                ctx.setLineDash([]); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 3.2;
+                ctx.beginPath(); ctx.moveTo(ox + 34, oy - 34); ctx.lineTo(ox + 94, oy - 94); ctx.stroke();
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(ox + 34 + p * 60, oy - 34 - p * 60, 4, 0, Math.PI * 2); ctx.fill();
+            }
+        });
+    });
+
+    // 43. MH-TN220-C3-43 — Nam châm quay giữa khe lõi sắt non + cuộn dây nối điện trở R (P–Q)
+    window.VLXTModels.register('MH-TN220-C3-43', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        // Lõi sắt non hình chữ U khép đáy
+        ctx.fillStyle = '#334155'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.moveTo(190, 56); ctx.lineTo(298, 56); ctx.lineTo(298, 92); ctx.lineTo(226, 92);
+        ctx.lineTo(226, 178); ctx.lineTo(554, 178); ctx.lineTo(554, 92); ctx.lineTo(482, 92);
+        ctx.lineTo(482, 56); ctx.lineTo(590, 56); ctx.lineTo(590, 212); ctx.lineTo(190, 212);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+
+        // Thanh nam châm S - N quay theo chiều kim đồng hồ giữa hai cực lõi sắt non
+        const ang = (t * 1.15) % (Math.PI * 2);
+        ctx.save(); ctx.translate(390, 74); ctx.rotate(ang);
+        ctx.fillStyle = '#2563eb'; ctx.fillRect(-46, -16, 46, 32);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(0, -16, 46, 32);
+        ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 2; ctx.strokeRect(-46, -16, 92, 32);
+        ctx.fillStyle = '#ffffff'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('S', -23, 5); ctx.fillText('N', 23, 5);
+        ctx.restore();
+
+        // Mũi tên cong chỉ chiều quay cùng chiều kim đồng hồ
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(390, 74, 58, Math.PI * 0.78, Math.PI * 1.22); ctx.stroke();
+        arrowHead(ctx, 344, 108, 344, 42, 7, '#fbbf24');
+        ctx.beginPath(); ctx.arc(390, 74, 58, -Math.PI * 0.22, Math.PI * 0.22); ctx.stroke();
+        arrowHead(ctx, 436, 42, 436, 108, 7, '#fbbf24');
+
+        // Cuộn dây quấn quanh cạnh đáy lõi sắt non
+        for (let i = 0; i < 8; i++) {
+            const x = 314 + i * 20;
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.ellipse(x, 195, 7, 25, -0.18, 0, Math.PI * 2); ctx.stroke();
+        }
+        // Mạch ngoài nối điện trở R giữa hai đầu P và Q
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(307, 218); ctx.lineTo(307, 266); ctx.lineTo(364, 266); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(461, 218); ctx.lineTo(461, 266); ctx.lineTo(418, 266); ctx.stroke();
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(364, 254, 54, 24); ctx.strokeRect(364, 254, 54, 24);
+
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 14.5px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('Nam châm', 390, 24);
+        ctx.fillText('Cuộn dây', 390, 158);
+        ctx.fillText('R', 391, 246);
+        ctx.fillText('P', 292, 272); ctx.fillText('Q', 476, 272);
+        ctx.save(); ctx.translate(612, 134); ctx.rotate(Math.PI / 2); ctx.fillText('Lõi sắt non', 0, 0); ctx.restore();
+    });
+
+    // 44. MH-TN220-C3-44 — Khung ABCD đặt trên ống dây thẳng đứng nối biến trở (con chạy sang phải) & nguồn E
+    window.VLXTModels.register('MH-TN220-C3-44', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        const colB = '#38bdf8';
+        // Trục đối xứng thẳng đứng
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(220, 26); ctx.lineTo(220, 82); ctx.stroke();
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(220, 82); ctx.lineTo(220, 146); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Khung dây ABCD hình bình hành nhìn nghiêng
+        ctx.strokeStyle = colB; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(156, 62); ctx.lineTo(318, 62); ctx.lineTo(278, 124); ctx.lineTo(116, 124); ctx.closePath(); ctx.stroke();
+        ctx.fillStyle = '#e2e8f0'; ctx.font = 'italic 700 16px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('A', 142, 56); ctx.fillText('B', 330, 56); ctx.fillText('C', 290, 136); ctx.fillText('D', 100, 136);
+
+        // Lõi ống dây đứng & các vòng dây
+        ctx.fillStyle = '#334155'; ctx.strokeStyle = colB; ctx.lineWidth = 2;
+        ctx.fillRect(208, 152, 24, 124); ctx.strokeRect(208, 152, 24, 124);
+        for (let i = 0; i < 6; i++) {
+            const cy = 166 + i * 18;
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.ellipse(220, cy, 18, 5, 0.14, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        // Mạch điện nối biến trở R và nguồn E (con chạy dịch sang phải 1 chiều sawtooth)
+        const saw = (t * 0.3) % 1;
+        const sliderX = 415 + saw * 105;
+        ctx.strokeStyle = colB; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(232, 166); ctx.lineTo(376, 166); ctx.stroke();
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(376, 150, 168, 32); ctx.strokeRect(376, 150, 168, 32);
+        // Đường dẫn từ cực + của nguồn E nối chốt phải và con chạy
+        ctx.beginPath(); ctx.moveTo(544, 166); ctx.lineTo(632, 166); ctx.lineTo(632, 206); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(632, 166); ctx.lineTo(632, 118); ctx.lineTo(sliderX, 118); ctx.lineTo(sliderX, 150); ctx.stroke();
+        arrowHead(ctx, sliderX, 124, sliderX, 150, 8, '#fbbf24');
+        // Nguồn E (cực + ở trên nét mảnh dài, cực - ở dưới nét ngắn)
+        ctx.beginPath(); ctx.moveTo(598, 206); ctx.lineTo(666, 206); ctx.stroke();
+        ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(616, 226); ctx.lineTo(648, 226); ctx.stroke();
+        ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(632, 226); ctx.lineTo(632, 268); ctx.lineTo(232, 268); ctx.stroke();
+
+        ctx.fillStyle = '#e2e8f0'; ctx.font = 'italic 700 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('E', 674, 214);
+        ctx.fillStyle = '#fbbf24'; ctx.font = '700 13px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Con chạy →', sliderX + 8, 108);
+    });
+
+    // 45. MH-TN220-C3-45 — Thí nghiệm cảm ứng điện từ: nam châm S-N tiến/lùi trước ống dây 1-2 & điện kế
+    window.VLXTModels.register('MH-TN220-C3-45', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        // Chuyển động tịnh tiến của nam châm với tốc độ thay đổi (v ~ cos)
+        const disp = Math.sin(t * 2.1);
+        const vel = Math.cos(t * 2.1);
+        const mx = 112 + disp * 44;
+
+        // Thanh nam châm S - N
+        ctx.fillStyle = '#2563eb'; ctx.fillRect(mx, 104, 78, 36);
+        ctx.fillStyle = '#dc2626'; ctx.fillRect(mx + 78, 104, 78, 36);
+        ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 2; ctx.strokeRect(mx, 104, 156, 36);
+        ctx.fillStyle = '#ffffff'; ctx.font = '800 17px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('S', mx + 39, 128); ctx.fillText('N', mx + 117, 128);
+
+        // Hai mũi tên chiều dịch chuyển trên/dưới
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(mx + 140, 82); ctx.lineTo(mx + 22, 82); ctx.stroke();
+        arrowHead(ctx, mx + 140, 82, mx + 16, 82, 8, '#cbd5e1');
+        ctx.beginPath(); ctx.moveTo(mx + 16, 162); ctx.lineTo(mx + 134, 162); ctx.stroke();
+        arrowHead(ctx, mx + 16, 162, mx + 140, 162, 8, '#cbd5e1');
+
+        // Ống dây ngang (1 - 2) với nửa trước nét liền, nửa sau nét đứt
+        const cx0 = 374, cy0 = 118;
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('1', cx0 - 18, cy0 - 38); ctx.fillText('2', cx0 + 258, cy0 - 38);
+        for (let i = 0; i < 10; i++) {
+            const x = cx0 + 14 + i * 24;
+            ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2.4; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.ellipse(x, cy0, 12, 34, 0, Math.PI * 0.5, Math.PI * 1.5); ctx.stroke();
+            ctx.setLineDash([]); ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.ellipse(x, cy0, 12, 34, 0, -Math.PI * 0.5, Math.PI * 0.5); ctx.stroke();
+        }
+        // Dây nối xuống điện kế G
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(cx0, cy0 - 10); ctx.lineTo(cx0, 232); ctx.lineTo(462, 232); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx0 + 244, cy0 - 10); ctx.lineTo(cx0 + 244, 232); ctx.lineTo(540, 232); ctx.stroke();
+
+        // Điện kế có vạch 0 ở chính giữa trên
+        const gx = 501, gy = 232, gr = 40;
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.8;
+        ctx.beginPath(); ctx.arc(gx, gy, gr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(gx, gy - gr); ctx.lineTo(gx, gy - gr + 10); ctx.stroke();
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '700 13px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('0', gx, gy - gr + 22);
+        const defl = -Math.PI / 2 - vel * 0.65;
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.8;
+        ctx.beginPath(); ctx.moveTo(gx, gy + 12); ctx.lineTo(gx + Math.cos(defl) * 30, gy + 12 + Math.sin(defl) * 30); ctx.stroke();
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(gx, gy + 12, 4, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // 46. MH-TN220-C3-46 — Khung ABCD chuyển động dọc thanh xx', yy' qua vùng từ trường đều MNPQ
+    window.VLXTModels.register('MH-TN220-C3-46', function (ctx, w, h, t) {
+        bgGrid(ctx, w, h);
+        // Vùng từ trường đều MNPQ
+        const rx = 210, ry = 54, rw = 360, rh = 192;
+        ctx.fillStyle = 'rgba(148,163,184,0.16)'; ctx.fillRect(rx, ry, rw, rh);
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.6; ctx.setLineDash([8, 6]);
+        ctx.strokeRect(rx, ry, rw, rh); ctx.setLineDash([]);
+
+        // Ký hiệu từ trường đều B hướng vào trong mặt phẳng ⊗ (vẽ vectơ mũi tên trên B thay vì dấu tổ hợp)
+        ctx.fillStyle = '#38bdf8'; ctx.font = '800 17px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('B', rx + 52, ry + 86);
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(rx + 45, ry + 68); ctx.lineTo(rx + 60, ry + 68); ctx.stroke();
+        arrowHead(ctx, rx + 45, ry + 68, rx + 61, ry + 68, 5, '#38bdf8');
+        const crossPts = [[rx + 84, ry + 80], [rx + 180, ry + 80], [rx + 300, ry + 80], [rx + 180, ry + 148], [rx + 300, ry + 148]];
+        crossPts.forEach(([px, py]) => {
+            ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.8;
+            ctx.beginPath(); ctx.arc(px, py, 11, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(px - 7, py - 7); ctx.lineTo(px + 7, py + 7);
+            ctx.moveTo(px + 7, py - 7); ctx.lineTo(px - 7, py + 7); ctx.stroke();
+        });
+
+        // Nhãn M, N, P, Q
+        ctx.fillStyle = '#e2e8f0'; ctx.font = '800 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('M', rx - 14, ry + 6); ctx.fillText('N', rx + rw + 14, ry + 6);
+        ctx.fillText('Q', rx - 14, ry + rh + 12); ctx.fillText('P', rx + rw + 14, ry + rh + 12);
+
+        // Hai đường dẫn song song xx' và yy'
+        const yTop = ry + 42, yBot = ry + rh - 42;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.4;
+        [yTop, yBot].forEach((yy, idx) => {
+            ctx.beginPath(); ctx.moveTo(86, yy); ctx.lineTo(696, yy); ctx.stroke();
+            arrowHead(ctx, 676, yy, 698, yy, 8, '#94a3b8');
+            ctx.fillStyle = '#e2e8f0'; ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(idx === 0 ? 'x' : 'y', 70, yy + 5);
+            ctx.fillText(idx === 0 ? "x'" : "y'", 712, yy + 5);
+        });
+
+        // Khung ABCD trượt 1 chiều sawtooth từ ngoài trái -> đi vào -> qua vùng MNPQ -> ra ngoài phải
+        const saw = (t * 0.16) % 1;
+        const ax = 104 + saw * 500, aw = 68;
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3.2;
+        ctx.strokeRect(ax, yTop, aw, yBot - yTop);
+        ctx.fillStyle = '#fbbf24'; ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('A', ax, yTop - 10); ctx.fillText('B', ax + aw, yTop - 10);
+        ctx.fillText('D', ax, yBot + 19); ctx.fillText('C', ax + aw, yBot + 19);
+    });
+
 })();
 
 // === VLXT_TN220_CAPTIONS_REGISTRY ===
@@ -1426,7 +2322,26 @@
   "MH-TN220-C3-24": "Câu 138: Hình vẽ nào dưới đây, từ thông gửi qua diện tích của khung dây...",
   "MH-TN220-C4-25": "Câu 183: Bên dưới là mô hình nguyên tử của hai nguyên tố. Số nucleon ch...",
   "MH-TN220-C4-26": "Câu 184: Bên dưới là mô hình của một nguyên tử. Số nucleon trong hạt nh...",
-  "MH-TN220-C4-27": "Câu 206: Đồ thị nào dưới đây mô tả gần đúng mối liên hệ giữa năng lượng..."
+  "MH-TN220-C4-27": "Câu 206: Đồ thị nào dưới đây mô tả gần đúng mối liên hệ giữa năng lượng...",
+  "MH-TN220-C1-28": "Câu LT01: Nội năng của vật trong hình nào sau đây không thay đổi?",
+  "MH-TN220-C1-29": "Câu LT02: Nội năng của vật trong hình nào sau đây đang giảm?",
+  "MH-TN220-C2-30": "Câu LT02: Trong thí nghiệm kiểm chứng lại định luật Boyle, việc dịch ch...",
+  "MH-TN220-C2-31": "Câu LT03: Đồ thị ở hình nào sau đây biểu diễn đúng định luật Boyle:",
+  "MH-TN220-C2-32": "Câu LT01: Trong thí nghiệm minh họa định luật Charles về quá trình đẳng...",
+  "MH-TN220-C2-33": "Câu LT02: Trên đồ thị V - T vẽ hai đường đẳng áp của cùng một khối lượn...",
+  "MH-TN220-C2-34": "Câu LT03: Trên đồ thị V - T biểu diễn hai trạng thái (1) và (2) của cùn...",
+  "MH-TN220-C2-35": "Câu LT06: Biểu diễn hai đường đẳng tích của cùng một khối lượng không k...",
+  "MH-TN220-C2-36": "Câu LT07: Trên đồ thị V - T (xem hình vẽ bên) vẽ bốn đường đẳng áp của ...",
+  "MH-TN220-C2-37": "Câu LT08: Một khối khí lý tưởng xác định thực hiện quá trình biến đổi t...",
+  "MH-TN220-C2-38": "Câu LT09: Trong các đồ thị sau, đồ thị nào biểu diễn đúng quá trình đẳn...",
+  "MH-TN220-C2-39": "Câu LT31: Hãy chỉ ra quá trình đẳng tích trong các quá trình trên.",
+  "MH-TN220-C2-40": "Câu LT32: Đường biểu diễn quá trình đẳng áp của một lượng khí xác định ...",
+  "MH-TN220-C2-41": "Câu LT33: Xét một khối khí lí tưởng xác định thực hiện quá trình biến đ...",
+  "MH-TN220-C2-42": "Câu LT35: Đồ thị nào sau đây biểu diễn đúng quá trình đẳng áp?",
+  "MH-TN220-C3-43": "Câu LT01: Một nam châm ban đầu được đặt giữa hai đầu của một lõi sắt mề...",
+  "MH-TN220-C3-44": "Câu LT03: Xét mạch điện như hình vẽ. Khi dịch chuyển con chạy về bên ph...",
+  "MH-TN220-C3-45": "Câu LT05: Hình bên mô tả thí nghiệm về hiện tượng cảm ứng điện từ. Khi ...",
+  "MH-TN220-C3-46": "Câu LT06: Một khung dây dẫn ABCD chuyển động dọc theo hai đường $xx'$ ,..."
 };
   g.VLXT_TN220_CAPTIONS = Object.assign(g.VLXT_TN220_CAPTIONS || {}, caps);
   if (typeof MODEL_CAPTIONS === 'object' && MODEL_CAPTIONS) {

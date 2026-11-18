@@ -21,7 +21,7 @@
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261118-sync50"></script>
-    <script src="assets/staging-tn-220-questions.js?v=20261118-tnbt"></script>
+    <script src="assets/staging-tn-220-questions.js?v=20261118-lt220full"></script>
     <script src="assets/staging-ds-106-questions.js?v=20261118-ds200-v2"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
@@ -29,7 +29,7 @@
     <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tn50models"></script>
-    <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
+    <script src="assets/staging-tn220-models.js?v=20261118-lt220full"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1162,7 +1162,7 @@
         <!-- Mode Toggle Switcher (Phòng Duyệt & Soạn Câu Hỏi là Phòng Chính) -->
         <div class="mode-toggle-group">
             <button type="button" class="mode-toggle-btn active" id="btn-mode-staging" onclick="switchStudioMode('STAGING')">
-                <i class="fa-solid fa-list-check"></i> 📋 Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.424 Câu</span>)
+                <i class="fa-solid fa-list-check"></i> 📋 Phòng Duyệt & Soạn Câu Hỏi (<span id="disp-staging-badge">3.514 Câu</span>)
             </button>
             <button type="button" class="mode-toggle-btn" id="btn-mode-model" onclick="switchStudioMode('MODEL')">
                 <i class="fa-solid fa-cube"></i> 🎬 Tinh Chỉnh Mô Hình (Canvas)
@@ -1186,7 +1186,7 @@
             <div class="selector-group">
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
                 <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
-                    <option value="P1_STAGING_220">🚀 27 Mô Hình Đợt 220 (14 BT Đã Nạp NH &amp; 13 LT Chờ Duyệt)</option>
+                    <option value="P1_STAGING_220">🚀 46 Mô Hình Đợt 220 (14 BT Đã Nạp NH &amp; 32 LT Chờ Duyệt)</option>
                     <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Đợt Mới (Đã Nạp Ngân Hàng)</option>
                     <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 &amp; C3 Có Hình)</option>
                     <option value="P2_ORIGINAL_94">🧪 94 Mô Hình Đúng / Sai Gốc (Đã Nạp)</option>
@@ -1341,7 +1341,7 @@
                     <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
                         <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
-                            <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Lý Thuyết — 130 Câu TN-LT Tinh Tuyển (C1–C4)</option>
+                            <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Lý Thuyết — 220 Câu TN-LT Tinh Tuyển (C1–C4)</option>
                             <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 &amp; 3)</option>
                         </optgroup>
                         <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.244 CÂU)">
@@ -1353,7 +1353,7 @@
                             <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
                         </optgroup>
                         <optgroup label="📂 TẤT CẢ TRONG HỆ THỐNG">
-                            <option value="ALL">📂 Toàn Bộ Hệ Thống (3.424 Câu Hỏi)</option>
+                            <option value="ALL">📂 Toàn Bộ Hệ Thống (3.514 Câu Hỏi)</option>
                         </optgroup>
                     </select>
 
@@ -1846,10 +1846,10 @@
 
         if (p === 'P1_STAGING_220') {
             selChapter.innerHTML = `
-                <option value="ALL">Tất cả 4 chương (27 mô hình mới)</option>
-                <option value="C1">Chương 1 — Vật lý nhiệt (3 mô hình)</option>
-                <option value="C2">Chương 2 — Khí lý tưởng (9 mô hình)</option>
-                <option value="C3">Chương 3 — Từ trường (12 mô hình)</option>
+                <option value="ALL">Tất cả 4 chương (46 mô hình mới)</option>
+                <option value="C1">Chương 1 — Vật lý nhiệt (5 mô hình)</option>
+                <option value="C2">Chương 2 — Khí lý tưởng (22 mô hình)</option>
+                <option value="C3">Chương 3 — Từ trường (16 mô hình)</option>
                 <option value="C4">Chương 4 — Hạt nhân (3 mô hình)</option>
             `;
         } else if (p === 'P2_STAGING_106') {
