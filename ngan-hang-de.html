@@ -1696,7 +1696,14 @@
                     <option value="tinh">🟢 Tinh (đã duyệt)</option>
                     <option value="tho">🔴 Thô (bị chặn)</option>
                 </select>
-                <input id="nh-f-search" placeholder="Tìm theo mã hoặc nội dung câu hỏi..." oninput="bankSearchChanged()">
+                <select id="nh-f-model" onchange="bankFiltersChanged()">
+                    <option value="">🎬 Mọi câu (Có &amp; chưa có mô hình)</option>
+                    <option value="HAS_MODEL">🎬 Chỉ câu CÓ Mô hình Canvas / Thực tế</option>
+                    <option value="NEW_BT_90">🆕 Vừa đẩy 18/11: 90 câu Bài tập (VLXT-TN220-BT)</option>
+                    <option value="NEW_BT_MODEL_14">🚀 Vừa đẩy 18/11: 14 câu BT CÓ Mô hình Canvas</option>
+                    <option value="NO_MODEL">⬜ Chưa có Mô hình</option>
+                </select>
+                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung hoặc MH-TN220..." oninput="bankSearchChanged()">
             </div>
             <!-- THANH THỐNG KÊ CHỦ ĐỀ CON (PHẲNG, SẮC NÉT, KHÔNG AI GLOW) -->
             <div id="nh-subtopic-summary-bar" class="nh-subtopic-bar" style="display:none"></div>
@@ -8614,6 +8621,13 @@ function updateBankSubtopicOptions(selectedBai, preserveSubVal){
     }
 }
 
+function syncModelFilterOnTypeChange(activeFt){
+    const fmod = document.getElementById('nh-f-model');
+    if (fmod && activeFt !== 'TN_BT' && (fmod.value === 'NEW_BT_90' || fmod.value === 'NEW_BT_MODEL_14')) {
+        fmod.value = '';
+    }
+}
+
 function onBankLoaiFilterChanged(){
     const fl = document.getElementById('nh-f-loai') ? document.getElementById('nh-f-loai').value : '';
     const ft = document.getElementById('nh-f-tntype');
@@ -8630,6 +8644,7 @@ function onBankLoaiFilterChanged(){
         else if (fl === 'TN' && isCanonicalDsSubtopic(ssub.value)) ssub.value = '';
         else if (fl === 'TLN') ssub.value = '';
     }
+    syncModelFilterOnTypeChange(ft ? ft.value : '');
     updateBankSubtopicOptions(sb ? sb.value : '', ssub ? ssub.value : '');
     bankFiltersChanged();
 }
@@ -8650,6 +8665,7 @@ function onBankTnTypeFilterChanged(){
         else if (ft === 'TN_LT' && isCanonicalDsSubtopic(ssub.value)) ssub.value = '';
         else if (ft === 'TN_BT' || ft === 'TLN') ssub.value = '';
     }
+    syncModelFilterOnTypeChange(ft);
     updateBankSubtopicOptions(sb ? sb.value : '', ssub ? ssub.value : '');
     bankFiltersChanged();
 }
@@ -8684,16 +8700,38 @@ function onBankBaiFilterChanged(){
     bankFiltersChanged();
 }
 
+let _nhBtSortMode = 'NEW_MODEL_FIRST';
+function toggleBtSortMode(){
+    _nhBtSortMode = (_nhBtSortMode === 'NEW_MODEL_FIRST') ? 'SHEET_ORDER' : 'NEW_MODEL_FIRST';
+    bankFiltersChanged();
+}
+
 function selectSubtopicChip(subVal){
     const ssub = document.getElementById('nh-f-subtopic');
     const ft = document.getElementById('nh-f-tntype');
     const fl = document.getElementById('nh-f-loai');
     const sb = document.getElementById('nh-f-bai');
     const sc = document.getElementById('nh-f-chuong');
+    const fmod = document.getElementById('nh-f-model');
     if (subVal === '__BT_MODE__') {
         if (ssub) ssub.value = '';
+        if (fmod) fmod.value = '';
         if (ft) ft.value = (ft.value === 'TN_BT') ? '' : 'TN_BT';
         if (fl) fl.value = (ft && ft.value === 'TN_BT') ? 'TN' : '';
+        updateBankSubtopicOptions(sb ? sb.value : '', '');
+        bankFiltersChanged();
+        return;
+    }
+    if (subVal === '__BT_ALL__' || subVal === '__BT_MODEL_ONLY__' || subVal === '__BT_NEW_90__' || subVal === '__BT_NO_MODEL__') {
+        if (ssub) ssub.value = '';
+        if (ft) ft.value = 'TN_BT';
+        if (fl) fl.value = 'TN';
+        if (fmod) {
+            const targetMod = subVal === '__BT_MODEL_ONLY__' ? 'NEW_BT_MODEL_14'
+                : (subVal === '__BT_NEW_90__' ? 'NEW_BT_90'
+                : (subVal === '__BT_NO_MODEL__' ? 'NO_MODEL' : ''));
+            fmod.value = (subVal !== '__BT_ALL__' && fmod.value === targetMod) ? '' : targetMod;
+        }
         updateBankSubtopicOptions(sb ? sb.value : '', '');
         bankFiltersChanged();
         return;
@@ -8726,6 +8764,7 @@ function selectSubtopicChip(subVal){
         if (ssub) ssub.value = '';
         if (ft) ft.value = '';
         if (fl) fl.value = '';
+        if (fmod) fmod.value = '';
         updateBankSubtopicOptions(sb ? sb.value : '', '');
         bankFiltersChanged();
         return;
@@ -8784,6 +8823,54 @@ function renderSubtopicSummaryBar(){
             <span><i class="fa-solid fa-hourglass-half" style="color:#64748b"></i> Nhóm câu <b>Trả lời ngắn (Phần III)</b> (${cnt} câu): <b>Hiện tại chưa chia Chủ đề</b> theo chỉ đạo của Thầy.${exportBtnHtml}${syncPillHtml}</span>
             <button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>📘 Xem 16 Chủ đề TN Lý thuyết</span></button>
         </div>`;
+        bar.style.display = 'block';
+        return;
+    }
+
+    if (ft === 'TN_BT') {
+        const fmodVal = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
+        const btScopeAll = bankData.filter(q => {
+            if (q.loai !== 'TN' || q.tnType !== 'BT') return false;
+            if (selectedChuong && !(q.chuong === selectedChuong || (Array.isArray(q.chuongList) && q.chuongList.includes(selectedChuong)))) return false;
+            if (selectedBai === '__EMPTY__' && (q.baiHoc || '').trim()) return false;
+            if (selectedBai && selectedBai !== '__EMPTY__' && !(q.baiHoc || '').split(',').map(s => s.trim()).includes(selectedBai)) return false;
+            return true;
+        });
+        const btNewCnt = btScopeAll.filter(isNewPushedBtBatch).length;
+        const btModelCnt = btScopeAll.filter(q => isNewPushedBtBatch(q) && isQuestionHasModel(q)).length;
+        const btHasAnyModelCnt = btScopeAll.filter(isQuestionHasModel).length;
+        const btNoModelCnt = btScopeAll.length - btHasAnyModelCnt;
+        const sortBtnText = _nhBtSortMode === 'NEW_MODEL_FIRST'
+            ? '⇅ Đang xếp: Mới nạp & Có mô hình lên đầu'
+            : '⇅ Đang xếp: Thứ tự gốc Sheet';
+        const modelBtnCount = btModelCnt || btHasAnyModelCnt;
+        const modelBtnText = btModelCnt > 0 ? `🚀 ${btModelCnt} Câu BT Có Mô Hình Canvas 60 FPS` : `🚀 Câu BT Có Mô Hình Canvas 60 FPS`;
+        let html = `<div class="nh-subtopic-bar-head">
+            <span><i class="fa-solid fa-calculator" style="color:#7c3aed"></i> Nhóm <b>Trắc nghiệm Tính toán / Đồ thị</b> (${btScopeAll.length.toLocaleString()} câu · ưu tiên hiển thị câu có Mô hình Canvas &amp; đợt mới lên đầu):</span>
+            <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">🚀 ${modelBtnCount} có Mô hình Canvas · 🆕 ${btNewCnt} câu mới 18/11${exportBtnHtml}${syncPillHtml}</span>
+        </div><div class="nh-subtopic-chips">`;
+        html += `<button type="button" class="nh-subtopic-chip ${!fmodVal ? 'active' : ''}" onclick="selectSubtopicChip('__BT_ALL__')">
+            <span>🧮 Tất cả TN Tính toán</span>
+            <span class="stc-count">${btScopeAll.length}</span>
+        </button>`;
+        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_MODEL_14' || fmodVal === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Lọc riêng các câu Bài tập có Mô hình Canvas 60 FPS">
+            <span>${modelBtnText}</span>
+            <span class="stc-count">${modelBtnCount}</span>
+        </button>`;
+        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc 90 câu Bài tập vừa đẩy ngày 18/11/2026 (VLXT-TN220-BT)">
+            <span>🆕 90 Câu BT Vừa Đẩy Đợt 18/11</span>
+            <span class="stc-count">${btNewCnt}</span>
+        </button>`;
+        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NO_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NO_MODEL__')">
+            <span>⬜ Chưa có mô hình</span>
+            <span class="stc-count">${btNoModelCnt}</span>
+        </button>`;
+        html += `<button type="button" class="nh-subtopic-chip ${_nhBtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleBtSortMode()" title="Đổi thứ tự sắp xếp giữa Ưu tiên Mới nạp &amp; Có Mô hình lên đầu hoặc Thứ tự gốc Google Sheet">
+            <span>${sortBtnText}</span>
+        </button>`;
+        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
+        html += '</div>';
+        bar.innerHTML = html;
         bar.style.display = 'block';
         return;
     }
@@ -8934,11 +9021,26 @@ function renderSubtopicSummaryBar(){
         }
     }
     if (btRows.length > 0) {
-        const isBtAct = ft === 'TN_BT' && !activeSub;
+        const fmodValDefault = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
+        const isBtAct = ft === 'TN_BT' && !activeSub && !fmodValDefault;
+        const btModelCntDef = btRows.filter(isQuestionHasModel).length;
+        const btNewCntDef = btRows.filter(isNewPushedBtBatch).length;
         html += `<button type="button" class="nh-subtopic-chip bt-chip ${isBtAct ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODE__')" title="Các câu TN Tính toán / Đồ thị tách riêng cho Luyện tập &amp; Đấu trường — hiện chưa chia chủ đề">
             <span>🧮 TN Tính toán / Đồ thị (Chưa chia chủ đề)</span>
             <span class="stc-count">${btRows.length}</span>
         </button>`;
+        if (btModelCntDef > 0) {
+            html += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_MODEL_14' || fmodValDefault === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 14 câu Bài tập có Mô hình Canvas 60 FPS vừa đẩy">
+                <span>🚀 ${btModelCntDef} Câu BT Có Mô Hình Canvas</span>
+                <span class="stc-count">${btModelCntDef}</span>
+            </button>`;
+        }
+        if (btNewCntDef > 0) {
+            html += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 90 câu Bài tập vừa đẩy đợt 18/11/2026 (VLXT-TN220-BT)">
+                <span>🆕 ${btNewCntDef} Câu BT Vừa Đẩy (18/11)</span>
+                <span class="stc-count">${btNewCntDef}</span>
+            </button>`;
+        }
     }
     html += '</div>';
     bar.innerHTML = html;
@@ -8969,6 +9071,18 @@ function fillBankFilters(){
     updateBankSubtopicOptions(sb ? sb.value : '', vsub);
 }
 
+function getQuestionModelId(q){
+    if (!q) return '';
+    return String(q.modelId || ((String(q.question || '').match(/data-model-id=["']([^"']+)["']/i) || [])[1]) || '').trim();
+}
+function isQuestionHasModel(q){
+    return Boolean(getQuestionModelId(q));
+}
+function isNewPushedBtBatch(q){
+    if (!q) return false;
+    return String(q.batchId || '').trim() === 'BATCH_TN220_BT_20261118' || String(q.id || '').trim().startsWith('VLXT-TN220-BT-');
+}
+
 function getBankFilterState(){
     const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     return {
@@ -8982,6 +9096,7 @@ function getBankFilterState(){
         fsub: gv('nh-f-subtopic'),
         fcamp: gv('nh-f-campaign'),
         fcl: gv('nh-f-chatluong'),
+        fmod: gv('nh-f-model'),
         fs: gv('nh-f-search').toLowerCase()
     };
 }
@@ -9000,6 +9115,12 @@ function doesQuestionMatchBankFilter(q, st){
     else if (f.ftn === 'TN_BT') matchTnType = (q.loai === 'TN' && q.tnType === 'BT');
     else if (f.ftn === 'DS') matchTnType = (q.loai === 'DS');
     else if (f.ftn === 'TLN') matchTnType = (q.loai === 'TLN');
+
+    let matchMod = true;
+    if (f.fmod === 'HAS_MODEL') matchMod = isQuestionHasModel(q);
+    else if (f.fmod === 'NEW_BT_90') matchMod = isNewPushedBtBatch(q);
+    else if (f.fmod === 'NEW_BT_MODEL_14') matchMod = isNewPushedBtBatch(q) && isQuestionHasModel(q);
+    else if (f.fmod === 'NO_MODEL') matchMod = !isQuestionHasModel(q);
 
     const matchChuong = !f.fc || q.chuong === f.fc || (Array.isArray(q.chuongList) && q.chuongList.includes(f.fc));
     const matchBai = !f.fb || (f.fb === '__EMPTY__'
@@ -9031,22 +9152,37 @@ function doesQuestionMatchBankFilter(q, st){
         else if (f.fcamp === 'used_ANY') matchCamp = (getQuestionCampaignUsages(q).length > 0);
     }
 
+    const qModelId = getQuestionModelId(q);
     return (!f.fm || q.mon === f.fm) &&
         matchChuong &&
         (!f.fd || (q.mucDo || '').toUpperCase() === f.fd) &&
         (!f.fl || q.loai === f.fl) &&
         matchTnType &&
+        matchMod &&
         (!f.fp || q.phanLoai === f.fp) &&
         matchBai &&
         matchSub &&
         matchCamp &&
         matchCl &&
-        (!f.fs || ((q.id || '') + ' ' + (q.question || '') + ' ' + (q.deBaiChung || '') + ' ' + (q.subTopic || '')).toLowerCase().includes(f.fs));
+        (!f.fs || ((q.id || '') + ' ' + qModelId + ' ' + (q.batchId || '') + ' ' + (q.question || '') + ' ' + (q.deBaiChung || '') + ' ' + (q.subTopic || '')).toLowerCase().includes(f.fs));
+}
+
+function getBtPriorityRank(q){
+    const isNew = isNewPushedBtBatch(q);
+    const hasMod = isQuestionHasModel(q);
+    if (isNew && hasMod) return 0;
+    if (isNew) return 1;
+    if (hasMod) return 2;
+    return 3;
 }
 
 function bankFiltered(){
     const st = getBankFilterState();
-    return bankData.filter(q => doesQuestionMatchBankFilter(q, st));
+    const rows = bankData.filter(q => doesQuestionMatchBankFilter(q, st));
+    if (st.ftn === 'TN_BT' && _nhBtSortMode === 'NEW_MODEL_FIRST') {
+        return rows.slice().sort((a, b) => getBtPriorityRank(a) - getBtPriorityRank(b));
+    }
+    return rows;
 }
 const NH_LOAI_TEN={TN:'Trắc nghiệm',DS:'Đúng/Sai',TLN:'Trả lời ngắn'};
 const NH_PAGE_SIZE=30;
@@ -9100,7 +9236,7 @@ function bankRowHtml(q,withCheck){
     }
 
     let tlnModelStage = '';
-    const mIdVal = String(q.modelId || ((String(q.question || '').match(/data-model-id=["']([^"']+)["']/i) || [])[1]) || '').trim();
+    const mIdVal = getQuestionModelId(q);
     const hasEmbeddedSlot = /class=["'][^"']*vlxt-model-slot/i.test(String(q.question || ''));
     const hasCanvasOrSvg = hasRegisteredModel(mIdVal);
     if (mIdVal && hasCanvasOrSvg && !hasEmbeddedSlot) {
@@ -9152,6 +9288,9 @@ function bankRowHtml(q,withCheck){
     const modelBadge = modelIdVal
         ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.38);font-family:'DM Mono',monospace" title="Mô hình chuyển động trực quan nhúng trực tiếp"><i class="fa-solid fa-cubes"></i> ${nhEsc(modelIdVal)}</span>`
         : '';
+    const newBatchBadge = isNewPushedBtBatch(q)
+        ? `<span class="nh-badge" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.4);font-weight:700" title="Câu hỏi thuộc gói 90 câu Bài tập tính toán / Đồ thị vừa đẩy ngày 18/11/2026 (VLXT-TN220-BT)"><i class="fa-solid fa-bolt"></i> Mới đẩy 18/11</span>`
+        : '';
 
     const campaignBadges = renderCampaignBadgesHtml(q);
 
@@ -9161,6 +9300,7 @@ function bankRowHtml(q,withCheck){
             <div class="nh-meta">
                 <span class="nh-badge b-${(q.loai||'tn').toLowerCase()}">${NH_LOAI_TEN[q.loai]||q.loai}</span>
                 ${tnTypeBadge}
+                ${newBatchBadge}
                 ${badgeChatLuong}
                 ${md?`<span class="nh-badge b-${md.toLowerCase()}">${md}</span>`:''}
                 ${q.chuong?`<span class="nh-badge b-ch">${nhEsc(q.chuong)}</span>`:''}
