@@ -13,12 +13,14 @@
     <script src="https://cdn.jsdelivr.net/npm/wmf@1.0.2/dist/wmf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="assets/canvas-core-helpers.js"></script>
-    <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200"></script>
     <script src="assets/100-mohinh-tln-chinhthuc.js"></script>
     <script src="assets/tln-thuc-te-models.js"></script>
     <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tnbt"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
+    <script src="assets/staging-ds-models.js?v=20261118-ds200"></script>
+    <script src="assets/ds106-bank-pack.js?v=20261118-ds200"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1543,7 +1545,7 @@
         <div class="stat-card"><div class="stat-label">Trắc nghiệm (TN)</div><div class="stat-val" id="nh-s-tn">—</div></div>
         <div class="stat-card"><div class="stat-label">📘 TN Lý thuyết (THPTQG)</div><div class="stat-val blue" id="nh-s-tn-lt">—</div></div>
         <div class="stat-card"><div class="stat-label">🧮 TN Tính toán (Chưa chia)</div><div class="stat-val" id="nh-s-tn-bt" style="color:#7c3aed">—</div></div>
-        <div class="stat-card"><div class="stat-label">Đúng / Sai (DS · Ch.1 đã chia)</div><div class="stat-val" id="nh-s-ds">—</div></div>
+        <div class="stat-card"><div class="stat-label">Đúng / Sai (DS · 22 CĐ Ch.1–4)</div><div class="stat-val" id="nh-s-ds">—</div></div>
         <div class="stat-card"><div class="stat-label">Trả lời ngắn (Chưa chia)</div><div class="stat-val green" id="nh-s-tln">—</div></div>
         <div class="stat-card"><div class="stat-label">Câu tinh (đã rà soát)</div><div class="stat-val green" id="nh-s-tinh">—</div></div>
     </div>
@@ -1664,7 +1666,7 @@
                     <option value="">Tất cả nhóm câu (TN · ĐS · TLN)</option>
                     <option value="TN_LT">📘 TN Lý thuyết (Chuẩn Phần I THPTQG)</option>
                     <option value="TN_BT">🧮 TN Tính toán / Đồ thị (Chưa chia chủ đề)</option>
-                    <option value="DS">📋 Đúng / Sai — Phần II (Ch.1: 6 CĐ · Ch.2-4 chưa chia)</option>
+                    <option value="DS">📋 Đúng / Sai — Phần II (22 CĐ Ch.1–4 · 200 câu)</option>
                     <option value="TLN">✏️ Trả lời ngắn — Phần III (6 CĐ C2–C4 Đề 2025 &amp; 2026)</option>
                 </select>
                 <select id="nh-f-phanloai" onchange="bankFiltersChanged()">
@@ -1701,9 +1703,10 @@
                     <option value="HAS_MODEL">🎬 Chỉ câu CÓ Mô hình Canvas / Thực tế</option>
                     <option value="NEW_BT_90">🆕 Vừa đẩy 18/11: 90 câu Bài tập (VLXT-TN220-BT)</option>
                     <option value="NEW_BT_MODEL_14">🚀 Vừa đẩy 18/11: 14 câu BT CÓ Mô hình Canvas</option>
+                    <option value="NEW_DS_106">🧪 Vừa đẩy 18/11: 106 câu Đúng/Sai mới (VLXT-DS-VD28)</option>
                     <option value="NO_MODEL">⬜ Chưa có Mô hình</option>
                 </select>
-                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung hoặc MH-TN220..." oninput="bankSearchChanged()">
+                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING hoặc MH-TN220..." oninput="bankSearchChanged()">
             </div>
             <!-- THANH THỐNG KÊ CHỦ ĐỀ CON (PHẲNG, SẮC NÉT, KHÔNG AI GLOW) -->
             <div id="nh-subtopic-summary-bar" class="nh-subtopic-bar" style="display:none"></div>
@@ -5887,8 +5890,8 @@ function renderExamDetailQuestions() {
         else if (qType === 'short') typeBadge = '<span class="ed-q-type" style="color:var(--green)">Phần III: Trả lời ngắn</span>';
 
         let qText = q.question || '';
-        // Chuẩn hóa đường dẫn ảnh tương đối sang CDN học sinh
-        qText = qText.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
+        // Chuẩn hóa đường dẫn ảnh tương đối sang CDN học sinh (giữ nguyên assets/images/staging* local)
+        qText = qText.replace(/src="(assets\/(?!images\/staging)[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
 
         let bodyHtml = '';
         if (qType === 'mc') {
@@ -5897,7 +5900,7 @@ function renderExamDetailQuestions() {
                 ${['A','B','C','D'].map(k => {
                     const isC = String(q.correct).trim().toUpperCase() === k;
                     let optTxt = opts[k] || '';
-                    optTxt = optTxt.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
+                    optTxt = optTxt.replace(/src="(assets\/(?!images\/staging)[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
                     return `<div class="ed-opt-item ${isC ? 'is-correct' : ''}">
                         <strong style="width:20px">${k}.</strong>
                         <span style="flex:1">${optTxt || '<i style="color:var(--gray2)">(trống)</i>'}</span>
@@ -6449,7 +6452,7 @@ function hasRegisteredModel(mid){
 function mountVlxtModelsWithCaptions(rootEl, opts){
     if(!rootEl || !window.VLXTModels || typeof window.VLXTModels.mountAll!=='function') return;
     try{ window.VLXTModels.mountAll(rootEl, opts || { compact: true }); }catch(e){}
-    const extCaps = Object.assign({}, window.VLXT_TN220_CAPTIONS || {}, window.VLXT_TN50_CAPTIONS || {});
+    const extCaps = Object.assign({}, window.VLXT_DS106_CAPTIONS || {}, window.VLXT_TN220_CAPTIONS || {}, window.VLXT_TN50_CAPTIONS || {});
     if(!Object.keys(extCaps).length || !rootEl.querySelectorAll) return;
     rootEl.querySelectorAll('.vlxt-model-slot[data-model-id]').forEach(slot => {
         const mid = slot.getAttribute('data-model-id');
@@ -7069,8 +7072,8 @@ function getTopics16ForBai(baiRaw, chuongRaw) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HỆ THỐNG 21 CHỦ ĐỀ CON ĐÚNG / SAI CHƯƠNG 1–4 (DS-C1..DS-C4)
-   - Áp dụng riêng cho câu Đúng / Sai (loai = 'DS') thuộc Chương 1–4 (94 mô hình).
+   HỆ THỐNG 22 CHỦ ĐỀ CON ĐÚNG / SAI CHƯƠNG 1–4 (DS-C1..DS-C4)
+   - Áp dụng riêng cho câu Đúng / Sai (loai = 'DS') thuộc Chương 1–4 (200 mô hình: 50/chương).
    - Trả lời ngắn (TLN) vẫn giữ nguyên chưa chia chủ đề.
 ══════════════════════════════════════════════════════════════════════════ */
 const CANONICAL_DS_C1_SUBTOPICS = [
@@ -7100,7 +7103,8 @@ const CANONICAL_DS_C4_SUBTOPICS = [
     "DS-C4.1 – Thí nghiệm tán xạ hạt Alpha & Cấu trúc hạt nhân",
     "DS-C4.2 – Lò phản ứng hạt nhân, Phân hạch, Nhiệt hạch & Hiệu suất nhà máy điện",
     "DS-C4.3 – Phóng xạ trong Y học hạt nhân (PET F-18, Xạ trị & Đánh dấu I-131)",
-    "DS-C4.4 – Phóng xạ môi trường, Công nghiệp, Sinh học & Pin nguyên tử"
+    "DS-C4.4 – Phóng xạ môi trường, Công nghiệp, Sinh học & Pin nguyên tử",
+    "DS-C4.5 – Phóng xạ môi trường, Chu kỳ bán rã & An toàn bức xạ"
 ];
 const DS_SUBTOPICS_BY_CHAPTER = {
     'CHƯƠNG 1 – VẬT LÝ NHIỆT': CANONICAL_DS_C1_SUBTOPICS,
@@ -7228,7 +7232,40 @@ const DS_C1_MODEL_TO_SUBTOPIC = {
     'MH-C1-13': CANONICAL_DS_C1_SUBTOPICS[4],
     'MH-C1-14': CANONICAL_DS_C1_SUBTOPICS[4],
     'MH-C1-15': CANONICAL_DS_C1_SUBTOPICS[4],
-    'MH-C1-21': CANONICAL_DS_C1_SUBTOPICS[5]
+    'MH-C1-21': CANONICAL_DS_C1_SUBTOPICS[5],
+    'MH-STAGING-C1-01': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-02': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-03': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-04': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-05': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-06': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-07': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-08': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-09': CANONICAL_DS_C1_SUBTOPICS[3],
+    'MH-STAGING-C1-10': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-11': CANONICAL_DS_C1_SUBTOPICS[1],
+    'MH-STAGING-C1-12': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-13': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-14': CANONICAL_DS_C1_SUBTOPICS[3],
+    'MH-STAGING-C1-15': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-16': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-17': CANONICAL_DS_C1_SUBTOPICS[1],
+    'MH-STAGING-C1-18': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-19': CANONICAL_DS_C1_SUBTOPICS[1],
+    'MH-STAGING-C1-20': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-21': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-22': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-23': CANONICAL_DS_C1_SUBTOPICS[1],
+    'MH-STAGING-C1-24': CANONICAL_DS_C1_SUBTOPICS[0],
+    'MH-STAGING-C1-25': CANONICAL_DS_C1_SUBTOPICS[4],
+    'MH-STAGING-C1-26': CANONICAL_DS_C1_SUBTOPICS[3],
+    'MH-STAGING-C1-27': CANONICAL_DS_C1_SUBTOPICS[3],
+    'MH-STAGING-C1-28': CANONICAL_DS_C1_SUBTOPICS[4],
+    'MH-STAGING-C1-29': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-30': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-31': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-32': CANONICAL_DS_C1_SUBTOPICS[2],
+    'MH-STAGING-C1-33': CANONICAL_DS_C1_SUBTOPICS[2]
 };
 const DS_C2_MODEL_TO_SUBTOPIC = {
     'MH-C2-27': CANONICAL_DS_C2_SUBTOPICS[0],
@@ -7259,7 +7296,28 @@ const DS_C2_MODEL_TO_SUBTOPIC = {
     'MH-C2-52': CANONICAL_DS_C2_SUBTOPICS[4],
     'MH-C2-39': CANONICAL_DS_C2_SUBTOPICS[5],
     'MH-C2-44': CANONICAL_DS_C2_SUBTOPICS[5],
-    'MH-C2-45': CANONICAL_DS_C2_SUBTOPICS[5]
+    'MH-C2-45': CANONICAL_DS_C2_SUBTOPICS[5],
+    'MH-STAGING-C2-01': CANONICAL_DS_C2_SUBTOPICS[2],
+    'MH-STAGING-C2-02': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-03': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-04': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-05': CANONICAL_DS_C2_SUBTOPICS[4],
+    'MH-STAGING-C2-06': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-07': CANONICAL_DS_C2_SUBTOPICS[1],
+    'MH-STAGING-C2-08': CANONICAL_DS_C2_SUBTOPICS[4],
+    'MH-STAGING-C2-09': CANONICAL_DS_C2_SUBTOPICS[4],
+    'MH-STAGING-C2-10': CANONICAL_DS_C2_SUBTOPICS[4],
+    'MH-STAGING-C2-11': CANONICAL_DS_C2_SUBTOPICS[2],
+    'MH-STAGING-C2-12': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-13': CANONICAL_DS_C2_SUBTOPICS[5],
+    'MH-STAGING-C2-14': CANONICAL_DS_C2_SUBTOPICS[2],
+    'MH-STAGING-C2-15': CANONICAL_DS_C2_SUBTOPICS[3],
+    'MH-STAGING-C2-16': CANONICAL_DS_C2_SUBTOPICS[5],
+    'MH-STAGING-C2-17': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-18': CANONICAL_DS_C2_SUBTOPICS[0],
+    'MH-STAGING-C2-19': CANONICAL_DS_C2_SUBTOPICS[2],
+    'MH-STAGING-C2-20': CANONICAL_DS_C2_SUBTOPICS[3],
+    'MH-STAGING-C2-21': CANONICAL_DS_C2_SUBTOPICS[3]
 };
 const DS_C3_MODEL_TO_SUBTOPIC = {
     'MH-C3-53': CANONICAL_DS_C3_SUBTOPICS[0],
@@ -7293,7 +7351,25 @@ const DS_C3_MODEL_TO_SUBTOPIC = {
     'MH-C3-72': CANONICAL_DS_C3_SUBTOPICS[4],
     'MH-C3-79': CANONICAL_DS_C3_SUBTOPICS[4],
     'MH-C3-82': CANONICAL_DS_C3_SUBTOPICS[4],
-    'MH-C3-84': CANONICAL_DS_C3_SUBTOPICS[4]
+    'MH-C3-84': CANONICAL_DS_C3_SUBTOPICS[4],
+    'MH-STAGING-C3-01': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-02': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-03': CANONICAL_DS_C3_SUBTOPICS[3],
+    'MH-STAGING-C3-04': CANONICAL_DS_C3_SUBTOPICS[3],
+    'MH-STAGING-C3-05': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-06': CANONICAL_DS_C3_SUBTOPICS[1],
+    'MH-STAGING-C3-07': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-08': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-09': CANONICAL_DS_C3_SUBTOPICS[2],
+    'MH-STAGING-C3-10': CANONICAL_DS_C3_SUBTOPICS[2],
+    'MH-STAGING-C3-11': CANONICAL_DS_C3_SUBTOPICS[3],
+    'MH-STAGING-C3-12': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-13': CANONICAL_DS_C3_SUBTOPICS[2],
+    'MH-STAGING-C3-14': CANONICAL_DS_C3_SUBTOPICS[0],
+    'MH-STAGING-C3-15': CANONICAL_DS_C3_SUBTOPICS[1],
+    'MH-STAGING-C3-16': CANONICAL_DS_C3_SUBTOPICS[2],
+    'MH-STAGING-C3-17': CANONICAL_DS_C3_SUBTOPICS[1],
+    'MH-STAGING-C3-18': CANONICAL_DS_C3_SUBTOPICS[0]
 };
 const DS_C4_MODEL_TO_SUBTOPIC = {
     'MH-C4-85': CANONICAL_DS_C4_SUBTOPICS[0],
@@ -7311,7 +7387,41 @@ const DS_C4_MODEL_TO_SUBTOPIC = {
     'MH-C4-93': CANONICAL_DS_C4_SUBTOPICS[3],
     'MH-C4-98': CANONICAL_DS_C4_SUBTOPICS[3],
     'MH-C4-99': CANONICAL_DS_C4_SUBTOPICS[3],
-    'MH-C4-100': CANONICAL_DS_C4_SUBTOPICS[3]
+    'MH-C4-100': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-01': CANONICAL_DS_C4_SUBTOPICS[0],
+    'MH-STAGING-C4-02': CANONICAL_DS_C4_SUBTOPICS[0],
+    'MH-STAGING-C4-03': CANONICAL_DS_C4_SUBTOPICS[2],
+    'MH-STAGING-C4-04': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-05': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-06': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-07': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-08': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-09': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-10': CANONICAL_DS_C4_SUBTOPICS[2],
+    'MH-STAGING-C4-11': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-12': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-13': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-14': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-15': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-16': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-17': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-18': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-19': CANONICAL_DS_C4_SUBTOPICS[2],
+    'MH-STAGING-C4-20': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-21': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-22': CANONICAL_DS_C4_SUBTOPICS[2],
+    'MH-STAGING-C4-23': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-24': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-25': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-26': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-27': CANONICAL_DS_C4_SUBTOPICS[3],
+    'MH-STAGING-C4-28': CANONICAL_DS_C4_SUBTOPICS[0],
+    'MH-STAGING-C4-29': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-30': CANONICAL_DS_C4_SUBTOPICS[4],
+    'MH-STAGING-C4-31': CANONICAL_DS_C4_SUBTOPICS[2],
+    'MH-STAGING-C4-32': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-33': CANONICAL_DS_C4_SUBTOPICS[1],
+    'MH-STAGING-C4-34': CANONICAL_DS_C4_SUBTOPICS[0]
 };
 function isCanonicalDsC1Subtopic(val) {
     return CANONICAL_DS_C1_SUBTOPICS.includes(String(val || '').trim());
@@ -7351,7 +7461,7 @@ function guessDsC1SubTopic(q) {
     if (!q) return '';
     const explicitModel = String(q.modelId || '').trim().toUpperCase();
     if (DS_C1_MODEL_TO_SUBTOPIC[explicitModel]) return DS_C1_MODEL_TO_SUBTOPIC[explicitModel];
-    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-C1-\d+)["']/i);
+    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-(?:STAGING-)?C1-\d+)["']/i);
     if (slotMatch && DS_C1_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()]) {
         return DS_C1_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()];
     }
@@ -7388,7 +7498,7 @@ function guessDsC2SubTopic(q) {
     if (!q) return '';
     const explicitModel = String(q.modelId || '').trim().toUpperCase();
     if (DS_C2_MODEL_TO_SUBTOPIC[explicitModel]) return DS_C2_MODEL_TO_SUBTOPIC[explicitModel];
-    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-C2-\d+)["']/i);
+    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-(?:STAGING-)?C2-\d+)["']/i);
     if (slotMatch && DS_C2_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()]) {
         return DS_C2_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()];
     }
@@ -7424,7 +7534,7 @@ function guessDsC3SubTopic(q) {
     if (!q) return '';
     const explicitModel = String(q.modelId || '').trim().toUpperCase();
     if (DS_C3_MODEL_TO_SUBTOPIC[explicitModel]) return DS_C3_MODEL_TO_SUBTOPIC[explicitModel];
-    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-C3-\d+)["']/i);
+    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-(?:STAGING-)?C3-\d+)["']/i);
     if (slotMatch && DS_C3_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()]) {
         return DS_C3_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()];
     }
@@ -7458,7 +7568,7 @@ function guessDsC4SubTopic(q) {
     if (!q) return '';
     const explicitModel = String(q.modelId || '').trim().toUpperCase();
     if (DS_C4_MODEL_TO_SUBTOPIC[explicitModel]) return DS_C4_MODEL_TO_SUBTOPIC[explicitModel];
-    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-C4-\d+)["']/i);
+    const slotMatch = String(q.question || '').match(/data-model-id=["'](MH-(?:STAGING-)?C4-\d+)["']/i);
     if (slotMatch && DS_C4_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()]) {
         return DS_C4_MODEL_TO_SUBTOPIC[slotMatch[1].toUpperCase()];
     }
@@ -7475,6 +7585,9 @@ function guessDsC4SubTopic(q) {
     }
     if (/y học|pet|f-18|fluorodeoxyglucose|xạ trị|dao gamma|i-131|iodine|tc-99|technetium|tuyến giáp|khối u/.test(fullText)) {
         return CANONICAL_DS_C4_SUBTOPICS[2]; // DS-C4.3
+    }
+    if (/chu kỳ bán rã|chu kì bán rã|an toàn bức xạ|liều chiếu|phóng xạ tự nhiên/.test(fullText)) {
+        return CANONICAL_DS_C4_SUBTOPICS[4]; // DS-C4.5
     }
     if (/radon|bụi mịn|pin hạt nhân|rtg|c-14|niên đại|bảo quản|chiếu xạ|nông nghiệp|đồng vị đánh dấu|công nghiệp/.test(fullText)) {
         return CANONICAL_DS_C4_SUBTOPICS[3]; // DS-C4.4
@@ -8023,6 +8136,10 @@ async function syncApprovedAuditToServer(silent) {
         if (!silent) toast('Vui lòng nhập Khóa quản trị (biểu tượng chìa khóa trên thanh công cụ) để ghi lên Google Sheets!', 'err');
         return;
     }
+    if (!silent) {
+        if (typeof syncApprovedTn220BtToServer === 'function') await syncApprovedTn220BtToServer(silent);
+        if (typeof syncApprovedDs106ToServer === 'function') await syncApprovedDs106ToServer(silent);
+    }
     const groupMap = {};
     const addToGroup = (id, baiHoc, tnType, subTopic) => {
         if (!id || (!baiHoc && !tnType && !subTopic)) return;
@@ -8369,12 +8486,41 @@ function applyBankRows(rows){
             }
         });
     }
+    // Hợp nhất gói 106 câu Đúng / Sai thực nghiệm + 106 mô hình Canvas 60 FPS (Đủ 200 câu ĐS / 50 Đề)
+    if (Array.isArray(window.VLXT_DS106_BANK) && window.VLXT_DS106_BANK.length > 0) {
+        const dsMetaMap = new Map();
+        const existingDsIds = new Set(filteredRaw.map(q => String(q.id || '').trim()));
+        window.VLXT_DS106_BANK.forEach(dsQ => {
+            if (dsQ && dsQ.id) dsMetaMap.set(String(dsQ.id).trim(), dsQ);
+        });
+        filteredRaw.forEach(q => {
+            const meta = dsMetaMap.get(String(q.id || '').trim());
+            if (meta) {
+                if (!q.modelId && meta.modelId) q.modelId = meta.modelId;
+                if (meta.baiHoc) q.baiHoc = meta.baiHoc;
+                if (meta.subTopic) q.subTopic = meta.subTopic;
+                if (q.tnType === undefined) q.tnType = '';
+                if (meta.modelId && !/data-model-id=/i.test(String(q.question || ''))) {
+                    q.question = String(q.question || '').trim() + `\n<div class="vlxt-model-slot" data-model-id="${nhEsc(meta.modelId)}"></div>`;
+                }
+            }
+        });
+        window.VLXT_DS106_BANK.forEach(dsQ => {
+            if (dsQ && dsQ.id && !existingDsIds.has(String(dsQ.id).trim())) {
+                filteredRaw.push({ ...dsQ });
+                existingDsIds.add(String(dsQ.id).trim());
+            }
+        });
+    }
     bankData = filteredRaw.map(q => normalizeQuestionTaxonomy(q));
     if (getAdminKey() && !localStorage.getItem(SYNC_STORAGE_KEY)) {
         setTimeout(() => syncApprovedAuditToServer(true), 1200);
     }
     if (getAdminKey() && !localStorage.getItem('vlxt_tn220_bt_synced_v1')) {
         setTimeout(() => syncApprovedTn220BtToServer(true), 2400);
+    }
+    if (getAdminKey() && !localStorage.getItem('vlxt_ds106_bank_synced_v1')) {
+        setTimeout(() => syncApprovedDs106ToServer(true), 3600);
     }
     bankLoaded = true;
     bankSel.clear();
@@ -8419,6 +8565,42 @@ async function syncApprovedTn220BtToServer(silent) {
         if (!silent) toast('Chưa đồng bộ được gói TN-BT lên Cloud: ' + e.message, 'err');
     } finally {
         _tn220BtSyncInFlight = false;
+    }
+}
+
+let _ds106SyncInFlight = false;
+async function syncApprovedDs106ToServer(silent) {
+    if (_ds106SyncInFlight) return;
+    const key = getAdminKey();
+    if (!key || !Array.isArray(window.VLXT_DS106_BANK) || !window.VLXT_DS106_BANK.length) return;
+    const missingQs = window.VLXT_DS106_BANK.filter(dsQ => {
+        const srv = _rawServerTaxonomyById[dsQ.id];
+        return !srv;
+    });
+    if (!missingQs.length) {
+        try { localStorage.setItem('vlxt_ds106_bank_synced_v1', '1'); } catch (e) {}
+        return;
+    }
+    _ds106SyncInFlight = true;
+    try {
+        const res = await postAdminWriteJson({
+            action: 'importnganhang',
+            dryRun: false,
+            batchId: 'BATCH_DS106_OFFICIAL_20261118',
+            questions: missingQs
+        });
+        if (res && res.ok) {
+            try { localStorage.setItem('vlxt_ds106_bank_synced_v1', '1'); } catch (e) {}
+            missingQs.forEach(q => {
+                _rawServerTaxonomyById[q.id] = { baiHoc: q.baiHoc || '', tnType: '', subTopic: q.subTopic || '' };
+            });
+            try { await adminDbDelete('nganhang'); } catch (e) {}
+            if (!silent) toast('<i class="fa-solid fa-circle-check"></i> Đã đồng bộ ' + missingQs.length + ' câu Đúng/Sai &amp; mô hình Canvas lên Google Sheets!', 'ok');
+        }
+    } catch (e) {
+        if (!silent) toast('Chưa đồng bộ được gói 106 câu ĐS lên Cloud: ' + e.message, 'err');
+    } finally {
+        _ds106SyncInFlight = false;
     }
 }
 
@@ -8626,6 +8808,9 @@ function syncModelFilterOnTypeChange(activeFt){
     if (fmod && activeFt !== 'TN_BT' && (fmod.value === 'NEW_BT_90' || fmod.value === 'NEW_BT_MODEL_14')) {
         fmod.value = '';
     }
+    if (fmod && activeFt !== 'DS' && fmod.value === 'NEW_DS_106') {
+        fmod.value = '';
+    }
 }
 
 function onBankLoaiFilterChanged(){
@@ -8706,6 +8891,12 @@ function toggleBtSortMode(){
     bankFiltersChanged();
 }
 
+let _nhDsSortMode = 'NEW_DS_FIRST';
+function toggleDsSortMode(){
+    _nhDsSortMode = (_nhDsSortMode === 'NEW_DS_FIRST') ? 'SHEET_ORDER' : 'NEW_DS_FIRST';
+    bankFiltersChanged();
+}
+
 function selectSubtopicChip(subVal){
     const ssub = document.getElementById('nh-f-subtopic');
     const ft = document.getElementById('nh-f-tntype');
@@ -8736,6 +8927,17 @@ function selectSubtopicChip(subVal){
         bankFiltersChanged();
         return;
     }
+    if (subVal === '__DS_NEW_106__') {
+        if (ssub) ssub.value = '';
+        if (ft) ft.value = 'DS';
+        if (fl) fl.value = 'DS';
+        if (fmod) {
+            fmod.value = (fmod.value === 'NEW_DS_106') ? '' : 'NEW_DS_106';
+        }
+        updateBankSubtopicOptions(sb ? sb.value : '', '');
+        bankFiltersChanged();
+        return;
+    }
     const dsChMap = {
         '__DS_C1_ALL__': CANONICAL_CHAPTERS[0],
         '__DS_C2_ALL__': CANONICAL_CHAPTERS[1],
@@ -8746,6 +8948,8 @@ function selectSubtopicChip(subVal){
         if (ssub) ssub.value = '';
         if (ft) ft.value = 'DS';
         if (fl) fl.value = 'DS';
+        syncModelFilterOnTypeChange('DS');
+        if (subVal === '__DS_ALL__' && fmod && fmod.value === 'NEW_DS_106') fmod.value = '';
         if (dsChMap[subVal] && sc && sc.value !== dsChMap[subVal]) {
             const lessonCh = (sb && sb.value && typeof LESSON_TO_CANONICAL_CHAPTER !== 'undefined') ? LESSON_TO_CANONICAL_CHAPTER[sb.value] : '';
             if (!lessonCh || lessonCh !== dsChMap[subVal]) {
@@ -8774,6 +8978,7 @@ function selectSubtopicChip(subVal){
         const nextVal = (ssub.value === subVal) ? '' : subVal;
         if (ft) ft.value = 'DS';
         if (fl) fl.value = 'DS';
+        syncModelFilterOnTypeChange('DS');
         updateBankSubtopicOptions(sb ? sb.value : '', nextVal);
         ssub.value = nextVal;
         bankFiltersChanged();
@@ -8787,6 +8992,7 @@ function selectSubtopicChip(subVal){
         ft.value = '';
         if (fl) fl.value = '';
     }
+    syncModelFilterOnTypeChange(ft ? ft.value : '');
     updateBankSubtopicOptions(sb ? sb.value : '', nextVal);
     ssub.value = nextVal;
     bankFiltersChanged();
@@ -8889,15 +9095,29 @@ function renderSubtopicSummaryBar(){
             const st = getQuestionSubTopicForLesson(q, selectedBai);
             if (dsCounts[st] !== undefined) dsCounts[st]++;
         });
+        const fmodDsVal = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
+        const dsNewCnt = dsRows.filter(isNewPushedDsBatch).length;
+        const dsSortBtnText = _nhDsSortMode === 'NEW_DS_FIRST'
+            ? '⇅ Đang xếp: 106 câu mới 18/11 lên đầu'
+            : '⇅ Đang xếp: Thứ tự gốc (94 câu cũ trước)';
         if (!selectedChuong && !selectedBai && !activeSub) {
             const chCounts = CANONICAL_CHAPTERS.map(ch => dsRows.filter(q => isDsForCh(q, ch)).length);
             let html = `<div class="nh-subtopic-bar-head">
-                <span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> 21 Chủ đề con <b>Đúng / Sai Chương 1–4</b> (Mô hình thực tế — bấm chip để lọc):</span>
+                <span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${ALL_CANONICAL_DS_SUBTOPICS.length} Chủ đề con <b>Đúng / Sai Chương 1–4</b> (Mô hình thực tế · ưu tiên 106 câu mới 18/11 lên đầu):</span>
                 <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📋 Ch.1: ${chCounts[0]} · Ch.2: ${chCounts[1]} · Ch.3: ${chCounts[2]} · Ch.4: ${chCounts[3]} (Tổng ${dsRows.length} câu)${exportBtnHtml}${syncPillHtml}</span>
             </div><div class="nh-subtopic-chips">`;
-            html += `<button type="button" class="nh-subtopic-chip active" onclick="selectSubtopicChip('__DS_ALL__')">
+            html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_ALL__')">
                 <span>Tất cả ĐS Ch.1–4</span>
                 <span class="stc-count">${dsRows.length}</span>
+            </button>`;
+            if (dsNewCnt > 0) {
+                html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh 106 câu Đúng/Sai mới đẩy lên Ngân hàng ngày 18/11/2026 (VLXT-DS-VD28)">
+                    <span>🆕 ${dsNewCnt} Câu ĐS Vừa Đẩy (18/11)</span>
+                    <span class="stc-count">${dsNewCnt}</span>
+                </button>`;
+            }
+            html += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa 106 câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc Google Sheet">
+                <span>${dsSortBtnText}</span>
             </button>`;
             CANONICAL_CHAPTERS.forEach((ch, idx) => {
                 html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${idx + 1}_ALL__')">
@@ -8926,9 +9146,18 @@ function renderSubtopicSummaryBar(){
             <span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${dsList.length} Chủ đề <b>Đúng / Sai Chương ${chNum}</b> (${nhEsc(scopeLabel)} · Mô hình thực tế — bấm chip để lọc):</span>
             <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📋 ${dsRows.length} câu ĐS Ch.${chNum}${exportBtnHtml}${syncPillHtml}</span>
         </div><div class="nh-subtopic-chips">`;
-        html += `<button type="button" class="nh-subtopic-chip ${!activeSub ? 'active' : ''}" onclick="selectSubtopicChip('__DS_C${chNum}_ALL__')">
+        html += `<button type="button" class="nh-subtopic-chip ${!activeSub && fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_C${chNum}_ALL__')">
             <span>Tất cả ĐS Chương ${chNum}</span>
             <span class="stc-count">${dsRows.length}</span>
+        </button>`;
+        if (dsNewCnt > 0) {
+            html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh các câu Đúng/Sai mới đẩy đợt 18/11/2026">
+                <span>🆕 ${dsNewCnt} Câu ĐS Vừa Đẩy (18/11)</span>
+                <span class="stc-count">${dsNewCnt}</span>
+            </button>`;
+        }
+        html += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc">
+            <span>${dsSortBtnText}</span>
         </button>`;
         dsList.forEach(s => {
             const isAct = activeSub === s;
@@ -8937,7 +9166,7 @@ function renderSubtopicSummaryBar(){
                 <span class="stc-count">${dsCounts[s] || 0} ĐS</span>
             </button>`;
         });
-        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')"><span>🌐 ĐS cả 4 Chương (21 CĐ)</span></button>`;
+        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')"><span>🌐 ĐS cả 4 Chương (${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ)</span></button>`;
         html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
         html += '</div>';
         bar.innerHTML = html;
@@ -9007,6 +9236,8 @@ function renderSubtopicSummaryBar(){
         </button>`;
     });
     if (dsRows.length > 0) {
+        const fmodValDsDef = document.getElementById('nh-f-model') ? document.getElementById('nh-f-model').value : '';
+        const dsNewCntDef = dsRows.filter(isNewPushedDsBatch).length;
         if (dsChNum) {
             const dsCnt = (DS_SUBTOPICS_BY_CHAPTER[dsTargetCh] || []).length;
             html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${dsChNum}_ALL__')" title="Xem các câu Đúng/Sai Chương ${dsChNum} (${dsCnt} Chủ đề Mô hình thực tế)">
@@ -9014,9 +9245,15 @@ function renderSubtopicSummaryBar(){
                 <span class="stc-count">${dsRows.length}</span>
             </button>`;
         } else {
-            html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')" title="Xem các câu Đúng/Sai Chương 1–4 (21 Chủ đề Mô hình thực tế)">
-                <span>📋 ĐS Ch.1–4 (21 CĐ Mô hình)</span>
+            html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')" title="Xem các câu Đúng/Sai Chương 1–4 (${ALL_CANONICAL_DS_SUBTOPICS.length} Chủ đề Mô hình thực tế)">
+                <span>📋 ĐS Ch.1–4 (${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ Mô hình)</span>
                 <span class="stc-count">${dsRows.length}</span>
+            </button>`;
+        }
+        if (dsNewCntDef > 0) {
+            html += `<button type="button" class="nh-subtopic-chip ${fmodValDsDef === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 106 câu Đúng/Sai mới đẩy đợt 18/11/2026 (VLXT-DS-VD28)">
+                <span>🆕 ${dsNewCntDef} Câu ĐS Vừa Đẩy (18/11)</span>
+                <span class="stc-count">${dsNewCntDef}</span>
             </button>`;
         }
     }
@@ -9082,6 +9319,10 @@ function isNewPushedBtBatch(q){
     if (!q) return false;
     return String(q.batchId || '').trim() === 'BATCH_TN220_BT_20261118' || String(q.id || '').trim().startsWith('VLXT-TN220-BT-');
 }
+function isNewPushedDsBatch(q){
+    if (!q) return false;
+    return String(q.batchId || '').trim() === 'BATCH_DS106_OFFICIAL_20261118' || String(q.id || '').trim().startsWith('VLXT-DS-VD28-');
+}
 
 function getBankFilterState(){
     const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
@@ -9120,6 +9361,7 @@ function doesQuestionMatchBankFilter(q, st){
     if (f.fmod === 'HAS_MODEL') matchMod = isQuestionHasModel(q);
     else if (f.fmod === 'NEW_BT_90') matchMod = isNewPushedBtBatch(q);
     else if (f.fmod === 'NEW_BT_MODEL_14') matchMod = isNewPushedBtBatch(q) && isQuestionHasModel(q);
+    else if (f.fmod === 'NEW_DS_106') matchMod = isNewPushedDsBatch(q);
     else if (f.fmod === 'NO_MODEL') matchMod = !isQuestionHasModel(q);
 
     const matchChuong = !f.fc || q.chuong === f.fc || (Array.isArray(q.chuongList) && q.chuongList.includes(f.fc));
@@ -9181,6 +9423,9 @@ function bankFiltered(){
     const rows = bankData.filter(q => doesQuestionMatchBankFilter(q, st));
     if (st.ftn === 'TN_BT' && _nhBtSortMode === 'NEW_MODEL_FIRST') {
         return rows.slice().sort((a, b) => getBtPriorityRank(a) - getBtPriorityRank(b));
+    }
+    if ((st.ftn === 'DS' || st.fl === 'DS') && _nhDsSortMode === 'NEW_DS_FIRST') {
+        return rows.slice().sort((a, b) => (isNewPushedDsBatch(a) ? 0 : 1) - (isNewPushedDsBatch(b) ? 0 : 1));
     }
     return rows;
 }
@@ -9288,8 +9533,8 @@ function bankRowHtml(q,withCheck){
     const modelBadge = modelIdVal
         ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.38);font-family:'DM Mono',monospace" title="Mô hình chuyển động trực quan nhúng trực tiếp"><i class="fa-solid fa-cubes"></i> ${nhEsc(modelIdVal)}</span>`
         : '';
-    const newBatchBadge = isNewPushedBtBatch(q)
-        ? `<span class="nh-badge" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.4);font-weight:700" title="Câu hỏi thuộc gói 90 câu Bài tập tính toán / Đồ thị vừa đẩy ngày 18/11/2026 (VLXT-TN220-BT)"><i class="fa-solid fa-bolt"></i> Mới đẩy 18/11</span>`
+    const newBatchBadge = (isNewPushedBtBatch(q) || isNewPushedDsBatch(q))
+        ? `<span class="nh-badge" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.4);font-weight:700" title="Câu hỏi thuộc đợt vừa đẩy chính thức ngày 18/11/2026"><i class="fa-solid fa-bolt"></i> Mới đẩy 18/11</span>`
         : '';
 
     const campaignBadges = renderCampaignBadgesHtml(q);
@@ -9853,6 +10098,7 @@ function bankAssignBaiApply(){
 function getTargetSubtopicsForAutoPick(scopeOverride){
     const scope = scopeOverride || ((document.getElementById('nh-ap-scope') ? document.getElementById('nh-ap-scope').value : 'official_18') || 'official_18');
     const loaiFilter = (document.getElementById('nh-ap-loai') ? document.getElementById('nh-ap-loai').value : '') || '';
+    if (scope === 'official_ds_4') return [...ALL_CANONICAL_DS_SUBTOPICS];
     if (scope === 'ds_c1') return [...CANONICAL_DS_C1_SUBTOPICS];
     if (scope === 'ds_c2') return [...CANONICAL_DS_C2_SUBTOPICS];
     if (scope === 'ds_c3') return [...CANONICAL_DS_C3_SUBTOPICS];
@@ -9898,8 +10144,9 @@ function computeAutoPickPlan(opts){
     const scope = cfg.scope || ((document.getElementById('nh-ap-scope') ? document.getElementById('nh-ap-scope').value : 'official_18') || 'official_18');
     const campaign = cfg.campaign || ((document.getElementById('nh-ap-campaign') ? document.getElementById('nh-ap-campaign').value : 'THITHU') || 'THITHU');
     const isOfficial18 = (scope === 'official_18');
-    const isDsScope = ['ds_all', 'ds_c1', 'ds_c2', 'ds_c3', 'ds_c4'].includes(scope);
-    const perSub = isOfficial18 ? 1 : Math.max(1, Math.min(10, parseInt(cfg.perSub !== undefined ? cfg.perSub : (document.getElementById('nh-ap-per-sub') ? document.getElementById('nh-ap-per-sub').value : '1'), 10) || 1));
+    const isOfficialDs4 = (scope === 'official_ds_4');
+    const isDsScope = ['official_ds_4', 'ds_all', 'ds_c1', 'ds_c2', 'ds_c3', 'ds_c4'].includes(scope);
+    const perSub = (isOfficial18 || isOfficialDs4) ? 1 : Math.max(1, Math.min(10, parseInt(cfg.perSub !== undefined ? cfg.perSub : (document.getElementById('nh-ap-per-sub') ? document.getElementById('nh-ap-per-sub').value : '1'), 10) || 1));
     const loaiFilter = isOfficial18 ? 'TN_LT' : (isDsScope ? 'DS' : (cfg.loaiFilter !== undefined ? cfg.loaiFilter : ((document.getElementById('nh-ap-loai') ? document.getElementById('nh-ap-loai').value : '') || '')));
     const onlyTinh = cfg.onlyTinh !== undefined ? !!cfg.onlyTinh : (document.getElementById('nh-ap-only-tinh') ? document.getElementById('nh-ap-only-tinh').checked : true);
     const targetSubtopics = getTargetSubtopicsForAutoPick(scope);
@@ -9910,6 +10157,55 @@ function computeAutoPickPlan(opts){
     const exhaustedSubs = [];
     const poolsBySub = {};
     let skippedDupCount = 0;
+
+    if (isOfficialDs4) {
+        const pickedChapters = [];
+        CANONICAL_CHAPTERS.forEach((ch, chIdx) => {
+            const poolCh = bankData.filter(q => {
+                if (onlyTinh && String(q.chatLuong || '').toLowerCase() !== 'tinh') return false;
+                if (q.loai !== 'DS') return false;
+                return q.chuong === ch;
+            });
+            let dupCh = 0;
+            const unusedCh = poolCh.filter(q => {
+                const used = (cfg.usedIds instanceof Set && cfg.usedIds.has(q.id)) || isQuestionUsedInCampaign(q, campaign);
+                if (used) dupCh++;
+                return !used && !pickedSet.has(q.id);
+            });
+            skippedDupCount += dupCh;
+            if (!unusedCh.length) {
+                exhaustedSubs.push({ sub: `Phần II – Chương ${chIdx + 1}`, needed: 1, got: 0, totalInSub: poolCh.length });
+                return;
+            }
+            const bySub = {};
+            unusedCh.forEach(q => {
+                const st = q.subTopic || 'Khác';
+                if (!bySub[st]) bySub[st] = [];
+                bySub[st].push(q);
+            });
+            const subEntries = Object.entries(bySub).sort((a, b) => b[1].length - a[1].length);
+            const maxLen = subEntries[0][1].length;
+            const topGroups = subEntries.filter(([, arr]) => arr.length === maxLen);
+            const chosenGroup = topGroups[Math.floor(Math.random() * topGroups.length)][1];
+            const chosenQ = chosenGroup[Math.floor(Math.random() * chosenGroup.length)];
+            pickedSet.add(chosenQ.id);
+            pickedIds.push(chosenQ.id);
+            pickedObjects.push(chosenQ);
+            pickedChapters.push({ ch, sub: chosenQ.subTopic || '', id: chosenQ.id });
+        });
+        return {
+            scope,
+            isOfficial18: false,
+            isOfficialDs4: true,
+            campaign,
+            perSub: 1,
+            targetSubtopics,
+            extraPickedSubs: pickedChapters.map(x => x.sub),
+            pickedIds,
+            exhaustedSubs,
+            skippedDupCount
+        };
+    }
 
     function buildUnusedPool(sub) {
         const poolAll = bankData.filter(q => {
@@ -10015,10 +10311,11 @@ function updateAutoPickPreview(){
     const perInput = document.getElementById('nh-ap-per-sub');
     const loaiSel = document.getElementById('nh-ap-loai');
     const isOfficial18 = scopeSel && scopeSel.value === 'official_18';
-    const isDsScope = scopeSel && ['ds_all', 'ds_c1', 'ds_c2', 'ds_c3', 'ds_c4'].includes(scopeSel.value);
+    const isOfficialDs4 = scopeSel && scopeSel.value === 'official_ds_4';
+    const isDsScope = scopeSel && ['official_ds_4', 'ds_all', 'ds_c1', 'ds_c2', 'ds_c3', 'ds_c4'].includes(scopeSel.value);
     if (perInput) {
-        if (isOfficial18) perInput.value = '1';
-        perInput.disabled = isOfficial18;
+        if (isOfficial18 || isOfficialDs4) perInput.value = '1';
+        perInput.disabled = isOfficial18 || isOfficialDs4;
     }
     if (loaiSel) {
         if (isOfficial18) loaiSel.value = 'TN_LT';
@@ -10034,6 +10331,10 @@ function updateAutoPickPreview(){
         const extraTags = plan.extraPickedSubs.map(s => nhEsc(s.split('–')[0].trim())).join(' + ');
         html += `<div>• <b>Ma trận Phần I chuẩn Bộ 2025–2026:</b> <b>16 Chủ đề lớn</b> (1 câu/CĐ) + <b>2 câu trọng tâm</b>${extraTags ? ` (${extraTags})` : ''} = chuẩn <b>18 câu TN Lý thuyết</b></div>`;
         html += `<div>• <b>Số câu khả dụng bốc ngay (chưa dùng trong ${nhEsc(plan.campaign)}):</b> <b style="color:var(--green);font-size:14px">${plan.pickedIds.length}/18 câu</b> (đã loại trừ <b>${plan.skippedDupCount}</b> lượt câu trùng của đề trước)</div>`;
+    } else if (plan.isOfficialDs4) {
+        const pickedTags = plan.extraPickedSubs.map(s => nhEsc(s.split('–')[0].trim())).join(' · ');
+        html += `<div>• <b>Ma trận Phần II chuẩn Bộ 2025–2026:</b> <b>4 Chương (Ch.1–Ch.4)</b> × <b>1 câu Đúng/Sai Mô hình</b>${pickedTags ? ` (${pickedTags})` : ''} = chuẩn <b>4 câu Đúng/Sai (50 Đề)</b></div>`;
+        html += `<div>• <b>Số câu ĐS khả dụng bốc ngay (chưa dùng trong ${nhEsc(plan.campaign)}):</b> <b style="color:var(--green);font-size:14px">${plan.pickedIds.length}/4 câu</b> (đã loại trừ <b>${plan.skippedDupCount}</b> lượt câu trùng của đề trước)</div>`;
     } else {
         html += `<div>• <b>Số Chủ đề trong phạm vi:</b> <b>${plan.targetSubtopics.length}</b> chủ đề × <b>${plan.perSub}</b> câu/chủ đề = tối đa <b>${plan.targetSubtopics.length * plan.perSub}</b> câu</div>`;
         html += `<div>• <b>Số câu mới khả dụng (chưa từng dùng trong ${nhEsc(plan.campaign)}):</b> <b style="color:var(--green);font-size:14px">${plan.pickedIds.length} câu</b> (đã tự động loại trừ <b>${plan.skippedDupCount}</b> lượt câu trùng của đề trước)</div>`;
@@ -10060,7 +10361,7 @@ function openAutoPickSubtopicModal(){
             const lessonCh = (fb && fb !== '__EMPTY__' && typeof LESSON_TO_CANONICAL_CHAPTER !== 'undefined') ? (LESSON_TO_CANONICAL_CHAPTER[fb] || '') : '';
             const targetCh = lessonCh || fc;
             const chIdx = CANONICAL_CHAPTERS.indexOf(targetCh);
-            scopeSel.value = (chIdx >= 0 && chIdx <= 3) ? ('ds_c' + (chIdx + 1)) : 'ds_all';
+            scopeSel.value = (chIdx >= 0 && chIdx <= 3) ? ('ds_c' + (chIdx + 1)) : 'official_ds_4';
         }
     } else {
         if (loaiSel && loaiSel.value === 'DS') loaiSel.value = 'TN_LT';
@@ -10090,7 +10391,9 @@ function executeAutoPickBySubtopic(){
     showBankExamForm();
     const msg = plan.isOfficial18
         ? `Đã bốc ${plan.pickedIds.length}/18 câu Phần I chuẩn Bộ 2025–2026 (16 Chủ đề + 2 trọng tâm, Chống trùng ${plan.campaign})!`
-        : `Đã bốc tự động ${plan.pickedIds.length} câu rải đều theo 16 Chủ đề (Chống trùng chiến dịch ${plan.campaign})!`;
+        : (plan.isOfficialDs4
+            ? `Đã bốc ${plan.pickedIds.length}/4 câu Phần II (Đúng/Sai) chuẩn Bộ 2025–2026 (Mỗi Chương 1 mô hình, Chống trùng ${plan.campaign})!`
+            : `Đã bốc tự động ${plan.pickedIds.length} câu rải đều theo ${plan.targetSubtopics.length} Chủ đề (Chống trùng chiến dịch ${plan.campaign})!`);
     toast(`<i class="fa-solid fa-wand-magic-sparkles"></i> ${msg}`, 'ok');
 }
 
@@ -10877,6 +11180,7 @@ async function htmlToBlocksXml(html, imgCtx, opts){
             if(child.classList && child.classList.contains('vlxt-model-slot')){
                 flushParagraph();
                 const mid=(child.getAttribute('data-model-id')||'').trim();
+                let embeddedSvg = false;
                 if(mid && window.VLXTModels && typeof window.VLXTModels.getSvgString==='function'){
                     const rawSvgs=window.VLXTModels.getSvgString(mid, {all:true});
                     const svgList=Array.isArray(rawSvgs)?rawSvgs:(rawSvgs?[rawSvgs]:[]);
@@ -10884,6 +11188,7 @@ async function htmlToBlocksXml(html, imgCtx, opts){
                     for(let si=0; si<svgList.length; si++){
                         const rast=await rasterizeSvgStringToPngDataUrl(svgList[si]);
                         if(rast && rast.dataUrl){
+                            embeddedSvg = true;
                             const pic=await imgRunXml(rast.dataUrl, imgCtx, {maxWidth:480, displayWidth:rast.pxW, displayHeight:rast.pxH});
                             if(pic) outXml+='<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="80" w:after="40"/></w:pPr>'+pic+'</w:p>';
                             const cap=si===0?(info&&info.caption):(info&&info.caption2);
@@ -10892,6 +11197,27 @@ async function htmlToBlocksXml(html, imgCtx, opts){
                             }
                         }
                     }
+                }
+                if(!embeddedSvg && mid && window.VLXTModels && window.VLXTModels._canvasRegistry && typeof window.VLXTModels._canvasRegistry[mid]==='function'){
+                    try{
+                        const offCv=document.createElement('canvas');
+                        offCv.width=1560; offCv.height=610;
+                        const offCtx=offCv.getContext('2d');
+                        if(offCtx){
+                            offCtx.scale(2, 2);
+                            window.VLXTModels._canvasRegistry[mid](offCtx, 780, 305, 2.2);
+                            const dataUrl=offCv.toDataURL('image/png');
+                            const pic=await imgRunXml(dataUrl, imgCtx, {maxWidth:480, displayWidth:780, displayHeight:305});
+                            if(pic){
+                                outXml+='<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="80" w:after="40"/></w:pPr>'+pic+'</w:p>';
+                                const info=window.VLXTModels.get?window.VLXTModels.get(mid):null;
+                                const cap=(info&&info.caption)||(window.VLXT_DS106_CAPTIONS&&window.VLXT_DS106_CAPTIONS[mid])||(window.VLXT_TN220_CAPTIONS&&window.VLXT_TN220_CAPTIONS[mid])||(window.VLXT_TN50_CAPTIONS&&window.VLXT_TN50_CAPTIONS[mid])||'';
+                                if(cap){
+                                    outXml+='<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="100"/></w:pPr><w:r><w:rPr><w:i/><w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">'+escXml(cap)+'</w:t></w:r></w:p>';
+                                }
+                            }
+                        }
+                    }catch(e){}
                 }
                 continue;
             }
@@ -13748,17 +14074,18 @@ async function htResetDevice(deviceId) {
                     <label>Ma trận / Phạm vi Chủ đề Lý thuyết cần bốc</label>
                     <select id="nh-ap-scope" onchange="updateAutoPickPreview()">
                         <option value="official_18">🎯 Bốc 1 Đề 18 câu Phần I chuẩn Bộ 2025–2026 (16 Chủ đề + 2 trọng tâm)</option>
+                        <option value="official_ds_4">🎯 Bốc 1 Đề 4 câu Phần II (Đúng/Sai) chuẩn Bộ 2025–2026 (Mỗi Chương 1 câu · Kho 200 câu / 50 Đề)</option>
                         <option value="all_16">🌐 Bốc rải đều qua toàn bộ 16 Chủ đề lớn Lý thuyết (CD01 → CD16)</option>
-                        <option value="ds_all">📋 Tất cả 21 Chủ đề Đúng / Sai Ch.1–4 (Mô hình thực tế · 94 câu)</option>
-                        <option value="ds_c1">🔥 6 Chủ đề Đúng / Sai Chương 1 (Vật lý nhiệt · 17 câu)</option>
-                        <option value="ds_c2">💨 6 Chủ đề Đúng / Sai Chương 2 (Khí lý tưởng · 29 câu)</option>
-                        <option value="ds_c3">🧲 5 Chủ đề Đúng / Sai Chương 3 (Từ trường · 32 câu)</option>
-                        <option value="ds_c4">⚛️ 4 Chủ đề Đúng / Sai Chương 4 (Vật lý hạt nhân · 16 câu)</option>
+                        <option value="ds_all">📋 Tất cả 22 Chủ đề Đúng / Sai Ch.1–4 (Mô hình thực tế · 200 câu)</option>
+                        <option value="ds_c1">🔥 6 Chủ đề Đúng / Sai Chương 1 (Vật lý nhiệt · 50 câu)</option>
+                        <option value="ds_c2">💨 6 Chủ đề Đúng / Sai Chương 2 (Khí lý tưởng · 50 câu)</option>
+                        <option value="ds_c3">🧲 5 Chủ đề Đúng / Sai Chương 3 (Từ trường · 50 câu)</option>
+                        <option value="ds_c4">⚛️ 5 Chủ đề Đúng / Sai Chương 4 (Vật lý hạt nhân · 50 câu)</option>
                         <option value="current_filter">📍 Theo Chương / Bài học / Chủ đề đang chọn ở bộ lọc</option>
                         <option value="CHƯƠNG 1 – VẬT LÝ NHIỆT">🔥 Chương 1 – Vật lý nhiệt (5 CĐ LT + 6 CĐ ĐS)</option>
                         <option value="CHƯƠNG 2 – KHÍ LÝ TƯỞNG">💨 Chương 2 – Khí lý tưởng (4 CĐ LT + 6 CĐ ĐS)</option>
                         <option value="CHƯƠNG 3 – TỪ TRƯỜNG">🧲 Chương 3 – Từ trường (4 CĐ LT + 5 CĐ ĐS)</option>
-                        <option value="CHƯƠNG 4 – VẬT LÝ HẠT NHÂN">⚛️ Chương 4 – Vật lý hạt nhân (3 CĐ LT + 4 CĐ ĐS)</option>
+                        <option value="CHƯƠNG 4 – VẬT LÝ HẠT NHÂN">⚛️ Chương 4 – Vật lý hạt nhân (3 CĐ LT + 5 CĐ ĐS)</option>
                     </select>
                 </div>
                 <div class="nhe-field" style="flex:0.8">

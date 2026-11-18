@@ -6361,7 +6361,7 @@ function drawAlphaCluster(ctx, cx, cy, r = 4.5) {
 
                 var cv = slot.querySelector('canvas');
                 if (cv) {
-                    var dpr = (opts && opts.compact) ? Math.min(1.25, (typeof window !== 'undefined' && window.devicePixelRatio) || 1) : Math.max(2, (typeof window !== 'undefined' && window.devicePixelRatio) || 1);
+                    var dpr = (opts && opts.compact) ? Math.min(2, Math.max(2, (typeof window !== 'undefined' && window.devicePixelRatio) || 1)) : Math.max(2, (typeof window !== 'undefined' && window.devicePixelRatio) || 1);
                     var logicalW = 780;
                     var logicalH = 305;
                     cv.width = logicalW * dpr;

@@ -14,19 +14,20 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.138 Câu & Các Gói Staging Chuyên Biệt -->
-    <script src="assets/ngan-hang-3048-questions.js?v=20261118-tnbt"></script>
+    <!-- Nạp Toàn Bộ Ngân Hàng Đề 3.244 Câu & Các Gói Staging Chuyên Biệt -->
+    <script src="assets/ngan-hang-3048-questions.js?v=20261118-ds200"></script>
     <script src="assets/tn220-bt-bank-pack.js?v=20261118-tnbt"></script>
+    <script src="assets/ds106-bank-pack.js?v=20261118-ds200"></script>
     <script src="assets/ds-94-questions.js?v=20261117-ds94"></script>
     <script src="assets/tln-370-questions.js?v=20261117-tln370"></script>
     <script src="assets/staging-c2-c3-questions.js?v=20261118-sync50"></script>
     <script src="assets/staging-tn-220-questions.js?v=20261118-tnbt"></script>
-    <script src="assets/staging-ds-106-questions.js?v=20261118-bespoke106"></script>
+    <script src="assets/staging-ds-106-questions.js?v=20261118-ds200"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
-    <script src="assets/mo-hinh-thuc-te-models.js?v=20261117-perf-viewport"></script>
-    <script src="assets/staging-ds-models.js?v=20261118-bespoke106"></script>
+    <script src="assets/mo-hinh-thuc-te-models.js?v=20261118-ds200"></script>
+    <script src="assets/staging-ds-models.js?v=20261118-ds200"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-tn50models"></script>
     <script src="assets/staging-tn220-models.js?v=20261118-tnbt"></script>
 
@@ -1186,10 +1187,10 @@
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
                 <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
                     <option value="P1_STAGING_220">🚀 27 Mô Hình Đợt 220 (14 BT Đã Nạp NH &amp; 13 LT Chờ Duyệt)</option>
-                    <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Mới (50 Đề Chờ Duyệt)</option>
-                    <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 & C3 Có Hình)</option>
+                    <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Đợt Mới (Đã Nạp Ngân Hàng)</option>
+                    <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 &amp; C3 Có Hình)</option>
                     <option value="P2_ORIGINAL_94">🧪 94 Mô Hình Đúng / Sai Gốc (Đã Nạp)</option>
-                    <option value="P2_ALL">🌟 Toàn Bộ 200 Mô Hình Đúng / Sai (94 Gốc + 106 Mới)</option>
+                    <option value="P2_ALL">🌟 Toàn Bộ 200 Mô Hình Đúng / Sai (94 Gốc + 106 Mới Đã Nạp)</option>
                     <option value="P1">📘 Phần 1: Trắc Nghiệm ABCD (Các mô hình TN)</option>
                     <option value="P3">🔢 Phần 3: Trả Lời Ngắn (Chu trình, đồ thị, máy biến áp)</option>
                     <option value="ALL">★ Tất Cả Mô Hình Trong Hệ Thống</option>
@@ -1341,14 +1342,14 @@
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
                         <optgroup label="⚡ KHU VỰC CÂU MỚI BÓC TÁCH (CHỜ DUYỆT)">
                             <option value="STAGING_220" selected>🚀 Hộp Chờ Duyệt Lý Thuyết — 130 Câu TN-LT Tinh Tuyển (C1–C4)</option>
-                            <option value="STAGING_DS_106">🧪 106 Câu Đúng/Sai 50 Đề (Mới Bóc Tách Chờ Duyệt)</option>
-                            <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 & 3)</option>
+                            <option value="STAGING_50">⚡ Hộp Chờ Duyệt Mới — 50 Câu Vừa Tách (Chương 2 &amp; 3)</option>
                         </optgroup>
-                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.138 CÂU)">
-                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.138 Câu)</option>
+                        <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.244 CÂU)">
+                            <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.244 Câu)</option>
                             <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.304 Câu)</option>
                             <option value="TN_BT">📐 TN Tính Toán / Bài Tập (1.370 Câu)</option>
-                            <option value="DS">🧪 Đúng / Sai Thực Nghiệm (94 Câu Mô Hình Canvas)</option>
+                            <option value="DS">🧪 Đúng / Sai Thực Nghiệm (200 Câu Mô Hình Canvas)</option>
+                            <option value="STAGING_DS_106">🧪 Riêng 106 Câu Đúng/Sai Đợt Mới (Đã Nạp NH)</option>
                             <option value="TLN">🔢 Trắc Nghiệm Trả Lời Ngắn (370 Câu Chuẩn Bộ)</option>
                         </optgroup>
                         <optgroup label="📂 TẤT CẢ TRONG HỆ THỐNG">
@@ -1365,25 +1366,33 @@
                         <option value="C4">Chương 4 – Hạt nhân</option>
                     </select>
 
-                    <!-- Lọc theo Chủ đề lớn (16 CĐ chuẩn Bộ) -->
+                    <!-- Lọc theo Chủ đề lớn (16 CĐ LT & 4 nhóm ĐS Ch.1–4) -->
                     <select id="st-filter-topic" class="studio-select" onchange="onStagingFilterChange()" style="max-width:260px;">
-                        <option value="ALL">Tất cả 16 chủ đề</option>
-                        <option value="CD01">CD01 – Mô hình động học &amp; Cấu trúc chất</option>
-                        <option value="CD02">CD02 – Nhiệt độ, Thang đo &amp; Truyền nhiệt</option>
-                        <option value="CD03">CD03 – Sự chuyển thể, Nhiệt nóng chảy &amp; Hóa hơi</option>
-                        <option value="CD04">CD04 – Nhiệt dung riêng &amp; Cân bằng nhiệt</option>
-                        <option value="CD05">CD05 – Nội năng, ĐL I NĐLH &amp; Động cơ nhiệt</option>
-                        <option value="CD06">CD06 – Mô hình ĐHT khí &amp; Áp suất động học</option>
-                        <option value="CD07">CD07 – Quá trình đẳng nhiệt &amp; Định luật Boyle</option>
-                        <option value="CD08">CD08 – Đẳng áp (Charles) &amp; Đẳng tích (Gay-Lussac)</option>
-                        <option value="CD09">CD09 – PT trạng thái, Clapeyron &amp; Đồ thị</option>
-                        <option value="CD10">CD10 – Tương tác từ, Đường sức &amp; Từ trường TĐ</option>
-                        <option value="CD11">CD11 – Lực từ Ampère &amp; Cảm ứng từ B</option>
-                        <option value="CD12">CD12 – Từ thông, Cảm ứng ĐT, Lenz &amp; Faraday</option>
-                        <option value="CD13">CD13 – Đại cương dòng xoay chiều &amp; Máy biến áp</option>
-                        <option value="CD14">CD14 – Cấu tạo hạt nhân, Đồng vị &amp; amu</option>
-                        <option value="CD15">CD15 – Lực hạt nhân, Độ hụt khối &amp; NLLK</option>
-                        <option value="CD16">CD16 – Phản ứng hạt nhân, Phóng xạ &amp; Ứng dụng</option>
+                        <option value="ALL">Tất cả 16 CĐ &amp; ĐS Ch.1–4</option>
+                        <optgroup label="📘 16 Chủ đề Lý thuyết (TN-LT)">
+                            <option value="CD01">CD01 – Mô hình động học &amp; Cấu trúc chất</option>
+                            <option value="CD02">CD02 – Nhiệt độ, Thang đo &amp; Truyền nhiệt</option>
+                            <option value="CD03">CD03 – Sự chuyển thể, Nhiệt nóng chảy &amp; Hóa hơi</option>
+                            <option value="CD04">CD04 – Nhiệt dung riêng &amp; Cân bằng nhiệt</option>
+                            <option value="CD05">CD05 – Nội năng, ĐL I NĐLH &amp; Động cơ nhiệt</option>
+                            <option value="CD06">CD06 – Mô hình ĐHT khí &amp; Áp suất động học</option>
+                            <option value="CD07">CD07 – Quá trình đẳng nhiệt &amp; Định luật Boyle</option>
+                            <option value="CD08">CD08 – Đẳng áp (Charles) &amp; Đẳng tích (Gay-Lussac)</option>
+                            <option value="CD09">CD09 – PT trạng thái, Clapeyron &amp; Đồ thị</option>
+                            <option value="CD10">CD10 – Tương tác từ, Đường sức &amp; Từ trường TĐ</option>
+                            <option value="CD11">CD11 – Lực từ Ampère &amp; Cảm ứng từ B</option>
+                            <option value="CD12">CD12 – Từ thông, Cảm ứng ĐT, Lenz &amp; Faraday</option>
+                            <option value="CD13">CD13 – Đại cương dòng xoay chiều &amp; Máy biến áp</option>
+                            <option value="CD14">CD14 – Cấu tạo hạt nhân, Đồng vị &amp; amu</option>
+                            <option value="CD15">CD15 – Lực hạt nhân, Độ hụt khối &amp; NLLK</option>
+                            <option value="CD16">CD16 – Phản ứng hạt nhân, Phóng xạ &amp; Ứng dụng</option>
+                        </optgroup>
+                        <optgroup label="🧪 22 Chủ đề Đúng/Sai (200 Câu)">
+                            <option value="DS-C1">DS-C1.1..6 – Đúng/Sai Vật lý nhiệt (50 câu)</option>
+                            <option value="DS-C2">DS-C2.1..6 – Đúng/Sai Khí lý tưởng (50 câu)</option>
+                            <option value="DS-C3">DS-C3.1..5 – Đúng/Sai Từ trường (50 câu)</option>
+                            <option value="DS-C4">DS-C4.1..5 – Đúng/Sai Hạt nhân (50 câu)</option>
+                        </optgroup>
                     </select>
 
                     <!-- Lọc theo Mức độ -->
@@ -1794,11 +1803,14 @@
         }
     
     // Tự động nạp 106 Mô hình Đúng/Sai mới vào MODEL_CAPTIONS
+    if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
+        Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
+    }
     if (window.STAGING_DS_106_QUESTIONS && Array.isArray(window.STAGING_DS_106_QUESTIONS)) {
         window.STAGING_DS_106_QUESTIONS.forEach(q => {
-            if (q.modelId) {
+            if (q.modelId && !MODEL_CAPTIONS[q.modelId]) {
                 const topicText = q.subTopic ? q.subTopic.replace(/^DS-C\d\.\d+\s*[-–]\s*/, '') : '';
-                MODEL_CAPTIONS[q.modelId] = topicText ? `${topicText} (${q.id})` : (q.id || q.modelId);
+                MODEL_CAPTIONS[q.modelId] = q.caption || (topicText ? `${topicText} (${q.id})` : (q.id || q.modelId));
             }
         });
     }
@@ -2753,18 +2765,23 @@ YÊU CẦU TINH CHỈNH:
 
     function mergeTn220BtPackIntoBankList(bankRows) {
         const list = Array.isArray(bankRows) ? bankRows.slice() : [];
-        const pack = window.VLXT_TN220_BT_BANK || [];
-        if (!pack.length) return list;
+        const packs = [
+            ...(Array.isArray(window.VLXT_TN220_BT_BANK) ? window.VLXT_TN220_BT_BANK : []),
+            ...(Array.isArray(window.VLXT_DS106_BANK) ? window.VLXT_DS106_BANK : [])
+        ];
+        if (!packs.length) return list;
         const idxById = new Map();
         list.forEach((q, i) => { if (q && q.id) idxById.set(String(q.id).trim(), i); });
-        pack.forEach(btQ => {
-            if (!btQ || !btQ.id) return;
-            const id = String(btQ.id).trim();
+        packs.forEach(itemQ => {
+            if (!itemQ || !itemQ.id) return;
+            const id = String(itemQ.id).trim();
             if (idxById.has(id)) {
                 const target = list[idxById.get(id)];
-                if (!target.modelId && btQ.modelId) target.modelId = btQ.modelId;
+                if (!target.modelId && itemQ.modelId) target.modelId = itemQ.modelId;
+                if (itemQ.subTopic) target.subTopic = itemQ.subTopic;
+                if (itemQ.baiHoc && itemQ.loai === 'DS') target.baiHoc = itemQ.baiHoc;
             } else {
-                list.push({ ...btQ });
+                list.push({ ...itemQ });
                 idxById.set(id, list.length - 1);
             }
         });
@@ -2772,7 +2789,7 @@ YÊU CẦU TINH CHỈNH:
     }
 
 function initStagingSystem() {
-        // Nạp nguồn Ngân Hàng Đề chính thức (3.138+ câu, tự hợp nhất gói TN220-BT mới đẩy)
+        // Nạp nguồn Ngân Hàng Đề chính thức (3.244 câu, tự hợp nhất gói TN220-BT & DS-106 mới đẩy)
         const rawBank = mergeTn220BtPackIntoBankList(window.VLXT_NGANHANG_3048 || []);
         const poolBank = rawBank.map(q => Object.assign({}, q, { isFromBank: true }));
 
@@ -2783,9 +2800,12 @@ function initStagingSystem() {
         const poolStagingDS106 = (window.STAGING_DS_106_QUESTIONS || []).map(q => Object.assign({ loai: 'DS', isStagingDS106: true }, q));
 
         // Tự động gán nhãn mô hình cho Canvas Studio nếu có
+        if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
+        }
         poolStagingDS106.forEach(q => {
             if (q.modelId && typeof MODEL_CAPTIONS !== 'undefined' && !MODEL_CAPTIONS[q.modelId]) {
-                MODEL_CAPTIONS[q.modelId] = q.subTopic || q.topicCode || q.id;
+                MODEL_CAPTIONS[q.modelId] = q.caption || q.subTopic || q.topicCode || q.id;
             }
         });
 
@@ -3632,12 +3652,15 @@ function initStagingSystem() {
     // KHỞI TẠO TỨC THÌ (FAIL-SAFE INITIALIZATION)
     // ══════════════════════════════════════════════════════════════════
     function startStudioApp() {
+        if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
+        }
         // Tự động nạp 106 Mô hình Đúng/Sai mới vào MODEL_CAPTIONS
         if (window.STAGING_DS_106_QUESTIONS && Array.isArray(window.STAGING_DS_106_QUESTIONS)) {
             window.STAGING_DS_106_QUESTIONS.forEach(q => {
-                if (q.modelId) {
+                if (q.modelId && !MODEL_CAPTIONS[q.modelId]) {
                     const topicText = q.subTopic ? q.subTopic.replace(/^DS-C\d\.\d+\s*[-–]\s*/, '') : '';
-                    MODEL_CAPTIONS[q.modelId] = topicText ? `${topicText} (${q.id})` : (q.id || q.modelId);
+                    MODEL_CAPTIONS[q.modelId] = q.caption || (topicText ? `${topicText} (${q.id})` : (q.id || q.modelId));
                 }
             });
             ALL_MODEL_IDS = Object.keys(MODEL_CAPTIONS);
@@ -3676,6 +3699,7 @@ function initStagingSystem() {
             currentModelId = window.STAGING_DS_106_QUESTIONS[0].modelId;
         }
 
+        updateChapterFilterOptions();
         populateModelDropdown('ALL');
         loadModel(currentModelId);
         updateOverridesCountBadge();
