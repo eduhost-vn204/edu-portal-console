@@ -1,3 +1,33 @@
+## Bàn giao gần nhất (18/11/2026 10:25)
+- **Đẩy Trọn Bộ 106 Câu Đúng/Sai Độc Bản (`VLXT-DS-VD28-001..106`) + 106 Mô Hình Canvas (`MH-STAGING-*`) Vào Ngân Hàng Đề Chính Thức — Đạt Chuẩn 200 Câu Đúng/Sai (`50` Câu/Chương, 50 Đề Bộ 2025–2026) & Ưu Tiên Hiển Thị Đầu Trang**:
+- **Mục tiêu**:
+  1. Thực hiện lệnh phê duyệt của Thầy Nguyễn Xuân Trường (*"Thầy cho phép em đẩy 106 câu đó lên trên vào ngân hàng cùng với 94 câu nữa là đủ 200 câu"*): đẩy toàn bộ **106 câu Đúng/Sai** và **106 mô hình Canvas 60 FPS** từ Staging vào **Ngân Hàng Đề Chính Thức**, hợp nhất với **94 câu ĐS gốc** thành đúng **`200` câu ĐS (`50 C1 + 50 C2 + 50 C3 + 50 C4`)**, nâng tổng Ngân Hàng Đề từ **`3.138 → 3.244` câu** (`1.304 TN-LT + 1.370 TN-BT + 200 DS + 370 TLN`).
+  2. Chuẩn hóa đủ **22 Chủ đề con Đúng/Sai** (`DS-C1.1..C1.6`, `DS-C2.1..C2.6`, `DS-C3.1..C3.5`, `DS-C4.1..C4.5`), sửa `baiHoc` 2 câu (`001, 021`) $\to$ `B5`, chuyển 8 dấu `<` trong công thức KaTeX sang `\lt ` để vượt qua kiểm tra cân bằng `$` của `src/Mã.js`, bổ sung Auto-Pick **`official_ds_4` (4 câu ĐS mỗi chương 1 câu / 50 đề không trùng)**, xuất ảnh Canvas PNG sang Word `.docx`, và đồng bộ UX ưu tiên trang 1 + bộ lọc `#nh-f-model` (`NEW_DS_106`, chip 1 chạm `🆕 106 Câu ĐS Vừa Đẩy`, huy hiệu `⚡ Mới đẩy 18/11`) nối tiếp `85dc18e`.
+- **Commit & File đã sửa (`eduhost-vn204/edu-portal-console`, nhánh `main`, rebase sạch trên `90b6371`)**:
+  - Commit mã: `0857493` (`feat(bank): promote 106 bespoke DS questions and canvas models to official 200-DS bank (50 per chapter)`).
+  - `assets/ds106-bank-pack.js`: Mới — xuất `window.VLXT_DS106_BANK` (106 câu ĐS chuẩn 23 cột `NganHang` + `modelId`, nhúng `<div class="vlxt-model-slot" data-model-id="..." data-model-topic="..."></div>`, `batchId: "BATCH_DS106_OFFICIAL_20261118"`, `chatLuong: "tinh"`, `reviewStatus: "APPROVED"`).
+  - `assets/ngan-hang-3048-questions.json` & `.js`: Kho chính thức **`3.244` câu** (`DS: 200`, từng chương `C1=50, C2=50, C3=50, C4=50`).
+  - `assets/staging-ds-106-questions.json` & `.js`: Sửa `baiHoc` (`B5`) cho `VLXT-DS-VD28-001` & `021`, chuẩn hóa `subTopic` 22 chủ đề, chuyển `<` trong KaTeX math sang `\lt `, gắn `APPROVED`/`tinh`.
+  - `assets/staging-ds-models.js`: Gắn `window.VLXT_DS106_CAPTIONS` (106 tiêu đề mô tả tiếng Việt, 0 trailing whitespace).
+  - `assets/mo-hinh-thuc-te-models.js`: Nâng `dpr` chế độ `compact: true` lên `2` (Retina `1560×610` sắc nét ngay trên `ngan-hang-de.html`).
+  - `ngan-hang-de.html`: Nạp `staging-ds-models.js` & `ds106-bank-pack.js` (`?v=20261118-ds200`), thêm `DS-C4.5` (22 CĐ) + map 106 mô hình vào `DS_C1..C4_MODEL_TO_SUBTOPIC`, hợp nhất `VLXT_DS106_BANK` trong `applyBankRows()` + `syncApprovedDs106ToServer()` (và `syncApprovedAuditToServer`), bảo toàn ảnh `assets/images/staging*` ở Xem chi tiết đề, thêm Auto-Pick `official_ds_4`, thêm nhánh xuất Canvas PNG trong `htmlToBlocksXml` (`.docx`), đồng thời tích hợp cùng `85dc18e` đưa 106 câu ĐS mới lên đầu trang 1 (`_nhDsSortMode`, `toggleDsSortMode()`, `isNewPushedDsBatch()`, `NEW_DS_106`, chip `🆕 106 Câu ĐS Vừa Đẩy`, huy hiệu `⚡ Mới đẩy 18/11`).
+  - `canvas-studio.html`: Nạp `ds106-bank-pack.js`, chuyển 106 ĐS vào nhóm Ngân Hàng Chính Thức (`BANK_ALL: 3.244`, `DS: 200`, `P2_ALL: 200 [50/50/50/50]`), khu Chờ Duyệt còn `130 TN-LT` (`STAGING_220`) + `50` (`STAGING_50`), tổng hệ thống `3.424` câu.
+- **Kiểm tra đã chạy sau rebase & chỉnh sửa cuối**:
+  - `node scripts/test-apps-script-logic.mjs` (`12/12` PASS) & `node scripts/test-import-nganhang.mjs` (`12/12` PASS).
+  - `node -c` PASS 5 file `.js` + parse inline `<script>` `ngan-hang-de.html` (5) và `canvas-studio.html` (1) + `</html>`; `git diff --cached --check` PASS; quét secret = `0`.
+  - Giả lập VM hàm `importNganHang` trong `src/Mã.js` trên nền `3.048` dòng: Lần 1 `inserted = 106, quarantinedCount = 0, countAfter = 3154`; Lần 2 `inserted = 0, alreadyExistsCount = 106` (idempotent 100%).
+  - Playwright Chromium Retina `2x` (`1440×950`) PASS 100% (`0` lỗi Console/PageError/404 thực):
+    + `ngan-hang-de.html`: `bankData.length === 3244` (`TN: 2674`, `DS: 200 [50/50/50/50]`, `TLN: 370`), 200/200 ĐS có `subTopic` chuẩn (22 CĐ) & `modelId`, chọn `DS` đặt `VLXT-DS-VD28-001` lên `#1` (`1560×610` Retina + badge `Mới đẩy 18/11`), chip `🆕 106` lọc đúng `106`, chip `NEW_BT_MODEL_14` lọc đúng `14`, offscreen `.docx` PNG = `331.026` bytes, mô phỏng **50 đề `official_ds_4` liên tiếp** bốc đủ `4/4` câu không trùng (`usedTotal = 200`, `exhaustedSubs = []`).
+    + `canvas-studio.html`: `BANK_ALL = 3.244`, `DS = 200`, `STAGING_DS_106 = 106`, `STAGING_220 = 130`, `STAGING_50 = 50`, `ALL = 3.424`, Tab 1 `P2_ALL = 200 (50/50/50/50)`.
+- **Lưu ý minh bạch cho Thầy**:
+  - Trong 106 câu ĐS Thầy vừa duyệt đẩy lên, vẫn còn **3 cặp câu** xuất phát từ 2 bộ đề gốc trùng nội dung (`VLXT-DS-VD28-002` & `030`, `010` & `031`, `081` & `098`) do nguồn `DETU` và `HSD` dùng chung đề (giữ nguyên đủ 106 câu theo quyết định của Thầy để tròn 200 câu).
+- **Điều phải giữ nguyên**:
+  - Giữ **130 câu `TN-LT` (`STAGING_220`)** và **50 câu (`STAGING_50`)** ở trạng thái Chờ Duyệt trên `canvas-studio.html`; giữ đầy đủ bộ lọc & sắp xếp ưu tiên của `85dc18e`.
+  - Không hardcode `adminKey`; khi Thầy mở `ngan-hang-de.html` với Khóa Quản trị, hàm `syncApprovedDs106ToServer(true)` tự đồng bộ ngầm 106 câu ĐS lên Google Sheets `NganHang` production.
+- **Việc còn lại**:
+  - Thầy mở/F5 trang Quản trị `ngan-hang-de.html` (với Khóa Quản trị đã lưu) để trình duyệt tự đồng bộ ngầm 106 câu ĐS lên Google Sheets `NganHang`.
+  - Tiếp tục bốc bù **90 câu `TN-LT`** còn thiếu (`CD05, 07, 08, 09, 10, 12, 14, 15`) khi Thầy sẵn sàng.
+
 ## Bàn giao gần nhất (18/11/2026 10:15)
 - **Kiểm Chứng Dữ Liệu Live Google Sheets (`3.138` Câu) & Nâng Cấp Lọc/Ưu Tiên Hiển Thị `90` Câu `TN-BT` + `14` Mô Hình Canvas Trên `ngan-hang-de.html`**:
 - **Chẩn đoán thực tế trên Production**:
