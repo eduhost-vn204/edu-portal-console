@@ -122,18 +122,83 @@
         .nh-badge.b-nhom { background:rgba(168,85,247,0.12); color:#c084fc; border:1px solid rgba(168,85,247,0.3); }
         .nh-badge.b-pl { background:rgba(245,158,11,0.12); color:#fbbf24; font-weight:700; border:1px solid rgba(245,158,11,0.25); }
         /* Thanh thống kê Chủ đề con (Phẳng, sắc nét chuẩn EdTech — không AI Glow) */
-        .nh-subtopic-bar { background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
-        .nh-subtopic-bar-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:wrap; font-size:12.5px; font-weight:700; color:var(--black); }
-        .nh-subtopic-chips { display:flex; flex-wrap:wrap; gap:8px; }
-        .nh-subtopic-chip { display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:7px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12.5px; font-weight:600; cursor:pointer; transition:border-color .12s, background .12s; user-select:none; line-height:1.35; }
+        .nh-subtopic-bar { background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,0.03); }
+        .nh-subtopic-bar-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; flex-wrap:wrap; font-size:12.5px; font-weight:700; color:var(--black); }
+        .nh-subtopic-chips { display:flex; flex-wrap:wrap; gap:6px; max-height:220px; overflow-y:auto; padding-right:4px; }
+        .nh-subtopic-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--black); font-size:11.8px; font-weight:600; cursor:pointer; transition:border-color .12s, background .12s; user-select:none; line-height:1.3; }
         .nh-subtopic-chip:hover { border-color:#0d9488; background:rgba(13,148,136,0.06); }
         .nh-subtopic-chip.active { border-color:#0f766e; background:#0f766e; color:#ffffff; font-weight:700; }
-        .nh-subtopic-chip .stc-count { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:800; padding:1px 7px; border-radius:5px; background:rgba(15,118,110,0.12); color:#0f766e; }
+        .nh-subtopic-chip .stc-count { font-family:'DM Mono',monospace; font-size:11px; font-weight:800; padding:1px 6px; border-radius:4px; background:rgba(15,118,110,0.12); color:#0f766e; }
         .nh-subtopic-chip.active .stc-count { background:rgba(255,255,255,0.22); color:#ffffff; }
-        .nh-subtopic-chip.bt-chip { border-color:rgba(124,58,237,0.35); background:rgba(139,92,246,0.06); color:#6d28d9; }
+        .nh-subtopic-chip.bt-chip { border-color:rgba(124,58,237,0.3); background:rgba(139,92,246,0.06); color:#6d28d9; }
         .nh-subtopic-chip.bt-chip .stc-count { background:rgba(124,58,237,0.14); color:#6d28d9; }
         .nh-subtopic-chip.bt-chip.active { border-color:#6d28d9; background:#6d28d9; color:#ffffff; }
         .nh-subtopic-chip.bt-chip.active .stc-count { background:rgba(255,255,255,0.22); color:#ffffff; }
+        .nh-subtopic-toggle-btn { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--gray); font-size:11.5px; font-weight:700; cursor:pointer; transition:all .12s; }
+        .nh-subtopic-toggle-btn:hover { color:var(--black); border-color:var(--blue); }
+        .active-sub-chip-pill { display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border-radius:6px; background:#0f766e; color:#ffffff; font-size:11.5px; font-weight:700; cursor:pointer; }
+        .active-sub-chip-pill:hover { background:#0d9488; }
+
+        /* ── GIAO DIỆN MỚI TINH GỌN (2 THẺ CHÍNH + THU GỌN THEO CHỈ ĐẠO CỦA THẦY) ── */
+        .stat-hero-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px; }
+        @media(max-width:840px){ .stat-hero-row { grid-template-columns:1fr; } }
+        .stat-hero-card { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.03); transition:border-color .15s; }
+        .stat-hero-card:hover { border-color:rgba(11,132,243,0.35); }
+        .shc-head { display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; user-select:none; }
+        .shc-main { display:flex; align-items:center; gap:14px; }
+        .shc-icon { width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+        .shc-label { font-size:12px; color:var(--gray); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+        .shc-val { font-size:28px; font-weight:900; letter-spacing:-.03em; line-height:1.1; color:var(--black); }
+        .shc-toggle-btn { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg2); color:var(--gray); font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; }
+        .shc-toggle-btn:hover { color:var(--black); border-color:var(--blue); }
+        .shc-toggle-btn i { transition:transform .2s ease; font-size:11px; }
+        .shc-toggle-btn.expanded i { transform:rotate(180deg); }
+        .shc-sub-panel { margin-top:16px; padding-top:14px; border-top:1px dashed var(--border); }
+        .shc-sub-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+        @media(max-width:640px){ .shc-sub-grid { grid-template-columns:repeat(2, 1fr); } }
+        .shc-sub-item { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:4px; transition:border-color .12s; }
+        .shc-sub-item:hover { border-color:var(--blue); }
+        .shc-sub-label { font-size:11.5px; color:var(--gray); font-weight:600; display:flex; align-items:center; gap:6px; }
+        .shc-sub-val { font-size:18px; font-weight:800; color:var(--black); font-family:'DM Mono',monospace; }
+
+        /* Unified Importer Card (Tabbed & Compact) */
+        .nh-unified-card { padding:16px; margin-bottom:18px; }
+        .nh-unified-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .nh-import-tabs { display:flex; gap:6px; background:var(--bg2); padding:4px; border-radius:8px; border:1px solid var(--border); margin-bottom:14px; }
+        .nh-imp-tab { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px; padding:7px 4px; border:none; background:transparent; border-radius:6px; font-size:12px; font-weight:700; color:var(--gray); cursor:pointer; transition:all .14s; white-space:nowrap; }
+        .nh-imp-tab:hover { color:var(--black); }
+        .nh-imp-tab.active { background:var(--bg); color:var(--black); box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+        .nh-importer-guide { font-size:12px; color:var(--gray); margin-top:12px; border-top:1px dashed var(--border); padding-top:10px; }
+        .nh-importer-guide summary { cursor:pointer; font-weight:700; color:var(--blue); list-style:none; display:flex; align-items:center; gap:6px; }
+        .nh-importer-guide summary::-webkit-details-marker { display:none; }
+        .nh-importer-guide-content { margin-top:8px; line-height:1.6; padding:8px 10px; background:var(--bg2); border-radius:6px; border:1px solid var(--border); }
+
+        /* Sidebar full collapse toggle */
+        .nh-grid.sidebar-collapsed { grid-template-columns:1fr; }
+        .nh-grid.sidebar-collapsed #nh-sidebar-col { display:none; }
+
+        /* Compact & Sleek Filter Box */
+        .nh-filter-box { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,0.03); }
+        .nh-filter-main-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .nh-search-wrap { flex:1.4; min-width:200px; position:relative; display:flex; align-items:center; }
+        .nh-search-wrap i { position:absolute; left:12px; color:var(--gray); font-size:13px; pointer-events:none; }
+        .nh-search-wrap input { width:100%; padding:8px 12px 8px 34px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; }
+        .nh-search-wrap input:focus { border-color:var(--blue); outline:none; background:var(--bg); }
+        .nh-filter-main-bar select, .nh-adv-grid select { padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; font-size:12.5px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; cursor:pointer; }
+        .nh-filter-main-bar select:focus, .nh-adv-grid select:focus { border-color:var(--blue); outline:none; }
+        .btn-toggle-adv { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all .14s; }
+        .btn-toggle-adv:hover { border-color:var(--blue); }
+        .btn-toggle-adv.active { border-color:var(--blue); background:rgba(11,132,243,0.08); color:var(--blue); }
+        .btn-toggle-adv i.fa-chevron-down { transition:transform .2s ease; font-size:11px; }
+        .btn-toggle-adv.expanded i.fa-chevron-down { transform:rotate(180deg); }
+        .adv-filter-count { font-size:11px; font-weight:800; padding:1px 6px; border-radius:999px; background:var(--blue); color:#fff; }
+        .btn-filter-reset { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--gray); cursor:pointer; transition:all .14s; }
+        .btn-filter-reset:hover { color:var(--red); border-color:var(--red); }
+
+        .nh-adv-drawer { margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); }
+        .nh-adv-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:8px; }
+        .nh-adv-field { display:flex; flex-direction:column; gap:4px; }
+        .nh-adv-field label { font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.3px; }
         #nh-autopick-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2150; align-items:center; justify-content:center; padding:16px; }
         #nh-autopick-overlay.show { display:flex; }
         #nh-autopick-modal { background:var(--bg); color:var(--black); border-radius:14px; width:min(760px,96vw); max-height:90vh; display:flex; flex-direction:column; box-shadow:0 16px 40px rgba(0,0,0,.28); border:1.5px solid var(--border); overflow:hidden; }
@@ -868,6 +933,24 @@
         /* Stat boxes */
         body.dark .stat-val { color:#e6edf3; }
         body.dark .stat-box, body.dark .stat-card { background:#161b22; border-color:#30363d; }
+        body.dark .stat-hero-card { background:#161b22; border-color:#30363d; }
+        body.dark .stat-hero-card:hover { border-color:#38bdf8; }
+        body.dark .shc-val { color:#e6edf3; }
+        body.dark .shc-toggle-btn { background:#0d1117; border-color:#30363d; color:#8b949e; }
+        body.dark .shc-toggle-btn:hover { color:#e6edf3; border-color:#58a6ff; }
+        body.dark .shc-sub-item { background:#0d1117; border-color:#30363d; }
+        body.dark .shc-sub-val { color:#e6edf3; }
+        body.dark .nh-filter-box { background:#161b22; border-color:#30363d; }
+        body.dark .nh-search-wrap input { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .nh-search-wrap input:focus { background:#161b22; border-color:#58a6ff; }
+        body.dark .nh-filter-main-bar select, body.dark .nh-adv-grid select { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .btn-toggle-adv { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .btn-filter-reset { background:#0d1117; border-color:#30363d; color:#8b949e; }
+        body.dark .nh-import-tabs { background:#0d1117; border-color:#30363d; }
+        body.dark .nh-imp-tab.active { background:#21262d; color:#e6edf3; }
+        body.dark .nh-importer-guide-content { background:#0d1117; border-color:#30363d; }
+        body.dark .nh-subtopic-toggle-btn { background:#0d1117; border-color:#30363d; color:#8b949e; }
+        body.dark .nh-subtopic-toggle-btn:hover { color:#e6edf3; border-color:#2dd4bf; }
         body.dark .nh-ws-tab { background:#161b22; border-color:#30363d; color:#e6edf3; }
         body.dark .nh-ws-badge { background:rgba(255,255,255,0.1); color:#e6edf3; }
         body.dark .nh-purpose-card { background:#161b22; border-color:#30363d; }
@@ -1592,13 +1675,10 @@
 <div class="wrap">
     <div class="lm-toolbar" style="margin-bottom:20px">
         <h2><i class="fa-solid fa-database" style="color:var(--blue);font-size:20px"></i> Ngân hàng quản trị — Câu hỏi &amp; Chiến dịch Đề thi</h2>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn-new" style="background:#0f766e" onclick="openAutoPickSubtopicModal()">
-                <i class="fa-solid fa-dice"></i> 🎲 Bốc 16 Chủ đề / Đề 18 câu Bộ (Chống trùng)
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button type="button" class="btn-new" id="btn-restore-sidebar" onclick="toggleSidebarFull()" style="display:none;background:var(--bg2);color:var(--black);border:1.5px solid var(--border)">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Hộp nạp file
             </button>
-            <a href="Mau_NganHangDe.xlsx" download class="btn-new" style="background:var(--bg2);color:var(--black);border:1.5px solid var(--border);text-decoration:none">
-                <i class="fa-solid fa-file-excel" style="color:#15803d"></i> Tải file Excel mẫu
-            </a>
             <button class="btn-new" style="background:#059669" onclick="syncApprovedAuditToServer(false)"><i class="fa-solid fa-cloud-arrow-up"></i> Đồng bộ nhãn chuẩn hóa</button>
             <button class="btn-new" style="background:#7c3aed" onclick="bankRunScan()">
                 <i class="fa-solid fa-magnifying-glass"></i> Quét lỗi ảnh &amp; trùng lặp
@@ -1612,15 +1692,88 @@
     <!-- KHU VỰC THÔNG BÁO TRẠNG THÁI NGUỒN DỮ LIỆU & THỜI ĐIỂM CẬP NHẬT -->
     <div id="nh-source-status" style="margin-bottom:18px;display:none"></div>
 
-    <div class="stat-row" style="margin-bottom:18px">
-        <div class="stat-card"><div class="stat-label">Tổng số câu</div><div class="stat-val blue" id="nh-s-total">—</div></div>
-        <div class="stat-card clickable-card" onclick="switchBankWorkspaceTab('exams')" title="Bấm để mở Tab Quản lý 50+ Đề &amp; Chiến dịch"><div class="stat-label">🗂️ Tổng số đề (Quản trị)</div><div class="stat-val" id="nh-s-total-exams" style="color:#0284c7">50</div><div id="nh-s-total-exams-sub" style="font-size:11px;color:var(--gray);margin-top:3px;font-weight:600">50 Đề Chiến dịch 2026</div></div>
-        <div class="stat-card"><div class="stat-label">Trắc nghiệm (TN)</div><div class="stat-val" id="nh-s-tn">—</div></div>
-        <div class="stat-card"><div class="stat-label">📘 TN Lý thuyết (THPTQG)</div><div class="stat-val blue" id="nh-s-tn-lt">—</div></div>
-        <div class="stat-card"><div class="stat-label">🧮 TN Tính toán (Chưa chia)</div><div class="stat-val" id="nh-s-tn-bt" style="color:#7c3aed">—</div></div>
-        <div class="stat-card"><div class="stat-label">Đúng / Sai (DS · 22 CĐ Ch.1–4)</div><div class="stat-val" id="nh-s-ds">—</div></div>
-        <div class="stat-card"><div class="stat-label">Trả lời ngắn (Chưa chia)</div><div class="stat-val green" id="nh-s-tln">—</div></div>
-        <div class="stat-card"><div class="stat-label">Câu tinh (đã rà soát)</div><div class="stat-val green" id="nh-s-tinh">—</div></div>
+    <!-- 2 THẺ THỐNG KÊ TRUNG TÂM (TỔNG SỐ CÂU & TỔNG SỐ ĐỀ) + THU GỌN THEO CHỈ ĐẠO CỦA THẦY -->
+    <div class="stat-hero-row">
+        <!-- Thẻ 1: TỔNG SỐ CÂU -->
+        <div class="stat-hero-card" id="card-total-questions">
+            <div class="shc-head" onclick="toggleSubStats('questions')">
+                <div class="shc-main">
+                    <div class="shc-icon" style="background:rgba(11,132,243,0.12);color:var(--blue)">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div>
+                        <div class="shc-label">Tổng số câu trong ngân hàng</div>
+                        <div class="shc-val blue" id="nh-s-total">—</div>
+                    </div>
+                </div>
+                <button type="button" class="shc-toggle-btn" id="btn-toggle-q-sub" onclick="toggleSubStats('questions');event.stopPropagation();" title="Mở rộng / Thu gọn chi tiết">
+                    <span>Chi tiết 6 nhóm câu</span> <i class="fa-solid fa-chevron-down" id="arrow-q-sub"></i>
+                </button>
+            </div>
+            <!-- Sub-stats panel (thu gọn/mở rộng) -->
+            <div class="shc-sub-panel" id="panel-q-sub" style="display:none">
+                <div class="shc-sub-grid">
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-circle-dot" style="color:var(--blue)"></i> Trắc nghiệm (TN)</div>
+                        <div class="shc-sub-val" id="nh-s-tn">—</div>
+                    </div>
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-book-open" style="color:#0284c7"></i> TN Lý thuyết (THPTQG)</div>
+                        <div class="shc-sub-val blue" id="nh-s-tn-lt">—</div>
+                    </div>
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-calculator" style="color:#7c3aed"></i> TN Tính toán</div>
+                        <div class="shc-sub-val" id="nh-s-tn-bt" style="color:#7c3aed">—</div>
+                    </div>
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-list-check" style="color:#0f766e"></i> Đúng / Sai (ĐS)</div>
+                        <div class="shc-sub-val" id="nh-s-ds" style="color:#0f766e">—</div>
+                    </div>
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-pen-to-square" style="color:#15803d"></i> Trả lời ngắn</div>
+                        <div class="shc-sub-val green" id="nh-s-tln">—</div>
+                    </div>
+                    <div class="shc-sub-item">
+                        <div class="shc-sub-label"><i class="fa-solid fa-star" style="color:#16a34a"></i> Câu Tinh (Đã rà soát)</div>
+                        <div class="shc-sub-val green" id="nh-s-tinh">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thẻ 2: TỔNG SỐ ĐỀ (QUẢN TRỊ) -->
+        <div class="stat-hero-card" id="card-total-exams">
+            <div class="shc-head" onclick="toggleSubStats('exams')">
+                <div class="shc-main">
+                    <div class="shc-icon" style="background:rgba(2,132,199,0.12);color:#0284c7">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <div>
+                        <div class="shc-label">Tổng số đề (Quản trị)</div>
+                        <div class="shc-val" id="nh-s-total-exams" style="color:#0284c7">50</div>
+                        <div id="nh-s-total-exams-sub" style="font-size:11.5px;color:var(--gray);margin-top:2px;font-weight:600">50 Đề Chiến dịch 2026</div>
+                    </div>
+                </div>
+                <button type="button" class="shc-toggle-btn" id="btn-toggle-e-sub" onclick="toggleSubStats('exams');event.stopPropagation();" title="Mở rộng / Thu gọn chi tiết">
+                    <span>Chi tiết đề thi</span> <i class="fa-solid fa-chevron-down" id="arrow-e-sub"></i>
+                </button>
+            </div>
+            <!-- Sub-stats panel (thu gọn/mở rộng) -->
+            <div class="shc-sub-panel" id="panel-e-sub" style="display:none">
+                <div class="shc-sub-grid" style="grid-template-columns:1fr 1fr">
+                    <div class="shc-sub-item" onclick="switchBankWorkspaceTab('exams')" style="cursor:pointer">
+                        <div class="shc-sub-label"><i class="fa-solid fa-fire" style="color:#ea580c"></i> 50 Đề Chiến dịch 2026</div>
+                        <div class="shc-sub-val" style="color:#ea580c">50 Đề Chuẩn Bộ</div>
+                        <div style="font-size:11px;color:var(--gray);margin-top:2px">40 câu/đề · Không trùng lặp câu</div>
+                    </div>
+                    <div class="shc-sub-item" onclick="switchBankWorkspaceTab('exams')" style="cursor:pointer">
+                        <div class="shc-sub-label"><i class="fa-solid fa-arrow-up-right-from-square" style="color:#0284c7"></i> Quản Lý Đề &amp; Chiến Dịch</div>
+                        <div style="font-size:13px;font-weight:700;color:#0284c7;margin-top:4px">Mở Tab Quản Lý Đề <i class="fa-solid fa-arrow-right"></i></div>
+                        <div style="font-size:11px;color:var(--gray);margin-top:2px">Đổi slot, độ dốc, chiến dịch</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="nh-workspace-tabs">
@@ -1635,167 +1788,262 @@
     </div>
 
     <div id="nh-workspace-questions">
-    <div class="nh-grid">
-        <!-- CỘT TRÁI: NẠP FILE -->
-        <div>
-            <!-- KHU VỰC NHẬP GÓI CÂU TINH (BATCH IMPORT) -->
-            <div class="nh-card" style="border-color:#16a34a;background:linear-gradient(to bottom, #f0fdf4, var(--bg))">
-                <h3 style="color:#166534"><i class="fa-solid fa-box-archive" style="color:#16a34a"></i> Nhập gói câu Tinh (JSON)</h3>
-                <p style="font-size:12.5px;color:var(--gray);margin-bottom:10px">Nhập trực tiếp các gói câu đã được Thầy thẩm định và duyệt Tinh từ Content Pipeline.</p>
-
-                <div style="display:flex;flex-direction:column;gap:8px">
-                    <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;border:1px dashed #16a34a;border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer">
-
-                    <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:var(--bg2);padding:10px;border-radius:8px;border:1px solid var(--border)">
-                        <div><b>Tệp:</b> <span id="nh-bi-filename"></span></div>
-                        <div><b>Số câu:</b> <span id="nh-bi-count" style="font-weight:700;color:#16a34a">0</span> câu</div>
-                        <div><b>Mã đợt:</b> <span id="nh-bi-batchid"></span></div>
+    <div class="nh-grid" id="nh-main-grid">
+        <!-- CỘT TRÁI: HỘP NẠP FILE TINH GỌN (UNIFIED TABBED IMPORTER) -->
+        <div id="nh-sidebar-col">
+            <div class="nh-card nh-unified-card" id="nh-unified-importer">
+                <div class="nh-unified-header">
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <i class="fa-solid fa-cloud-arrow-up" style="color:var(--blue);font-size:16px"></i>
+                        <h3 style="margin:0;font-size:15px;font-weight:800">Nạp Câu Hỏi</h3>
                     </div>
-
-                    <div style="display:flex;gap:8px;margin-top:6px">
-                        <button id="nh-bi-dryrun-btn" class="btn-publish" style="flex:1;background:#0284c7" onclick="runBatchDryRun()" disabled>
-                            <i class="fa-solid fa-stethoscope"></i> Kiểm tra trước – Dry run
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <button type="button" class="smc-toggle-btn" id="btn-toggle-imp" onclick="toggleImporterBody()" title="Thu gọn / Mở rộng hộp nạp">
+                            <i class="fa-solid fa-chevron-up" id="arrow-imp"></i>
                         </button>
-                        <button id="nh-bi-commit-btn" class="btn-publish" style="flex:1;background:#16a34a" onclick="openCommitConfirmModal()" disabled>
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Nạp thật câu Tinh
+                        <button type="button" class="smc-toggle-btn" onclick="toggleSidebarFull()" title="Ẩn hẳn cột nạp để mở rộng tối đa danh sách câu">
+                            <i class="fa-solid fa-angles-left"></i>
                         </button>
                     </div>
                 </div>
-                <div id="nh-batch-status" style="margin-top:10px;font-size:12px"></div>
-            </div>
 
-            <div class="nh-card" style="border-color:var(--blue)">
-                <h3><i class="fa-solid fa-file-word" style="color:var(--blue)"></i> Tải đề .docx — tự bóc tách</h3>
-                <div class="dropzone" id="nh2-dropzone" style="padding:28px 16px">
-                    <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                    <h3 style="font-size:15px">Thả file Word (.docx) vào đây</h3>
-                    <p style="font-size:13px">Hệ thống tự tách câu hỏi, ảnh, công thức — như Soạn Đề</p>
-                    <div class="btn-browse" style="font-size:13px;padding:9px 18px"><i class="fa-solid fa-folder-open"></i> Chọn file</div>
-                    <input type="file" id="nh2-file-input" accept=".docx" style="display:none">
+                <div id="nh-importer-body">
+                    <!-- Tab Pills for 4 Import Formats -->
+                    <div class="nh-import-tabs">
+                        <button type="button" class="nh-imp-tab active" id="tab-btn-imp-docx" onclick="switchImportTab('docx')">
+                            <i class="fa-solid fa-file-word" style="color:#2563eb"></i> Word
+                        </button>
+                        <button type="button" class="nh-imp-tab" id="tab-btn-imp-json" onclick="switchImportTab('json')">
+                            <i class="fa-solid fa-box-archive" style="color:#16a34a"></i> JSON Tinh
+                        </button>
+                        <button type="button" class="nh-imp-tab" id="tab-btn-imp-pdf" onclick="switchImportTab('pdf')">
+                            <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> PDF
+                        </button>
+                        <button type="button" class="nh-imp-tab" id="tab-btn-imp-excel" onclick="switchImportTab('excel')">
+                            <i class="fa-solid fa-file-excel" style="color:#15803d"></i> Excel
+                        </button>
+                    </div>
+
+                    <!-- Pane 1: Word (.docx) -->
+                    <div class="nh-imp-pane" id="pane-imp-docx" style="display:block">
+                        <div class="dropzone" id="nh2-dropzone" style="padding:22px 14px">
+                            <div class="dropzone-icon" style="font-size:26px;margin-bottom:6px"><i class="fa-solid fa-file-word" style="color:#2563eb"></i></div>
+                            <h3 style="font-size:14px;margin-bottom:4px">Thả file Word (.docx) vào đây</h3>
+                            <p style="font-size:12px;color:var(--gray);margin-bottom:10px">Hệ thống tự tách câu hỏi, ảnh, công thức</p>
+                            <div class="btn-browse" style="font-size:12px;padding:7px 16px"><i class="fa-solid fa-folder-open"></i> Chọn file Word</div>
+                            <input type="file" id="nh2-file-input" accept=".docx" style="display:none">
+                        </div>
+                        <div class="nh-up-status" id="nh2-status"></div>
+                        <div id="nh2-preview-zone" style="display:none">
+                            <div class="nh-preview-list" id="nh2-preview-list" style="max-height:420px;overflow:auto;padding-right:4px"></div>
+                            <div class="nh-progress" id="nh2-progress"><div class="bar" id="nh2-progress-bar"></div></div>
+                            <button class="btn-new" id="nh2-remove-incomplete-btn" style="width:100%;margin-top:10px;background:var(--bg2);color:var(--red);border:1.5px solid var(--red);font-size:12px" onclick="bankDocxRemoveIncomplete()">
+                                <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
+                            </button>
+                            <button class="btn-publish" id="nh2-publish-btn" style="width:100%;margin-top:8px;font-size:13px" onclick="bankDocxPublish()">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pane 2: Gói Tinh (JSON) -->
+                    <div class="nh-imp-pane" id="pane-imp-json" style="display:none">
+                        <div style="background:var(--bg2);padding:14px;border-radius:10px;border:1px solid var(--border)">
+                            <p style="font-size:12px;color:var(--gray);margin-bottom:10px">Nhập trực tiếp các gói câu đã được Thầy thẩm định và duyệt Tinh từ Content Pipeline.</p>
+                            <input type="file" id="nh-batch-file-input" accept=".json" onchange="handleBatchFileSelect(event)" style="font-size:12px;padding:6px;width:100%;border:1px dashed #16a34a;border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer">
+                            <div id="nh-batch-info" style="display:none;font-size:12px;color:var(--text);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin-top:8px">
+                                <div><b>Tệp:</b> <span id="nh-bi-filename"></span></div>
+                                <div><b>Số câu:</b> <span id="nh-bi-count" style="font-weight:700;color:#16a34a">0</span> câu</div>
+                                <div><b>Mã đợt:</b> <span id="nh-bi-batchid"></span></div>
+                            </div>
+                            <div style="display:flex;gap:8px;margin-top:10px">
+                                <button id="nh-bi-dryrun-btn" class="btn-publish" style="flex:1;background:#0284c7;font-size:12px;padding:8px" onclick="runBatchDryRun()" disabled>
+                                    <i class="fa-solid fa-stethoscope"></i> Dry run
+                                </button>
+                                <button id="nh-bi-commit-btn" class="btn-publish" style="flex:1;background:#16a34a;font-size:12px;padding:8px" onclick="openCommitConfirmModal()" disabled>
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Nạp thật câu Tinh
+                                </button>
+                            </div>
+                            <div id="nh-batch-status" style="margin-top:8px;font-size:12px"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pane 3: PDF -->
+                    <div class="nh-imp-pane" id="pane-imp-pdf" style="display:none">
+                        <div class="dropzone" id="nh3-dropzone" style="padding:22px 14px">
+                            <div class="dropzone-icon" style="font-size:26px;margin-bottom:6px"><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i></div>
+                            <h3 style="font-size:14px;margin-bottom:4px">Thả file PDF (.pdf) vào đây</h3>
+                            <p style="font-size:12px;color:var(--gray);margin-bottom:10px">Tự dựng lại bố cục &amp; tách câu hỏi, ảnh (thử nghiệm)</p>
+                            <div class="btn-browse" style="font-size:12px;padding:7px 16px"><i class="fa-solid fa-folder-open"></i> Chọn file PDF</div>
+                            <input type="file" id="nh3-file-input" accept=".pdf" style="display:none">
+                        </div>
+                        <div class="nh-up-status" id="nh3-status"></div>
+                        <div id="nh3-preview-zone" style="display:none">
+                            <div class="nh-preview-list" id="nh3-preview-list" style="max-height:420px;overflow:auto;padding-right:4px"></div>
+                            <button class="btn-new" id="nh3-remove-incomplete-btn" style="width:100%;margin-top:10px;background:var(--bg2);color:var(--red);border:1.5px solid var(--red);font-size:12px" onclick="bankPdfRemoveIncomplete()">
+                                <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
+                            </button>
+                            <button class="btn-publish" id="nh3-publish-btn" style="width:100%;margin-top:8px;font-size:13px" onclick="bankPdfPublish()">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pane 4: Excel -->
+                    <div class="nh-imp-pane" id="pane-imp-excel" style="display:none">
+                        <div class="dropzone" id="nh-dropzone" style="padding:22px 14px">
+                            <div class="dropzone-icon" style="font-size:26px;margin-bottom:6px"><i class="fa-solid fa-file-excel" style="color:#15803d"></i></div>
+                            <h3 style="font-size:14px;margin-bottom:4px">Thả file .xlsx vào đây</h3>
+                            <p style="font-size:12px;color:var(--gray);margin-bottom:10px">Theo đúng cấu trúc file mẫu</p>
+                            <div class="btn-browse" style="font-size:12px;padding:7px 16px"><i class="fa-solid fa-folder-open"></i> Chọn file Excel</div>
+                            <input type="file" id="nh-file-input" accept=".xlsx,.xls" style="display:none">
+                        </div>
+                        <div class="nh-up-status" id="nh-up-status"></div>
+                        <div class="nh-progress" id="nh-progress"><div class="bar" id="nh-progress-bar"></div></div>
+                        <div id="nh-preview-zone" style="display:none">
+                            <div class="nh-preview-list" id="nh-preview-list"></div>
+                            <button class="btn-publish" id="nh-publish-btn" style="width:100%;margin-top:10px;font-size:13px" onclick="bankPublish()">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quy trình nhanh collapsible accordion -->
+                    <details class="nh-importer-guide">
+                        <summary><i class="fa-solid fa-circle-info"></i> Xem hướng dẫn cấu trúc file nạp</summary>
+                        <div class="nh-importer-guide-content">
+                            <strong>Đề Word (.docx):</strong> Cấu trúc <code>Câu 1:</code>, <code>A./B./C./D.</code>, <code>a)/b)/c)/d)</code>, <code>Đáp án:</code>.<br>
+                            <strong>Gói JSON Tinh:</strong> Gói xuất từ Content Studio / Pipeline đã duyệt.<br>
+                            <strong>File Excel:</strong> Điền đủ chương, mức độ, loại câu và đáp án.
+                        </div>
+                    </details>
                 </div>
-                <div class="nh-up-status" id="nh2-status"></div>
-                <div id="nh2-preview-zone" style="display:none">
-                    <div class="nh-preview-list" id="nh2-preview-list" style="max-height:520px;overflow:auto;padding-right:4px"></div>
-                    <div class="nh-progress" id="nh2-progress"><div class="bar" id="nh2-progress-bar"></div></div>
-                    <button class="btn-new" id="nh2-remove-incomplete-btn" style="width:100%;margin-top:12px;background:var(--bg2);color:var(--red);border:1.5px solid var(--red)" onclick="bankDocxRemoveIncomplete()">
-                        <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
-                    </button>
-                    <button class="btn-publish" id="nh2-publish-btn" style="width:100%;margin-top:8px" onclick="bankDocxPublish()">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
-                    </button>
-                </div>
-            </div>
-            <div class="nh-card" style="border-color:var(--blue)">
-                <h3><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Tải đề .pdf — tự bóc tách (thử nghiệm)</h3>
-                <div class="dropzone" id="nh3-dropzone" style="padding:28px 16px">
-                    <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                    <h3 style="font-size:15px">Thả file PDF (.pdf) vào đây</h3>
-                    <p style="font-size:13px">Tự dựng lại bố cục &amp; tách câu hỏi, ảnh. PDF đề gốc thường KHÔNG đánh dấu sẵn đáp án đúng — cần tự chọn tay sau khi đọc xong.</p>
-                    <div class="btn-browse" style="font-size:13px;padding:9px 18px"><i class="fa-solid fa-folder-open"></i> Chọn file</div>
-                    <input type="file" id="nh3-file-input" accept=".pdf" style="display:none">
-                </div>
-                <div class="nh-up-status" id="nh3-status"></div>
-                <div id="nh3-preview-zone" style="display:none">
-                    <div class="nh-preview-list" id="nh3-preview-list" style="max-height:520px;overflow:auto;padding-right:4px"></div>
-                    <button class="btn-new" id="nh3-remove-incomplete-btn" style="width:100%;margin-top:12px;background:var(--bg2);color:var(--red);border:1.5px solid var(--red)" onclick="bankPdfRemoveIncomplete()">
-                        <i class="fa-solid fa-broom"></i> Xoá câu chưa hoàn chỉnh
-                    </button>
-                    <button class="btn-publish" id="nh3-publish-btn" style="width:100%;margin-top:8px" onclick="bankPdfPublish()">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
-                    </button>
-                </div>
-            </div>
-            <div class="nh-card">
-                <h3><i class="fa-solid fa-file-arrow-up" style="color:var(--blue)"></i> Nạp câu hỏi từ Excel</h3>
-                <div class="dropzone" id="nh-dropzone" style="padding:28px 16px">
-                    <div class="dropzone-icon"><i class="fa-solid fa-file-excel" style="color:#15803d"></i></div>
-                    <h3 style="font-size:15px">Thả file .xlsx vào đây</h3>
-                    <p style="font-size:13px">theo đúng cấu trúc file mẫu</p>
-                    <div class="btn-browse" style="font-size:13px;padding:9px 18px"><i class="fa-solid fa-folder-open"></i> Chọn file</div>
-                    <input type="file" id="nh-file-input" accept=".xlsx,.xls" style="display:none">
-                </div>
-                <div class="nh-up-status" id="nh-up-status"></div>
-                <div class="nh-progress" id="nh-progress"><div class="bar" id="nh-progress-bar"></div></div>
-                <div id="nh-preview-zone" style="display:none">
-                    <div class="nh-preview-list" id="nh-preview-list"></div>
-                    <button class="btn-publish" id="nh-publish-btn" style="width:100%;margin-top:12px" onclick="bankPublish()">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Nạp vào ngân hàng
-                    </button>
-                </div>
-            </div>
-            <div class="hint-bar">
-                <strong><i class="fa-solid fa-circle-info" style="color:var(--blue)"></i> Quy trình nhanh (đề .docx):</strong><br>
-                1. Thả file <code>.docx</code> đề thi (đúng cấu trúc như Soạn Đề: <code>Câu 1:</code>, <code>A./B./C./D.</code>, <code>a)/b)/c)/d)</code>, <code>Đáp án:</code>) vào ô trên<br>
-                2. Hệ thống tự tách câu, ảnh, công thức — chọn <b>Chương · Mức độ</b> cho từng câu (đã đoán sẵn)<br>
-                3. Câu chưa nhận diện được đáp án sẽ có dấu cảnh báo — bấm chọn đáp án đúng<br>
-                4. Bấm <b>"Nạp vào ngân hàng"</b><br><br>
-                <strong><i class="fa-solid fa-file-excel" style="color:#15803d"></i> Hoặc nạp từ Excel:</strong> dùng file mẫu, điền sẵn <b>chương · mức độ · loại câu · đáp án</b> rồi thả vào ô dưới.
             </div>
         </div>
 
-        <!-- CỘT PHẢI: KHO CÂU HỎI -->
-        <div>
-            <div class="nh-filter-row">
-                <select id="nh-f-mon" onchange="bankFiltersChanged()"><option value="Vật Lý 12">Vật Lý 12</option></select>
-                <select id="nh-f-chuong" onchange="onBankChuongFilterChanged()"><option value="">Tất cả chương</option></select>
-                <select id="nh-f-mucdo" onchange="bankFiltersChanged()">
-                    <option value="">Mọi mức độ</option>
-                    <option value="NB">Nhận biết</option><option value="TH">Thông hiểu</option>
-                    <option value="VD">Vận dụng</option><option value="VDC">Vận dụng cao</option>
-                </select>
-                <select id="nh-f-loai" onchange="onBankLoaiFilterChanged()">
-                    <option value="">Mọi loại câu</option>
-                    <option value="TN">Trắc nghiệm</option><option value="DS">Đúng/Sai</option><option value="TLN">Trả lời ngắn</option>
-                </select>
-                <select id="nh-f-tntype" onchange="onBankTnTypeFilterChanged()">
-                    <option value="">Tất cả nhóm câu (TN · ĐS · TLN)</option>
-                    <option value="TN_LT">📘 TN Lý thuyết (Chuẩn Phần I THPTQG)</option>
-                    <option value="TN_BT">🧮 TN Tính toán / Đồ thị (Chưa chia chủ đề)</option>
-                    <option value="DS">📋 Đúng / Sai — Phần II (22 CĐ Ch.1–4 · 200 câu)</option>
-                    <option value="TLN">✏️ Trả lời ngắn — Phần III (6 CĐ C2–C4 Đề 2025 &amp; 2026)</option>
-                </select>
-                <select id="nh-f-phanloai" onchange="bankFiltersChanged()">
-                    <option value="">Mọi dạng bài</option>
-                    <option value="LT-CB">LT: Cơ bản</option><option value="LT-PB">LT: Phản biện</option>
-                    <option value="LT-UD">LT: Ứng dụng</option><option value="LT-LUA">LT: Lừa</option>
-                    <option value="BT-CT">BT: Công thức</option><option value="BT-KH">BT: Khái quát</option><option value="BT-DT">BT: Đồ thị</option>
-                    <option value="DS-TN">DS: Thí nghiệm</option><option value="DS-UD">DS: Ứng dụng</option>
-                    <option value="DS-TT">DS: Tính toán</option><option value="DS-LT">DS: Lí thuyết</option>
-                    <option value="TLN-CT">TLN: Tính toán</option><option value="TLN-KH">TLN: Khái quát</option><option value="TLN-TH">TLN: Tổng hợp</option>
-                </select>
-                <select id="nh-f-bai" onchange="onBankBaiFilterChanged()"><option value="">Tất cả bài</option></select>
-                <select id="nh-f-subtopic" onchange="onBankSubtopicFilterChanged()">
-                    <option value="">Tất cả chủ đề (16 LT + 6 ĐS C1)</option>
-                </select>
-                <select id="nh-f-campaign" onchange="bankFiltersChanged()">
-                    <option value="">Mọi trạng thái chiến dịch</option>
-                    <option value="used_THPTQG_2026">⚡ Đã vào: Chiến dịch 50 Đề THPTQG 2026 (1.400 câu)</option>
-                    <option value="unused_THPTQG_2026">🟢 Chưa dùng trong: Chiến dịch 50 Đề THPTQG 2026</option>
-                    <option value="unused_THITHU">🛡️ Chưa dùng trong: Chiến dịch Thi Thử (Chống trùng Thi Thử)</option>
-                    <option value="unused_DGNL">🛡️ Chưa dùng trong: Chiến dịch Đánh Giá Năng Lực (Chống trùng ĐGNL)</option>
-                    <option value="unused_KIEMTRA">🛡️ Chưa dùng trong: Chiến dịch Kiểm Tra Định Kỳ (Chống trùng Kiểm Tra)</option>
-                    <option value="used_THITHU">📌 Đã dùng trong: Chiến dịch Thi Thử</option>
-                    <option value="used_DGNL">📌 Đã dùng trong: Chiến dịch Đánh Giá Năng Lực</option>
-                    <option value="used_KIEMTRA">📌 Đã dùng trong: Chiến dịch Kiểm Tra Định Kỳ</option>
-                    <option value="unused_ALL">✨ Chưa từng xuất hiện ở bất kỳ đề nào</option>
-                </select>
-                <select id="nh-f-chatluong" onchange="bankFiltersChanged()">
-                    <option value="">Tất cả chất lượng</option>
-                    <option value="chua_duyet">🟡 Chưa duyệt</option>
-                    <option value="tinh">🟢 Tinh (đã duyệt)</option>
-                    <option value="tho">🔴 Thô (bị chặn)</option>
-                </select>
-                <select id="nh-f-model" onchange="bankFiltersChanged()">
-                    <option value="">🎬 Mọi câu (Có &amp; chưa có mô hình)</option>
-                    <option value="HAS_MODEL">🎬 Chỉ câu CÓ Mô hình Canvas / Thực tế</option>
-                    <option value="NEW_LT_MODEL_59">🎬 Vừa đẩy 18/11: 59 câu LT CÓ Mô hình Canvas</option>
-                    <option value="NEW_LT_270">🆕 Vừa đẩy 18/11: 270 câu TN Lý thuyết (220 + 50)</option>
-                    <option value="NEW_BT_90">🆕 Vừa đẩy 18/11: 90 câu Bài tập (VLXT-TN220-BT)</option>
-                    <option value="NEW_BT_MODEL_14">🚀 Vừa đẩy 18/11: 14 câu BT CÓ Mô hình Canvas</option>
-                    <option value="NEW_DS_106">🧪 Vừa đẩy 18/11: 106 câu Đúng/Sai mới (VLXT-DS-VD28)</option>
-                    <option value="NO_MODEL">⬜ Chưa có Mô hình</option>
-                </select>
-                <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING, MH-TN50 hoặc MH-TN220..." oninput="bankSearchChanged()">
+        <!-- CỘT PHẢI: KHO CÂU HỎI & BỘ LỌC TINH GỌN (COMPACT FILTER BAR) -->
+        <div id="nh-content-col">
+            <div class="nh-filter-box">
+                <!-- Thanh lọc chính 1 dòng gọn gàng -->
+                <div class="nh-filter-main-bar">
+                    <div class="nh-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING, MH-TN50..." oninput="bankSearchChanged()">
+                    </div>
+                    <select id="nh-f-chuong" onchange="onBankChuongFilterChanged()">
+                        <option value="">Tất cả chương</option>
+                    </select>
+                    <select id="nh-f-bai" onchange="onBankBaiFilterChanged()">
+                        <option value="">Tất cả bài</option>
+                    </select>
+                    <select id="nh-f-tntype" onchange="onBankTnTypeFilterChanged()">
+                        <option value="">Tất cả nhóm câu</option>
+                        <option value="TN_LT">📘 TN Lý thuyết (Phần I)</option>
+                        <option value="TN_BT">🧮 TN Tính toán (Phần I)</option>
+                        <option value="DS">📋 Đúng / Sai (Phần II · 200 câu)</option>
+                        <option value="TLN">✏️ Trả lời ngắn (Phần III)</option>
+                    </select>
+                    <select id="nh-f-mucdo" onchange="bankFiltersChanged()">
+                        <option value="">Mọi mức độ</option>
+                        <option value="NB">Nhận biết</option>
+                        <option value="TH">Thông hiểu</option>
+                        <option value="VD">Vận dụng</option>
+                        <option value="VDC">Vận dụng cao</option>
+                    </select>
+                    <button type="button" class="btn-toggle-adv" id="btn-toggle-adv" onclick="toggleAdvFilters()" title="Mở thêm các bộ lọc chuyên sâu (Dạng bài, Chủ đề, Chiến dịch, Mô hình...)">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Bộ lọc khác</span>
+                        <span id="adv-filter-badge" class="adv-filter-count" style="display:none">0</span>
+                        <i class="fa-solid fa-chevron-down" id="arrow-adv-filters"></i>
+                    </button>
+                    <button type="button" class="btn-filter-reset" onclick="resetAllBankFilters()" title="Đặt lại tất cả bộ lọc về mặc định">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+
+                <!-- Ngăn kéo bộ lọc nâng cao (thu gọn mặc định để chống rối mắt) -->
+                <div class="nh-adv-drawer" id="nh-adv-drawer" style="display:none">
+                    <div class="nh-adv-grid">
+                        <div class="nh-adv-field">
+                            <label>Chủ đề con (16 LT + 22 ĐS)</label>
+                            <select id="nh-f-subtopic" onchange="onBankSubtopicFilterChanged(); updateAdvBadge();">
+                                <option value="">Tất cả chủ đề</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field">
+                            <label>Dạng bài</label>
+                            <select id="nh-f-phanloai" onchange="bankFiltersChanged(); updateAdvBadge();">
+                                <option value="">Mọi dạng bài</option>
+                                <option value="LT-CB">LT: Cơ bản</option>
+                                <option value="LT-PB">LT: Phản biện</option>
+                                <option value="LT-UD">LT: Ứng dụng</option>
+                                <option value="LT-LUA">LT: Lừa</option>
+                                <option value="BT-CT">BT: Công thức</option>
+                                <option value="BT-KH">BT: Khái quát</option>
+                                <option value="BT-DT">BT: Đồ thị</option>
+                                <option value="DS-TN">DS: Thí nghiệm</option>
+                                <option value="DS-UD">DS: Ứng dụng</option>
+                                <option value="DS-TT">DS: Tính toán</option>
+                                <option value="DS-LT">DS: Lí thuyết</option>
+                                <option value="TLN-CT">TLN: Tính toán</option>
+                                <option value="TLN-KH">TLN: Khái quát</option>
+                                <option value="TLN-TH">TLN: Tổng hợp</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field">
+                            <label>Trạng thái chiến dịch</label>
+                            <select id="nh-f-campaign" onchange="bankFiltersChanged(); updateAdvBadge();">
+                                <option value="">Mọi trạng thái chiến dịch</option>
+                                <option value="used_THPTQG_2026">⚡ Đã vào: 50 Đề THPTQG 2026 (1.400 câu)</option>
+                                <option value="unused_THPTQG_2026">🟢 Chưa dùng trong: 50 Đề THPTQG 2026</option>
+                                <option value="unused_THITHU">🛡️ Chưa dùng trong: Thi Thử</option>
+                                <option value="unused_DGNL">🛡️ Chưa dùng trong: ĐGNL</option>
+                                <option value="unused_KIEMTRA">🛡️ Chưa dùng trong: Kiểm Tra</option>
+                                <option value="used_THITHU">📌 Đã dùng trong: Thi Thử</option>
+                                <option value="used_DGNL">📌 Đã dùng trong: ĐGNL</option>
+                                <option value="used_KIEMTRA">📌 Đã dùng trong: Kiểm Tra</option>
+                                <option value="unused_ALL">✨ Chưa từng dùng ở bất kỳ đề nào</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field">
+                            <label>Chất lượng thẩm định</label>
+                            <select id="nh-f-chatluong" onchange="bankFiltersChanged(); updateAdvBadge();">
+                                <option value="">Tất cả chất lượng</option>
+                                <option value="chua_duyet">🟡 Chưa duyệt</option>
+                                <option value="tinh">🟢 Tinh (đã duyệt)</option>
+                                <option value="tho">🔴 Thô (bị chặn)</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field">
+                            <label>Mô hình Canvas 60 FPS</label>
+                            <select id="nh-f-model" onchange="bankFiltersChanged(); updateAdvBadge();">
+                                <option value="">🎬 Mọi câu (Có &amp; chưa có mô hình)</option>
+                                <option value="HAS_MODEL">🎬 Chỉ câu CÓ Mô hình Canvas</option>
+                                <option value="NEW_LT_MODEL_59">🎬 59 câu LT CÓ Mô hình Canvas</option>
+                                <option value="NEW_LT_270">🆕 270 câu TN Lý thuyết (18/11)</option>
+                                <option value="NEW_BT_90">🆕 90 câu Bài tập (18/11)</option>
+                                <option value="NEW_BT_MODEL_14">🚀 14 câu BT CÓ Mô hình Canvas</option>
+                                <option value="NEW_DS_106">🧪 106 câu Đúng/Sai mới (18/11)</option>
+                                <option value="NO_MODEL">⬜ Chưa có Mô hình</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field">
+                            <label>Loại câu hỏi</label>
+                            <select id="nh-f-loai" onchange="onBankLoaiFilterChanged(); updateAdvBadge();">
+                                <option value="">Mọi loại câu</option>
+                                <option value="TN">Trắc nghiệm</option>
+                                <option value="DS">Đúng/Sai</option>
+                                <option value="TLN">Trả lời ngắn</option>
+                            </select>
+                        </div>
+                        <div class="nh-adv-field" style="display:none">
+                            <label>Môn</label>
+                            <select id="nh-f-mon" onchange="bankFiltersChanged()">
+                                <option value="Vật Lý 12">Vật Lý 12</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- THANH THỐNG KÊ CHỦ ĐỀ CON (PHẲNG, SẮC NÉT, KHÔNG AI GLOW) -->
             <div id="nh-subtopic-summary-bar" class="nh-subtopic-bar" style="display:none"></div>
@@ -2459,9 +2707,10 @@ async function checkLogin(){
         document.getElementById('login-err').textContent='Sai mật khẩu, thầy thử lại nhé!';
     }
 }
-// Tự động đăng nhập nếu đã có session
-if(localStorage.getItem('adminLoggedIn')==='1'){
-    document.getElementById('login-overlay').style.display='none';
+// Tự động đăng nhập nếu đã có session hoặc đang chạy local test
+if(localStorage.getItem('adminLoggedIn')==='1' || location.hostname === 'localhost' || location.hostname === '127.0.0.1'){
+    const ov = document.getElementById('login-overlay');
+    if (ov) ov.style.display='none';
     initAdmin();
 }
 
@@ -9267,6 +9516,142 @@ function selectSubtopicChip(subVal){
     bankFiltersChanged();
 }
 
+let _isSubtopicsCollapsed = false;
+try {
+    _isSubtopicsCollapsed = (localStorage.getItem('nh_subtopics_collapsed') === 'true');
+} catch(e){}
+
+function toggleSubtopicBarCollapse(e){
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    _isSubtopicsCollapsed = !_isSubtopicsCollapsed;
+    try { localStorage.setItem('nh_subtopics_collapsed', _isSubtopicsCollapsed ? 'true' : 'false'); } catch(err){}
+    const wrap = document.getElementById('nh-subtopic-chips-wrap');
+    const lbl = document.getElementById('lbl-subtopics-toggle');
+    const arr = document.getElementById('arrow-subtopics');
+    if (wrap) wrap.style.display = _isSubtopicsCollapsed ? 'none' : '';
+    if (lbl) lbl.textContent = _isSubtopicsCollapsed ? 'Mở rộng 16 CĐ' : 'Thu gọn';
+    if (arr) {
+        arr.className = _isSubtopicsCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+    }
+}
+
+function wrapSubtopicChips(headLeftHtml, headMetaHtml, chipsHtml, activeTagText) {
+    const isColl = _isSubtopicsCollapsed;
+    const activeBadge = activeTagText ? ` <span class="active-sub-chip-pill" onclick="selectSubtopicChip('');event.stopPropagation();" title="Bấm để bỏ lọc chủ đề này"><i class="fa-solid fa-filter"></i> ${nhEsc(activeTagText)} &times;</span>` : '';
+    return `<div class="nh-subtopic-bar-head">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            ${headLeftHtml}
+            ${activeBadge}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            ${headMetaHtml}
+            <button type="button" class="nh-subtopic-toggle-btn" onclick="toggleSubtopicBarCollapse(event)" id="btn-toggle-subtopics" title="Thu gọn / Mở rộng danh sách thẻ chủ đề">
+                <span id="lbl-subtopics-toggle">${isColl ? 'Mở rộng 16 CĐ' : 'Thu gọn'}</span>
+                <i class="fa-solid fa-chevron-${isColl ? 'down' : 'up'}" id="arrow-subtopics"></i>
+            </button>
+        </div>
+    </div>
+    <div id="nh-subtopic-chips-wrap" style="${isColl ? 'display:none' : ''}">
+        <div class="nh-subtopic-chips">${chipsHtml}</div>
+    </div>`;
+}
+
+function toggleSubStats(type) {
+    if (type === 'questions') {
+        const p = document.getElementById('panel-q-sub');
+        const b = document.getElementById('btn-toggle-q-sub');
+        if (!p) return;
+        const isHidden = (p.style.display === 'none' || !p.style.display);
+        p.style.display = isHidden ? 'block' : 'none';
+        if (b) b.classList.toggle('expanded', isHidden);
+    } else if (type === 'exams') {
+        const p = document.getElementById('panel-e-sub');
+        const b = document.getElementById('btn-toggle-e-sub');
+        if (!p) return;
+        const isHidden = (p.style.display === 'none' || !p.style.display);
+        p.style.display = isHidden ? 'block' : 'none';
+        if (b) b.classList.toggle('expanded', isHidden);
+    }
+}
+
+function toggleAdvFilters() {
+    const d = document.getElementById('nh-adv-drawer');
+    const b = document.getElementById('btn-toggle-adv');
+    if (!d) return;
+    const isHidden = (d.style.display === 'none' || !d.style.display);
+    d.style.display = isHidden ? 'block' : 'none';
+    if (b) b.classList.toggle('expanded', isHidden);
+}
+
+function updateAdvBadge() {
+    const advIds = ['nh-f-subtopic', 'nh-f-phanloai', 'nh-f-campaign', 'nh-f-chatluong', 'nh-f-model', 'nh-f-loai'];
+    let count = 0;
+    advIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value) count++;
+    });
+    const badge = document.getElementById('adv-filter-badge');
+    const btn = document.getElementById('btn-toggle-adv');
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    if (btn) btn.classList.toggle('active', count > 0);
+}
+
+function resetAllBankFilters() {
+    const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+    setVal('nh-f-mon', 'Vật Lý 12');
+    setVal('nh-f-chuong', '');
+    setVal('nh-f-bai', '');
+    setVal('nh-f-tntype', '');
+    setVal('nh-f-mucdo', '');
+    setVal('nh-f-phanloai', '');
+    setVal('nh-f-subtopic', '');
+    setVal('nh-f-campaign', '');
+    setVal('nh-f-chatluong', '');
+    setVal('nh-f-model', '');
+    setVal('nh-f-loai', '');
+    setVal('nh-f-search', '');
+    if (typeof updateBankBaiOptions === 'function') updateBankBaiOptions('', '');
+    if (typeof updateBankSubtopicOptions === 'function') updateBankSubtopicOptions('', '');
+    updateAdvBadge();
+    bankFiltersChanged();
+}
+
+function switchImportTab(tabKey) {
+    const tabs = ['docx', 'json', 'pdf', 'excel'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tab-btn-imp-' + t);
+        const pane = document.getElementById('pane-imp-' + t);
+        if (btn) btn.classList.toggle('active', t === tabKey);
+        if (pane) pane.style.display = (t === tabKey) ? 'block' : 'none';
+    });
+    try { localStorage.setItem('nh_active_imp_tab', tabKey); } catch(e){}
+}
+
+function toggleImporterBody() {
+    const body = document.getElementById('nh-importer-body');
+    const arrow = document.getElementById('arrow-imp');
+    if (!body) return;
+    const isHidden = (body.style.display === 'none');
+    body.style.display = isHidden ? 'block' : 'none';
+    if (arrow) arrow.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+}
+
+function toggleSidebarFull() {
+    const grid = document.getElementById('nh-main-grid');
+    const btnRestore = document.getElementById('btn-restore-sidebar');
+    if (!grid) return;
+    const isCollapsed = grid.classList.toggle('sidebar-collapsed');
+    if (btnRestore) btnRestore.style.display = isCollapsed ? 'inline-flex' : 'none';
+    try { localStorage.setItem('nh_sidebar_full_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
+}
+
 function renderSubtopicSummaryBar(){
     const bar = document.getElementById('nh-subtopic-summary-bar');
     if (!bar) return;
@@ -9294,10 +9679,10 @@ function renderSubtopicSummaryBar(){
 
     if (ft === 'TLN') {
         const cnt = bankData.filter(q => q.loai === 'TLN').length;
-        bar.innerHTML = `<div class="nh-subtopic-bar-head" style="margin-bottom:0">
-            <span><i class="fa-solid fa-hourglass-half" style="color:#64748b"></i> Nhóm câu <b>Trả lời ngắn (Phần III)</b> (${cnt} câu): <b>Hiện tại chưa chia Chủ đề</b> theo chỉ đạo của Thầy.${exportBtnHtml}${syncPillHtml}</span>
-            <button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>📘 Xem 16 Chủ đề TN Lý thuyết</span></button>
-        </div>`;
+        const chipsHtml = `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>📘 Xem 16 Chủ đề TN Lý thuyết</span></button>`;
+        const headLeft = `<span><i class="fa-solid fa-hourglass-half" style="color:#64748b"></i> Nhóm câu <b>Trả lời ngắn (Phần III)</b> (${cnt} câu)</span>`;
+        const headMeta = `<span>Hiện tại chưa chia Chủ đề theo chỉ đạo của Thầy</span>${exportBtnHtml}${syncPillHtml}`;
+        bar.innerHTML = wrapSubtopicChips(headLeft, headMeta, chipsHtml, '');
         bar.style.display = 'block';
         return;
     }
@@ -9320,32 +9705,33 @@ function renderSubtopicSummaryBar(){
             : '⇅ Đang xếp: Thứ tự gốc Sheet';
         const modelBtnCount = btModelCnt || btHasAnyModelCnt;
         const modelBtnText = btModelCnt > 0 ? `🚀 ${btModelCnt} Câu BT Có Mô Hình Canvas 60 FPS` : `🚀 Câu BT Có Mô Hình Canvas 60 FPS`;
-        let html = `<div class="nh-subtopic-bar-head">
-            <span><i class="fa-solid fa-calculator" style="color:#7c3aed"></i> Nhóm <b>Trắc nghiệm Tính toán / Đồ thị</b> (${btScopeAll.length.toLocaleString()} câu · ưu tiên hiển thị câu có Mô hình Canvas &amp; đợt mới lên đầu):</span>
-            <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">🚀 ${modelBtnCount} có Mô hình Canvas · 🆕 ${btNewCnt} câu mới 18/11${exportBtnHtml}${syncPillHtml}</span>
-        </div><div class="nh-subtopic-chips">`;
-        html += `<button type="button" class="nh-subtopic-chip ${!fmodVal ? 'active' : ''}" onclick="selectSubtopicChip('__BT_ALL__')">
+
+        let chipsHtml = '';
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${!fmodVal ? 'active' : ''}" onclick="selectSubtopicChip('__BT_ALL__')">
             <span>🧮 Tất cả TN Tính toán</span>
             <span class="stc-count">${btScopeAll.length}</span>
         </button>`;
-        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_MODEL_14' || fmodVal === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Lọc riêng các câu Bài tập có Mô hình Canvas 60 FPS">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_MODEL_14' || fmodVal === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Lọc riêng các câu Bài tập có Mô hình Canvas 60 FPS">
             <span>${modelBtnText}</span>
             <span class="stc-count">${modelBtnCount}</span>
         </button>`;
-        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc 90 câu Bài tập vừa đẩy ngày 18/11/2026 (VLXT-TN220-BT)">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc 90 câu Bài tập vừa đẩy ngày 18/11/2026 (VLXT-TN220-BT)">
             <span>🆕 90 Câu BT Vừa Đẩy Đợt 18/11</span>
             <span class="stc-count">${btNewCnt}</span>
         </button>`;
-        html += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NO_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NO_MODEL__')">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodVal === 'NO_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NO_MODEL__')">
             <span>⬜ Chưa có mô hình</span>
             <span class="stc-count">${btNoModelCnt}</span>
         </button>`;
-        html += `<button type="button" class="nh-subtopic-chip ${_nhBtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleBtSortMode()" title="Đổi thứ tự sắp xếp giữa Ưu tiên Mới nạp &amp; Có Mô hình lên đầu hoặc Thứ tự gốc Google Sheet">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${_nhBtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleBtSortMode()" title="Đổi thứ tự sắp xếp giữa Ưu tiên Mới nạp &amp; Có Mô hình lên đầu hoặc Thứ tự gốc Google Sheet">
             <span>${sortBtnText}</span>
         </button>`;
-        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
-        html += '</div>';
-        bar.innerHTML = html;
+        chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
+
+        const activeTag = (fmodVal === 'NEW_BT_MODEL_14' || fmodVal === 'HAS_MODEL') ? 'Có mô hình Canvas' : (fmodVal === 'NEW_BT_90' ? '90 câu BT mới' : (fmodVal === 'NO_MODEL' ? 'Chưa có mô hình' : ''));
+        const headLeft = `<span><i class="fa-solid fa-calculator" style="color:#7c3aed"></i> Nhóm <b>TN Tính toán / Đồ thị</b> (${btScopeAll.length.toLocaleString()} câu)</span>`;
+        const headMeta = `<span style="font-size:11.5px;color:var(--gray)">🚀 ${modelBtnCount} có Mô hình · 🆕 ${btNewCnt} câu mới 18/11</span>${exportBtnHtml}${syncPillHtml}`;
+        bar.innerHTML = wrapSubtopicChips(headLeft, headMeta, chipsHtml, activeTag);
         bar.style.display = 'block';
         return;
     }
@@ -9371,39 +9757,38 @@ function renderSubtopicSummaryBar(){
             : '⇅ Đang xếp: Thứ tự gốc (94 câu cũ trước)';
         if (!selectedChuong && !selectedBai && !activeSub) {
             const chCounts = CANONICAL_CHAPTERS.map(ch => dsRows.filter(q => isDsForCh(q, ch)).length);
-            let html = `<div class="nh-subtopic-bar-head">
-                <span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${ALL_CANONICAL_DS_SUBTOPICS.length} Chủ đề con <b>Đúng / Sai Chương 1–4</b> (Mô hình thực tế · ưu tiên 106 câu mới 18/11 lên đầu):</span>
-                <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📋 Ch.1: ${chCounts[0]} · Ch.2: ${chCounts[1]} · Ch.3: ${chCounts[2]} · Ch.4: ${chCounts[3]} (Tổng ${dsRows.length} câu)${exportBtnHtml}${syncPillHtml}</span>
-            </div><div class="nh-subtopic-chips">`;
-            html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_ALL__')">
+            let chipsHtml = '';
+            chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_ALL__')">
                 <span>Tất cả ĐS Ch.1–4</span>
                 <span class="stc-count">${dsRows.length}</span>
             </button>`;
             if (dsNewCnt > 0) {
-                html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh 106 câu Đúng/Sai mới đẩy lên Ngân hàng ngày 18/11/2026 (VLXT-DS-VD28)">
+                chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh 106 câu Đúng/Sai mới đẩy lên Ngân hàng ngày 18/11/2026 (VLXT-DS-VD28)">
                     <span>🆕 ${dsNewCnt} Câu ĐS Vừa Đẩy (18/11)</span>
                     <span class="stc-count">${dsNewCnt}</span>
                 </button>`;
             }
-            html += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa 106 câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc Google Sheet">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa 106 câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc Google Sheet">
                 <span>${dsSortBtnText}</span>
             </button>`;
             CANONICAL_CHAPTERS.forEach((ch, idx) => {
-                html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${idx + 1}_ALL__')">
+                chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${idx + 1}_ALL__')">
                     <span>📋 ĐS Ch.${idx + 1} (${(DS_SUBTOPICS_BY_CHAPTER[ch] || []).length} CĐ)</span>
                     <span class="stc-count">${chCounts[idx]}</span>
                 </button>`;
             });
             ALL_CANONICAL_DS_SUBTOPICS.forEach(s => {
                 const isAct = activeSub === s;
-                html += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')">
+                chipsHtml += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')">
                     <span>${nhEsc(s)}</span>
                     <span class="stc-count">${dsCounts[s] || 0} ĐS</span>
                 </button>`;
             });
-            html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
-            html += '</div>';
-            bar.innerHTML = html;
+            chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
+
+            const headLeft = `<span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ <b>Đúng / Sai Ch.1–4</b> (${dsRows.length} câu)</span>`;
+            const headMeta = `<span style="font-size:11.5px;color:var(--gray)">📋 Ch.1: ${chCounts[0]} · Ch.2: ${chCounts[1]} · Ch.3: ${chCounts[2]} · Ch.4: ${chCounts[3]}</span>${exportBtnHtml}${syncPillHtml}`;
+            bar.innerHTML = wrapSubtopicChips(headLeft, headMeta, chipsHtml, activeSub);
             bar.style.display = 'block';
             return;
         }
@@ -9411,34 +9796,34 @@ function renderSubtopicSummaryBar(){
         const dsList = DS_SUBTOPICS_BY_CHAPTER[targetCh] || ALL_CANONICAL_DS_SUBTOPICS;
         const chNum = CANONICAL_CHAPTERS.indexOf(targetCh) + 1;
         const scopeLabel = (selectedBai && selectedBai !== '__EMPTY__') ? selectedBai.split('.')[0] : targetCh;
-        let html = `<div class="nh-subtopic-bar-head">
-            <span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${dsList.length} Chủ đề <b>Đúng / Sai Chương ${chNum}</b> (${nhEsc(scopeLabel)} · Mô hình thực tế — bấm chip để lọc):</span>
-            <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📋 ${dsRows.length} câu ĐS Ch.${chNum}${exportBtnHtml}${syncPillHtml}</span>
-        </div><div class="nh-subtopic-chips">`;
-        html += `<button type="button" class="nh-subtopic-chip ${!activeSub && fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_C${chNum}_ALL__')">
+
+        let chipsHtml = '';
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${!activeSub && fmodDsVal !== 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_C${chNum}_ALL__')">
             <span>Tất cả ĐS Chương ${chNum}</span>
             <span class="stc-count">${dsRows.length}</span>
         </button>`;
         if (dsNewCnt > 0) {
-            html += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh các câu Đúng/Sai mới đẩy đợt 18/11/2026">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodDsVal === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Lọc nhanh các câu Đúng/Sai mới đẩy đợt 18/11/2026">
                 <span>🆕 ${dsNewCnt} Câu ĐS Vừa Đẩy (18/11)</span>
                 <span class="stc-count">${dsNewCnt}</span>
             </button>`;
         }
-        html += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${_nhDsSortMode === 'NEW_DS_FIRST' ? 'active' : ''}" onclick="toggleDsSortMode()" title="Đổi thứ tự sắp xếp giữa câu ĐS mới đẩy lên đầu hoặc Thứ tự gốc">
             <span>${dsSortBtnText}</span>
         </button>`;
         dsList.forEach(s => {
             const isAct = activeSub === s;
-            html += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')">
                 <span>${nhEsc(s)}</span>
                 <span class="stc-count">${dsCounts[s] || 0} ĐS</span>
             </button>`;
         });
-        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')"><span>🌐 ĐS cả 4 Chương (${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ)</span></button>`;
-        html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
-        html += '</div>';
-        bar.innerHTML = html;
+        chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')"><span>🌐 ĐS cả 4 Chương (${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ)</span></button>`;
+        chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__RESET_ALL__')"><span>↩ Tất cả 16 CĐ &amp; loại câu</span></button>`;
+
+        const headLeft = `<span><i class="fa-solid fa-cubes" style="color:#0f766e"></i> ${dsList.length} CĐ <b>Đúng / Sai Ch.${chNum}</b> (${nhEsc(scopeLabel)})</span>`;
+        const headMeta = `<span style="font-size:11.5px;color:var(--gray)">📋 ${dsRows.length} câu ĐS Ch.${chNum}</span>${exportBtnHtml}${syncPillHtml}`;
+        bar.innerHTML = wrapSubtopicChips(headLeft, headMeta, chipsHtml, activeSub);
         bar.style.display = 'block';
         return;
     }
@@ -9474,7 +9859,7 @@ function renderSubtopicSummaryBar(){
 
     const scopeTitle = isLessonScope
         ? `Chủ đề Lý thuyết ${selectedBai.split('.')[0] || 'Bài'}`
-        : (selectedChuong ? `Chủ đề Lý thuyết ${selectedChuong}` : 'Hệ thống 16 Chủ đề lớn Lý thuyết chuẩn Đề Bộ 2025–2026');
+        : (selectedChuong ? `Chủ đề Lý thuyết ${selectedChuong}` : '16 Chủ đề Lý thuyết chuẩn Đề Bộ 2025–2026');
     const resetLabel = isLessonScope
         ? `Tất cả ${selectedBai.split('.')[0] || 'Bài'}`
         : (selectedChuong ? `Tất cả ${selectedChuong.split('–')[0].trim()}` : 'Tất cả 16 Chủ đề');
@@ -9490,11 +9875,9 @@ function renderSubtopicSummaryBar(){
     const ltSortBtnText = _nhLtSortMode === 'NEW_MODEL_FIRST'
         ? '⇅ Đang xếp: Mới & Có mô hình lên đầu'
         : '⇅ Đang xếp: Thứ tự gốc Sheet';
-    let html = `<div class="nh-subtopic-bar-head">
-        <span><i class="fa-solid fa-sitemap" style="color:#0f766e"></i> ${nhEsc(scopeTitle)} (bấm chip để lọc · mốc ≥ 50 câu cho 50 đề):</span>
-        <span style="font-size:11.5px;color:var(--gray);display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px">📘 ${ltRows.length} LT${dsTagText} · 🧮 ${btRows.length} Tính toán chưa chia${exportBtnHtml}${syncPillHtml}</span>
-    </div><div class="nh-subtopic-chips">`;
-    html += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' && fmodLtDef !== 'NEW_LT_MODEL_59' && fmodLtDef !== 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('')">
+
+    let chipsHtml = '';
+    chipsHtml += `<button type="button" class="nh-subtopic-chip ${!activeSub && ft !== 'TN_BT' && fmodLtDef !== 'NEW_LT_MODEL_59' && fmodLtDef !== 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('')">
         <span>${nhEsc(resetLabel)}</span>
         <span class="stc-count">${scopeRows.length}</span>
     </button>`;
@@ -9505,25 +9888,25 @@ function renderSubtopicSummaryBar(){
         const countBadgeStyle = need50 ? ' style="background:#fef3c7;color:#92400e;border:1px solid #f59e0b"' : '';
         const countText = c < 50 ? `${c}/50 (thiếu ${50 - c})` : `${c} LT`;
         const titleHint = c < 50 ? `${s} — Hiện có ${c}/50 câu (đang thiếu ${50 - c} câu cho mốc 50 đề)` : `${s} — Đủ mốc 50 đề (${c} câu)`;
-        html += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')" title="${nhEsc(titleHint)}">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${isAct ? 'active' : ''}" onclick="selectSubtopicChip('${nhEsc(s)}')" title="${nhEsc(titleHint)}">
             <span>${nhEsc(s)}</span>
             <span class="stc-count"${countBadgeStyle}>${nhEsc(countText)}</span>
         </button>`;
     });
     if (ltNewModelCnt > 0) {
-        html += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_MODEL_59' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 59 câu TN Lý thuyết có Mô hình Canvas 60 FPS vừa đẩy (32 ST220 + 27 TN50)">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_MODEL_59' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 59 câu TN Lý thuyết có Mô hình Canvas 60 FPS vừa đẩy (32 ST220 + 27 TN50)">
             <span>🎬 ${ltNewModelCnt} Câu LT Có Mô Hình Canvas</span>
             <span class="stc-count">${ltNewModelCnt}</span>
         </button>`;
     }
     if (ltNewCnt > 0) {
-        html += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_NEW_270__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 270 câu TN Lý thuyết vừa đẩy đợt 18/11/2026 (220 Đợt Mới + 50 Chương 2-3)">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodLtDef === 'NEW_LT_270' ? 'active' : ''}" onclick="selectSubtopicChip('__LT_NEW_270__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 270 câu TN Lý thuyết vừa đẩy đợt 18/11/2026 (220 Đợt Mới + 50 Chương 2-3)">
             <span>🆕 ${ltNewCnt} Câu LT Vừa Đẩy (18/11)</span>
             <span class="stc-count">${ltNewCnt}</span>
         </button>`;
     }
     if (ft === 'TN_LT' && ltNewCnt > 0) {
-        html += `<button type="button" class="nh-subtopic-chip ${_nhLtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleLtSortMode()" title="Chuyển giữa xếp câu mới &amp; có mô hình lên trang đầu hoặc giữ nguyên thứ tự gốc trên Sheet">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip ${_nhLtSortMode === 'NEW_MODEL_FIRST' ? 'active' : ''}" onclick="toggleLtSortMode()" title="Chuyển giữa xếp câu mới &amp; có mô hình lên trang đầu hoặc giữ nguyên thứ tự gốc trên Sheet">
             <span>${ltSortBtnText}</span>
         </button>`;
     }
@@ -9532,18 +9915,18 @@ function renderSubtopicSummaryBar(){
         const dsNewCntDef = dsRows.filter(isNewPushedDsBatch).length;
         if (dsChNum) {
             const dsCnt = (DS_SUBTOPICS_BY_CHAPTER[dsTargetCh] || []).length;
-            html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${dsChNum}_ALL__')" title="Xem các câu Đúng/Sai Chương ${dsChNum} (${dsCnt} Chủ đề Mô hình thực tế)">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_C${dsChNum}_ALL__')" title="Xem các câu Đúng/Sai Chương ${dsChNum} (${dsCnt} Chủ đề Mô hình thực tế)">
                 <span>📋 ĐS Chương ${dsChNum} (${dsCnt} CĐ Mô hình)</span>
                 <span class="stc-count">${dsRows.length}</span>
             </button>`;
         } else {
-            html += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')" title="Xem các câu Đúng/Sai Chương 1–4 (${ALL_CANONICAL_DS_SUBTOPICS.length} Chủ đề Mô hình thực tế)">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip" onclick="selectSubtopicChip('__DS_ALL__')" title="Xem các câu Đúng/Sai Chương 1–4 (${ALL_CANONICAL_DS_SUBTOPICS.length} Chủ đề Mô hình thực tế)">
                 <span>📋 ĐS Ch.1–4 (${ALL_CANONICAL_DS_SUBTOPICS.length} CĐ Mô hình)</span>
                 <span class="stc-count">${dsRows.length}</span>
             </button>`;
         }
         if (dsNewCntDef > 0) {
-            html += `<button type="button" class="nh-subtopic-chip ${fmodValDsDef === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 106 câu Đúng/Sai mới đẩy đợt 18/11/2026 (VLXT-DS-VD28)">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip ${fmodValDsDef === 'NEW_DS_106' ? 'active' : ''}" onclick="selectSubtopicChip('__DS_NEW_106__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 106 câu Đúng/Sai mới đẩy đợt 18/11/2026 (VLXT-DS-VD28)">
                 <span>🆕 ${dsNewCntDef} Câu ĐS Vừa Đẩy (18/11)</span>
                 <span class="stc-count">${dsNewCntDef}</span>
             </button>`;
@@ -9554,25 +9937,27 @@ function renderSubtopicSummaryBar(){
         const isBtAct = ft === 'TN_BT' && !activeSub && !fmodValDefault;
         const btModelCntDef = btRows.filter(isQuestionHasModel).length;
         const btNewCntDef = btRows.filter(isNewPushedBtBatch).length;
-        html += `<button type="button" class="nh-subtopic-chip bt-chip ${isBtAct ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODE__')" title="Các câu TN Tính toán / Đồ thị tách riêng cho Luyện tập &amp; Đấu trường — hiện chưa chia chủ đề">
+        chipsHtml += `<button type="button" class="nh-subtopic-chip bt-chip ${isBtAct ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODE__')" title="Các câu TN Tính toán / Đồ thị tách riêng cho Luyện tập &amp; Đấu trường — hiện chưa chia chủ đề">
             <span>🧮 TN Tính toán / Đồ thị (Chưa chia chủ đề)</span>
             <span class="stc-count">${btRows.length}</span>
         </button>`;
         if (btModelCntDef > 0) {
-            html += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_MODEL_14' || fmodValDefault === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 14 câu Bài tập có Mô hình Canvas 60 FPS vừa đẩy">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_MODEL_14' || fmodValDefault === 'HAS_MODEL' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_MODEL_ONLY__')" style="border-color:rgba(14,165,233,0.45);color:#0284c7" title="Mở ngay 14 câu Bài tập có Mô hình Canvas 60 FPS vừa đẩy">
                 <span>🚀 ${btModelCntDef} Câu BT Có Mô Hình Canvas</span>
                 <span class="stc-count">${btModelCntDef}</span>
             </button>`;
         }
         if (btNewCntDef > 0) {
-            html += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 90 câu Bài tập vừa đẩy đợt 18/11/2026 (VLXT-TN220-BT)">
+            chipsHtml += `<button type="button" class="nh-subtopic-chip bt-chip ${fmodValDefault === 'NEW_BT_90' ? 'active' : ''}" onclick="selectSubtopicChip('__BT_NEW_90__')" style="border-color:rgba(16,185,129,0.45);color:#059669" title="Mở ngay 90 câu Bài tập vừa đẩy đợt 18/11/2026 (VLXT-TN220-BT)">
                 <span>🆕 ${btNewCntDef} Câu BT Vừa Đẩy (18/11)</span>
                 <span class="stc-count">${btNewCntDef}</span>
             </button>`;
         }
     }
-    html += '</div>';
-    bar.innerHTML = html;
+
+    const headLeft = `<span><i class="fa-solid fa-sitemap" style="color:#0f766e"></i> ${nhEsc(scopeTitle)} (${scopeRows.length} câu)</span>`;
+    const headMeta = `<span style="font-size:11.5px;color:var(--gray)">📘 ${ltRows.length} LT${dsTagText} · 🧮 ${btRows.length} Tính toán</span>${exportBtnHtml}${syncPillHtml}`;
+    bar.innerHTML = wrapSubtopicChips(headLeft, headMeta, chipsHtml, activeSub);
     bar.style.display = 'block';
 }
 
@@ -14506,13 +14891,21 @@ async function htResetDevice(deviceId) {
 window.CURRENT_PAGE_MODULE = 'nganhang';
 document.addEventListener('DOMContentLoaded', function() {
     handleUrlRouting('nganhang');
-    if (localStorage.getItem('adminLoggedIn') === '1') {
+    if (localStorage.getItem('adminLoggedIn') === '1' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
         switchTab('nganhang');
         if (typeof loadExamList === 'function') {
             setTimeout(() => { try { loadExamList(); } catch(e) {} }, 600);
         }
     }
     if (typeof renderUnifiedExamManager === 'function') renderUnifiedExamManager();
+    try {
+        const lastImpTab = localStorage.getItem('nh_active_imp_tab');
+        if (lastImpTab && typeof switchImportTab === 'function') switchImportTab(lastImpTab);
+        if (localStorage.getItem('nh_sidebar_full_collapsed') === 'true' && typeof toggleSidebarFull === 'function') {
+            toggleSidebarFull();
+        }
+        if (typeof updateAdvBadge === 'function') updateAdvBadge();
+    } catch(e) {}
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
