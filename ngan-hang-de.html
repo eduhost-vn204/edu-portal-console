@@ -176,11 +176,30 @@
         #nh-exam-inspector-overlay { display:none; position:fixed; inset:0; background:rgba(2,6,23,.72); z-index:2250; align-items:center; justify-content:center; padding:16px; }
         #nh-exam-inspector-overlay.show { display:flex; }
         #nh-exam-inspector-modal { background:var(--bg); color:var(--black); border:1.5px solid var(--border); border-radius:14px; width:min(1040px, 97vw); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,.35); }
+
+        /* MODAL CHỌN CÂU HỎI THAY THẾ CHO ĐỀ (QUESTION PICKER) */
+        #nh-question-picker-overlay { display:none; position:fixed; inset:0; background:rgba(2,6,23,.82); z-index:2300; align-items:center; justify-content:center; padding:16px; }
+        #nh-question-picker-overlay.show { display:flex; }
+        #nh-question-picker-modal { background:#0f172a; color:#f1f5f9; border:1.5px solid #1e3a5f; border-radius:14px; width:min(1080px, 97vw); max-height:94vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 56px rgba(0,0,0,.65); }
+        .nh-qp-head { background:#09111f; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #1e293b; flex-shrink:0; }
+        .nh-qp-toolbar { background:#0c1629; padding:12px 18px; border-bottom:1px solid #1e293b; display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
+        .nh-qp-filter-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .nh-qp-filter-group { display:flex; align-items:center; gap:6px; font-size:12px; color:#94a3b8; }
+        .nh-qp-filter-group select { padding:6px 10px; border-radius:7px; background:#162444; border:1px solid #2d4263; color:#f1f5f9; font-size:12px; font-family:inherit; cursor:pointer; }
+        .nh-qp-search-row { display:flex; align-items:center; gap:10px; }
+        .nh-qp-search-row input { flex:1; padding:8px 14px; border-radius:8px; background:#111e38; border:1px solid #2d4263; color:#ffffff; font-size:13.5px; font-family:inherit; }
+        .nh-qp-count-pill { padding:4px 10px; border-radius:6px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-size:12px; font-weight:700; white-space:nowrap; }
+        .nh-qp-list { padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; }
+        .nh-qp-card { background:#111a2e; border:1.5px solid #1e2d4a; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; transition:border-color 0.15s, background 0.15s; }
+        .nh-qp-card:hover { border-color:#38bdf8; background:#14223d; }
+        .nh-qp-card-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:11.5px; }
+        .nh-btn-pick-q { background:#0284c7; border:1px solid #38bdf8; color:#ffffff; font-size:12.5px; font-weight:800; padding:6px 14px; border-radius:7px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:background 0.15s, transform 0.1s; }
+        .nh-btn-pick-q:hover { background:#0369a1; transform:translateY(-1px); }
         .stat-card.clickable-card { cursor:pointer; transition:border-color .14s, transform .14s; }
         .stat-card.clickable-card:hover { border-color:var(--blue); transform:translateY(-1px); }
         .nh-q-text { font-size:15.5px; font-weight:600; line-height:1.68; color:#f1f5f9; margin-bottom:14px; word-break:break-word; }
         .nh-context { background:rgba(56,189,248,0.06); border-left:3.5px solid #0b84f3; padding:10px 14px; font-size:14px; margin-bottom:12px; border-radius:6px; color:#e0f2fe; line-height:1.6; }
-        
+
         /* Khung hiển thị trực quan VSTEP (Hình ảnh, Sơ đồ, Bảng, Motion Graphic) */
         .nh-visual-stage { margin:12px 0 16px; padding:12px; background:#0b1120; border:1px solid rgba(255,255,255,0.07); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
         .nh-img-thumb { max-height:240px; max-width:min(100%,520px); border-radius:8px; border:1px solid rgba(255,255,255,0.1); margin:4px 0; display:block; object-fit:contain; background:#fff; }
@@ -5756,21 +5775,21 @@ async function bulkUpdateBatch2k9(field, value) {
 function showExamFormModal(examId, defaultLoaiDe) {
     const overlay = document.getElementById('exam-form-modal-overlay');
     if (!overlay) return;
-    
+
     const errEl = document.getElementById('efm-error-msg');
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-    
+
     if (examId) {
         const ex = examListData.find(e => e.examId === examId) || { examId };
         document.getElementById('efm-title-text').textContent = 'Sửa thông tin đề thi: ' + examId;
         document.getElementById('efm-mode').value = 'edit';
-        
+
         const idInput = document.getElementById('efm-examid');
         idInput.value = examId;
         idInput.disabled = true;
         idInput.style.background = 'var(--bg2)';
         idInput.style.cursor = 'not-allowed';
-        
+
         document.getElementById('efm-tende').value = ex.tenDe || '';
         document.getElementById('efm-mota').value = ex.moTa || '';
         document.getElementById('efm-videourl').value = ex.videoUrl || extractAdminExamVideo(ex) || '';
@@ -5778,22 +5797,22 @@ function showExamFormModal(examId, defaultLoaiDe) {
         document.getElementById('efm-socau').value = ex.soCau || 28;
         document.getElementById('efm-lop').value = ex.lop || '12';
         document.getElementById('efm-loaide').value = ex.loaiDe || defaultLoaiDe || 'thithu';
-        
+
         const isHien = (ex.hienThi === undefined || ex.hienThi === true || String(ex.hienThi).toLowerCase() === 'hien' || String(ex.hienThi).toLowerCase() === 'true');
         document.getElementById('efm-hienthi').value = isHien ? 'hien' : 'an';
-        
+
         const isMo = (ex.trangThai === 'mo' || String(ex.trangThai).toLowerCase() === 'mo');
         document.getElementById('efm-trangthai').value = isMo ? 'mo' : 'khoa';
     } else {
         document.getElementById('efm-title-text').textContent = 'Tạo đề thi mới';
         document.getElementById('efm-mode').value = 'create';
-        
+
         const idInput = document.getElementById('efm-examid');
         idInput.value = '';
         idInput.disabled = false;
         idInput.style.background = 'var(--bg)';
         idInput.style.cursor = 'text';
-        
+
         document.getElementById('efm-tende').value = '';
         document.getElementById('efm-mota').value = '';
         document.getElementById('efm-videourl').value = '';
@@ -5804,7 +5823,7 @@ function showExamFormModal(examId, defaultLoaiDe) {
         document.getElementById('efm-hienthi').value = 'an'; // Mặc định ẩn an toàn
         document.getElementById('efm-trangthai').value = 'khoa'; // Mặc định khóa an toàn
     }
-    
+
     overlay.classList.add('show');
 }
 
@@ -5820,7 +5839,7 @@ async function submitExamFormModal() {
     const btn = document.getElementById('efm-save-btn');
     const errEl = document.getElementById('efm-error-msg');
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-    
+
     const examId = (document.getElementById('efm-examid').value || '').trim().replace(/\s+/g, '').toLowerCase();
     const tenDe = (document.getElementById('efm-tende').value || '').trim();
     const moTa = (document.getElementById('efm-mota').value || '').trim();
@@ -5831,7 +5850,7 @@ async function submitExamFormModal() {
     const loaiDe = document.getElementById('efm-loaide').value || 'thithu';
     const hienThi = document.getElementById('efm-hienthi').value || 'an';
     const trangThai = document.getElementById('efm-trangthai').value || 'khoa';
-    
+
     if (!examId) {
         if (errEl) { errEl.style.display = 'block'; errEl.textContent = '❌ Vui lòng nhập mã đề (examId).'; }
         else alert('Vui lòng nhập mã đề (examId).');
@@ -5842,10 +5861,10 @@ async function submitExamFormModal() {
         else alert('Vui lòng nhập tên đề thi.');
         return;
     }
-    
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-    
+
     const payload = {
         action: 'saveExam',
         examId,
@@ -5859,11 +5878,11 @@ async function submitExamFormModal() {
         hienThi,
         trangThai
     };
-    
+
     const res = await postAdminWriteJson(payload);
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
-    
+
     if (!res || res.ok !== true) {
         const errMsg = (res && res.msg) ? res.msg : 'Lỗi máy chủ không xác định';
         if (errEl) {
@@ -5873,7 +5892,7 @@ async function submitExamFormModal() {
         toast('<i class="fa-solid fa-triangle-exclamation"></i> Lưu đề THẤT BẠI: ' + errMsg, 'err');
         return; // Giữ nguyên form để Thầy không mất nội dung vừa gõ
     }
-    
+
     // Cập nhật ngay trong bộ nhớ local và render lại
     const localIdx = examListData.findIndex(e => e.examId === examId);
     if (localIdx >= 0) {
@@ -11121,7 +11140,7 @@ function mathMLToOMML(mathmlStr) {
         const doc = new DOMParser().parseFromString(mathmlStr, 'text/html');
         const mathNode = doc.querySelector('math');
         if (!mathNode) return '';
-        
+
         function toOmml(node) {
             if(node.nodeType === 3) {
                 const text = node.textContent.trim();
@@ -11163,10 +11182,10 @@ function wRun(text, fmt){
     if(fmt.sup) rpr+='<w:vertAlign w:val="superscript"/>';
     if(fmt.sub) rpr+='<w:vertAlign w:val="subscript"/>';
     const rprXml=rpr?('<w:rPr>'+rpr+'</w:rPr>'):'';
-    
+
     const parts = String(text).split(/(\$\$.+?\$\$|\$.+?\$)/g);
     let xml = '';
-    
+
     for (let p of parts) {
         if (!p) continue;
         if (p.startsWith('$$') && p.endsWith('$$')) {
@@ -14415,12 +14434,71 @@ async function htResetDevice(deviceId) {
                 <h3 id="nh-ei-title" style="margin:0;font-size:16px;font-weight:800;color:#ffffff">Chi tiết đề thi</h3>
                 <div id="nh-ei-sub" style="font-size:12px;color:#cbd5e1;margin-top:3px"></div>
             </div>
-            <div style="display:flex;gap:8px;align-items:center">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                 <button type="button" class="nh-ec-btn teal" id="nh-ei-docx-btn"><i class="fa-solid fa-file-word"></i> Xuất Word (.docx)</button>
+                <button type="button" class="nh-ec-btn" id="nh-btn-export-50pack" style="background:#059669;color:#fff;border-color:#10b981;" onclick="exportCampaign50PackJs()" title="Tải về file thptqg-50-exams-pack.js đã đồng bộ toàn bộ đề đã chỉnh sửa"><i class="fa-solid fa-download"></i> Tải Gói 50 Đề (.js)</button>
+                <button type="button" class="nh-ec-btn" style="background:rgba(239,68,68,0.18);color:#fca5a5;border-color:rgba(239,68,68,0.4);" onclick="resetExamToDefault(_currentInspectorExamId)" title="Đặt lại đề này về danh sách câu hỏi gốc"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>
                 <button type="button" onclick="closeManagedExamInspector()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
         <div id="nh-ei-body" style="padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+</div>
+
+<!-- MODAL CHỌN CÂU HỎI THAY THẾ CHO ĐỀ (QUESTION PICKER) -->
+<div id="nh-question-picker-overlay" onclick="if(event.target===this) closeQuestionPickerModal()">
+    <div id="nh-question-picker-modal">
+        <div class="nh-qp-head">
+            <div>
+                <h3 id="nh-qp-title" style="margin:0;font-size:16px;font-weight:800;color:#ffffff">🎯 Chọn câu hỏi thay thế</h3>
+                <div id="nh-qp-sub" style="font-size:12px;color:#cbd5e1;margin-top:3px"></div>
+            </div>
+            <button type="button" onclick="closeQuestionPickerModal()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nh-qp-toolbar">
+            <div class="nh-qp-filter-row">
+                <div class="nh-qp-filter-group">
+                    <label><i class="fa-solid fa-layer-group"></i> Chương:</label>
+                    <select id="nh-qp-filter-chuong" onchange="renderQuestionPickerList()">
+                        <option value="">Tất cả 4 chương</option>
+                        <option value="C1">Chương 1 — Vật lí nhiệt</option>
+                        <option value="C2">Chương 2 — Khí lí tưởng</option>
+                        <option value="C3">Chương 3 — Từ trường</option>
+                        <option value="C4">Chương 4 — Hạt nhân</option>
+                    </select>
+                </div>
+                <div class="nh-qp-filter-group">
+                    <label><i class="fa-solid fa-signal"></i> Mức độ:</label>
+                    <select id="nh-qp-filter-level" onchange="renderQuestionPickerList()">
+                        <option value="">Tất cả mức độ</option>
+                        <option value="NB">⭐ Nhận biết (Dễ / Khái niệm)</option>
+                        <option value="TH">⭐⭐ Thông hiểu (Chuẩn Bộ)</option>
+                        <option value="VD">⭐⭐⭐ Vận dụng</option>
+                        <option value="VDC">⭐⭐⭐⭐ Vận dụng cao</option>
+                    </select>
+                </div>
+                <div class="nh-qp-filter-group">
+                    <label><i class="fa-solid fa-cubes"></i> Mô hình:</label>
+                    <select id="nh-qp-filter-model" onchange="renderQuestionPickerList()">
+                        <option value="">Tất cả câu</option>
+                        <option value="has_model">🎨 Chỉ câu có Mô hình 60 FPS</option>
+                        <option value="no_model">📄 Câu thuần chữ / ảnh</option>
+                    </select>
+                </div>
+                <div class="nh-qp-filter-group">
+                    <label><i class="fa-solid fa-filter"></i> Trạng thái dùng:</label>
+                    <select id="nh-qp-filter-usage" onchange="renderQuestionPickerList()">
+                        <option value="unused_only">🟢 Chỉ câu CHƯA DÙNG trong 50 đề</option>
+                        <option value="all">Tất cả câu trong Ngân hàng</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nh-qp-search-row">
+                <input type="text" id="nh-qp-search-input" placeholder="🔍 Tìm kiếm theo nội dung câu hỏi, mã ID, công thức, lời giải..." oninput="debouncePickerSearch()">
+                <span id="nh-qp-result-count" class="nh-qp-count-pill">0 câu phù hợp</span>
+            </div>
+        </div>
+        <div id="nh-qp-list" class="nh-qp-list"></div>
     </div>
 </div>
 
@@ -14747,8 +14825,24 @@ function openManagedExamInspector(examId) {
         const tlnSvg = (!hasRegisteredModel(mId) && mId && window.VLXT_TLN_MODELS && window.VLXT_TLN_MODELS[mId])
             ? `<div style="margin:8px auto;max-width:640px">${window.VLXT_TLN_MODELS[mId].svg}</div>` : '';
         const subLine = q.subTopic ? `<span class="nh-badge b-subtopic">${nhEsc(q.subTopic)}</span>` : '';
-        const swapBtn = q.loai !== 'TLN'
-            ? `<button type="button" class="nh-ec-btn" onclick="swapManagedExamQuestion('${nhEsc(examId)}', ${idx})" title="Thay bằng câu Tinh khác cùng chủ đề/chương"><i class="fa-solid fa-arrows-rotate"></i> Đổi câu</button>` : '';
+        const isFirstInPart = (idx === 0 || idx === 18 || idx === 22);
+        const isLastInPart = (idx === 17 || idx === 21 || idx === 27);
+        const actionBtns = `
+            <div style="display:flex;gap:5px;align-items:center;margin-left:auto;flex-wrap:wrap">
+                <button type="button" class="nh-ec-btn" style="background:#0284c7;color:#fff;border-color:#0284c7" onclick="openQuestionPickerForExam('${nhEsc(examId)}', ${idx})" title="Mở danh sách Ngân hàng để tự tay chọn câu hỏi gán vào Câu ${idx+1}">
+                    <i class="fa-solid fa-hand-pointer"></i> Chọn câu
+                </button>
+                <button type="button" class="nh-ec-btn" onclick="swapManagedExamQuestion('${nhEsc(examId)}', ${idx})" title="Đổi ngẫu nhiên câu khác cùng chủ đề/chương">
+                    <i class="fa-solid fa-arrows-rotate"></i> Ngẫu nhiên
+                </button>
+                <button type="button" class="nh-ec-btn" style="padding:4px 7px" onclick="moveExamQuestion('${nhEsc(examId)}', ${idx}, -1)" title="Đổi vị trí lên trước" ${isFirstInPart ? 'disabled style="opacity:0.3;cursor:not-allowed"' : ''}>
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button type="button" class="nh-ec-btn" style="padding:4px 7px" onclick="moveExamQuestion('${nhEsc(examId)}', ${idx}, 1)" title="Đổi vị trí xuống sau" ${isLastInPart ? 'disabled style="opacity:0.3;cursor:not-allowed"' : ''}>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </button>
+            </div>
+        `;
         let ansInfo = '';
         if (q.loai === 'TN') {
             ansInfo = `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px;font-size:13px">` +
@@ -14765,12 +14859,12 @@ function openManagedExamInspector(examId) {
 
         secHtml.push(`<div class="nh-row" style="margin-bottom:0">
             <div class="nh-q-body">
-                <div class="nh-meta">
+                <div class="nh-meta" style="flex-wrap:wrap;gap:6px">
                     <span class="nh-badge b-${(q.loai||'tn').toLowerCase()}">Câu ${idx+1}</span>
                     ${subLine}
                     ${mId ? `<span class="nh-badge" style="background:rgba(14,165,233,0.14);color:#38bdf8;border:1px solid rgba(56,189,248,0.35)"><i class="fa-solid fa-cubes"></i> ${nhEsc(mId)}</span>` : ''}
-                    <span style="font-size:11px;color:#94a3b8;font-family:'DM Mono',monospace;margin-left:auto">${nhEsc(q.id)}</span>
-                    ${swapBtn}
+                    <span style="font-size:11px;color:#94a3b8;font-family:'DM Mono',monospace">${nhEsc(q.id)}</span>
+                    ${actionBtns}
                 </div>
                 ${q.deBaiChung ? `<div class="nh-context">${nhSafe(q.deBaiChung)}</div>` : ''}
                 ${tlnSvg}${slot}
@@ -14819,6 +14913,296 @@ function swapManagedExamQuestion(examId, qIdx) {
     renderUnifiedExamManager();
     openManagedExamInspector(examId);
     toast(`<i class="fa-solid fa-arrows-rotate"></i> Đã đổi Câu ${qIdx + 1}: ${oldId} → ${pick.id}`, 'ok');
+}
+
+let _pickerTarget = { examId: '', qIdx: -1, oldQId: '', part: 1, loai: 'TN', chuong: '' };
+let _pickerDebounceTimer = null;
+
+function moveExamQuestion(examId, qIdx, dir) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex || !ex.questionIds) return;
+    const targetIdx = qIdx + dir;
+    const getPart = (i) => i < 18 ? 1 : (i < 22 ? 2 : 3);
+    if (targetIdx < 0 || targetIdx >= ex.questionIds.length) return;
+    if (getPart(qIdx) !== getPart(targetIdx)) {
+        toast('Không thể chuyển câu sang Phần khác!', 'err');
+        return;
+    }
+    const newIds = ex.questionIds.slice();
+    const temp = newIds[qIdx];
+    newIds[qIdx] = newIds[targetIdx];
+    newIds[targetIdx] = temp;
+
+    const ov = getManagedExamOverrides();
+    ov[examId] = Object.assign({}, ov[examId], { questionIds: newIds });
+    saveManagedExamOverrides(ov);
+    registerCampaign50Usages();
+    openManagedExamInspector(examId);
+    toast(`<i class="fa-solid fa-arrows-up-down"></i> Đã đổi vị trí Câu ${qIdx + 1} ↔ Câu ${targetIdx + 1}`, 'ok');
+}
+
+function openQuestionPickerForExam(examId, qIdx) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex || !ex.questionIds[qIdx]) return;
+    const oldId = ex.questionIds[qIdx];
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+    const oldQ = bankById.get(oldId) || {};
+
+    const partNum = qIdx < 18 ? 1 : (qIdx < 22 ? 2 : 3);
+    const expectedLoai = partNum === 1 ? 'TN' : (partNum === 2 ? 'DS' : 'TLN');
+
+    _pickerTarget = {
+        examId,
+        qIdx,
+        oldQId: oldId,
+        part: partNum,
+        loai: expectedLoai,
+        chuong: oldQ.chuong || '',
+        subTopic: oldQ.subTopic || ''
+    };
+
+    const partLabel = expectedLoai === 'TN' ? 'Trắc nghiệm 4 lựa chọn' : (expectedLoai === 'DS' ? 'Đúng/Sai thực nghiệm' : 'Trả lời ngắn');
+    document.getElementById('nh-qp-title').innerHTML = `🎯 Chọn câu hỏi cho <span style="color:#38bdf8">Câu ${qIdx + 1}</span> (Phần ${partNum} · ${partLabel})`;
+    document.getElementById('nh-qp-sub').textContent = `Đề: ${ex.examId} (${ex.tenDe}) · Đang dùng: [${oldId}] ${oldQ.subTopic || oldQ.chuong || ''}`;
+
+    const chuongSel = document.getElementById('nh-qp-filter-chuong');
+    if (chuongSel) {
+        const chStr = String(oldQ.chuong || '');
+        if (chStr.includes('1') || chStr.toLowerCase().includes('nhiệt')) chuongSel.value = 'C1';
+        else if (chStr.includes('2') || chStr.toLowerCase().includes('khí')) chuongSel.value = 'C2';
+        else if (chStr.includes('3') || chStr.toLowerCase().includes('từ')) chuongSel.value = 'C3';
+        else if (chStr.includes('4') || chStr.toLowerCase().includes('hạt nhân')) chuongSel.value = 'C4';
+        else chuongSel.value = '';
+    }
+    const lvlSel = document.getElementById('nh-qp-filter-level');
+    if (lvlSel) lvlSel.value = '';
+    const modSel = document.getElementById('nh-qp-filter-model');
+    if (modSel) modSel.value = '';
+    const usgSel = document.getElementById('nh-qp-filter-usage');
+    if (usgSel) usgSel.value = 'unused_only';
+    const sInp = document.getElementById('nh-qp-search-input');
+    if (sInp) sInp.value = '';
+
+    renderQuestionPickerList();
+    document.getElementById('nh-question-picker-overlay').classList.add('show');
+}
+
+function closeQuestionPickerModal() {
+    document.getElementById('nh-question-picker-overlay').classList.remove('show');
+}
+
+function debouncePickerSearch() {
+    if (_pickerDebounceTimer) clearTimeout(_pickerDebounceTimer);
+    _pickerDebounceTimer = setTimeout(renderQuestionPickerList, 250);
+}
+
+function renderQuestionPickerList() {
+    const listEl = document.getElementById('nh-qp-list');
+    const countEl = document.getElementById('nh-qp-result-count');
+    if (!listEl) return;
+
+    const ex = getManagedExamsList().find(x => x.examId === _pickerTarget.examId);
+    const curExamUsedIds = new Set(ex ? ex.questionIds : []);
+
+    const chuongFilter = (document.getElementById('nh-qp-filter-chuong') || {}).value || '';
+    const levelFilter = (document.getElementById('nh-qp-filter-level') || {}).value || '';
+    const modelFilter = (document.getElementById('nh-qp-filter-model') || {}).value || '';
+    const usageFilter = (document.getElementById('nh-qp-filter-usage') || {}).value || 'unused_only';
+    const kw = ((document.getElementById('nh-qp-search-input') || {}).value || '').trim().toLowerCase();
+
+    const expectedLoai = _pickerTarget.loai;
+
+    const candidates = (Array.isArray(bankData) ? bankData : []).filter(q => {
+        if (!q || !q.id) return false;
+        if (q.loai !== expectedLoai) return false;
+        if (String(q.chatLuong || '').toLowerCase() !== 'tinh') return false;
+
+        if (q.id !== _pickerTarget.oldQId && curExamUsedIds.has(q.id)) return false;
+
+        if (chuongFilter) {
+            const chStr = String(q.chuong || '').toUpperCase();
+            if (chuongFilter === 'C1' && !chStr.includes('NHIỆT') && !chStr.includes('1')) return false;
+            if (chuongFilter === 'C2' && !chStr.includes('KHÍ') && !chStr.includes('2')) return false;
+            if (chuongFilter === 'C3' && !chStr.includes('TỪ') && !chStr.includes('3')) return false;
+            if (chuongFilter === 'C4' && !chStr.includes('HẠT NHÂN') && !chStr.includes('4')) return false;
+        }
+
+        if (levelFilter) {
+            const qLvl = String(q.mucDo || q.level || '').toUpperCase();
+            if (qLvl !== levelFilter) return false;
+        }
+
+        const hasM = isQuestionHasModel(q);
+        if (modelFilter === 'has_model' && !hasM) return false;
+        if (modelFilter === 'no_model' && hasM) return false;
+
+        if (usageFilter === 'unused_only' && !kw) {
+            if (q.id !== _pickerTarget.oldQId && isQuestionUsedInCampaign(q, 'THPTQG_2026')) return false;
+        }
+
+        if (kw) {
+            const fullTxt = (q.id + ' ' + (q.question || '') + ' ' + (q.subTopic || '') + ' ' + (q.baiHoc || '') + ' ' + (q.giaiThich || '')).toLowerCase();
+            if (!fullTxt.includes(kw)) return false;
+        }
+
+        return true;
+    });
+
+    if (countEl) countEl.textContent = `${candidates.length} câu phù hợp`;
+
+    if (!candidates.length) {
+        listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:#94a3b8;border:1.5px dashed #2d4263;border-radius:10px;">
+            <i class="fa-solid fa-filter-circle-xmark" style="font-size:24px;margin-bottom:10px;display:block;color:#38bdf8"></i>
+            Không tìm thấy câu hỏi nào phù hợp bộ lọc hiện tại.<br>
+            <span style="font-size:12px;color:#64748b">Thầy thử nới lỏng mức độ hoặc chuyển "Trạng thái dùng" sang "Tất cả câu" xem sao nhé!</span>
+        </div>`;
+        return;
+    }
+
+    const lvlRank = { 'NB': 1, 'TH': 2, 'VD': 3, 'VDC': 4 };
+    candidates.sort((a, b) => {
+        if (a.id === _pickerTarget.oldQId) return -1;
+        if (b.id === _pickerTarget.oldQId) return 1;
+        const ma = isQuestionHasModel(a) ? 0 : 1;
+        const mb = isQuestionHasModel(b) ? 0 : 1;
+        if (ma !== mb) return ma - mb;
+        const ra = lvlRank[String(a.mucDo || a.level || '').toUpperCase()] || 5;
+        const rb = lvlRank[String(b.mucDo || b.level || '').toUpperCase()] || 5;
+        return ra - rb;
+    });
+
+    const renderList = candidates.slice(0, 45);
+    const htmlCards = renderList.map(q => {
+        const isCurrent = (q.id === _pickerTarget.oldQId);
+        const mId = getQuestionModelId(q);
+        const lvl = String(q.mucDo || q.level || 'TH').toUpperCase();
+        const lvlBadge = lvl === 'NB'
+            ? `<span class="nh-badge" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3)">⭐ Nhận biết</span>`
+            : (lvl === 'TH'
+                ? `<span class="nh-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.3)">⭐⭐ Thông hiểu</span>`
+                : `<span class="nh-badge" style="background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)">⭐⭐⭐ ${lvl}</span>`);
+
+        const usages = typeof getQuestionCampaignUsages === 'function' ? getQuestionCampaignUsages(q.id) : [];
+        const campBadge = usages.length
+            ? `<span class="nh-badge" style="background:rgba(234,179,8,0.15);color:#facc15;border:1px solid rgba(234,179,8,0.3)">⚠️ ${nhEsc(usages[0].examId || 'Đề khác')}</span>`
+            : `<span class="nh-badge" style="background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.25)">🟢 Chưa dùng</span>`;
+
+        const modelBadge = mId
+            ? `<span class="nh-badge" style="background:rgba(14,165,233,0.2);color:#38bdf8;border:1px solid #38bdf8"><i class="fa-solid fa-cubes"></i> 60 FPS (${nhEsc(mId)})</span>`
+            : '';
+
+        let ansPreview = '';
+        if (q.loai === 'TN') {
+            ansPreview = `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:6px;font-size:12px">` +
+                ['A','B','C','D'].map(L => `<div style="padding:4px 8px;border-radius:6px;border:1px solid ${String(q.correct).toUpperCase()===L?'#10b981':'#2d4263'};background:${String(q.correct).toUpperCase()===L?'rgba(16,185,129,0.14)':'transparent'}"><b>${L}.</b> ${nhSafe(q['opt'+L]||'')}</div>`).join('') +
+                `</div>`;
+        } else if (q.loai === 'DS') {
+            const cs = String(q.correct || '').toUpperCase();
+            ansPreview = `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin-top:6px;font-size:12px">` +
+                ['a','b','c','d'].map((l, si) => `<div style="padding:4px 8px;border-radius:6px;border:1px solid #2d4263"><b>${l})</b> ${nhSafe(q['opt'+l.toUpperCase()]||'')} — <strong style="color:${cs[si]==='Đ'?'#10b981':'#ef4444'}">${cs[si]==='Đ'?'Đúng':'Sai'}</strong></div>`).join('') +
+                `</div>`;
+        } else {
+            ansPreview = `<div style="margin-top:5px;font-size:12.5px;color:#10b981"><b>Đáp án:</b> ${nhEsc(q.correct || '')}</div>`;
+        }
+
+        const slot = (mId && hasRegisteredModel(mId) && !/data-model-id=/i.test(String(q.question || '')))
+            ? `<div class="vlxt-model-slot" data-model-id="${nhEsc(mId)}" style="max-height:160px;margin:6px 0"></div>` : '';
+
+        return `<div class="nh-qp-card" style="${isCurrent ? 'border-color:#10b981;background:rgba(16,185,129,0.06)' : ''}">
+            <div class="nh-qp-card-meta">
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                    <span style="font-family:'DM Mono',monospace;font-weight:700;color:#38bdf8">${nhEsc(q.id)}</span>
+                    <span class="nh-badge b-subtopic">${nhEsc(q.subTopic || q.chuong || '')}</span>
+                    ${lvlBadge}
+                    ${modelBadge}
+                    ${campBadge}
+                    ${isCurrent ? '<span class="nh-badge" style="background:#10b981;color:#fff">ĐANG DÙNG TẠI CÂU NÀY</span>' : ''}
+                </div>
+                <div>
+                    <button type="button" class="nh-btn-pick-q" onclick="applyPickedQuestionToExam('${nhEsc(_pickerTarget.examId)}', ${_pickerTarget.qIdx}, '${nhEsc(q.id)}')">
+                        <i class="fa-solid fa-check"></i> ${isCurrent ? 'Giữ câu này' : `Chọn cho Câu ${_pickerTarget.qIdx + 1}`}
+                    </button>
+                </div>
+            </div>
+            ${q.deBaiChung ? `<div class="nh-context" style="margin:4px 0;padding:6px 10px;font-size:12.5px">${nhSafe(q.deBaiChung)}</div>` : ''}
+            ${slot}
+            <div class="nh-q-text" style="font-size:13.5px;margin-bottom:6px;line-height:1.55">${nhSafe(q.question)}</div>
+            ${ansPreview}
+        </div>`;
+    }).join('');
+
+    listEl.innerHTML = htmlCards;
+    mountVlxtModelsWithCaptions(listEl, { compact: true });
+    if (window.renderMathInElement) {
+        try { renderMathInElement(listEl, { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }], throwOnError: false }); } catch(e) {}
+    }
+}
+
+function applyPickedQuestionToExam(examId, qIdx, qId) {
+    const ex = getManagedExamsList().find(x => x.examId === examId);
+    if (!ex || !ex.questionIds) return;
+    const newIds = ex.questionIds.slice();
+    newIds[qIdx] = qId;
+
+    const ov = getManagedExamOverrides();
+    ov[examId] = Object.assign({}, ov[examId], { questionIds: newIds });
+    saveManagedExamOverrides(ov);
+    registerCampaign50Usages();
+    renderUnifiedExamManager();
+    openManagedExamInspector(examId);
+    closeQuestionPickerModal();
+    toast(`<i class="fa-solid fa-circle-check"></i> Đã gán câu [${qId}] vào Câu ${qIdx + 1} của ${examId}`, 'ok');
+}
+
+function resetExamToDefault(examId) {
+    if (!confirm(`Thầy có chắc chắn muốn đặt lại đề ${examId} về danh sách câu hỏi gốc ban đầu không?`)) return;
+    const ov = getManagedExamOverrides();
+    delete ov[examId];
+    saveManagedExamOverrides(ov);
+    registerCampaign50Usages();
+    renderUnifiedExamManager();
+    openManagedExamInspector(examId);
+    toast(`<i class="fa-solid fa-rotate-left"></i> Đã đặt lại ${examId} về câu hỏi gốc`, 'ok');
+}
+
+function exportCampaign50PackJs() {
+    const list = getManagedExamsList().filter(x => x.isPack50);
+    const bankById = new Map((Array.isArray(bankData) ? bankData : []).map(q => [q.id, q]));
+
+    const exportArray = list.map(ex => {
+        const questions = ex.questionIds.map(id => bankById.get(id)).filter(Boolean);
+        const models = questions.filter(isQuestionHasModel);
+        const firstM = models.length ? getQuestionModelId(models[0]) : '';
+        return {
+            examNumber: ex.examNumber,
+            examId: ex.examId,
+            tenDe: ex.tenDe,
+            purpose: ex.purpose,
+            purposeLabel: ex.purposeLabel,
+            accessTier: ex.accessTier,
+            thoiGian: ex.thoiGian,
+            soCau: ex.soCau,
+            lop: 12,
+            trangThai: ex.trangThai,
+            hienThi: ex.hienThi,
+            campaign: ex.campaign || 'THPTQG_2026',
+            p1Count: 18,
+            p2Count: 4,
+            p3Count: 6,
+            modelCount: models.length,
+            p1ModelCount: questions.slice(0, 18).filter(isQuestionHasModel).length,
+            p2ModelCount: questions.slice(18, 22).filter(isQuestionHasModel).length,
+            p3ModelCount: questions.slice(22, 28).filter(isQuestionHasModel).length,
+            firstModelId: firstM,
+            jsonFile: `data/thptqg-exams/de-${String(ex.examNumber).padStart(2, '0')}.json`,
+            questionIds: ex.questionIds
+        };
+    });
+
+    const fileContent = `// Chiến dịch 50 Đề Chuẩn THPTQG 2026 (1.400 câu không trùng · Đầy đủ 3 Phần & Mô hình Canvas 60 FPS)\nwindow.VLXT_THPTQG_50_EXAMS = ${JSON.stringify(exportArray, null, 2)};\n`;
+    const blob = new Blob([fileContent], { type: 'application/javascript;charset=utf-8' });
+    downloadBlob(blob, 'thptqg-50-exams-pack.js');
+    toast('<i class="fa-solid fa-file-code"></i> Đã tải về gói thptqg-50-exams-pack.js đã đồng bộ toàn bộ câu hỏi Thầy chọn!', 'ok');
 }
 
 async function exportManagedExamDocx(examId) {
