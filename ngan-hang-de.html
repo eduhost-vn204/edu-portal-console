@@ -85,8 +85,8 @@
         .tab-content.active { display:block; }
 
         /* ── Ngân hàng câu hỏi ── */
-        .nh-grid { display:grid; grid-template-columns:380px minmax(0,1fr); gap:24px; align-items:start; }
-        @media(max-width:1000px){ .nh-grid{grid-template-columns:1fr;} }
+        .nh-grid { display:grid; grid-template-columns:330px minmax(0,1fr); gap:18px; align-items:start; }
+        @media(max-width:1040px){ .nh-grid{grid-template-columns:1fr;} }
         .nh-card { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px; }
         .nh-card h3 { font-size:15px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
         .nh-filter-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
@@ -177,25 +177,30 @@
         .nh-grid.sidebar-collapsed { grid-template-columns:1fr; }
         .nh-grid.sidebar-collapsed #nh-sidebar-col { display:none; }
 
-        /* Compact & Sleek Filter Box */
-        .nh-filter-box { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,0.03); }
-        .nh-filter-main-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-        .nh-search-wrap { flex:1.4; min-width:200px; position:relative; display:flex; align-items:center; }
-        .nh-search-wrap i { position:absolute; left:12px; color:var(--gray); font-size:13px; pointer-events:none; }
-        .nh-search-wrap input { width:100%; padding:8px 12px 8px 34px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; }
+        /* Compact & Structured 2-Row Filter Box (Chuẩn EdTech, không gãy dòng) */
+        .nh-filter-box { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:8px; }
+        .nh-filter-row-top { display:flex; gap:8px; align-items:center; }
+        .nh-search-wrap { flex:1; min-width:0; position:relative; display:flex; align-items:center; }
+        .nh-search-wrap i.fa-magnifying-glass { position:absolute; left:12px; color:var(--gray); font-size:13px; pointer-events:none; }
+        .nh-search-wrap input { width:100%; padding:8px 32px 8px 34px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; transition:border-color .14s; }
         .nh-search-wrap input:focus { border-color:var(--blue); outline:none; background:var(--bg); }
-        .nh-filter-main-bar select, .nh-adv-grid select { padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; font-size:12.5px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; cursor:pointer; }
-        .nh-filter-main-bar select:focus, .nh-adv-grid select:focus { border-color:var(--blue); outline:none; }
-        .btn-toggle-adv { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all .14s; }
+        .nh-search-clear { position:absolute; right:8px; border:none; background:transparent; color:var(--gray); cursor:pointer; font-size:16px; line-height:1; padding:2px; display:none; }
+        .nh-search-clear:hover { color:var(--black); }
+        .btn-toggle-adv { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--black); font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all .14s; flex-shrink:0; }
         .btn-toggle-adv:hover { border-color:var(--blue); }
         .btn-toggle-adv.active { border-color:var(--blue); background:rgba(11,132,243,0.08); color:var(--blue); }
         .btn-toggle-adv i.fa-chevron-down { transition:transform .2s ease; font-size:11px; }
         .btn-toggle-adv.expanded i.fa-chevron-down { transform:rotate(180deg); }
         .adv-filter-count { font-size:11px; font-weight:800; padding:1px 6px; border-radius:999px; background:var(--blue); color:#fff; }
-        .btn-filter-reset { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--gray); cursor:pointer; transition:all .14s; }
+        .btn-filter-reset { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--bg2); color:var(--gray); cursor:pointer; font-size:12.5px; font-weight:700; white-space:nowrap; transition:all .14s; flex-shrink:0; }
         .btn-filter-reset:hover { color:var(--red); border-color:var(--red); }
 
-        .nh-adv-drawer { margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); }
+        .nh-filter-row-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; }
+        @media(max-width:960px){ .nh-filter-row-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+        .nh-filter-field select, .nh-adv-grid select { width:100%; padding:8px 10px; border:1.5px solid var(--border); border-radius:8px; font-size:12.5px; background:var(--bg2); color:var(--black); font-family:'Inter',sans-serif; cursor:pointer; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+        .nh-filter-field select:focus, .nh-adv-grid select:focus { border-color:var(--blue); outline:none; }
+
+        .nh-adv-drawer { margin-top:4px; padding-top:10px; border-top:1px dashed var(--border); }
         .nh-adv-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:8px; }
         .nh-adv-field { display:flex; flex-direction:column; gap:4px; }
         .nh-adv-field label { font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.3px; }
@@ -943,9 +948,12 @@
         body.dark .nh-filter-box { background:#161b22; border-color:#30363d; }
         body.dark .nh-search-wrap input { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark .nh-search-wrap input:focus { background:#161b22; border-color:#58a6ff; }
-        body.dark .nh-filter-main-bar select, body.dark .nh-adv-grid select { background:#0d1117; border-color:#30363d; color:#e6edf3; }
+        body.dark .nh-search-clear { color:#8b949e; }
+        body.dark .nh-search-clear:hover { color:#e6edf3; }
+        body.dark .nh-filter-field select, body.dark .nh-adv-grid select { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark .btn-toggle-adv { background:#0d1117; border-color:#30363d; color:#e6edf3; }
         body.dark .btn-filter-reset { background:#0d1117; border-color:#30363d; color:#8b949e; }
+        body.dark .btn-filter-reset:hover { border-color:#f85149; color:#f85149; }
         body.dark .nh-import-tabs { background:#0d1117; border-color:#30363d; }
         body.dark .nh-imp-tab.active { background:#21262d; color:#e6edf3; }
         body.dark .nh-importer-guide-content { background:#0d1117; border-color:#30363d; }
@@ -1924,33 +1932,14 @@
         <!-- CỘT PHẢI: KHO CÂU HỎI & BỘ LỌC TINH GỌN (COMPACT FILTER BAR) -->
         <div id="nh-content-col">
             <div class="nh-filter-box">
-                <!-- Thanh lọc chính 1 dòng gọn gàng -->
-                <div class="nh-filter-main-bar">
+                <!-- Hàng 1: Ô tìm kiếm toàn diện + Nút Bộ lọc khác + Đặt lại -->
+                <div class="nh-filter-row-top">
                     <div class="nh-search-wrap">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input id="nh-f-search" placeholder="Tìm theo mã, nội dung, MH-STAGING, MH-TN50..." oninput="bankSearchChanged()">
+                        <input id="nh-f-search" placeholder="Tìm theo mã câu, từ khóa nội dung, MH-STAGING, MH-TN50..." oninput="bankSearchChanged()">
+                        <button type="button" class="nh-search-clear" id="nh-search-clear" onclick="clearBankSearch()" title="Xóa từ khóa tìm kiếm">&times;</button>
                     </div>
-                    <select id="nh-f-chuong" onchange="onBankChuongFilterChanged()">
-                        <option value="">Tất cả chương</option>
-                    </select>
-                    <select id="nh-f-bai" onchange="onBankBaiFilterChanged()">
-                        <option value="">Tất cả bài</option>
-                    </select>
-                    <select id="nh-f-tntype" onchange="onBankTnTypeFilterChanged()">
-                        <option value="">Tất cả nhóm câu</option>
-                        <option value="TN_LT">📘 TN Lý thuyết (Phần I)</option>
-                        <option value="TN_BT">🧮 TN Tính toán (Phần I)</option>
-                        <option value="DS">📋 Đúng / Sai (Phần II · 200 câu)</option>
-                        <option value="TLN">✏️ Trả lời ngắn (Phần III)</option>
-                    </select>
-                    <select id="nh-f-mucdo" onchange="bankFiltersChanged()">
-                        <option value="">Mọi mức độ</option>
-                        <option value="NB">Nhận biết</option>
-                        <option value="TH">Thông hiểu</option>
-                        <option value="VD">Vận dụng</option>
-                        <option value="VDC">Vận dụng cao</option>
-                    </select>
-                    <button type="button" class="btn-toggle-adv" id="btn-toggle-adv" onclick="toggleAdvFilters()" title="Mở thêm các bộ lọc chuyên sâu (Dạng bài, Chủ đề, Chiến dịch, Mô hình...)">
+                    <button type="button" class="btn-toggle-adv" id="btn-toggle-adv" onclick="toggleAdvFilters()" title="Mở thêm các bộ lọc chuyên sâu (Chủ đề con, Dạng bài, Chiến dịch, Mô hình...)">
                         <i class="fa-solid fa-sliders"></i>
                         <span>Bộ lọc khác</span>
                         <span id="adv-filter-badge" class="adv-filter-count" style="display:none">0</span>
@@ -1958,7 +1947,40 @@
                     </button>
                     <button type="button" class="btn-filter-reset" onclick="resetAllBankFilters()" title="Đặt lại tất cả bộ lọc về mặc định">
                         <i class="fa-solid fa-rotate-left"></i>
+                        <span>Đặt lại</span>
                     </button>
+                </div>
+
+                <!-- Hàng 2: Lưới 4 bộ lọc chính phân bố đều 4 cột đối xứng -->
+                <div class="nh-filter-row-grid">
+                    <div class="nh-filter-field">
+                        <select id="nh-f-chuong" onchange="onBankChuongFilterChanged()">
+                            <option value="">Tất cả chương</option>
+                        </select>
+                    </div>
+                    <div class="nh-filter-field">
+                        <select id="nh-f-bai" onchange="onBankBaiFilterChanged()">
+                            <option value="">Tất cả bài</option>
+                        </select>
+                    </div>
+                    <div class="nh-filter-field">
+                        <select id="nh-f-tntype" onchange="onBankTnTypeFilterChanged()">
+                            <option value="">Tất cả nhóm câu</option>
+                            <option value="TN_LT">📘 TN Lý thuyết (Phần I)</option>
+                            <option value="TN_BT">🧮 TN Tính toán (Phần I)</option>
+                            <option value="DS">📋 Đúng / Sai (Phần II · 200 câu)</option>
+                            <option value="TLN">✏️ Trả lời ngắn (Phần III)</option>
+                        </select>
+                    </div>
+                    <div class="nh-filter-field">
+                        <select id="nh-f-mucdo" onchange="bankFiltersChanged()">
+                            <option value="">Mọi mức độ</option>
+                            <option value="NB">Nhận biết</option>
+                            <option value="TH">Thông hiểu</option>
+                            <option value="VD">Vận dụng</option>
+                            <option value="VDC">Vận dụng cao</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Ngăn kéo bộ lọc nâng cao (thu gọn mặc định để chống rối mắt) -->
@@ -2043,6 +2065,7 @@
                             </select>
                         </div>
                     </div>
+                    <div id="nh-subtopic-override-export-zone" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);display:none;justify-content:space-between;align-items:center;font-size:12px"></div>
                 </div>
             </div>
             <!-- THANH THỐNG KÊ CHỦ ĐỀ CON (PHẲNG, SẮC NÉT, KHÔNG AI GLOW) -->
@@ -9617,6 +9640,8 @@ function resetAllBankFilters() {
     setVal('nh-f-model', '');
     setVal('nh-f-loai', '');
     setVal('nh-f-search', '');
+    const clearBtn = document.getElementById('nh-search-clear');
+    if (clearBtn) clearBtn.style.display = 'none';
     if (typeof updateBankBaiOptions === 'function') updateBankBaiOptions('', '');
     if (typeof updateBankSubtopicOptions === 'function') updateBankSubtopicOptions('', '');
     updateAdvBadge();
@@ -9672,9 +9697,17 @@ function renderSubtopicSummaryBar(){
     };
 
     const customEditCount = Object.keys(getCustomSubtopicOverrides()).length;
-    const exportBtnHtml = customEditCount > 0
-        ? ` <button type="button" onclick="exportManualSubtopicOverrides()" style="padding:3px 9px;border-radius:6px;border:1px solid rgba(56,189,248,0.45);background:rgba(14,116,144,0.18);color:#38bdf8;font-size:11.5px;font-weight:700;cursor:pointer;margin-left:8px" title="Xuất danh sách các câu Thầy vừa chỉnh tay ra file JSON để lưu vĩnh viễn vào mã nguồn"><i class="fa-solid fa-file-export"></i> Xuất ${customEditCount} câu chỉnh tay (.json)</button>`
-        : '';
+    const expZone = document.getElementById('nh-subtopic-override-export-zone');
+    if (expZone) {
+        if (customEditCount > 0) {
+            expZone.style.display = 'flex';
+            expZone.innerHTML = `<span><i class="fa-solid fa-pen-to-square" style="color:#0284c7"></i> Đang có <b>${customEditCount}</b> câu Thầy đã chỉnh phân loại thủ công</span>
+                <button type="button" onclick="exportManualSubtopicOverrides()" style="padding:4px 10px;border-radius:6px;border:1px solid rgba(56,189,248,0.45);background:rgba(14,116,144,0.18);color:#38bdf8;font-size:11.5px;font-weight:700;cursor:pointer" title="Xuất danh sách các câu Thầy vừa chỉnh tay ra file JSON để lưu vĩnh viễn vào mã nguồn"><i class="fa-solid fa-file-export"></i> Xuất ${customEditCount} câu chỉnh tay (.json)</button>`;
+        } else {
+            expZone.style.display = 'none';
+        }
+    }
+    const exportBtnHtml = '';
     const syncPillHtml = `<span id="nh-sync-status-pill">${typeof getBankSyncStatusHtml==='function'?getBankSyncStatusHtml():''}</span>`;
 
     if (ft === 'TLN') {
@@ -10136,8 +10169,23 @@ function bankFiltersChanged(){
     renderBankList();
 }
 function bankSearchChanged(){
+    const input = document.getElementById('nh-f-search');
+    const clearBtn = document.getElementById('nh-search-clear');
+    if (clearBtn && input) {
+        clearBtn.style.display = input.value.trim() ? 'block' : 'none';
+    }
     clearTimeout(bankSearchTimer);
     bankSearchTimer=setTimeout(bankFiltersChanged,180);
+}
+function clearBankSearch(){
+    const input = document.getElementById('nh-f-search');
+    const clearBtn = document.getElementById('nh-search-clear');
+    if (input) {
+        input.value = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        bankFiltersChanged();
+        input.focus();
+    }
 }
 function bankShowMore(){
     bankVisibleCount+=NH_PAGE_SIZE;
