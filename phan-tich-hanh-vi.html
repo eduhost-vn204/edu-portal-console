@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Hành Vi, Trải Nghiệm Sớm &amp; Báo Lỗi | Admin VLXT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #ffffff; --bg2: #f8fafc; --bg3: #f1f5f9;
+            --text: #0f172a; --sub: #475569; --muted: #64748b;
+            --border: #e2e8f0; --primary: #0b84f3; --green: #059669;
+            --gold: #d97706; --red: #dc2626; --purple: #7c3aed;
+        }
+        body.dark {
+            --bg: #0f172a; --bg2: #020617; --bg3: #1e293b;
+            --text: #f8fafc; --sub: #cbd5e1; --muted: #94a3b8;
+            --border: #334155;
+        }
+        body {
+            background: var(--bg2);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--primary); text-decoration: none; }
+
+        /* ─── FIXED NAVBAR (60px) ─── */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 60px; z-index: 1200;
+            background: var(--bg); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; gap: 12px;
+        }
+        .nav-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .btn-menu {
+            width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--border);
+            background: var(--bg2); color: var(--text); cursor: pointer; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+        }
+        .nav-title { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nav-badge {
+            font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+            background: #e0f2fe; color: #0369a1; white-space: nowrap;
+        }
+        body.dark .nav-badge { background: rgba(14,165,233,0.18); color: #38bdf8; }
+        .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .btn-pill {
+            padding: 8px 13px; border-radius: 9px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text); font-size: 12.5px; font-weight: 700;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-pill.primary { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+        .btn-pill.success { background: var(--green); border-color: var(--green); color: #ffffff; }
+        .btn-pill:hover { opacity: 0.9; }
+
+        /* ─── DRAWER MENU ─── */
+        .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 1300; }
+        .drawer-overlay.open { display: block; }
+        .drawer {
+            position: fixed; top: 0; left: -290px; bottom: 0; width: 276px; z-index: 1400;
+            background: var(--bg); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; transition: left 0.2s ease;
+        }
+        .drawer.open { left: 0; }
+        .drawer-head { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 14px; }
+        .drawer-close { border: none; background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; }
+        .drawer-nav { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+        .drawer-item {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 9px;
+            color: var(--sub); font-size: 13.5px; font-weight: 600;
+        }
+        .drawer-item:hover { background: var(--bg3); color: var(--text); }
+        .drawer-item.active { background: #eff6ff; color: var(--primary); font-weight: 700; }
+        body.dark .drawer-item.active { background: rgba(14,165,233,0.16); color: #38bdf8; }
+
+        /* ─── PAGE CONTAINER (An toàn 60px navbar) ─── */
+        .page { max-width: 1380px; margin: 0 auto; padding: 84px 20px 56px; }
+        @media (max-width: 768px) {
+            .page { padding: 76px 12px 48px; }
+            .nav-badge { display: none; }
+        }
+
+        /* ─── LOGIN OVERLAY ─── */
+        .login-overlay {
+            position: fixed; inset: 0; z-index: 2000; background: var(--bg2);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .login-card {
+            width: 100%; max-width: 400px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 16px; padding: 28px; box-shadow: 0 8px 28px rgba(15,23,42,0.08);
+        }
+        .login-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+        .login-card p { font-size: 13px; color: var(--sub); margin-bottom: 16px; line-height: 1.5; }
+        .inp {
+            width: 100%; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border);
+            background: var(--bg2); color: var(--text); font-size: 13.5px; font-family: inherit;
+        }
+        .inp:focus { outline: none; border-color: var(--primary); background: var(--bg); }
+
+        /* ─── CARDS & GRIDS ─── */
+        .card {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+            padding: 18px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+        }
+        .campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; align-items: end; }
+        .field-lbl { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: 14px; margin-bottom: 18px; }
+        .kpi-card {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+            padding: 16px; display: flex; flex-direction: column; gap: 6px;
+        }
+        .kpi-top { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--muted); }
+        .kpi-val { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+        .kpi-sub { font-size: 12px; color: var(--sub); }
+
+        .toolbar {
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+            gap: 10px; margin-bottom: 14px;
+        }
+        .pill-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .tf-pill {
+            padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--sub); font-size: 12.5px; font-weight: 700; cursor: pointer;
+        }
+        .tf-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+        .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 18px; overflow-x: auto; padding-bottom: 8px; }
+        .tab-btn {
+            padding: 9px 14px; border-radius: 10px; border: 1px solid transparent;
+            background: transparent; color: var(--sub); font-size: 13px; font-weight: 700;
+            cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px;
+        }
+        .tab-btn.active { background: #eff6ff; color: var(--primary); border-color: #bfdbfe; }
+        body.dark .tab-btn.active { background: rgba(14,165,233,0.16); color: #38bdf8; border-color: rgba(56,189,248,0.35); }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        .charts-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-bottom: 18px; }
+        .chart-box { position: relative; height: 290px; width: 100%; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+        th { font-size: 11.5px; font-weight: 800; color: var(--muted); text-transform: uppercase; background: var(--bg2); }
+        tr:hover td { background: var(--bg2); }
+
+        .tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        .tag-blue { background: #e0f2fe; color: #0369a1; }
+        .tag-green { background: #dcfce7; color: #15803d; }
+        .tag-amber { background: #fef3c7; color: #b45309; }
+        .tag-red { background: #fee2e2; color: #b91c1c; }
+        .tag-gray { background: var(--bg3); color: var(--sub); }
+
+        .split-student { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 16px; }
+        @media (max-width: 900px) { .split-student { grid-template-columns: 1fr; } }
+        .student-row { padding: 11px 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .student-row:hover, .student-row.active { background: #eff6ff; }
+        body.dark .student-row:hover, body.dark .student-row.active { background: rgba(14,165,233,0.14); }
+        .timeline-item { padding: 8px 10px; border-left: 3px solid var(--primary); background: var(--bg2); border-radius: 6px; margin-bottom: 8px; font-size: 12.5px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <button type="button" class="btn-menu" onclick="toggleDrawer(true)" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+            <a href="index.html" class="nav-title" style="color:var(--text)">📊 Trung Tâm Phân Tích Hành Vi &amp; VIP</a>
+            <span class="nav-badge" id="nav-campaign-status">Chiến dịch: Đang kiểm tra...</span>
+        </div>
+        <div class="nav-right">
+            <button type="button" class="btn-pill" onclick="refreshAllData()" title="Tải lại toàn bộ dữ liệu telemetry"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+            <button type="button" class="btn-pill success" onclick="exportAnalyticsExcel()"><i class="fa-solid fa-file-excel"></i> Xuất Excel</button>
+            <button type="button" class="btn-pill" onclick="toggleTheme()" title="Sáng / Tối"><i class="fa-solid fa-circle-half-stroke"></i></button>
+            <a href="index.html" class="btn-pill"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer(false)"></div>
+    <aside class="drawer" id="drawer">
+        <div class="drawer-head">
+            <span>MENU QUẢN TRỊ ADMIN</span>
+            <button type="button" class="drawer-close" onclick="toggleDrawer(false)">✕</button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="index.html" class="drawer-item"><i class="fa-solid fa-gauge-high"></i><span>Tổng quan Dashboard</span></a>
+            <a href="phan-tich-hanh-vi.html" class="drawer-item active"><i class="fa-solid fa-chart-line"></i><span>Phân tích hành vi &amp; VIP</span></a>
+            <a href="quan-ly-bai-hoc.html" class="drawer-item"><i class="fa-solid fa-book-open"></i><span>Quản lý bài học</span></a>
+            <a href="quan-ly-live.html" class="drawer-item"><i class="fa-solid fa-satellite-dish"></i><span>Live &amp; Xem lại</span></a>
+            <a href="pham-vi-giang-day.html" class="drawer-item"><i class="fa-solid fa-chalkboard-user"></i><span>Phạm vi giảng dạy</span></a>
+            <a href="phong-thi-thu.html" class="drawer-item"><i class="fa-solid fa-clipboard-check"></i><span>Phòng thi thử</span></a>
+            <a href="phong-kiem-tra.html" class="drawer-item"><i class="fa-solid fa-file-pen"></i><span>Phòng kiểm tra</span></a>
+            <a href="ngan-hang-de.html" class="drawer-item"><i class="fa-solid fa-database"></i><span>Ngân hàng đề</span></a>
+            <a href="ket-qua-thi.html" class="drawer-item"><i class="fa-solid fa-trophy"></i><span>Kết quả thi</span></a>
+            <a href="tai-khoan-hoc-sinh.html" class="drawer-item"><i class="fa-solid fa-users"></i><span>Tài khoản HS</span></a>
+            <a href="ho-tro-hoc-tap.html" class="drawer-item"><i class="fa-solid fa-comment-dots"></i><span>Hỗ trợ HS &amp; Zalo</span></a>
+        </nav>
+    </aside>
+
+    <!-- LOGIN OVERLAY (CHUNG ADMIN_KEY) -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card">
+            <h2>🔐 Đăng Nhập Quản Trị</h2>
+            <p>Nhập khóa quản trị Admin để xem hành vi học sinh, danh sách giữ suất VIP và hộp thư báo lỗi.</p>
+            <input type="password" id="adm-key-input" class="inp" placeholder="Nhập Admin Key..." onkeydown="if(event.key==='Enter')submitAdminLogin()" style="margin-bottom:10px">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);margin-bottom:12px">
+                <input type="checkbox" id="adm-key-rem" checked> Ghi nhớ trên trình duyệt này
+            </label>
+            <button type="button" class="btn-pill primary" style="width:100%;justify-content:center;padding:11px" onclick="submitAdminLogin()">Đăng Nhập Admin</button>
+            <div id="adm-login-err" style="color:var(--red);font-size:12.5px;margin-top:8px;min-height:18px"></div>
+        </div>
+    </div>
+
+    <main class="page">
+        <!-- ═══ 1. ĐIỀU KHIỂN CHIẾN DỊCH TRẢI NGHIỆM SỚM (25/11 - 05/12) ═══ -->
+        <section class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                <div>
+                    <h2 style="font-size:16px;font-weight:800">⏳ Điều Khiển Chiến Dịch Trải Nghiệm Sớm VIP (25/11 – 05/12)</h2>
+                    <div style="font-size:12.5px;color:var(--sub);margin-top:2px">Bật/tắt từ xa cho toàn bộ Web Học Sinh: Chương 1–2 GĐ1 + Bài 1 Lấy Gốc + Đề 01–05 ĐGNL + Phòng Thi Thử (giữ nguyên quyền TK cũ &amp; trả phí).</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <a href="https://zalo.me/0964885920" target="_blank" rel="noopener" class="btn-pill"><i class="fa-solid fa-comment"></i> Zalo Thầy (0964.885.920)</a>
+                    <a href="https://zalo.me/g/str1pllhp4uxa3rtvnou" target="_blank" rel="noopener" class="btn-pill"><i class="fa-solid fa-user-group"></i> Nhóm Zalo Web</a>
+                </div>
+            </div>
+            <div class="campaign-grid">
+                <div>
+                    <label class="field-lbl">Trạng thái</label>
+                    <select id="cfg-enabled" class="inp">
+                        <option value="true">🟢 Đang BẬT Trải Nghiệm Sớm</option>
+                        <option value="false">🔴 Tạm ĐÓNG Trải Nghiệm Sớm</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-lbl">Bắt đầu</label>
+                    <input id="cfg-start" type="datetime-local" class="inp" value="2026-11-25T00:00">
+                </div>
+                <div>
+                    <label class="field-lbl">Kết thúc</label>
+                    <input id="cfg-end" type="datetime-local" class="inp" value="2026-12-05T23:59">
+                </div>
+                <div>
+                    <label class="field-lbl">Số ngày đếm ngược</label>
+                    <input id="cfg-days" type="number" min="1" max="30" class="inp" value="7">
+                </div>
+                <div>
+                    <label class="field-lbl">Link Nhóm Zalo</label>
+                    <input id="cfg-zalo-group" type="url" class="inp" value="https://zalo.me/g/str1pllhp4uxa3rtvnou">
+                </div>
+                <div>
+                    <button type="button" class="btn-pill primary" style="width:100%;justify-content:center;padding:10px" onclick="saveCampaignConfig()"><i class="fa-solid fa-floppy-disk"></i> Lưu Cấu Hình</button>
+                </div>
+            </div>
+            <div id="cfg-save-msg" style="font-size:12px;color:var(--green);font-weight:700;margin-top:8px"></div>
+        </section>
+
+        <!-- ═══ 2. BỘ LỌC THỜI GIAN & TÌM KIẾM ═══ -->
+        <div class="toolbar">
+            <div class="pill-group" id="tf-pills">
+                <button type="button" class="tf-pill active" onclick="setTimeFilter('all', this)">Tất cả dữ liệu</button>
+                <button type="button" class="tf-pill" onclick="setTimeFilter('today', this)">Hôm nay</button>
+                <button type="button" class="tf-pill" onclick="setTimeFilter('24h', this)">24 giờ</button>
+                <button type="button" class="tf-pill" onclick="setTimeFilter('7d', this)">7 ngày</button>
+                <button type="button" class="tf-pill" onclick="setTimeFilter('campaign', this)">Đợt 25/11–05/12</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <input id="global-search" type="search" class="inp" style="width:240px" placeholder="Tìm SĐT, tên HS, mã đề..." oninput="renderActiveTab()">
+                <label style="font-size:12px;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:5px">
+                    <input type="checkbox" id="chk-auto-refresh" checked> Tự cập nhật 30s
+                </label>
+            </div>
+        </div>
+
+        <!-- ═══ 3. 6 KPI THỜI GIAN THỰC ═══ -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-top"><span>🟢 Học sinh Online (≤2 phút)</span><i class="fa-solid fa-signal" style="color:var(--green)"></i></div>
+                <div class="kpi-val" id="kpi-online">0</div>
+                <div class="kpi-sub" id="kpi-online-sub">Chưa có HS đang mở web</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-top"><span>⏱️ Tổng Thời Gian Học Thực</span><i class="fa-regular fa-clock" style="color:var(--primary)"></i></div>
+                <div class="kpi-val" id="kpi-dwell">0 phút</div>
+                <div class="kpi-sub" id="kpi-dwell-sub">TB 0 phút / phiên</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-top"><span>👥 HS Trải Nghiệm &amp; Zalo</span><i class="fa-solid fa-users" style="color:var(--purple)"></i></div>
+                <div class="kpi-val" id="kpi-students">0</div>
+                <div class="kpi-sub" id="kpi-zalo-sub">0 click Nhóm · 0 chat Zalo</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-top"><span>📌 Giữ Suất &amp; Mua VIP</span><i class="fa-solid fa-crown" style="color:var(--gold)"></i></div>
+                <div class="kpi-val" id="kpi-vip">0</div>
+                <div class="kpi-sub" id="kpi-vip-sub">0 giữ suất · 0 mua gói</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-top"><span>🔥 Điểm Thu Hút Nhất</span><i class="fa-solid fa-fire" style="color:#ea580c"></i></div>
+                <div class="kpi-val" id="kpi-top-place" style="font-size:17px;line-height:1.3">—</div>
+                <div class="kpi-sub" id="kpi-top-place-sub">Đo theo lượt vào &amp; dwell</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-top"><span>🐞 Báo Lỗi &amp; Góp Ý Mở</span><i class="fa-solid fa-bug" style="color:var(--red)"></i></div>
+                <div class="kpi-val" id="kpi-feedback-open">0</div>
+                <div class="kpi-sub" id="kpi-feedback-sub">Tổng 0 phản hồi đã gửi</div>
+            </div>
+        </section>
+
+        <!-- ═══ 4. NAVIGATION TABS ═══ -->
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('overview', this)">📈 Tổng Quan &amp; Hành Vi</button>
+            <button type="button" class="tab-btn" onclick="switchTab('content', this)">📚 Môn Học, Đề &amp; Câu Hỏi</button>
+            <button type="button" class="tab-btn" onclick="switchTab('students', this)">🧭 Hành Trình Từng HS</button>
+            <button type="button" class="tab-btn" onclick="switchTab('reservations', this)">📌 Giữ Suất VIP <span id="tab-badge-rsv" class="tag tag-amber">0</span></button>
+            <button type="button" class="tab-btn" onclick="switchTab('feedback', this)">🐞 Báo Lỗi &amp; Góp Ý <span id="tab-badge-fb" class="tag tag-red">0</span></button>
+            <button type="button" class="tab-btn" onclick="switchTab('audit', this)">🛡️ Lỗi JS &amp; Nhật Ký Admin</button>
+        </div>
+
+        <!-- TAB 1: OVERVIEW -->
+        <section id="pane-overview" class="tab-pane active">
+            <div class="charts-2">
+                <div class="card" style="margin-bottom:0">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">🔥 Học Sinh Thích Vào Đâu &amp; Ở Lại Lâu Nhất (Phút)</h3>
+                    <div class="chart-box"><canvas id="chart-dwell"></canvas></div>
+                </div>
+                <div class="card" style="margin-bottom:0">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">⚡ Nguyên Nhân Kích Hoạt Đăng Ký / Giữ Suất VIP</h3>
+                    <div class="chart-box"><canvas id="chart-triggers"></canvas></div>
+                </div>
+            </div>
+            <div class="card" style="margin-top:16px">
+                <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">📉 Phễu Chuyển Đổi &amp; Điểm Rơi Rụng (Drop-off Funnel)</h3>
+                <div id="funnel-bars" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px"></div>
+            </div>
+            <div class="card">
+                <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">🟢 Danh Sách Học Sinh Đang Online Hiện Tại (5 phút gần nhất)</h3>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Học sinh</th><th>SĐT</th><th>Trang đang xem</th><th>Ngữ cảnh (Bài / Đề / Câu)</th><th>Thời gian phiên</th><th>Thiết bị</th><th>Hành động</th></tr></thead>
+                        <tbody id="tbody-online"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CONTENT -->
+        <section id="pane-content" class="tab-pane">
+            <div class="charts-2">
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">📖 Bảng Xếp Hạng Trang &amp; Chuyên Đề</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Trang / Mục tiêu</th><th>Lượt mở</th><th>HS duy nhất</th><th>Tổng phút học</th></tr></thead>
+                            <tbody id="tbody-pages"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">🎯 Thống Kê Đề Thi, Chạm Khóa &amp; Bỏ Dở</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Sự kiện / Mục tiêu</th><th>Lượt</th><th>Ghi chú phân tích</th></tr></thead>
+                            <tbody id="tbody-exams-triggers"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: STUDENTS -->
+        <section id="pane-students" class="tab-pane">
+            <div class="split-student">
+                <div class="card" style="padding:0;overflow:hidden;max-height:620px;display:flex;flex-direction:column">
+                    <div style="padding:12px 14px;border-bottom:1px solid var(--border);font-weight:800;font-size:13.5px">Danh sách Học Sinh (<span id="student-count">0</span>)</div>
+                    <div id="student-list" style="overflow-y:auto;flex:1"></div>
+                </div>
+                <div class="card" id="student-detail">
+                    <div style="color:var(--muted);font-size:13.5px">Chọn một học sinh bên trái (hoặc nhập SĐT vào ô tìm kiếm) để xem chi tiết hành trình học, chạm khóa và thời gian ở từng trang.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: VIP RESERVATIONS -->
+        <section id="pane-reservations" class="tab-pane">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+                    <h3 style="font-size:15px;font-weight:800">📌 Học Sinh Đăng Ký Giữ Suất Ưu Đãi VIP</h3>
+                    <button type="button" class="btn-pill success" onclick="exportReservationsExcel()"><i class="fa-solid fa-download"></i> Xuất Excel Giữ Suất</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Thời gian</th><th>Họ tên &amp; Lớp</th><th>SĐT</th><th>Gói muốn giữ</th><th>Lý do &amp; Trigger</th><th>Trạng thái</th><th>Zalo</th></tr></thead>
+                        <tbody id="tbody-reservations"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: FEEDBACK & BUGS -->
+        <section id="pane-feedback" class="tab-pane">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                    <h3 style="font-size:15px;font-weight:800">🐞 Hộp Thư Báo Lỗi &amp; Đóng Góp Học Sinh</h3>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <select id="fb-filter-type" class="inp" style="width:150px" onchange="renderFeedback()">
+                            <option value="all">Tất cả loại</option>
+                            <option value="bug">🐞 Báo lỗi</option>
+                            <option value="idea">💡 Đóng góp</option>
+                        </select>
+                        <select id="fb-filter-status" class="inp" style="width:150px" onchange="renderFeedback()">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="open">🔴 Chưa xử lý</option>
+                            <option value="resolved">✅ Đã xử lý</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Loại &amp; Thời gian</th><th>Người gửi</th><th>Nội dung góp ý / lỗi</th><th>Ngữ cảnh tự động (Trang / Đề / Câu / Lỗi)</th><th>Trạng thái &amp; Ghi chú Thầy</th></tr></thead>
+                        <tbody id="tbody-feedback"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: AUDIT & JS ERRORS -->
+        <section id="pane-audit" class="tab-pane">
+            <div class="charts-2">
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">⚠️ Lỗi JS Phát Sinh Trên Web Học Sinh</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Thời gian</th><th>Trang</th><th>HS</th><th>Chi tiết lỗi</th></tr></thead>
+                            <tbody id="tbody-js-errors"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">🛡️ Nhật Ký Quản Trị Admin</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Thời gian</th><th>Trang</th><th>Hành động</th><th>Chi tiết</th></tr></thead>
+                            <tbody id="tbody-admin-audit"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec';
+const RTDB_SYS = 'https://edu-portal-live-default-rtdb.firebaseio.com/support_chats/_vlxt_system';
+
+let DATA = { config: {}, events: [], sessions: [], presence: [], reservations: [], feedback: [], adminAudit: [] };
+let timeFilter = 'all';
+let activeTab = 'overview';
+let selectedStudentKey = '';
+let chartDwell = null;
+let chartTriggers = null;
+
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function fmtTime(ts) {
+    if (!ts) return '—';
+    const d = new Date(Number(ts));
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString('vi-VN', { hour12: false });
+}
+function fmtDur(sec) {
+    const s = Math.max(0, Math.round(Number(sec) || 0));
+    if (s < 60) return s + ' giây';
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return m >= 60 ? (Math.floor(m / 60) + 'g ' + (m % 60) + 'p') : (m + 'p ' + (r < 10 ? '0' : '') + r + 's');
+}
+function cleanPhone(sdt) {
+    return String(sdt || '').replace(/\D/g, '');
+}
+function zaloHref(sdt) {
+    const p = cleanPhone(sdt);
+    return p.length >= 9 ? ('https://zalo.me/' + p) : 'https://zalo.me/0964885920';
+}
+
+function toggleDrawer(open) {
+    const d = document.getElementById('drawer');
+    const o = document.getElementById('drawer-overlay');
+    if (d) d.classList.toggle('open', open);
+    if (o) o.classList.toggle('open', open);
+}
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+    try { localStorage.setItem('vlxt_admin_theme', document.body.classList.contains('dark') ? 'dark' : 'light'); } catch (e) {}
+    renderOverviewCharts();
+}
+function getAdminKey() {
+    return (sessionStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('vlxt_backend_admin_key')
+        || localStorage.getItem('adminKey') || '').trim();
+}
+function setAdminKey(k, rem) {
+    const clean = String(k || '').trim();
+    if (!clean) return;
+    if (rem) {
+        localStorage.setItem('vlxt_backend_admin_key', clean);
+        localStorage.setItem('adminKey', clean);
+    } else {
+        sessionStorage.setItem('vlxt_backend_admin_key', clean);
+    }
+}
+async function submitAdminLogin() {
+    const inp = document.getElementById('adm-key-input');
+    const rem = document.getElementById('adm-key-rem');
+    const err = document.getElementById('adm-login-err');
+    const key = (inp ? inp.value : '').trim();
+    if (!key) { err.textContent = 'Vui lòng nhập Admin Key.'; return; }
+    err.textContent = 'Đang xác thực...';
+    try {
+        const res = await fetch(GAS_URL, {
+            method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'pingadmin', adminKey: key })
+        });
+        const j = await res.json();
+        if (j && j.ok) {
+            setAdminKey(key, !!(rem && rem.checked));
+            localStorage.setItem('adminLoggedIn', '1');
+            document.getElementById('login-overlay').style.display = 'none';
+            if (window.VLXT_ADMIN_TELEMETRY) window.VLXT_ADMIN_TELEMETRY.logAction('admin_login_analytics', { ok: true });
+            refreshAllData();
+        } else {
+            err.textContent = 'Sai khóa quản trị Admin.';
+        }
+    } catch (e) {
+        err.textContent = 'Không kết nối được backend: ' + e.message;
+    }
+}
+
+async function fetchNode(name) {
+    try {
+        const r = await fetch(RTDB_SYS + '/' + name + '.json');
+        if (!r.ok) return null;
+        return await r.json();
+    } catch (e) { return null; }
+}
+function objToList(obj) {
+    if (!obj || typeof obj !== 'object') return [];
+    return Object.keys(obj).map(k => Object.assign({ _key: k }, obj[k] || {})).filter(Boolean);
+}
+
+async function refreshAllData() {
+    const [cfg, ev, sess, pres, rsv, fb, aud] = await Promise.all([
+        fetchNode('campaign_config'),
+        fetchNode('events'),
+        fetchNode('sessions'),
+        fetchNode('presence'),
+        fetchNode('vip_reservations'),
+        fetchNode('feedback_reports'),
+        fetchNode('admin_audit')
+    ]);
+    DATA.config = cfg && typeof cfg === 'object' ? cfg : {};
+    DATA.events = objToList(ev).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    DATA.sessions = objToList(sess).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+    DATA.presence = objToList(pres).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+    DATA.reservations = objToList(rsv).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    DATA.feedback = objToList(fb).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    DATA.adminAudit = objToList(aud).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+
+    populateCampaignForm();
+    renderKpis();
+    renderActiveTab();
+}
+
+function populateCampaignForm() {
+    const c = DATA.config || {};
+    const en = document.getElementById('cfg-enabled');
+    const st = document.getElementById('cfg-start');
+    const ed = document.getElementById('cfg-end');
+    const dy = document.getElementById('cfg-days');
+    const zg = document.getElementById('cfg-zalo-group');
+    const badge = document.getElementById('nav-campaign-status');
+    const isEnabled = c.enabled !== false;
+    if (en) en.value = isEnabled ? 'true' : 'false';
+    if (st && c.startAt) st.value = String(c.startAt).slice(0, 16);
+    if (ed && c.endAt) ed.value = String(c.endAt).slice(0, 16);
+    if (dy && c.durationDays) dy.value = Number(c.durationDays) || 7;
+    if (zg && c.zaloGroupUrl) zg.value = c.zaloGroupUrl;
+    if (badge) badge.textContent = isEnabled ? 'Chiến dịch 25/11–05/12: ĐANG BẬT' : 'Chiến dịch: TẠM ĐÓNG';
+}
+
+async function saveCampaignConfig() {
+    const msg = document.getElementById('cfg-save-msg');
+    const sRaw = document.getElementById('cfg-start').value || '2026-11-25T00:00';
+    const eRaw = document.getElementById('cfg-end').value || '2026-12-05T23:59';
+    const payload = {
+        enabled: document.getElementById('cfg-enabled').value === 'true',
+        startAt: sRaw.length === 16 ? (sRaw + ':00+07:00') : sRaw,
+        endAt: eRaw.length === 16 ? (eRaw + ':59+07:00') : eRaw,
+        durationDays: Number(document.getElementById('cfg-days').value || 7),
+        zaloGroupUrl: (document.getElementById('cfg-zalo-group').value || 'https://zalo.me/g/str1pllhp4uxa3rtvnou').trim(),
+        zaloTeacherUrl: 'https://zalo.me/0964885920',
+        zaloTeacherPhone: '0964.885.920',
+        updatedAt: Date.now()
+    };
+    const r = await fetch(RTDB_SYS + '/campaign_config.json', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    if (r.ok) {
+        DATA.config = payload;
+        populateCampaignForm();
+        if (msg) msg.textContent = '✅ Đã lưu cấu hình chiến dịch lên Firebase (' + new Date().toLocaleTimeString('vi-VN') + ').';
+        if (window.VLXT_ADMIN_TELEMETRY) window.VLXT_ADMIN_TELEMETRY.logAction('save_campaign_config', { enabled: payload.enabled, durationDays: payload.durationDays });
+    } else if (msg) {
+        msg.textContent = '❌ Không lưu được cấu hình (HTTP ' + r.status + ').';
+    }
+}
+
+function inTimeRange(ts) {
+    const t = Number(ts || 0);
+    if (!t || timeFilter === 'all') return true;
+    const now = Date.now();
+    if (timeFilter === 'today') {
+        const d0 = new Date(); d0.setHours(0, 0, 0, 0);
+        return t >= d0.getTime();
+    }
+    if (timeFilter === '24h') return t >= now - 86400000;
+    if (timeFilter === '7d') return t >= now - 7 * 86400000;
+    if (timeFilter === 'campaign') return t >= Date.parse('2026-11-24T00:00:00+07:00');
+    return true;
+}
+
+function getFilteredEvents() {
+    const q = (document.getElementById('global-search').value || '').trim().toLowerCase();
+    return DATA.events.filter(e => {
+        if (!inTimeRange(e.ts)) return false;
+        if (!q) return true;
+        return JSON.stringify(e).toLowerCase().indexOf(q) !== -1;
+    });
+}
+function getFilteredSessions() {
+    const q = (document.getElementById('global-search').value || '').trim().toLowerCase();
+    return DATA.sessions.filter(s => {
+        if (!inTimeRange(s.lastSeenAt || s.startedAt)) return false;
+        if (!q) return true;
+        return JSON.stringify(s).toLowerCase().indexOf(q) !== -1;
+    });
+}
+
+function setTimeFilter(tf, btn) {
+    timeFilter = tf;
+    document.querySelectorAll('#tf-pills .tf-pill').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderKpis();
+    renderActiveTab();
+}
+function switchTab(tab, btn) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const pane = document.getElementById('pane-' + tab);
+    if (pane) pane.classList.add('active');
+    renderActiveTab();
+}
+
+function renderKpis() {
+    const now = Date.now();
+    const online = DATA.presence.filter(p => (now - Number(p.lastSeenAt || 0)) <= 180000);
+    const sessions = getFilteredSessions();
+    const events = getFilteredEvents();
+
+    const totalSec = sessions.reduce((acc, s) => acc + (Number(s.totalActiveSec) || 0), 0);
+    const avgMin = sessions.length ? Math.round((totalSec / sessions.length) / 60 * 10) / 10 : 0;
+
+    const studentSet = new Set();
+    sessions.forEach(s => { if (s.actorKey) studentSet.add(s.actorKey); });
+    const zaloGrp = events.filter(e => e.type === 'zalo_group_click').length;
+    const zaloPer = events.filter(e => e.type === 'zalo_personal_click' || e.type === 'support_zalo_click').length;
+
+    const rsvCount = DATA.reservations.filter(r => inTimeRange(r.createdAt)).length;
+    const proPaid = events.filter(e => e.type === 'payment_confirmed_pro').length;
+
+    // Top place by dwell or page_view
+    const pageSec = {};
+    sessions.forEach(s => {
+        if (s.pages && typeof s.pages === 'object') {
+            Object.keys(s.pages).forEach(pg => { pageSec[pg] = (pageSec[pg] || 0) + Number(s.pages[pg] || 0); });
+        }
+    });
+    const topPg = Object.keys(pageSec).sort((a, b) => pageSec[b] - pageSec[a])[0] || '—';
+
+    const fbOpen = DATA.feedback.filter(f => f.status !== 'resolved' && f.status !== 'closed').length;
+    const newRsv = DATA.reservations.filter(r => !r.status || r.status === 'new').length;
+
+    document.getElementById('kpi-online').textContent = String(online.length);
+    document.getElementById('kpi-online-sub').textContent = online.length ? ('Đang xem: ' + (online[0].page || 'index.html')) : 'Không có HS đang mở web';
+    document.getElementById('kpi-dwell').textContent = Math.round(totalSec / 60) + ' phút';
+    document.getElementById('kpi-dwell-sub').textContent = 'TB ' + avgMin + ' phút / ' + sessions.length + ' phiên';
+    document.getElementById('kpi-students').textContent = String(studentSet.size || sessions.length);
+    document.getElementById('kpi-zalo-sub').textContent = zaloGrp + ' click Nhóm Zalo · ' + zaloPer + ' mở Zalo Thầy';
+    document.getElementById('kpi-vip').textContent = String(rsvCount + proPaid);
+    document.getElementById('kpi-vip-sub').textContent = rsvCount + ' giữ suất · ' + proPaid + ' mua gói Pro/VIP';
+    document.getElementById('kpi-top-place').textContent = topPg;
+    document.getElementById('kpi-top-place-sub').textContent = topPg !== '—' ? fmtDur(pageSec[topPg]) + ' tổng thời gian' : 'Chưa đủ dữ liệu';
+    document.getElementById('kpi-feedback-open').textContent = String(fbOpen);
+    document.getElementById('kpi-feedback-sub').textContent = 'Tổng ' + DATA.feedback.length + ' báo lỗi & góp ý';
+    document.getElementById('tab-badge-rsv').textContent = String(newRsv);
+    document.getElementById('tab-badge-fb').textContent = String(fbOpen);
+}
+
+function renderActiveTab() {
+    if (activeTab === 'overview') {
+        renderOverviewCharts();
+        renderFunnel();
+        renderOnlineTable();
+    } else if (activeTab === 'content') {
+        renderContentTables();
+    } else if (activeTab === 'students') {
+        renderStudentsTab();
+    } else if (activeTab === 'reservations') {
+        renderReservations();
+    } else if (activeTab === 'feedback') {
+        renderFeedback();
+    } else if (activeTab === 'audit') {
+        renderAudit();
+    }
+}
+
+function renderOverviewCharts() {
+    const sessions = getFilteredSessions();
+    const events = getFilteredEvents();
+    const pageSec = {};
+    sessions.forEach(s => {
+        if (s.pages && typeof s.pages === 'object') {
+            Object.keys(s.pages).forEach(pg => { pageSec[pg] = (pageSec[pg] || 0) + Number(s.pages[pg] || 0); });
+        }
+    });
+    const topPages = Object.keys(pageSec).sort((a, b) => pageSec[b] - pageSec[a]).slice(0, 8);
+    const dwellCtx = document.getElementById('chart-dwell');
+    if (dwellCtx && typeof Chart !== 'undefined') {
+        if (chartDwell) chartDwell.destroy();
+        chartDwell = new Chart(dwellCtx, {
+            type: 'bar',
+            data: {
+                labels: topPages.length ? topPages : ['Chưa có dữ liệu'],
+                datasets: [{
+                    label: 'Tổng phút học thực',
+                    data: topPages.length ? topPages.map(p => Math.round((pageSec[p] || 0) / 6) / 10) : [0],
+                    backgroundColor: '#0b84f3', borderRadius: 6
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    const trigCounts = {};
+    events.filter(e => ['paywall_hit', 'upgrade_modal_open', 'vip_reserve_submit', 'payment_confirmed_pro'].indexOf(e.type) !== -1)
+        .forEach(e => {
+            const key = e.trigger || e.reason || e.target || e.type;
+            trigCounts[key] = (trigCounts[key] || 0) + 1;
+        });
+    DATA.reservations.filter(r => inTimeRange(r.createdAt)).forEach(r => {
+        const key = r.lastTrigger || r.reasonSelected || 'goi_hoc';
+        trigCounts[key] = (trigCounts[key] || 0) + 1;
+    });
+    const topTrig = Object.keys(trigCounts).sort((a, b) => trigCounts[b] - trigCounts[a]).slice(0, 6);
+    const trigCtx = document.getElementById('chart-triggers');
+    if (trigCtx && typeof Chart !== 'undefined') {
+        if (chartTriggers) chartTriggers.destroy();
+        chartTriggers = new Chart(trigCtx, {
+            type: 'doughnut',
+            data: {
+                labels: topTrig.length ? topTrig : ['Chưa có chuyển đổi'],
+                datasets: [{
+                    data: topTrig.length ? topTrig.map(k => trigCounts[k]) : [1],
+                    backgroundColor: ['#0b84f3', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+}
+
+function renderFunnel() {
+    const ev = getFilteredEvents();
+    const s = getFilteredSessions();
+    const steps = [
+        { label: '1. Truy cập Web', n: Math.max(s.length, ev.filter(e => e.type === 'page_view').length), color: '#0b84f3' },
+        { label: '2. Đăng ký / Đăng nhập', n: ev.filter(e => e.type === 'auth_register_success' || e.type === 'auth_login_success').length, color: '#6366f1' },
+        { label: '3. Vào Học / Mở Đề', n: ev.filter(e => e.type === 'lesson_open' || e.type === 'exam_start' || e.type === 'ptt_lobby_enter').length, color: '#059669' },
+        { label: '4. Chạm Khóa VIP', n: ev.filter(e => e.type === 'paywall_hit').length, color: '#d97706' },
+        { label: '5. Giữ Suất / Mua VIP', n: DATA.reservations.filter(r => inTimeRange(r.createdAt)).length + ev.filter(e => e.type === 'payment_confirmed_pro').length, color: '#dc2626' }
+    ];
+    document.getElementById('funnel-bars').innerHTML = steps.map(st => `
+        <div style="border:1px solid var(--border);border-left:4px solid ${st.color};border-radius:10px;padding:12px;background:var(--bg2)">
+            <div style="font-size:12px;font-weight:700;color:var(--muted)">${esc(st.label)}</div>
+            <div style="font-size:22px;font-weight:800;margin-top:4px">${st.n}</div>
+        </div>
+    `).join('');
+}
+
+function renderOnlineTable() {
+    const now = Date.now();
+    const rows = DATA.presence.filter(p => (now - Number(p.lastSeenAt || 0)) <= 300000);
+    const tb = document.getElementById('tbody-online');
+    if (!rows.length) {
+        tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted)">Hiện chưa có học sinh nào online trong 5 phút gần nhất.</td></tr>';
+        return;
+    }
+    tb.innerHTML = rows.map(p => {
+        const ctx = p.context && typeof p.context === 'object' ? [p.context.courseName, p.context.lessonTitle, p.context.examTitle, p.context.questionNum ? ('Câu ' + p.context.questionNum) : ''].filter(Boolean).join(' · ') : '—';
+        return `<tr>
+            <td><b>${esc(p.hoten || 'Khách')}</b></td>
+            <td>${esc(p.sdt || '—')}</td>
+            <td><span class="tag tag-blue">${esc(p.page || 'index.html')}</span></td>
+            <td>${esc(ctx || '—')}</td>
+            <td>${fmtDur(p.activeSec || 0)}</td>
+            <td>${esc(p.deviceType || 'web')}</td>
+            <td><a class="tag tag-green" target="_blank" rel="noopener" href="${zaloHref(p.sdt)}">Zalo</a></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderContentTables() {
+    const sessions = getFilteredSessions();
+    const events = getFilteredEvents();
+    const pages = {};
+    sessions.forEach(s => {
+        if (s.pages && typeof s.pages === 'object') {
+            Object.keys(s.pages).forEach(pg => {
+                if (!pages[pg]) pages[pg] = { sec: 0, views: 0, actors: new Set() };
+                pages[pg].sec += Number(s.pages[pg] || 0);
+                pages[pg].actors.add(s.actorKey || s.sessionId);
+            });
+        }
+    });
+    events.filter(e => e.type === 'page_view').forEach(e => {
+        const pg = e.page || e.target || 'index.html';
+        if (!pages[pg]) pages[pg] = { sec: 0, views: 0, actors: new Set() };
+        pages[pg].views++;
+        if (e.actorKey) pages[pg].actors.add(e.actorKey);
+    });
+    const pgRows = Object.keys(pages).sort((a, b) => pages[b].sec - pages[a].sec);
+    document.getElementById('tbody-pages').innerHTML = pgRows.length ? pgRows.map(pg => `<tr>
+        <td><b>${esc(pg)}</b></td>
+        <td>${pages[pg].views}</td>
+        <td>${pages[pg].actors.size}</td>
+        <td>${fmtDur(pages[pg].sec)}</td>
+    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Chưa có dữ liệu trang.</td></tr>';
+
+    const evMap = {};
+    events.forEach(e => {
+        const k = e.type + '::' + (e.target || e.label || '');
+        if (!evMap[k]) evMap[k] = { type: e.type, target: e.target || e.label || '—', n: 0, reason: e.reason || e.trigger || '' };
+        evMap[k].n++;
+    });
+    const topEv = Object.values(evMap).sort((a, b) => b.n - a.n).slice(0, 30);
+    document.getElementById('tbody-exams-triggers').innerHTML = topEv.length ? topEv.map(it => `<tr>
+        <td><span class="tag tag-gray">${esc(it.type)}</span> <b>${esc(it.target)}</b></td>
+        <td><b>${it.n}</b></td>
+        <td>${esc(it.reason || '—')}</td>
+    </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:var(--muted)">Chưa có sự kiện nào.</td></tr>';
+}
+
+function renderStudentsTab() {
+    const sessions = getFilteredSessions();
+    const events = getFilteredEvents();
+    const byActor = {};
+    sessions.forEach(s => {
+        const k = s.actorKey || s.sdt || s.anonId || s.sessionId;
+        if (!k) return;
+        if (!byActor[k]) byActor[k] = { key: k, sdt: s.sdt || '', hoten: s.hoten || 'Khách', lop: s.lop || '', tier: s.tier || 'free', totalSec: 0, lastSeen: 0, pages: {}, lastTrigger: s.lastTrigger || '' };
+        byActor[k].totalSec += Number(s.totalActiveSec || 0);
+        byActor[k].lastSeen = Math.max(byActor[k].lastSeen, Number(s.lastSeenAt || 0));
+        if (s.hoten && s.hoten !== 'Khách') byActor[k].hoten = s.hoten;
+        if (s.sdt) byActor[k].sdt = s.sdt;
+        if (s.pages) Object.keys(s.pages).forEach(p => { byActor[k].pages[p] = (byActor[k].pages[p] || 0) + Number(s.pages[p] || 0); });
+    });
+    const list = Object.values(byActor).sort((a, b) => b.lastSeen - a.lastSeen);
+    document.getElementById('student-count').textContent = String(list.length);
+    document.getElementById('student-list').innerHTML = list.length ? list.map(st => `
+        <div class="student-row ${selectedStudentKey === st.key ? 'active' : ''}" onclick="selectStudent('${esc(st.key)}')">
+            <div style="display:flex;justify-content:space-between;gap:6px">
+                <b style="font-size:13.5px">${esc(st.hoten)}</b>
+                <span class="tag tag-blue">${fmtDur(st.totalSec)}</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub);margin-top:2px">${esc(st.sdt || st.key)} · Lớp ${esc(st.lop || '—')} · ${esc(st.tier)}</div>
+        </div>
+    `).join('') : '<div style="padding:18px;color:var(--muted);font-size:13px">Chưa có hành trình nào khớp bộ lọc.</div>';
+
+    if (selectedStudentKey && byActor[selectedStudentKey]) {
+        const st = byActor[selectedStudentKey];
+        const stEvents = events.filter(e => (e.actorKey || e.sdt || e.anonId) === selectedStudentKey).slice(0, 60);
+        const pageSummary = Object.keys(st.pages).sort((a, b) => st.pages[b] - st.pages[a])
+            .map(p => `<span class="tag tag-gray">${esc(p)}: ${fmtDur(st.pages[p])}</span>`).join(' ');
+        document.getElementById('student-detail').innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+                <div>
+                    <h3 style="font-size:17px;font-weight:800">${esc(st.hoten)} (${esc(st.sdt || st.key)})</h3>
+                    <div style="font-size:12.5px;color:var(--sub)">Tổng thời gian: <b>${fmtDur(st.totalSec)}</b> · Lần cuối: ${fmtTime(st.lastSeen)}</div>
+                </div>
+                <a href="${zaloHref(st.sdt)}" target="_blank" rel="noopener" class="btn-pill primary">💬 Nhắn Zalo HS</a>
+            </div>
+            <div style="margin-bottom:14px;display:flex;gap:6px;flex-wrap:wrap">${pageSummary || '<span style="color:var(--muted);font-size:12.5px">Chưa có dwell theo trang</span>'}</div>
+            <div style="font-size:13px;font-weight:800;margin-bottom:8px">Dòng thời gian hành vi gần nhất:</div>
+            <div style="max-height:400px;overflow-y:auto">
+                ${stEvents.map(e => `<div class="timeline-item"><b>${esc(e.type)}</b> · ${esc(e.page || '')} ${e.target ? ('→ ' + esc(e.target)) : ''} ${e.label ? ('(' + esc(e.label) + ')') : ''}<div style="font-size:11px;color:var(--muted)">${fmtTime(e.ts)}</div></div>`).join('') || '<div style="color:var(--muted);font-size:12.5px">Không có sự kiện chi tiết.</div>'}
+            </div>
+        `;
+    }
+}
+function selectStudent(k) {
+    selectedStudentKey = k;
+    renderStudentsTab();
+}
+
+function renderReservations() {
+    const q = (document.getElementById('global-search').value || '').trim().toLowerCase();
+    const rows = DATA.reservations.filter(r => inTimeRange(r.createdAt) && (!q || JSON.stringify(r).toLowerCase().indexOf(q) !== -1));
+    document.getElementById('tbody-reservations').innerHTML = rows.length ? rows.map(r => `<tr>
+        <td>${fmtTime(r.createdAt)}</td>
+        <td><b>${esc(r.hoten)}</b><div style="font-size:11.5px;color:var(--muted)">Lớp ${esc(r.lop || '12')}</div></td>
+        <td><b>${esc(r.sdt)}</b></td>
+        <td><span class="tag tag-amber">${esc(r.planCode)}</span><div style="font-size:11.5px;color:var(--sub)">${esc(r.planName || '')}</div></td>
+        <td><div><b>${esc(r.reasonSelected || '—')}</b></div><div style="font-size:11.5px;color:var(--muted)">Trigger: ${esc(r.lastTrigger || '—')} ${r.note ? ('· ' + esc(r.note)) : ''}</div></td>
+        <td>
+            <select class="inp" style="padding:5px 8px;font-size:12px" onchange="updateReservationStatus('${esc(r._key)}', this.value)">
+                <option value="new" ${(r.status || 'new') === 'new' ? 'selected' : ''}>🟡 Mới</option>
+                <option value="contacted" ${r.status === 'contacted' ? 'selected' : ''}>🔵 Đã tư vấn Zalo</option>
+                <option value="converted" ${r.status === 'converted' ? 'selected' : ''}>🟢 Đã lên VIP</option>
+                <option value="cancelled" ${r.status === 'cancelled' ? 'selected' : ''}>⚪ Hủy</option>
+            </select>
+        </td>
+        <td><a href="${zaloHref(r.sdt)}" target="_blank" rel="noopener" class="tag tag-green">Mở Zalo HS</a></td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted)">Chưa có học sinh nào đăng ký giữ suất.</td></tr>';
+}
+
+async function updateReservationStatus(key, status) {
+    await fetch(RTDB_SYS + '/vip_reservations/' + encodeURIComponent(key) + '.json', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status, updatedAt: Date.now() })
+    });
+    const it = DATA.reservations.find(x => x._key === key);
+    if (it) it.status = status;
+    renderKpis();
+    if (window.VLXT_ADMIN_TELEMETRY) window.VLXT_ADMIN_TELEMETRY.logAction('update_reservation_status', { key: key, status: status });
+}
+
+function renderFeedback() {
+    const q = (document.getElementById('global-search').value || '').trim().toLowerCase();
+    const fType = document.getElementById('fb-filter-type').value;
+    const fStatus = document.getElementById('fb-filter-status').value;
+    const rows = DATA.feedback.filter(f => {
+        if (fType === 'bug' && f.type !== 'bug_report') return false;
+        if (fType === 'idea' && f.type === 'bug_report') return false;
+        const isRes = f.status === 'resolved' || f.status === 'closed';
+        if (fStatus === 'open' && isRes) return false;
+        if (fStatus === 'resolved' && !isRes) return false;
+        if (q && JSON.stringify(f).toLowerCase().indexOf(q) === -1) return false;
+        return true;
+    });
+    document.getElementById('tbody-feedback').innerHTML = rows.length ? rows.map(f => {
+        const isBug = f.type === 'bug_report';
+        const ctx = f.context || {};
+        return `<tr>
+            <td><span class="tag ${isBug ? 'tag-red' : 'tag-blue'}">${isBug ? '🐞 Báo lỗi' : (f.type === 'zalo_handoff' ? '💬 Zalo' : '💡 Đóng góp')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px">${fmtTime(f.createdAt)}</div></td>
+            <td><b>${esc(f.hoten || 'HS')}</b><div style="font-size:12px">${esc(f.sdt || '—')}</div><a href="${zaloHref(f.sdt)}" target="_blank" rel="noopener" style="font-size:11.5px;font-weight:700">💬 Zalo HS</a></td>
+            <td><div style="font-weight:700;font-size:12px;color:var(--sub)">${esc(f.category || '')}</div><div style="white-space:pre-wrap;margin-top:2px">${esc(f.message || '')}</div></td>
+            <td style="font-size:11.5px;color:var(--sub)">
+                <div>Trang: <b>${esc(f.page || '—')}</b></div>
+                ${ctx.courseName ? `<div>Khóa/Bài: ${esc(ctx.courseName)} · ${esc(ctx.lessonTitle || '')}</div>` : ''}
+                ${ctx.examTitle ? `<div>Đề/Câu: ${esc(ctx.examTitle)} ${ctx.questionNum ? ('(Câu ' + ctx.questionNum + ')') : ''}</div>` : ''}
+                <div>Thiết bị: ${esc(f.deviceType || '—')}</div>
+                ${f.lastError ? `<div style="color:var(--red)">JS Error: ${esc(f.lastError)}</div>` : ''}
+            </td>
+            <td style="min-width:190px">
+                <select class="inp" style="padding:5px 8px;font-size:12px;margin-bottom:6px" onchange="updateFeedbackStatus('${esc(f._key)}', this.value)">
+                    <option value="open" ${(!f.status || f.status === 'open') ? 'selected' : ''}>🔴 Chưa xử lý</option>
+                    <option value="in_progress" ${f.status === 'in_progress' ? 'selected' : ''}>🟡 Đang kiểm tra</option>
+                    <option value="resolved" ${f.status === 'resolved' ? 'selected' : ''}>✅ Đã xử lý</option>
+                </select>
+                <div style="display:flex;gap:4px">
+                    <input id="fb-note-${esc(f._key)}" class="inp" style="padding:5px 7px;font-size:11.5px" value="${esc(f.adminNote || '')}" placeholder="Ghi chú của thầy...">
+                    <button type="button" class="btn-pill" style="padding:5px 9px;font-size:11px" onclick="saveFeedbackNote('${esc(f._key)}')">Lưu</button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--muted)">Không có báo lỗi / đóng góp nào khớp bộ lọc.</td></tr>';
+}
+
+async function updateFeedbackStatus(key, status) {
+    await fetch(RTDB_SYS + '/feedback_reports/' + encodeURIComponent(key) + '.json', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status, updatedAt: Date.now() })
+    });
+    const it = DATA.feedback.find(x => x._key === key);
+    if (it) it.status = status;
+    renderKpis();
+}
+async function saveFeedbackNote(key) {
+    const inp = document.getElementById('fb-note-' + key);
+    const note = inp ? inp.value.trim() : '';
+    await fetch(RTDB_SYS + '/feedback_reports/' + encodeURIComponent(key) + '.json', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminNote: note, updatedAt: Date.now() })
+    });
+    const it = DATA.feedback.find(x => x._key === key);
+    if (it) it.adminNote = note;
+}
+
+function renderAudit() {
+    const errs = getFilteredEvents().filter(e => e.type === 'js_error').slice(0, 50);
+    document.getElementById('tbody-js-errors').innerHTML = errs.length ? errs.map(e => `<tr>
+        <td>${fmtTime(e.ts)}</td><td>${esc(e.page || '')}</td><td>${esc(e.sdt || e.hoten || '—')}</td>
+        <td style="color:var(--red);font-size:12px">${esc(e.label || e.target || '')}</td>
+    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Không có lỗi JS ghi nhận.</td></tr>';
+
+    const aud = DATA.adminAudit.slice(0, 50);
+    document.getElementById('tbody-admin-audit').innerHTML = aud.length ? aud.map(a => `<tr>
+        <td>${fmtTime(a.ts)}</td><td>${esc(a.page || '')}</td><td><b>${esc(a.action || '')}</b></td>
+        <td style="font-size:11.5px;color:var(--sub)">${esc(JSON.stringify(a.detail || {}))}</td>
+    </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Chưa có nhật ký Admin.</td></tr>';
+}
+
+function exportReservationsExcel() {
+    if (typeof XLSX === 'undefined') return;
+    const rows = DATA.reservations.map(r => ({
+        'Thời gian': fmtTime(r.createdAt),
+        'Họ tên': r.hoten || '',
+        'SĐT': r.sdt || '',
+        'Lớp': r.lop || '',
+        'Gói': r.planCode || '',
+        'Lý do': r.reasonSelected || '',
+        'Trigger': r.lastTrigger || '',
+        'Ghi chú': r.note || '',
+        'Trạng thái': r.status || 'new'
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'GiuSuatVIP');
+    XLSX.writeFile(wb, 'vlxt-giu-suat-vip.xlsx');
+}
+function exportAnalyticsExcel() {
+    if (typeof XLSX === 'undefined') return;
+    const wb = XLSX.utils.book_new();
+    const rsvRows = DATA.reservations.map(r => ({ ThoiGian: fmtTime(r.createdAt), HoTen: r.hoten, SDT: r.sdt, Lop: r.lop, Goi: r.planCode, LyDo: r.reasonSelected, Trigger: r.lastTrigger, TrangThai: r.status }));
+    const fbRows = DATA.feedback.map(f => ({ ThoiGian: fmtTime(f.createdAt), Loai: f.type, NguoiGui: f.hoten, SDT: f.sdt, Trang: f.page, NoiDung: f.message, TrangThai: f.status }));
+    const sessRows = DATA.sessions.map(s => ({ Phien: s.sessionId, SDT: s.sdt, HoTen: s.hoten, TongGiay: s.totalActiveSec, Nguon: s.firstSource, TriggerCuoi: s.lastTrigger }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rsvRows.length ? rsvRows : [{ Empty: '0' }]), 'GiuSuatVIP');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(fbRows.length ? fbRows : [{ Empty: '0' }]), 'BaoLoi_GopY');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sessRows.length ? sessRows : [{ Empty: '0' }]), 'HanhTrinhHS');
+    XLSX.writeFile(wb, 'vlxt-phan-tich-hanh-vi.xlsx');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    try {
+        if (localStorage.getItem('vlxt_admin_theme') === 'dark') document.body.classList.add('dark');
+    } catch (e) {}
+    if (localStorage.getItem('adminLoggedIn') === '1' || getAdminKey()) {
+        document.getElementById('login-overlay').style.display = 'none';
+        refreshAllData();
+    }
+    setInterval(() => {
+        const chk = document.getElementById('chk-auto-refresh');
+        if (chk && chk.checked && document.getElementById('login-overlay').style.display === 'none') {
+            refreshAllData();
+        }
+    }, 30000);
+});
+</script>
+<script defer src="assets/admin-telemetry.js?v=20261124"></script>
+</body>
+</html>

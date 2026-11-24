@@ -1031,6 +1031,7 @@
         <a href="lich-live.html" class="drawer-item" data-module="lichlive"><i class="fa-solid fa-satellite-dish"></i><span>Lịch Live</span></a>
         <a href="dieu-khien-live.html" class="drawer-item" data-module="quanlylive"><i class="fa-solid fa-tower-broadcast"></i><span>Điều khiển Live</span></a>
         <a href="tai-khoan-hoc-sinh.html" class="drawer-item" data-module="taikhoan"><i class="fa-solid fa-users"></i><span>Tài khoản HS</span></a>
+        <a href="phan-tich-hanh-vi.html" class="drawer-item" data-module="analytics"><i class="fa-solid fa-chart-line" style="color:#0b84f3"></i><span>Phân tích hành vi &amp; VIP</span></a>
         <a href="ho-tro-hoc-tap.html" class="drawer-item" data-module="hotro"><i class="fa-solid fa-comment-dots"></i><span>Hỗ trợ HS</span><span id="ht-drawer-badge" style="display:none" class="drawer-badge"></span></a>
         <a href="huong-dan-he-thong.html" class="drawer-item" data-module="huongdan"><i class="fa-solid fa-circle-play"></i><span>Hướng Dẫn</span></a>
     </nav>
@@ -10080,7 +10081,11 @@ function initSupportChat() {
     } catch (e) { toast('Lỗi kết nối chat: ' + e.message, 'err'); return; }
 
     htDb.ref('support_chats').on('value', snap => {
-        htThreads = snap.val() || {};
+        const rawThreads = snap.val() || {};
+        htThreads = {};
+        Object.keys(rawThreads).forEach(k => {
+            if (String(k).indexOf('_vlxt_') !== 0) htThreads[k] = rawThreads[k];
+        });
         renderThreadList();
         updateHtBadge();
     });
@@ -10289,5 +10294,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script defer src="assets/admin-telemetry.js?v=20261124"></script>
 </body>
 </html>
