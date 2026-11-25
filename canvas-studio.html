@@ -24,6 +24,7 @@
     <script src="assets/staging-c2-c3-questions.js?v=20261118-lt270"></script>
     <script src="assets/staging-tn-220-questions.js?v=20261118-lt270"></script>
     <script src="assets/staging-ds-106-questions.js?v=20261118-ds200-v2"></script>
+    <script src="assets/staging-thithu26-140-questions.js?v=20261125b"></script>
 
     <!-- Nạp thư viện Canvas Helpers và Thư viện Mô hình Canvas V2 -->
     <script src="assets/canvas-core-helpers.js"></script>
@@ -31,6 +32,7 @@
     <script src="assets/staging-ds-models.js?v=20261118-ds200-v2"></script>
     <script src="assets/staging-tn50-models.js?v=20261118-lt270"></script>
     <script src="assets/staging-tn220-models.js?v=20261118-lt270"></script>
+    <script src="assets/thithu-2026-new-models.js?v=20261125b"></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1187,6 +1189,7 @@
             <div class="selector-group">
                 <!-- Chọn Nhóm Phần Cần Tinh Chỉnh Mô Hình -->
                 <select id="sel-part" class="studio-select" onchange="onPartFilterChange()" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:280px;">
+                    <option value="P_THITHU26_30">🏆 30 Mô Hình 5 Đề Thi Thử Mới 2025–2026</option>
                     <option value="P1_STAGING_220">🚀 46 Mô Hình Đợt 220 (14 BT &amp; 32 LT — Đã Nạp Ngân Hàng)</option>
                     <option value="P2_STAGING_106" selected>🧪 106 Mô Hình Đúng/Sai Đợt Mới (Đã Nạp Ngân Hàng)</option>
                     <option value="P1_STAGING_50">📘 27 Mô Hình 50 Câu Trắc Nghiệm Mới (C2 &amp; C3 — Đã Nạp Ngân Hàng)</option>
@@ -1341,6 +1344,9 @@
                 <div class="selector-group">
                     <!-- Chọn Kho Câu Hỏi (Phân Khu Rõ Ràng: Câu Mới Bóc Tách vs Ngân Hàng Đề) -->
                     <select id="st-filter-pool" class="studio-select" onchange="onStagingPoolChanged(this.value)" style="font-weight:700; color:#38bdf8; background:#0f172a; min-width:320px;">
+                        <optgroup label="🏆 BỘ 5 ĐỀ THI THỬ MỚI CHUẨN BỘ 2025–2026">
+                            <option value="THITHU_2026_NEW_140">🏆 140 Câu 5 Đề Thi Thử Chuẩn Bộ 2026 (Mới)</option>
+                        </optgroup>
                         <optgroup label="🌟 NGÂN HÀNG ĐỀ ĐÃ NẠP CHÍNH THỨC (3.514 CÂU)">
                             <option value="BANK_ALL">🌟 Toàn Bộ Ngân Hàng Đề (3.514 Câu)</option>
                             <option value="TN_LT">📖 TN Lý Thuyết THPTQG (1.574 Câu — Đủ 16/16 CĐ)</option>
@@ -1924,7 +1930,9 @@
         let filteredIds = ALL_MODEL_IDS;
 
         // 1. Lọc theo Nhóm Phần (Hỗ trợ đầy đủ 27 mô hình TN220 + 106 mô hình ĐS + 27 mô hình TN50 + 94 mô hình gốc)
-        if (currentPartFilter === 'P1_STAGING_220') {
+        if (currentPartFilter === 'P_THITHU26_30') {
+            filteredIds = filteredIds.filter(id => id.startsWith('MH-TT26-'));
+        } else if (currentPartFilter === 'P1_STAGING_220') {
             filteredIds = filteredIds.filter(id => id.startsWith('MH-TN220-'));
         } else if (currentPartFilter === 'P2_STAGING_106') {
             filteredIds = filteredIds.filter(id => id.startsWith('MH-STAGING-'));
@@ -2803,8 +2811,15 @@ function initStagingSystem() {
         const poolStaging50 = (window.VLXT_STAGING_QUESTIONS || window.STAGING_QUESTIONS || []).map(q => Object.assign({ loai: 'TN', isStaging50: true }, q));
         const poolStaging220 = (window.VLXT_STAGING_220_QUESTIONS || []).map(q => Object.assign({ loai: 'TN', isStaging220: true }, q));
         const poolStagingDS106 = (window.STAGING_DS_106_QUESTIONS || []).map(q => Object.assign({ loai: 'DS', isStagingDS106: true }, q));
+        const poolThiThu26 = (window.VLXT_THITHU26_140_QUESTIONS || []).map(q => Object.assign({ isThiThu26: true }, q));
 
         // Tự động gán nhãn mô hình cho Canvas Studio nếu có
+        if (window.VLXT_THITHU26_CAPTIONS && typeof window.VLXT_THITHU26_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_THITHU26_CAPTIONS);
+        }
+        if (window.VLXT_THITHU26_CAPTIONS && typeof window.VLXT_THITHU26_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_THITHU26_CAPTIONS);
+        }
         if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
             Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
         }
@@ -2837,10 +2852,10 @@ function initStagingSystem() {
             const newStaging = poolStaging50.filter(q => !bankIds.has(q.id));
             const newStaging220 = poolStaging220.filter(q => !bankIds.has(q.id));
             const newStagingDS106 = poolStagingDS106.filter(q => !bankIds.has(q.id));
-            stagingList = [ ...poolBank, ...newStaging, ...newStaging220, ...newStagingDS106 ];
+            stagingList = [ ...poolBank, ...newStaging, ...newStaging220, ...newStagingDS106, ...poolThiThu26 ];
         } else {
             // Fallback khi chưa có file ngân hàng 3048
-            stagingList = [ ...poolDS, ...poolTLN, ...poolStaging50, ...poolStaging220, ...poolStagingDS106 ];
+            stagingList = [ ...poolDS, ...poolTLN, ...poolStaging50, ...poolStaging220, ...poolStagingDS106, ...poolThiThu26 ];
         }
 
         try {
@@ -2939,8 +2954,10 @@ function initStagingSystem() {
     function filterStagingQuestions() {
         filteredStagingList = stagingList.filter(q => {
             if (currentPoolFilter !== 'ALL') {
-                if (currentPoolFilter === 'BANK_ALL') {
-                    if (!q.isFromBank && (q.isStaging50 || q.isStaging220 || q.isStagingDS106)) return false;
+                if (currentPoolFilter === 'THITHU_2026_NEW_140') {
+                    if (!q.isThiThu26 && !String(q.id || '').startsWith('VLXT-TT26-')) return false;
+                } else if (currentPoolFilter === 'BANK_ALL') {
+                    if (!q.isFromBank && (q.isStaging50 || q.isStaging220 || q.isStagingDS106 || q.isThiThu26)) return false;
                 } else if (currentPoolFilter === 'TN_LT') {
                     if (q.loai !== 'TN' || q.tnType !== 'LT') return false;
                 } else if (currentPoolFilter === 'TN_BT') {
@@ -3663,6 +3680,9 @@ function initStagingSystem() {
     // KHỞI TẠO TỨC THÌ (FAIL-SAFE INITIALIZATION)
     // ══════════════════════════════════════════════════════════════════
     function startStudioApp() {
+        if (window.VLXT_THITHU26_CAPTIONS && typeof window.VLXT_THITHU26_CAPTIONS === 'object') {
+            Object.assign(MODEL_CAPTIONS, window.VLXT_THITHU26_CAPTIONS);
+        }
         if (window.VLXT_DS106_CAPTIONS && typeof window.VLXT_DS106_CAPTIONS === 'object') {
             Object.assign(MODEL_CAPTIONS, window.VLXT_DS106_CAPTIONS);
         }

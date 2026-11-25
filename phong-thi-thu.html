@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/wmf@1.0.2/dist/wmf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="assets/thithu-5-exams-pack.js?v=20261125"></script>
+    <script src="assets/thithu-5-exams-pack.js?v=20261125b"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -5760,6 +5760,22 @@ function filterExamDetailSec(sec) {
     renderExamDetailQuestions();
 }
 
+function normalizeAdminModalMath(html) {
+    if (!html) return '';
+    return String(html).replace(/(\$\$[\s\S]*?\$\$|\$[^$\n]+?\$)/g, (block) => {
+        const isDisp = block.startsWith('$$');
+        let inner = isDisp ? block.slice(2, -2) : block.slice(1, -1);
+        inner = inner.replace(/\^\(\s*([^)]+?)\s*\)\s*_\(\s*([^)]+?)\s*\)/g, '{}^{$1}_{$2}')
+                     .replace(/_\(\s*([^)]+?)\s*\)\s*\^\(\s*([^)]+?)\s*\)/g, '{}^{$2}_{$1}')
+                     .replace(/(^|[\s+\-=(\[,;:]|\\to\b|\\rightarrow\b|\\longrightarrow\b|\\[,;!]|\\quad\b|\\qquad\b)\^(?:\{([^{}]+)\}|([0-9]+))_(?:\{([^{}]+)\}|([0-9]+))/g,
+                        (_, pre, a1, a2, z1, z2) => pre + '{}^{' + (a1 || a2) + '}_{' + (z1 || z2) + '}')
+                     .replace(/(^|[\s+\-=(\[,;:]|\\to\b|\\rightarrow\b|\\longrightarrow\b|\\[,;!]|\\quad\b|\\qquad\b)_(?:\{([^{}]+)\}|([0-9]+))\^(?:\{([^{}]+)\}|([0-9]+))/g,
+                        (_, pre, z1, z2, a1, a2) => pre + '{}^{' + (a1 || a2) + '}_{' + (z1 || z2) + '}')
+                     .replace(/(^|[\s+\-=(\[,;:]|\\[,;!]|\\quad\b|\\qquad\b)\^\\circ/g, '$1{}^{\\circ}');
+        return isDisp ? '$$' + inner + '$$' : '$' + inner + '$';
+    });
+}
+
 function renderExamDetailQuestions() {
     const qContainer = document.getElementById('ed-modal-questions');
     if (!qContainer) return;
@@ -5790,7 +5806,7 @@ function renderExamDetailQuestions() {
         else if (qType === 'tf') typeBadge = '<span class="ed-q-type" style="color:var(--purple)">Phần II: Đúng / Sai</span>';
         else if (qType === 'short') typeBadge = '<span class="ed-q-type" style="color:var(--green)">Phần III: Trả lời ngắn</span>';
 
-        let qText = q.question || '';
+        let qText = normalizeAdminModalMath(q.question || '');
         // Chuẩn hóa đường dẫn ảnh tương đối sang CDN học sinh
         qText = qText.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
 
@@ -5800,7 +5816,7 @@ function renderExamDetailQuestions() {
             bodyHtml = `<div class="ed-opts-grid">
                 ${['A','B','C','D'].map(k => {
                     const isC = String(q.correct).trim().toUpperCase() === k;
-                    let optTxt = opts[k] || '';
+                    let optTxt = normalizeAdminModalMath(opts[k] || '');
                     optTxt = optTxt.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
                     return `<div class="ed-opt-item ${isC ? 'is-correct' : ''}">
                         <strong style="width:20px">${k}.</strong>
@@ -5815,7 +5831,7 @@ function renderExamDetailQuestions() {
             const pos = { A: 0, B: 1, C: 2, D: 3 };
             bodyHtml = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:10px">
                 ${['A','B','C','D'].map(k => {
-                    const stmt = opts[k] || '';
+                    const stmt = normalizeAdminModalMath(opts[k] || '');
                     if (!stmt) return '';
                     const ans = correctStr[pos[k]] === 'Đ' ? 'ĐÚNG' : 'SAI';
                     const ansColor = ans === 'ĐÚNG' ? 'var(--green)' : 'var(--red)';
@@ -5831,7 +5847,7 @@ function renderExamDetailQuestions() {
 
         let hdHtml = '';
         if (q.giaiThich && String(q.giaiThich).trim()) {
-            let hdText = String(q.giaiThich).trim();
+            let hdText = normalizeAdminModalMath(String(q.giaiThich).trim());
             hdText = hdText.replace(/src="(assets\/[^"]+)"/g, 'src="https://vatlyxuantruong.io.vn/$1"');
             hdHtml = `<div class="ed-solution-box">
                 <div style="font-weight:700;color:#d97706;margin-bottom:4px;display:flex;align-items:center;gap:6px">
@@ -5858,8 +5874,13 @@ function renderExamDetailQuestions() {
             renderMathInElement(qContainer, {
                 delimiters: [
                     { left: '$$', right: '$$', display: true },
-                    { left: '$', right: '$', display: false }
-                ]
+                    { left: '$', right: '$', display: false },
+                    { left: '\\(', right: '\\)', display: false },
+                    { left: '\\[', right: '\\]', display: true }
+                ],
+                ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'option', 'svg'],
+                throwOnError: false,
+                strict: 'ignore'
             });
         } catch(e) {}
     }
