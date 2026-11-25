@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/wmf@1.0.2/dist/wmf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="assets/thithu-5-exams-pack.js?v=20261125"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -5198,12 +5199,84 @@ function renderPreview2(skipped){
 
 let examListData = [];
 
+function mergeThiThu5PackIntoExamList() {
+    const pack = Array.isArray(window.VLXT_THITHU_5_EXAMS) ? window.VLXT_THITHU_5_EXAMS : [];
+    if (!pack.length) return;
+    if (!Array.isArray(examListData)) examListData = [];
+    const seen = new Set(examListData.map(x => String(x.examId || '').trim()));
+    pack.forEach(item => {
+        const eid = String(item.examId || '').trim();
+        if (!eid || seen.has(eid)) return;
+        seen.add(eid);
+        examListData.push(Object.assign({}, item, { _localCatalogOnly: true }));
+    });
+}
+
+async function syncThiThu5ItemToCloud(examId) {
+    const list = Array.isArray(window.VLXT_THITHU_5_EXAMS) ? window.VLXT_THITHU_5_EXAMS : [];
+    const pack = list.find(x => x.examId === examId);
+    if (!pack) {
+        toast('Không tìm thấy dữ liệu gói đề cục bộ cho mã ' + examId, 'err');
+        return;
+    }
+    const qs = Array.isArray(pack.questions) ? pack.questions : [];
+    if (!confirm(`Đẩy đề "${pack.tenDe}" (${qs.length} câu hỏi chuẩn Bộ 2025–2026) lên Google Sheets Cloud ngay?`)) return;
+    try {
+        toast('Đang đồng bộ đề "' + (pack.codeLabel || pack.examId) + '" lên Cloud...', 'ok');
+        const okExam = await postAdminWriteWithRetry({
+            action: 'saveexam',
+            examId: pack.examId,
+            tenDe: pack.tenDe,
+            thoiGian: pack.thoiGian || 50,
+            trangThai: pack.trangThai || 'mo',
+            videoUrl: pack.videoUrl || '',
+            moTa: pack.moTa || '',
+            loaiDe: pack.loaiDe || 'thithu',
+            lop: pack.lop || 12,
+            hienThi: pack.hienThi || 'hien'
+        });
+        if (!okExam) {
+            toast('Không thể lưu metadata đề lên Google Sheets.', 'err');
+            return;
+        }
+        await new Promise(r => setTimeout(r, 350));
+        const formattedQs = qs.map((q, idx) => ({
+            id: q.id || (idx + 1),
+            type: q.type || 'mc',
+            question: q.question || '',
+            optA: (q.options && q.options.A) || '',
+            optB: (q.options && q.options.B) || '',
+            optC: (q.options && q.options.C) || '',
+            optD: (q.options && q.options.D) || '',
+            correct: q.correct || '',
+            giaiThich: q.giaiThich || '',
+            chatLuong: 'tinh'
+        }));
+        const okQs = await postAdminWriteWithRetry({
+            action: 'savequestions',
+            examId: pack.examId,
+            clearFirst: true,
+            questions: formattedQs
+        });
+        if (!okQs) {
+            toast('Đã lưu metadata đề nhưng chưa lưu được 28 câu hỏi lên Cloud.', 'err');
+            return;
+        }
+        invalidateCache('vlxt_admin_soande');
+        toast(`🎉 Đã đẩy thành công "${pack.codeLabel || pack.examId}" (${formattedQs.length} câu) lên Cloud!`, 'ok');
+        await loadExamList(true);
+    } catch (err) {
+        toast('Lỗi đồng bộ Cloud: ' + err.message, 'err');
+    }
+}
+
 async function loadExamList(forceRefresh) {
     const CKEY = 'vlxt_admin_soande';
     if (!forceRefresh) {
         const cached = aCache(CKEY);
         if(cached){
             examListData = cached.d || [];
+            mergeThiThu5PackIntoExamList();
             renderExamList(); populateExamSelect();
             if(aFresh(cached)) return examListData;
         }
@@ -5214,6 +5287,7 @@ async function loadExamList(forceRefresh) {
         examListData = (j.ok && j.data) ? j.data : [];
         aSetCache(CKEY, examListData);
     } catch(e) { if(!examListData.length) examListData = []; }
+    mergeThiThu5PackIntoExamList();
     renderExamList();
     populateExamSelect();
     return examListData;
@@ -5406,6 +5480,7 @@ function renderExamList() {
                         <button class="ptt-card-btn toggle" style="color:${isHien?'#6b7280':'#10b981'}" onclick="toggleExamVisibility('${ex.examId}','${isHien?'hien':'an'}')">${isHien?'<i class="fa-solid fa-eye-slash"></i> Ẩn':'<i class="fa-solid fa-eye"></i> Hiện'}</button>
                         <button class="ptt-card-btn toggle" onclick="toggleExamStatus('${ex.examId}','${st}')">${st==='mo'?'<i class="fa-solid fa-lock"></i> Khóa':'<i class="fa-solid fa-lock-open"></i> Mở'}</button>
                         <button class="ptt-card-btn view" onclick="openExamDetailModal('${ex.examId}')"><i class="fa-solid fa-eye"></i> Xem đề</button>
+                        ${ex._localCatalogOnly ? `<button class="ptt-card-btn toggle" style="color:#0284c7" onclick="syncThiThu5ItemToCloud('${ex.examId}')"><i class="fa-solid fa-cloud-arrow-up"></i> Đẩy Cloud</button>` : ''}
                         <button class="ptt-card-btn del" onclick="confirmDeleteExam('${ex.examId}','${safeTen}')"><i class="fa-solid fa-trash"></i> Xóa</button>
                     </div>
                 </div>`;
@@ -5652,9 +5727,19 @@ async function openExamDetailModal(examId) {
 
         // Fallback sang Google Apps Script nếu không tải được từ CDN
         if (!qData || !Array.isArray(qData) || !qData.length) {
-            const rGas = await fetch(DB_URL + '?type=examquestions&examId=' + encodeURIComponent(examId));
-            const jGas = await rGas.json();
-            qData = (jGas.ok && Array.isArray(jGas.data)) ? jGas.data : (Array.isArray(jGas) ? jGas : []);
+            try {
+                const rGas = await fetch(DB_URL + '?type=examquestions&examId=' + encodeURIComponent(examId));
+                const jGas = await rGas.json();
+                qData = (jGas.ok && Array.isArray(jGas.data)) ? jGas.data : (Array.isArray(jGas) ? jGas : []);
+            } catch(eGas) {}
+        }
+
+        // Fallback sang gói 5 đề thi thử chuẩn Bộ cục bộ trước khi đẩy Cloud/deploy CDN
+        if ((!qData || !Array.isArray(qData) || !qData.length) && Array.isArray(window.VLXT_THITHU_5_EXAMS)) {
+            const localPack = window.VLXT_THITHU_5_EXAMS.find(x => x.examId === examId);
+            if (localPack && Array.isArray(localPack.questions)) {
+                qData = localPack.questions;
+            }
         }
 
         currentExamQuestions = Array.isArray(qData) ? qData : [];
