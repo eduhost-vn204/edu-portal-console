@@ -241,12 +241,24 @@
                     <input id="cfg-start" type="datetime-local" class="inp" value="2026-11-25T00:00">
                 </div>
                 <div>
-                    <label class="field-lbl">Kết thúc</label>
-                    <input id="cfg-end" type="datetime-local" class="inp" value="2026-12-05T23:59">
+                    <label class="field-lbl">Kết thúc (Evergreen)</label>
+                    <input id="cfg-end" type="datetime-local" class="inp" value="2027-06-30T23:59">
                 </div>
                 <div>
-                    <label class="field-lbl">Số ngày đếm ngược</label>
-                    <input id="cfg-days" type="number" min="1" max="30" class="inp" value="7">
+                    <label class="field-lbl">Số ngày gốc</label>
+                    <input id="cfg-days" type="number" min="1" max="30" class="inp" value="3">
+                </div>
+                <div>
+                    <label class="field-lbl">Thưởng Đánh giá (+d)</label>
+                    <input id="cfg-bonus-fb" type="number" min="0" max="14" class="inp" value="2">
+                </div>
+                <div>
+                    <label class="field-lbl">Thưởng Mời bạn (+d)</label>
+                    <input id="cfg-bonus-ref" type="number" min="0" max="14" class="inp" value="2">
+                </div>
+                <div>
+                    <label class="field-lbl">Trần thưởng tối đa</label>
+                    <input id="cfg-max-bonus" type="number" min="0" max="60" class="inp" value="14">
                 </div>
                 <div>
                     <label class="field-lbl">Link Nhóm Zalo</label>
@@ -317,6 +329,7 @@
             <button type="button" class="tab-btn" onclick="switchTab('students', this)">🧭 Hành Trình Từng HS</button>
             <button type="button" class="tab-btn" onclick="switchTab('reservations', this)">📌 Giữ Suất VIP <span id="tab-badge-rsv" class="tag tag-amber">0</span></button>
             <button type="button" class="tab-btn" onclick="switchTab('feedback', this)">🐞 Báo Lỗi &amp; Góp Ý <span id="tab-badge-fb" class="tag tag-red">0</span></button>
+            <button type="button" class="tab-btn" onclick="switchTab('viral', this)">🚀 Viral Lớp Học &amp; Khảo Sát <span id="tab-badge-viral" class="tag tag-green">0</span></button>
             <button type="button" class="tab-btn" onclick="switchTab('audit', this)">🛡️ Lỗi JS &amp; Nhật Ký Admin</button>
         </div>
 
@@ -427,7 +440,32 @@
             </div>
         </section>
 
-        <!-- TAB 6: AUDIT & JS ERRORS -->
+        <!-- TAB 6: VIRAL GROWTH & SURVEYS -->
+        <section id="pane-viral" class="tab-pane">
+            <div class="kpi-grid" id="viral-kpi-grid" style="margin-bottom:16px"></div>
+            <div class="charts-2">
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">🏆 Bảng Xếp Hạng Học Sinh Mời Bạn Cùng Lớp</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Học sinh</th><th>Mã Ref</th><th>Đã đăng ký</th><th>Đã thi hợp lệ</th><th>Thưởng (+ngày)</th><th>Huy hiệu</th></tr></thead>
+                            <tbody id="tbody-viral-leaders"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:14.5px;font-weight:800;margin-bottom:10px">💡 Khảo Sát Tính Năng Yêu Thích &amp; Mục Tiêu Điểm</h3>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>Tính năng / Mục tiêu</th><th>Lượt chọn</th><th>Tỷ trọng</th></tr></thead>
+                            <tbody id="tbody-survey-insights"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: AUDIT & JS ERRORS -->
         <section id="pane-audit" class="tab-pane">
             <div class="charts-2">
                 <div class="card">
@@ -456,7 +494,7 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec';
 const RTDB_SYS = 'https://edu-portal-live-default-rtdb.firebaseio.com/support_chats/_vlxt_system';
 
-let DATA = { config: {}, events: [], sessions: [], presence: [], reservations: [], feedback: [], adminAudit: [] };
+let DATA = { config: {}, events: [], sessions: [], presence: [], reservations: [], feedback: [], adminAudit: [], referralsMap: {}, growthProfiles: [] };
 let timeFilter = 'all';
 let activeTab = 'overview';
 let selectedStudentKey = '';
@@ -554,14 +592,16 @@ function objToList(obj) {
 }
 
 async function refreshAllData() {
-    const [cfg, ev, sess, pres, rsv, fb, aud] = await Promise.all([
+    const [cfg, ev, sess, pres, rsv, fb, aud, refs, gps] = await Promise.all([
         fetchNode('campaign_config'),
         fetchNode('events'),
         fetchNode('sessions'),
         fetchNode('presence'),
         fetchNode('vip_reservations'),
         fetchNode('feedback_reports'),
-        fetchNode('admin_audit')
+        fetchNode('admin_audit'),
+        fetchNode('referrals'),
+        fetchNode('growth_profiles')
     ]);
     DATA.config = cfg && typeof cfg === 'object' ? cfg : {};
     DATA.events = objToList(ev).sort((a, b) => (b.ts || 0) - (a.ts || 0));
@@ -570,6 +610,8 @@ async function refreshAllData() {
     DATA.reservations = objToList(rsv).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     DATA.feedback = objToList(fb).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     DATA.adminAudit = objToList(aud).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    DATA.referralsMap = (refs && typeof refs === 'object') ? refs : {};
+    DATA.growthProfiles = objToList(gps).sort((a, b) => (b.qualifiedReferralsCount || 0) - (a.qualifiedReferralsCount || 0));
 
     populateCampaignForm();
     renderKpis();
@@ -582,26 +624,35 @@ function populateCampaignForm() {
     const st = document.getElementById('cfg-start');
     const ed = document.getElementById('cfg-end');
     const dy = document.getElementById('cfg-days');
+    const fbB = document.getElementById('cfg-bonus-fb');
+    const rfB = document.getElementById('cfg-bonus-ref');
+    const mxB = document.getElementById('cfg-max-bonus');
     const zg = document.getElementById('cfg-zalo-group');
     const badge = document.getElementById('nav-campaign-status');
     const isEnabled = c.enabled !== false;
     if (en) en.value = isEnabled ? 'true' : 'false';
     if (st && c.startAt) st.value = String(c.startAt).slice(0, 16);
     if (ed && c.endAt) ed.value = String(c.endAt).slice(0, 16);
-    if (dy && c.durationDays) dy.value = Number(c.durationDays) || 7;
+    if (dy) dy.value = Number(c.durationDays != null ? c.durationDays : 3);
+    if (fbB) fbB.value = Number(c.bonusDaysFeedback != null ? c.bonusDaysFeedback : 2);
+    if (rfB) rfB.value = Number(c.bonusDaysReferral != null ? c.bonusDaysReferral : 2);
+    if (mxB) mxB.value = Number(c.maxBonusDays != null ? c.maxBonusDays : 14);
     if (zg && c.zaloGroupUrl) zg.value = c.zaloGroupUrl;
-    if (badge) badge.textContent = isEnabled ? 'Chiến dịch 25/11–05/12: ĐANG BẬT' : 'Chiến dịch: TẠM ĐÓNG';
+    if (badge) badge.textContent = isEnabled ? ('Chiến dịch ' + (Number(c.durationDays || 3)) + 'd + Viral: ĐANG BẬT') : 'Chiến dịch: TẠM ĐÓNG';
 }
 
 async function saveCampaignConfig() {
     const msg = document.getElementById('cfg-save-msg');
     const sRaw = document.getElementById('cfg-start').value || '2026-11-25T00:00';
-    const eRaw = document.getElementById('cfg-end').value || '2026-12-05T23:59';
+    const eRaw = document.getElementById('cfg-end').value || '2027-06-30T23:59';
     const payload = {
         enabled: document.getElementById('cfg-enabled').value === 'true',
         startAt: sRaw.length === 16 ? (sRaw + ':00+07:00') : sRaw,
         endAt: eRaw.length === 16 ? (eRaw + ':59+07:00') : eRaw,
-        durationDays: Number(document.getElementById('cfg-days').value || 7),
+        durationDays: Number(document.getElementById('cfg-days').value || 3),
+        bonusDaysFeedback: Number((document.getElementById('cfg-bonus-fb') || {}).value || 2),
+        bonusDaysReferral: Number((document.getElementById('cfg-bonus-ref') || {}).value || 2),
+        maxBonusDays: Number((document.getElementById('cfg-max-bonus') || {}).value || 14),
         zaloGroupUrl: (document.getElementById('cfg-zalo-group').value || 'https://zalo.me/g/str1pllhp4uxa3rtvnou').trim(),
         zaloTeacherUrl: 'https://zalo.me/0964885920',
         zaloTeacherPhone: '0964.885.920',
@@ -711,6 +762,13 @@ function renderKpis() {
     document.getElementById('kpi-feedback-sub').textContent = 'Tổng ' + DATA.feedback.length + ' báo lỗi & góp ý';
     document.getElementById('tab-badge-rsv').textContent = String(newRsv);
     document.getElementById('tab-badge-fb').textContent = String(fbOpen);
+    let qRefTotal = 0;
+    Object.keys(DATA.referralsMap || {}).forEach(invKey => {
+        const sub = DATA.referralsMap[invKey] || {};
+        Object.keys(sub).forEach(k => { if (sub[k] && sub[k].status === 'qualified') qRefTotal++; });
+    });
+    const vBadge = document.getElementById('tab-badge-viral');
+    if (vBadge) vBadge.textContent = String(qRefTotal);
 }
 
 function renderActiveTab() {
@@ -726,6 +784,8 @@ function renderActiveTab() {
         renderReservations();
     } else if (activeTab === 'feedback') {
         renderFeedback();
+    } else if (activeTab === 'viral') {
+        renderViralTab();
     } else if (activeTab === 'audit') {
         renderAudit();
     }
@@ -965,17 +1025,19 @@ function renderFeedback() {
         return true;
     });
     document.getElementById('tbody-feedback').innerHTML = rows.length ? rows.map(f => {
-        const isBug = f.type === 'bug_report';
+        const isBug = f.type === 'bug_report' || f.type === 'bug';
         const ctx = f.context || {};
+        const senderName = f.hoten || f.contactName || 'HS';
+        const senderPhone = f.sdt || f.contactPhone || '—';
         return `<tr>
-            <td><span class="tag ${isBug ? 'tag-red' : 'tag-blue'}">${isBug ? '🐞 Báo lỗi' : (f.type === 'zalo_handoff' ? '💬 Zalo' : '💡 Đóng góp')}</span><div style="font-size:11px;color:var(--muted);margin-top:4px">${fmtTime(f.createdAt)}</div></td>
-            <td><b>${esc(f.hoten || 'HS')}</b><div style="font-size:12px">${esc(f.sdt || '—')}</div><a href="${zaloHref(f.sdt)}" target="_blank" rel="noopener" style="font-size:11.5px;font-weight:700">💬 Zalo HS</a></td>
-            <td><div style="font-weight:700;font-size:12px;color:var(--sub)">${esc(f.category || '')}</div><div style="white-space:pre-wrap;margin-top:2px">${esc(f.message || '')}</div></td>
+            <td><span class="tag ${isBug ? 'tag-red' : 'tag-blue'}">${isBug ? '🐞 Báo lỗi' : (f.type === 'zalo_handoff' ? '💬 Zalo' : '💡 Đóng góp')}</span>${f.isMissionFeedback ? '<div style="margin-top:4px"><span class="tag tag-green">🎁 NV1 (+2d)</span></div>' : ''}<div style="font-size:11px;color:var(--muted);margin-top:4px">${fmtTime(f.createdAt)}</div></td>
+            <td><b>${esc(senderName)}</b><div style="font-size:12px">${esc(senderPhone)}</div><a href="${zaloHref(senderPhone)}" target="_blank" rel="noopener" style="font-size:11.5px;font-weight:700">💬 Zalo HS</a></td>
+            <td><div style="font-weight:700;font-size:12px;color:var(--sub)">${esc(f.category || '')}${f.rating ? (' · ' + f.rating + '★') : ''}</div>${(f.favoriteFeature || f.targetScore) ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:4px 0">${f.favoriteFeature ? `<span class="tag tag-blue">❤️ ${esc(f.favoriteFeature)}</span>` : ''}${f.targetScore ? `<span class="tag tag-amber">🎯 ${esc(f.targetScore)}</span>` : ''}</div>` : ''}<div style="white-space:pre-wrap;margin-top:2px">${esc(f.message || '')}</div></td>
             <td style="font-size:11.5px;color:var(--sub)">
                 <div>Trang: <b>${esc(f.page || '—')}</b></div>
-                ${ctx.courseName ? `<div>Khóa/Bài: ${esc(ctx.courseName)} · ${esc(ctx.lessonTitle || '')}</div>` : ''}
+                ${ctx.courseName ? `<div>Khóa/Bài: ${esc(ctx.courseName)} · ${esc(ctx.lessonTitle || ctx.lessonName || '')}</div>` : ''}
                 ${ctx.examTitle ? `<div>Đề/Câu: ${esc(ctx.examTitle)} ${ctx.questionNum ? ('(Câu ' + ctx.questionNum + ')') : ''}</div>` : ''}
-                <div>Thiết bị: ${esc(f.deviceType || '—')}</div>
+                <div>Thiết bị: ${esc(f.deviceType || f.deviceInfo || '—')}</div>
                 ${f.lastError ? `<div style="color:var(--red)">JS Error: ${esc(f.lastError)}</div>` : ''}
             </td>
             <td style="min-width:190px">
@@ -1013,6 +1075,99 @@ async function saveFeedbackNote(key) {
     if (it) it.adminNote = note;
 }
 
+function renderViralTab() {
+    let totalRegistered = 0;
+    let totalQualified = 0;
+    const byInviter = {};
+    Object.keys(DATA.referralsMap || {}).forEach(invKey => {
+        const sub = DATA.referralsMap[invKey] || {};
+        Object.keys(sub).forEach(k => {
+            const it = sub[k];
+            if (!it || typeof it !== 'object') return;
+            totalRegistered++;
+            if (it.status === 'qualified') totalQualified++;
+            if (!byInviter[invKey]) byInviter[invKey] = { registered: 0, qualified: 0 };
+            byInviter[invKey].registered++;
+            if (it.status === 'qualified') byInviter[invKey].qualified++;
+        });
+    });
+
+    const gpByKey = {};
+    (DATA.growthProfiles || []).forEach(g => {
+        const k = g.actorKey || g._key;
+        if (k) gpByKey[k] = g;
+    });
+
+    const leaders = Array.from(new Set([...Object.keys(gpByKey), ...Object.keys(byInviter)])).map(k => {
+        const gp = gpByKey[k] || {};
+        const rf = byInviter[k] || {};
+        const reg = Math.max(Number(gp.registeredReferralsCount || 0), Number(rf.registered || 0));
+        const qual = Math.max(Number(gp.qualifiedReferralsCount || 0), Number(rf.qualified || 0));
+        return {
+            actorKey: k,
+            hoten: gp.hoten || k,
+            sdt: gp.sdt || '',
+            lop: gp.lop || '',
+            refCode: gp.refCode || '—',
+            registered: reg,
+            qualified: qual,
+            totalBonusDays: Number(gp.totalBonusDays || 0),
+            feedbackDone: !!gp.feedbackMissionDone
+        };
+    }).filter(x => x.registered > 0 || x.qualified > 0 || x.feedbackDone)
+      .sort((a, b) => (b.qualified - a.qualified) || (b.registered - a.registered));
+
+    const missionFbCount = DATA.feedback.filter(f => f.isMissionFeedback || f.category === 'mission_feedback').length;
+    const totalProfiles = Math.max(DATA.growthProfiles.length, DATA.sessions.length, 1);
+    const kFactor = (totalQualified / totalProfiles).toFixed(2);
+    const convPct = totalRegistered ? Math.round((totalQualified / totalRegistered) * 100) : 0;
+
+    const kpiEl = document.getElementById('viral-kpi-grid');
+    if (kpiEl) {
+        kpiEl.innerHTML = [
+            `<div class="kpi-card"><div class="kpi-top"><span>👥 Lượt Bạn Mới Đăng Ký Qua Link</span></div><div class="kpi-val">${totalRegistered}</div><div class="kpi-sub">Bạn của học sinh bấm link thách đấu</div></div>`,
+            `<div class="kpi-card"><div class="kpi-top"><span>✅ Hoàn Thành Đề Đầu (+2d Đôi)</span></div><div class="kpi-val" style="color:var(--green)">${totalQualified}</div><div class="kpi-sub">Tỷ lệ thi thật: ${convPct}%</div></div>`,
+            `<div class="kpi-card"><div class="kpi-top"><span>🚀 Hệ Số Lây Lan (K-Factor)</span></div><div class="kpi-val" style="color:var(--primary)">${kFactor}</div><div class="kpi-sub">Số bạn thi thật / học sinh hoạt động</div></div>`,
+            `<div class="kpi-card"><div class="kpi-top"><span>⭐ Đánh Giá Nhiệm Vụ 1</span></div><div class="kpi-val" style="color:var(--gold)">${missionFbCount}</div><div class="kpi-sub">Góp ý sau khi hoàn thành ít nhất 1 đề</div></div>`
+        ].join('');
+    }
+
+    const tbL = document.getElementById('tbody-viral-leaders');
+    if (tbL) {
+        tbL.innerHTML = leaders.length ? leaders.slice(0, 40).map(l => `<tr>
+            <td><b>${esc(l.hoten)}</b><div style="font-size:11.5px;color:var(--muted)">${esc(l.sdt)} ${l.lop ? ('· Lớp ' + esc(l.lop)) : ''}</div></td>
+            <td><span class="tag tag-gray">${esc(l.refCode)}</span></td>
+            <td>${l.registered}</td>
+            <td><b style="color:var(--green)">${l.qualified}</b></td>
+            <td>+${l.totalBonusDays} ngày</td>
+            <td>${l.qualified >= 3 ? '<span class="tag tag-amber">🏆 Thủ Lĩnh Lớp</span>' : (l.feedbackDone ? '<span class="tag tag-blue">⭐ Đã Đánh Giá</span>' : '<span class="tag tag-gray">Đang tích lũy</span>')}</td>
+        </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">Chưa có lượt mời bạn cùng lớp nào.</td></tr>';
+    }
+
+    const featMap = {};
+    let featTotal = 0;
+    DATA.feedback.forEach(f => {
+        if (f.favoriteFeature) {
+            const k = 'Tính năng: ' + f.favoriteFeature;
+            featMap[k] = (featMap[k] || 0) + 1;
+            featTotal++;
+        }
+        if (f.targetScore) {
+            const k = 'Mục tiêu: ' + f.targetScore;
+            featMap[k] = (featMap[k] || 0) + 1;
+        }
+    });
+    const featRows = Object.keys(featMap).sort((a, b) => featMap[b] - featMap[a]);
+    const tbS = document.getElementById('tbody-survey-insights');
+    if (tbS) {
+        tbS.innerHTML = featRows.length ? featRows.map(k => `<tr>
+            <td><b>${esc(k)}</b></td>
+            <td>${featMap[k]}</td>
+            <td>${featTotal ? Math.round((featMap[k] / Math.max(featTotal, 1)) * 100) : 0}%</td>
+        </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;color:var(--muted)">Chưa có khảo sát Nhiệm vụ 1 nào.</td></tr>';
+    }
+}
+
 function renderAudit() {
     const errs = getFilteredEvents().filter(e => e.type === 'js_error').slice(0, 50);
     document.getElementById('tbody-js-errors').innerHTML = errs.length ? errs.map(e => `<tr>
@@ -1048,11 +1203,13 @@ function exportAnalyticsExcel() {
     if (typeof XLSX === 'undefined') return;
     const wb = XLSX.utils.book_new();
     const rsvRows = DATA.reservations.map(r => ({ ThoiGian: fmtTime(r.createdAt), HoTen: r.hoten, SDT: r.sdt, Lop: r.lop, Goi: r.planCode, LyDo: r.reasonSelected, Trigger: r.lastTrigger, TrangThai: r.status }));
-    const fbRows = DATA.feedback.map(f => ({ ThoiGian: fmtTime(f.createdAt), Loai: f.type, NguoiGui: f.hoten, SDT: f.sdt, Trang: f.page, NoiDung: f.message, TrangThai: f.status }));
+    const fbRows = DATA.feedback.map(f => ({ ThoiGian: fmtTime(f.createdAt), Loai: f.type, NguoiGui: f.hoten || f.contactName, SDT: f.sdt || f.contactPhone, TinhNangYeuThich: f.favoriteFeature || '', MucTieuDiem: f.targetScore || '', Trang: f.page, NoiDung: f.message, TrangThai: f.status }));
     const sessRows = DATA.sessions.map(s => ({ Phien: s.sessionId, SDT: s.sdt, HoTen: s.hoten, TongGiay: s.totalActiveSec, Nguon: s.firstSource, TriggerCuoi: s.lastTrigger }));
+    const viralRows = (DATA.growthProfiles || []).map(g => ({ HoTen: g.hoten, SDT: g.sdt, Lop: g.lop, MaGioiThieu: g.refCode, DaDangKy: g.registeredReferralsCount || 0, DaThiThat: g.qualifiedReferralsCount || 0, NgayThuong: g.totalBonusDays || 0, DanhGiaNV1: g.feedbackMissionDone ? 'Co' : 'Chua' }));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rsvRows.length ? rsvRows : [{ Empty: '0' }]), 'GiuSuatVIP');
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(fbRows.length ? fbRows : [{ Empty: '0' }]), 'BaoLoi_GopY');
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sessRows.length ? sessRows : [{ Empty: '0' }]), 'HanhTrinhHS');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(viralRows.length ? viralRows : [{ Empty: '0' }]), 'Viral_MoiBan');
     XLSX.writeFile(wb, 'vlxt-phan-tich-hanh-vi.xlsx');
 }
 
