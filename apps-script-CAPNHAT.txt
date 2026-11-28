@@ -379,6 +379,13 @@ function registerUser(data) {
     devSheet.appendRow([deviceId, String(data.sdt), data.hoten, now.getTime(), trialExpiry, 0]);
   }
   const token = generateUserToken(data.sdt, { loaiTK: loaiTK, trialExpiry: trialExpiry });
+  notifyTelegramAdmin(
+    '🆕 TÀI KHOẢN MỚI\n' +
+    'Họ tên: ' + String(data.hoten || '') + '\n' +
+    'Lớp: ' + String(data.lop || '') + '\n' +
+    'SĐT: ' + dispSdt(data.sdt) +
+    formatTelegramZaloLink(data.sdt)
+  );
   return jsonOut({ ok: true, msg: 'Đăng ký thành công! Bạn có 7 ngày dùng thử VIP miễn phí.', user: {
     sdt: data.sdt, hoten: data.hoten, lop: data.lop,
     lpTotal: 0, diemGame: 0, loaiTK: loaiTK, trialExpiry: trialExpiry, mienVideo: false, tracNghiemVideo: false,
@@ -592,6 +599,11 @@ function loginGoogle(data) {
     devSheet.appendRow([deviceId, email, hoten, now.getTime(), trialExpiry, 0]);
   }
   const token = generateUserToken(email, { loaiTK: loaiTK, trialExpiry: trialExpiry });
+  notifyTelegramAdmin(
+    '🆕 TÀI KHOẢN GOOGLE MỚI\n' +
+    'Họ tên: ' + String(hoten || '') + '\n' +
+    'Email: ' + String(email || '')
+  );
   return jsonOut({ ok: true, user: {
     sdt: email, hoten: hoten,
     lop: 'Google', email: email,
@@ -3281,20 +3293,62 @@ function sameTaiKhoan(a, b) {
   return da !== '' && da === db;
 }
 
+function formatTelegramZaloLink(sdt) {
+  const raw = String(sdt || '').trim();
+  if (!raw || raw.indexOf('@') !== -1) return '';
+  let d = raw.replace(/\D/g, '');
+  if (d.length === 9 && /^[1-9]/.test(d)) d = '0' + d;
+  return d.length >= 9 ? ('\nZalo: https://zalo.me/' + d) : '';
+}
+
+function notifyTelegramAdmin(text) {
+  try {
+    const props = PropertiesService.getScriptProperties();
+    const token = String(props.getProperty('TELEGRAM_BOT_TOKEN') || '').trim();
+    const chatId = String(props.getProperty('TELEGRAM_CHAT_ID') || '').trim();
+    if (!token || !chatId || typeof UrlFetchApp === 'undefined') return false;
+    const res = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify({
+        chat_id: chatId,
+        text: String(text || '').slice(0, 3800),
+        disable_web_page_preview: true
+      }),
+      muteHttpExceptions: true
+    });
+    return res && res.getResponseCode && res.getResponseCode() >= 200 && res.getResponseCode() < 300;
+  } catch (e) {
+    return false;
+  }
+}
+
 // ── POST (web học sinh tự gọi): ghi 1 dòng hoạt động ──
 function logHoatDong(data) {
   const sdt = String(data.sdt || '').trim();
   if (!sdt) return jsonOut({ ok: false });
   const sheet = getOrCreate('HoatDong', ['sdt','thoigian','hanhdong','chitiet']);
   sheet.getRange(sheet.getLastRow() + 1, 1, 1, 1).setNumberFormat('@');
+  const actClean = String(data.hanhdong || '').slice(0, 100);
+  const detClean = String(data.chitiet  || '').slice(0, 300);
   sheet.appendRow([
     sdt,
     new Date().toISOString(),
-    String(data.hanhdong || '').slice(0, 100),
-    String(data.chitiet  || '').slice(0, 300)
+    actClean,
+    detClean
   ]);
   const n = sheet.getLastRow();
   if (n > 20000) sheet.deleteRows(2, 2000);
+  const actLow = actClean.trim().toLowerCase();
+  if (actLow === 'góp ý / báo lỗi' || actLow === 'giữ suất vip' || actLow === 'nộp bài thi') {
+    const icon = actLow === 'góp ý / báo lỗi' ? '📩' : (actLow === 'giữ suất vip' ? '👑' : '📝');
+    notifyTelegramAdmin(
+      icon + ' ' + actClean.trim().toUpperCase() + '\n' +
+      'Tài khoản: ' + dispSdt(sdt) + '\n' +
+      'Chi tiết: ' + detClean +
+      formatTelegramZaloLink(sdt)
+    );
+  }
   return jsonOut({ ok: true });
 }
 
