@@ -956,6 +956,7 @@
         }
 
     </style>
+    <link rel="stylesheet" href="assets/admin-lucian-uxui.css?v=20261128">
 </head>
 <body>
 
@@ -1021,19 +1022,23 @@
     </div>
     <div class="drawer-sub">HỆ THỐNG QUẢN TRỊ ADMIN</div>
     <nav class="drawer-nav">
-        <a href="index.html" class="drawer-item" data-module="baihoc"><i class="fa-solid fa-book-open"></i><span>Quản lý bài học</span></a>
-        <a href="quan-ly-live.html" class="drawer-item" data-module="liverecord"><i class="fa-solid fa-satellite-dish" style="color:#dc2626"></i><span>Live & Xem lại</span></a>
+        <div class="drawer-group-label">Tổng quan & Học sinh</div>
+        <a href="index.html" class="drawer-item" data-module="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Tổng quan Dashboard</span></a>
+        <a href="phan-tich-hanh-vi.html" class="drawer-item" data-module="analytics"><i class="fa-solid fa-chart-line" style="color:#0b84f3"></i><span>Phân tích hành vi &amp; VIP</span></a>
+        <a href="tai-khoan-hoc-sinh.html" class="drawer-item" data-module="taikhoan"><i class="fa-solid fa-users"></i><span>Tài khoản học sinh</span></a>
+        <a href="ket-qua-thi.html" class="drawer-item active" data-module="ketqua" aria-current="page"><i class="fa-solid fa-trophy"></i><span>Kết quả thi</span></a>
+        <a href="ho-tro-hoc-tap.html" class="drawer-item" data-module="hotro"><i class="fa-solid fa-comment-dots"></i><span>Hỗ trợ &amp; Góp ý HS</span><span id="ht-drawer-badge" style="display:none" class="drawer-badge"></span></a>
+        <div class="drawer-group-label">Nội dung & Giảng dạy</div>
+        <a href="quan-ly-bai-hoc.html" class="drawer-item" data-module="baihoc"><i class="fa-solid fa-book-open"></i><span>Quản lý bài học</span></a>
         <a href="pham-vi-giang-day.html" class="drawer-item" data-module="teachingscope"><i class="fa-solid fa-chalkboard-user"></i><span>Phạm vi giảng dạy</span></a>
         <a href="phong-thi-thu.html" class="drawer-item" data-module="phongthithu"><i class="fa-solid fa-clipboard-check"></i><span>Phòng thi thử</span></a>
         <a href="phong-kiem-tra.html" class="drawer-item" data-module="soande"><i class="fa-solid fa-file-pen"></i><span>Phòng kiểm tra</span></a>
         <a href="ngan-hang-de.html" class="drawer-item" data-module="nganhang"><i class="fa-solid fa-database"></i><span>Ngân hàng đề</span></a>
-        <a href="ket-qua-thi.html" class="drawer-item" data-module="ketqua"><i class="fa-solid fa-trophy"></i><span>Kết quả thi</span></a>
-        <a href="lich-live.html" class="drawer-item" data-module="lichlive"><i class="fa-solid fa-satellite-dish"></i><span>Lịch Live</span></a>
+        <div class="drawer-group-label">Lớp Live & Hệ thống</div>
+        <a href="quan-ly-live.html" class="drawer-item" data-module="liverecord"><i class="fa-solid fa-satellite-dish" style="color:#ef4444"></i><span>Live &amp; Xem lại</span></a>
+        <a href="lich-live.html" class="drawer-item" data-module="lichlive"><i class="fa-solid fa-calendar-days"></i><span>Lịch Live tuần</span></a>
         <a href="dieu-khien-live.html" class="drawer-item" data-module="quanlylive"><i class="fa-solid fa-tower-broadcast"></i><span>Điều khiển Live</span></a>
-        <a href="tai-khoan-hoc-sinh.html" class="drawer-item" data-module="taikhoan"><i class="fa-solid fa-users"></i><span>Tài khoản HS</span></a>
-        <a href="phan-tich-hanh-vi.html" class="drawer-item" data-module="analytics"><i class="fa-solid fa-chart-line" style="color:#0b84f3"></i><span>Phân tích hành vi &amp; VIP</span></a>
-        <a href="ho-tro-hoc-tap.html" class="drawer-item" data-module="hotro"><i class="fa-solid fa-comment-dots"></i><span>Hỗ trợ HS</span><span id="ht-drawer-badge" style="display:none" class="drawer-badge"></span></a>
-        <a href="huong-dan-he-thong.html" class="drawer-item" data-module="huongdan"><i class="fa-solid fa-circle-play"></i><span>Hướng Dẫn</span></a>
+        <a href="huong-dan-he-thong.html" class="drawer-item" data-module="huongdan"><i class="fa-solid fa-circle-play"></i><span>Hướng dẫn hệ thống</span></a>
     </nav>
     <div class="drawer-foot">
         <a href="https://vatlyxuantruong.io.vn/baihoc.html" target="_blank" class="drawer-foot-btn"><i class="fa-solid fa-eye"></i> Xem Web Học Sinh</a>
@@ -9923,6 +9928,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script defer src="assets/admin-telemetry.js?v=20261124"></script>
+<script defer src="assets/admin-telemetry.js?v=20261128"></script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+/* Lucian UX/UI Prompt #417 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#417 */
 (function (global) {
   'use strict';
 
@@ -99,6 +100,80 @@
     });
   }
 
+  function initLucianSidebarMotion() {
+    try {
+      var nav = document.querySelector('.drawer-nav');
+      if (!nav || nav.dataset.u417Ready === '1') return;
+      nav.dataset.u417Ready = '1';
+      nav.classList.add('ux', 'has-u417');
+
+      var curFile = getPageFile();
+      var items = Array.prototype.slice.call(nav.querySelectorAll('a[href]'));
+      if (!items.length) return;
+
+      var activeEl = nav.querySelector('a.active') || items.find(function (a) {
+        return String(a.getAttribute('href') || '').split('?')[0].split('#')[0] === curFile;
+      }) || items[0];
+
+      items.forEach(function (a) {
+        var hrefFile = String(a.getAttribute('href') || '').split('?')[0].split('#')[0];
+        var isCur = (hrefFile === curFile) || (a === activeEl && a.classList.contains('active'));
+        if (hrefFile === curFile) isCur = true;
+        if (isCur) {
+          a.classList.add('active');
+          a.setAttribute('aria-current', 'page');
+          activeEl = a;
+        } else {
+          a.classList.remove('active');
+          a.removeAttribute('aria-current');
+        }
+      });
+
+      var pill = nav.querySelector('.u417-pl');
+      if (!pill) {
+        pill = document.createElement('div');
+        pill.className = 'u417-pl';
+        pill.setAttribute('aria-hidden', 'true');
+        nav.insertBefore(pill, nav.firstChild);
+      }
+
+      var positionPill = function (animate) {
+        if (!activeEl) return;
+        if (!animate) pill.style.transition = 'none';
+        var top = activeEl.offsetTop;
+        var h = activeEl.offsetHeight || 38;
+        pill.style.setProperty('--py', top + 'px');
+        pill.style.setProperty('--ph', h + 'px');
+        if (!animate) {
+          void pill.offsetWidth;
+          pill.style.transition = '';
+        }
+      };
+
+      positionPill(false);
+      setTimeout(function () { positionPill(false); }, 120);
+
+      items.forEach(function (a, idx) {
+        a.addEventListener('keydown', function (e) {
+          var nextIdx = e.key === 'ArrowDown' ? idx + 1 : (e.key === 'ArrowUp' ? idx - 1 : -1);
+          if (nextIdx >= 0 && items[nextIdx]) {
+            e.preventDefault();
+            items[nextIdx].focus();
+          }
+        });
+      });
+
+      var drawer = nav.closest('aside, .drawer, #admin-drawer');
+      if (drawer && typeof MutationObserver === 'function') {
+        var mo = new MutationObserver(function () {
+          setTimeout(function () { positionPill(true); }, 40);
+        });
+        mo.observe(drawer, { attributes: true, attributeFilter: ['class', 'style'] });
+      }
+      global.addEventListener('resize', function () { positionPill(false); });
+    } catch (e) {}
+  }
+
   if (typeof global.addEventListener === 'function') {
     global.addEventListener('error', function (ev) {
       var msg = (ev && ev.message) ? String(ev.message) : 'Admin runtime error';
@@ -107,6 +182,7 @@
       }
     });
     global.addEventListener('DOMContentLoaded', function () {
+      initLucianSidebarMotion();
       refreshBadges();
       try {
         var key = 'vlxt_adm_pv_' + getPageFile();
