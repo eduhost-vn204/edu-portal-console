@@ -8173,9 +8173,16 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
   </div>
 </div>
 
-<div style="display:grid;grid-template-columns:280px 1fr;gap:16px;height:540px;margin-bottom:32px">
-  <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;overflow-y:auto" id="ht-thread-list">
-    <div style="padding:20px;text-align:center;color:var(--gray2);font-size:13px">Đang kết nối...</div>
+<div style="display:grid;grid-template-columns:320px 1fr;gap:16px;height:560px;margin-bottom:28px">
+  <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden">
+    <div id="ht-filter-bar" style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;background:var(--bg2)">
+      <button type="button" id="ht-f-hasmsg" onclick="htSetFilter('hasmsg')" style="padding:5px 9px;border-radius:7px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:11.5px;font-weight:700;cursor:pointer">Có tin nhắn</button>
+      <button type="button" id="ht-f-unreplied" onclick="htSetFilter('unreplied')" style="padding:5px 9px;border-radius:7px;border:1px solid var(--border);background:var(--bg);color:var(--black);font-size:11.5px;font-weight:700;cursor:pointer">Chờ trả lời</button>
+      <button type="button" id="ht-f-all" onclick="htSetFilter('all')" style="padding:5px 9px;border-radius:7px;border:1px solid var(--border);background:var(--bg);color:var(--black);font-size:11.5px;font-weight:700;cursor:pointer">Tất cả</button>
+    </div>
+    <div style="flex:1;overflow-y:auto" id="ht-thread-list">
+      <div style="padding:20px;text-align:center;color:var(--gray2);font-size:13px">Đang kết nối...</div>
+    </div>
   </div>
   <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden">
     <div id="ht-chat-head" style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--gray)">Chọn một học sinh ở danh sách bên trái để xem tin nhắn</div>
@@ -8185,6 +8192,26 @@ nh3Drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)handleF
       <button onclick="htSend()" style="padding:9px 16px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Gửi</button>
     </div>
   </div>
+</div>
+
+<h2 style="font-size:18px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <i class="fa-solid fa-bug" style="color:var(--blue)"></i> Đóng góp &amp; Báo lỗi từ Web Học Sinh
+  <button class="btn-new" onclick="loadFeedbackReports()" style="min-width:90px;font-size:12px;padding:6px 12px"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+</h2>
+<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;overflow-x:auto;margin-bottom:28px">
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead>
+      <tr style="background:var(--bg2);border-bottom:1.5px solid var(--border)">
+        <th style="padding:10px 14px;text-align:left;font-weight:700">Thời gian &amp; Loại</th>
+        <th style="padding:10px 14px;text-align:left;font-weight:700">Học sinh</th>
+        <th style="padding:10px 14px;text-align:left;font-weight:700">Trang gửi</th>
+        <th style="padding:10px 14px;text-align:left;font-weight:700">Nội dung góp ý / báo lỗi</th>
+      </tr>
+    </thead>
+    <tbody id="ht-feedback-list">
+      <tr><td colspan="4" style="text-align:center;padding:18px;color:var(--gray2)">Đang tải góp ý &amp; báo lỗi...</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <h2 style="font-size:18px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:10px">
@@ -9703,13 +9730,64 @@ function lcFmtTime(ts){ if(!ts) return ''; const d=new Date(ts); return d.getHou
 </script>
 
 <script>
-/* ════════ HỖ TRỢ HỌC SINH — chat realtime + thiết bị học thử ════════ */
+/* ════════ HỖ TRỢ HỌC SINH — chat realtime + góp ý/báo lỗi + thiết bị học thử ════════ */
+const RTDB_SYS_HT = 'https://edu-portal-live-default-rtdb.firebaseio.com/support_chats/_vlxt_system';
 let htDb = null;
 let htInited = false;
 let htThreads = {};
 let htActiveThread = null;
 let htMsgListenerId = null;
 let htDevices = [];
+let htFilterMode = 'hasmsg';
+
+function htFmtTime(ts) {
+    const n = Number(ts || 0);
+    if (!n) return '—';
+    const d = new Date(n);
+    if (isNaN(d.getTime())) return '—';
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mi = String(d.getMinutes()).padStart(2, '0');
+    return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
+}
+
+function htGetThreadStats(t) {
+    const meta = (t && t.meta) || {};
+    const msgObj = (t && t.messages && typeof t.messages === 'object') ? t.messages : {};
+    const msgs = Object.values(msgObj).filter(m => m && typeof m === 'object' && m.text);
+    msgs.sort((a, b) => Number(a.time || a.ts || 0) - Number(b.time || b.ts || 0));
+    const lastM = msgs.length ? msgs[msgs.length - 1] : null;
+    const msgLastTime = lastM ? Number(lastM.time || lastM.ts || 0) : 0;
+    const realLastTime = Math.max(Number(meta.lastTime || 0), msgLastTime, Number(meta.createdAt || 0));
+    const lastMsg = (lastM && lastM.text) ? String(lastM.text) : String(meta.lastMsg || '');
+    const lastFrom = lastM ? String(lastM.from || 'hs') : (lastMsg ? 'hs' : '');
+    const needsReply = Boolean(msgs.length > 0 && lastFrom !== 'admin');
+    return {
+        meta,
+        msgCount: msgs.length,
+        realLastTime,
+        lastMsg,
+        lastFrom,
+        needsReply,
+        unread: Boolean(meta.unreadForAdmin)
+    };
+}
+
+function htSetFilter(mode) {
+    htFilterMode = mode || 'hasmsg';
+    const btns = { hasmsg: 'ht-f-hasmsg', unreplied: 'ht-f-unreplied', all: 'ht-f-all' };
+    Object.keys(btns).forEach(k => {
+        const b = document.getElementById(btns[k]);
+        if (!b) return;
+        const on = (k === htFilterMode);
+        b.style.background = on ? 'var(--blue)' : 'var(--bg)';
+        b.style.color = on ? '#fff' : 'var(--black)';
+        b.style.borderColor = on ? 'var(--blue)' : 'var(--border)';
+    });
+    renderThreadList();
+}
 
 function initSupportChat() {
     if (htInited) return;
@@ -9729,11 +9807,15 @@ function initSupportChat() {
         updateHtBadge();
     });
 
+    loadFeedbackReports();
     loadThietBi();
 }
 
 function updateHtBadge() {
-    const n = Object.values(htThreads).filter(t => t.meta && t.meta.unreadForAdmin).length;
+    const n = Object.values(htThreads).filter(t => {
+        const st = htGetThreadStats(t);
+        return st.unread || st.needsReply;
+    }).length;
     const badge = document.getElementById('ht-tab-badge');
     if (badge) badge.style.display = n > 0 ? 'block' : 'none';
 }
@@ -9741,19 +9823,48 @@ function updateHtBadge() {
 function renderThreadList() {
     const wrap = document.getElementById('ht-thread-list');
     if (!wrap) return;
-    const ids = Object.keys(htThreads).sort((a, b) => ((htThreads[b].meta || {}).lastTime || 0) - ((htThreads[a].meta || {}).lastTime || 0));
-    if (!ids.length) { wrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray2);font-size:13px">Chưa có tin nhắn nào</div>'; return; }
-    wrap.innerHTML = ids.map(id => {
-        const meta = htThreads[id].meta || {};
-        const unread = meta.unreadForAdmin;
+    const allEntries = Object.keys(htThreads).map(id => ({ id, st: htGetThreadStats(htThreads[id]) }));
+    const msgCountAll = allEntries.filter(x => x.st.msgCount > 0 || x.st.lastMsg).length;
+    const unrepCount = allEntries.filter(x => x.st.needsReply || x.st.unread).length;
+    const bHas = document.getElementById('ht-f-hasmsg');
+    const bUnr = document.getElementById('ht-f-unreplied');
+    const bAll = document.getElementById('ht-f-all');
+    if (bHas) bHas.textContent = `Có tin nhắn (${msgCountAll})`;
+    if (bUnr) bUnr.textContent = `Chờ trả lời (${unrepCount})`;
+    if (bAll) bAll.textContent = `Tất cả (${allEntries.length})`;
+
+    const filtered = allEntries.filter(x => {
+        if (htFilterMode === 'unreplied') return x.st.needsReply || x.st.unread;
+        if (htFilterMode === 'hasmsg') return x.st.msgCount > 0 || Boolean(x.st.lastMsg);
+        return true;
+    }).sort((a, b) => {
+        const aPrio = (a.st.needsReply || a.st.unread) ? 1 : 0;
+        const bPrio = (b.st.needsReply || b.st.unread) ? 1 : 0;
+        if (bPrio !== aPrio) return bPrio - aPrio;
+        return b.st.realLastTime - a.st.realLastTime;
+    });
+
+    if (!filtered.length) {
+        wrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray2);font-size:13px">Không có cuộc trò chuyện nào khớp bộ lọc.</div>';
+        return;
+    }
+    wrap.innerHTML = filtered.map(({ id, st }) => {
+        const meta = st.meta;
         const active = id === htActiveThread;
-        return `<div onclick="htOpenThread('${id}')" style="padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;${active ? 'background:var(--bg2)' : ''}">
+        const timeStr = st.realLastTime ? htFmtTime(st.realLastTime) : '—';
+        const badgeHtml = (st.needsReply || st.unread)
+            ? '<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(239,68,68,.14);color:#ef4444;white-space:nowrap">Chờ trả lời</span>'
+            : (st.msgCount > 0 ? '<span style="font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:rgba(16,185,129,.12);color:#10b981;white-space:nowrap">Đã rep</span>' : '');
+        return `<div onclick="htOpenThread('${esc(id)}')" style="padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;${active ? 'background:var(--bg2);border-left:3px solid var(--blue)' : ''}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
         <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(meta.hoten || 'Khách')}</span>
-        ${unread ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></span>' : ''}
+        ${badgeHtml}
       </div>
-      <div style="font-size:11px;color:var(--gray)">${esc(meta.sdt || '(khách, chưa đăng nhập)')}</div>
-      <div style="font-size:12px;color:var(--gray2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px">${esc(meta.lastMsg || '')}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px">
+        <span style="font-size:11px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(meta.sdt || '(khách, chưa đăng nhập)')}</span>
+        <span style="font-size:10.5px;color:var(--gray2);font-family:'DM Mono',monospace;white-space:nowrap">${esc(timeStr)}</span>
+      </div>
+      <div style="font-size:12px;color:var(--gray2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px">${esc(st.lastMsg || '(Chưa có tin nhắn)')}</div>
     </div>`;
     }).join('');
 }
@@ -9761,20 +9872,31 @@ function renderThreadList() {
 function htOpenThread(id) {
     htActiveThread = id;
     renderThreadList();
-    const meta = (htThreads[id] || {}).meta || {};
-    document.getElementById('ht-chat-head').innerHTML = `<b>${esc(meta.hoten || 'Khách')}</b>` + (meta.sdt ? ' · ' + esc(meta.sdt) + (meta.lop ? ' · Lớp ' + esc(meta.lop) : '') : ' · (khách, chưa đăng nhập)');
+    const st = htGetThreadStats(htThreads[id]);
+    const meta = st.meta || {};
+    document.getElementById('ht-chat-head').innerHTML = `<b>${esc(meta.hoten || 'Khách')}</b>`
+        + (meta.sdt ? ' · ' + esc(meta.sdt) + (meta.lop ? ' · Lớp ' + esc(meta.lop) : '') : ' · (khách, chưa đăng nhập)')
+        + (st.realLastTime ? ` <span style="font-size:11.5px;color:var(--gray2);margin-left:8px">Cập nhật: ${esc(htFmtTime(st.realLastTime))}</span>` : '');
     const body = document.getElementById('ht-chat-body');
     body.innerHTML = '';
     if (htMsgListenerId) htDb.ref('support_chats/' + htMsgListenerId + '/messages').off();
     htMsgListenerId = id;
     htDb.ref('support_chats/' + id + '/messages').limitToLast(150).on('child_added', snap => {
         const m = snap.val();
-        const div = document.createElement('div');
+        if (!m) return;
+        const wrap = document.createElement('div');
         const isAdmin = m.from === 'admin';
-        div.className = isAdmin ? '' : 'ht-bubble-hs';
-        div.style.cssText = 'max-width:75%;margin-bottom:8px;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;' + (isAdmin ? 'margin-left:auto;background:var(--blue);color:#fff' : '');
-        div.textContent = m.text;
-        body.appendChild(div);
+        wrap.style.cssText = 'display:flex;flex-direction:column;margin-bottom:10px;' + (isAdmin ? 'align-items:flex-end' : 'align-items:flex-start');
+        const bubble = document.createElement('div');
+        bubble.className = isAdmin ? '' : 'ht-bubble-hs';
+        bubble.style.cssText = 'max-width:75%;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;' + (isAdmin ? 'background:var(--blue);color:#fff' : '');
+        bubble.textContent = m.text || '';
+        const tsEl = document.createElement('div');
+        tsEl.style.cssText = "font-size:10.5px;color:var(--gray2);margin-top:3px;font-family:'DM Mono',monospace";
+        tsEl.textContent = (isAdmin ? 'Thầy · ' : 'HS · ') + htFmtTime(m.time || m.ts);
+        wrap.appendChild(bubble);
+        wrap.appendChild(tsEl);
+        body.appendChild(wrap);
         body.scrollTop = body.scrollHeight;
     });
     htDb.ref('support_chats/' + id + '/meta/unreadForAdmin').set(false);
@@ -9784,9 +9906,41 @@ function htSend() {
     const input = document.getElementById('ht-input');
     const text = input.value.trim();
     if (!text || !htActiveThread) return;
-    htDb.ref('support_chats/' + htActiveThread + '/messages').push({ from: 'admin', text, time: Date.now() });
-    htDb.ref('support_chats/' + htActiveThread + '/meta').update({ lastMsg: text, lastTime: Date.now(), unreadForStudent: true, unreadForAdmin: false });
+    const now = Date.now();
+    htDb.ref('support_chats/' + htActiveThread + '/messages').push({ from: 'admin', text, time: now });
+    htDb.ref('support_chats/' + htActiveThread + '/meta').update({ lastMsg: text, lastTime: now, unreadForStudent: true, unreadForAdmin: false });
     input.value = '';
+}
+
+async function loadFeedbackReports() {
+    const tb = document.getElementById('ht-feedback-list');
+    if (!tb) return;
+    try {
+        const r = await fetch(RTDB_SYS_HT + '/feedback_reports.json');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const obj = await r.json();
+        const list = obj && typeof obj === 'object'
+            ? Object.values(obj).filter(Boolean).sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))
+            : [];
+        if (!list.length) {
+            tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:18px;color:var(--gray2)">Chưa có góp ý hoặc báo lỗi nào.</td></tr>';
+            return;
+        }
+        tb.innerHTML = list.slice(0, 30).map(f => {
+            const isBug = f.type === 'bug' || f.type === 'bug_report';
+            const badge = isBug
+                ? '<span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,.12);color:#ef4444">🐞 Báo lỗi</span>'
+                : '<span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(59,130,246,.12);color:var(--blue)">💡 Góp ý</span>';
+            return `<tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:10px 14px;white-space:nowrap">${badge}<div style="font-size:11px;color:var(--gray2);margin-top:3px;font-family:'DM Mono',monospace">${esc(htFmtTime(f.createdAt))}</div></td>
+              <td style="padding:10px 14px"><b>${esc(f.hoten || f.contactName || 'Khách')}</b><div style="font-size:11.5px;color:var(--gray)">${esc(f.sdt || f.contactPhone || '—')}${f.lop ? (' · Lớp ' + esc(f.lop)) : ''}</div></td>
+              <td style="padding:10px 14px;font-size:12px;color:var(--gray)">${esc(f.page || '—')}</td>
+              <td style="padding:10px 14px;white-space:pre-wrap">${esc(f.message || '')}</td>
+            </tr>`;
+        }).join('');
+    } catch (e) {
+        tb.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:18px;color:var(--red)">Lỗi tải góp ý: ${esc(e.message)}</td></tr>`;
+    }
 }
 
 async function loadThietBi() {

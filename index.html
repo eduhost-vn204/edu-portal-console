@@ -1274,21 +1274,34 @@
 
         // Helpers parse time & avatar
         function parseTimestamp(ts) {
-            if (!ts) return null;
-            if (ts.includes('T')) {
+            if (ts === null || ts === undefined || ts === '') return null;
+            if (typeof ts === 'number' && !isNaN(ts)) {
                 const d = new Date(ts);
+                return isNaN(d.getTime()) ? null : d;
+            }
+            const s = String(ts).trim();
+            if (/^\d{10,14}$/.test(s)) {
+                const d = new Date(Number(s));
                 if (!isNaN(d.getTime())) return d;
             }
-            const m = ts.match(/(\d+):(\d+):(\d+)\s+(\d+)\/(\d+)\/(\d+)/);
+            if (s.includes('T') || /^\d{4}-\d{2}-\d{2}/.test(s)) {
+                const d = new Date(s);
+                if (!isNaN(d.getTime())) return d;
+            }
+            const m = s.match(/(\d+):(\d+):(\d+)\s+(\d+)\/(\d+)\/(\d+)/);
             if (m) {
                 return new Date(parseInt(m[6]), parseInt(m[5]) - 1, parseInt(m[4]), parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+            }
+            const m2 = s.match(/(\d+)\/(\d+)\/(\d+)(?:\s+(\d+):(\d+))?/);
+            if (m2) {
+                return new Date(parseInt(m2[3]), parseInt(m2[2]) - 1, parseInt(m2[1]), parseInt(m2[4] || 0), parseInt(m2[5] || 0), 0);
             }
             return null;
         }
 
         function formatRelativeTime(ts) {
             const d = parseTimestamp(ts);
-            if (!d) return ts || '';
+            if (!d) return String(ts || '').replace(/^Hôm nay\s+/i, '');
             const day = String(d.getDate()).padStart(2, '0');
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
@@ -1297,6 +1310,10 @@
             const now = new Date();
             if (d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
                 return `Hôm nay ${hours}:${mins}`;
+            }
+            const yest = new Date(now.getTime() - 86400000);
+            if (d.getDate() === yest.getDate() && d.getMonth() === yest.getMonth() && d.getFullYear() === yest.getFullYear()) {
+                return `Hôm qua ${hours}:${mins}`;
             }
             return `${day}/${month}/${year} ${hours}:${mins}`;
         }
@@ -1648,33 +1665,45 @@
             courseProgressChart.update();
         }
 
-        function updateFeedList(list) {
+        function fmtAdminClass(v) {
+            const s = String(v || '').trim();
+            if (!s || s === 'Google') return '';
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(s)) {
+                const ms = Date.parse(s);
+                if (!isNaN(ms)) {
+                    const vn = new Date(ms + 7 * 3600000);
+                    return vn.getUTCDate() + '/' + (vn.getUTCMonth() + 1);
+                }
+            }
+            return s;
+        }
+
+        function maskStudentPhone(rawPhone) {
+            let phone = String(rawPhone || '').trim();
+            if (!phone) return '';
+            if (/^\d+$/.test(phone)) {
+                if (phone.length === 9 && /^[1-9]/.test(phone)) phone = '0' + phone;
+                if (phone.length >= 7) return phone.slice(0, 4) + '***' + phone.slice(-3);
+                return phone;
+            }
+            if (phone.includes('@')) {
+                const sp = phone.split('@');
+                return sp[0].slice(0, 4) + '***@' + sp[1];
+            }
+            return phone;
+        }
+
+        function updateFeedList(list, rtdbItems) {
             const feedContainer = document.getElementById('feed-list');
             if (!feedContainer) return;
-            const validItems = [];
-            list.forEach(it => {
+            const unified = [];
+
+            (Array.isArray(list) ? list : []).forEach(it => {
                 const name = (it.name || '').trim();
                 const phone = String(it.phone || '').trim();
-                if (name || (phone && phone !== '0')) {
-                    validItems.push(it);
-                }
-            });
-            const recent = validItems.slice(-6).reverse();
-            if (recent.length === 0) return;
-
-            feedContainer.innerHTML = recent.map(it => {
-                const name = it.name ? it.name.trim() : 'Thí sinh ẩn danh';
-                let phone = String(it.phone || '').trim();
-                let masked = phone;
-                if (phone.length >= 7 && /^\d+$/.test(phone)) {
-                    if (!phone.startsWith('0')) phone = '0' + phone;
-                    masked = phone.slice(0, 4) + '***' + phone.slice(-3);
-                } else if (phone.includes('@')) {
-                    const sp = phone.split('@');
-                    masked = sp[0].slice(0, 4) + '***@' + sp[1];
-                }
-                const studentClass = it.studentClass ? ` - Lớp ${it.studentClass}` : '';
-
+                if (!name && (!phone || phone === '0')) return;
+                const d = parseTimestamp(it.timestamp);
+                const ts = d ? d.getTime() : 0;
                 let s = it.score;
                 if (typeof s === 'string') {
                     const m = s.match(/^([0-9.]+)/);
@@ -1685,25 +1714,135 @@
                 if (typeof s === 'number' && !isNaN(s) && s >= 0 && s <= 10) {
                     scoreText = s.toFixed(2) + ' Điểm';
                     if (s >= 5.0) badgeClass = 'score-high';
-                    else badgeClass = 'score-mid';
                 } else {
                     scoreText = String(it.score || 'Đã nộp');
                 }
+                unified.push({
+                    ts,
+                    rawTs: it.timestamp,
+                    name: name || 'Thí sinh ẩn danh',
+                    phone,
+                    lop: fmtAdminClass(it.studentClass),
+                    actionHtml: 'Đã nộp bài: <b>Thi thử THPT hệ thống</b>',
+                    badgeText: scoreText,
+                    badgeClass
+                });
+            });
 
-                const relTime = formatRelativeTime(it.timestamp);
+            (Array.isArray(rtdbItems) ? rtdbItems : []).forEach(it => {
+                if (!it || !it.ts) return;
+                unified.push(it);
+            });
+
+            unified.sort((a, b) => Number(b.ts || 0) - Number(a.ts || 0));
+            const recent = unified.slice(0, 8);
+            if (recent.length === 0) return;
+
+            feedContainer.innerHTML = recent.map(it => {
+                const name = it.name || 'Học sinh';
+                const masked = maskStudentPhone(it.phone);
+                const studentClass = it.lop ? ` - Lớp ${it.lop}` : '';
+                const subMeta = [masked, studentClass ? studentClass.replace(/^\s*-\s*/, '') : ''].filter(Boolean).join(' - ');
+                const relTime = formatRelativeTime(it.ts || it.rawTs);
                 const initials = getInitials(name);
-
                 return `
                 <div class="feed-item">
                     <div class="feed-avatar">${initials}</div>
                     <div class="feed-details">
-                        <div class="feed-user">${name} <span class="feed-phone">(${masked}${studentClass})</span></div>
-                        <div class="feed-action">Đã nộp bài: <b>Thi thử THPT hệ thống</b></div>
+                        <div class="feed-user">${name}${subMeta ? ` <span class="feed-phone">(${subMeta})</span>` : ''}</div>
+                        <div class="feed-action">${it.actionHtml || 'Hoạt động học tập'}</div>
                     </div>
-                    <span class="feed-badge ${badgeClass}">${scoreText}</span>
+                    <span class="feed-badge ${it.badgeClass || 'score-mid'}">${it.badgeText || ''}</span>
                     <span class="feed-time">${relTime}</span>
                 </div>`;
             }).join('');
+        }
+
+        async function fetchDashboardRtdbFeed() {
+            const RTDB_SYS = 'https://edu-portal-live-default-rtdb.firebaseio.com/support_chats/_vlxt_system';
+            const items = [];
+            try {
+                const [evDaysObj, gpsObj, fbObj] = await Promise.all([
+                    fetch(RTDB_SYS + '/events.json?shallow=true').then(r => r.ok ? r.json() : null).catch(() => null),
+                    fetch(RTDB_SYS + '/growth_profiles.json').then(r => r.ok ? r.json() : null).catch(() => null),
+                    fetch(RTDB_SYS + '/feedback_reports.json').then(r => r.ok ? r.json() : null).catch(() => null)
+                ]);
+
+                if (gpsObj && typeof gpsObj === 'object') {
+                    Object.values(gpsObj).forEach(gp => {
+                        if (!gp || !gp.firstExamSummary || !gp.firstExamSummary.ts) return;
+                        const fs = gp.firstExamSummary;
+                        const sc = Number(fs.score10 !== undefined ? fs.score10 : fs.score);
+                        const hasSc = !isNaN(sc);
+                        const exLbl = fs.examNumber ? `Đề ${String(fs.examNumber).padStart(2, '0')}` : (fs.examId || 'ĐGNL');
+                        items.push({
+                            ts: Number(fs.ts),
+                            name: gp.hoten || 'Học sinh',
+                            phone: gp.sdt || '',
+                            lop: fmtAdminClass(gp.lop),
+                            actionHtml: `Đã nộp: <b>Test Điểm Thi (${exLbl}${fs.answeredCount ? ' · ' + fs.answeredCount + ' câu' : ''})</b>`,
+                            badgeText: hasSc ? (sc.toFixed(2) + ' Điểm') : 'Đã nộp',
+                            badgeClass: (hasSc && sc >= 5.0) ? 'score-high' : 'score-mid',
+                            dedupKey: 'exam_' + (gp.sdt || gp.actorKey) + '_' + Math.round(Number(fs.ts) / 60000)
+                        });
+                    });
+                }
+
+                if (fbObj && typeof fbObj === 'object') {
+                    Object.values(fbObj).forEach(f => {
+                        if (!f || !f.createdAt) return;
+                        items.push({
+                            ts: Number(f.createdAt),
+                            name: f.hoten || f.contactName || 'Học sinh',
+                            phone: f.sdt || f.contactPhone || '',
+                            lop: fmtAdminClass(f.lop),
+                            actionHtml: `${f.type === 'bug' ? '🐞 Báo lỗi' : '💡 Góp ý'}: <b>${String(f.message || '').slice(0, 48)}</b>`,
+                            badgeText: f.page || 'Web',
+                            badgeClass: 'score-mid'
+                        });
+                    });
+                }
+
+                if (evDaysObj && typeof evDaysObj === 'object') {
+                    const days = Object.keys(evDaysObj).sort().slice(-7);
+                    const dayObjs = await Promise.all(days.map(d =>
+                        fetch(RTDB_SYS + '/events/' + encodeURIComponent(d) + '.json').then(r => r.ok ? r.json() : null).catch(() => null)
+                    ));
+                    dayObjs.forEach(dObj => {
+                        if (!dObj || typeof dObj !== 'object') return;
+                        Object.values(dObj).forEach(ev => {
+                            if (!ev || !ev.ts) return;
+                            if (ev.type === 'auth_register_success') {
+                                items.push({
+                                    ts: Number(ev.ts),
+                                    name: ev.hoten || 'Học sinh mới',
+                                    phone: ev.sdt || '',
+                                    lop: fmtAdminClass(ev.lop),
+                                    actionHtml: 'Đăng ký tài khoản mới trên Web Học Sinh',
+                                    badgeText: 'Tài khoản mới',
+                                    badgeClass: 'score-high'
+                                });
+                            } else if (ev.type === 'exam_submit') {
+                                const m = (ev.meta && typeof ev.meta === 'object') ? ev.meta : {};
+                                const sc = Number(ev.finalScore !== undefined ? ev.finalScore : (m.finalScore !== undefined ? m.finalScore : (ev.score10 !== undefined ? ev.score10 : m.score10)));
+                                const hasSc = !isNaN(sc);
+                                const dk = 'exam_' + (ev.sdt || ev.actorKey) + '_' + Math.round(Number(ev.ts) / 60000);
+                                if (items.some(x => x.dedupKey === dk)) return;
+                                items.push({
+                                    ts: Number(ev.ts),
+                                    name: ev.hoten || 'Học sinh',
+                                    phone: ev.sdt || '',
+                                    lop: fmtAdminClass(ev.lop),
+                                    actionHtml: `Đã nộp bài: <b>${ev.target || 'Đề thi ĐGNL'}</b>`,
+                                    badgeText: hasSc ? (sc.toFixed(2) + ' Điểm') : 'Đã nộp',
+                                    badgeClass: (hasSc && sc >= 5.0) ? 'score-high' : 'score-mid'
+                                });
+                            }
+                        });
+                    });
+                }
+            } catch (e) {}
+            return items;
         }
 
         // ── LOAD REAL DATA ──
@@ -1817,9 +1956,10 @@
 
                     updateActivityChartFromSubmissions(cachedDiemThi);
                     updateScoreDistribution(cachedDiemThi);
-                    updateFeedList(cachedDiemThi);
+                    fetchDashboardRtdbFeed().then(rtdbItems => updateFeedList(cachedDiemThi, rtdbItems));
                 } else {
                     renderAccountMetrics(88, 7, 1, 2, 98);
+                    fetchDashboardRtdbFeed().then(rtdbItems => updateFeedList([], rtdbItems));
                 }
 
                 // 5. Nếu có key Admin, gọi ping & tải danh sách tài khoản thật từ Backend Google Sheets

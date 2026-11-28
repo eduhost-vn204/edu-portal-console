@@ -8735,6 +8735,20 @@ function tkdBuildEventDetail(ev) {
     const pg = ev.target || ev.page || ev.label || '';
     return (pg ? pg : 'Trang web') + (sec > 0 ? (' · ' + sec + 's hoạt động') : '');
   }
+  if (ev.type === 'exam_submit') {
+    const m = (ev.meta && typeof ev.meta === 'object') ? ev.meta : {};
+    const sc = (ev.finalScore !== undefined && ev.finalScore !== '') ? ev.finalScore : (m.finalScore !== undefined ? m.finalScore : (ev.score10 !== undefined ? ev.score10 : m.score10));
+    const rc = (ev.correctCount !== undefined) ? ev.correctCount : m.correctCount;
+    const tq = (ev.totalQuestions !== undefined) ? ev.totalQuestions : (m.totalQuestions || 28);
+    const sp = (ev.spentSeconds !== undefined) ? ev.spentSeconds : m.spentSeconds;
+    if (ev.label && String(ev.label).includes('/10')) return String(ev.label);
+    if (sc !== undefined && sc !== null && sc !== '') {
+      const baseName = ev.label || ev.target || 'Đề thi';
+      const rightTxt = (rc !== undefined && rc !== null) ? ` (đúng ${rc}/${tq} câu)` : '';
+      const timeTxt = sp ? ` · ${sp}s` : '';
+      return `${baseName} · ${sc}/10${rightTxt}${timeTxt}`;
+    }
+  }
   const parts = [];
   if (ev.label) parts.push(String(ev.label));
   else if (ev.target && ev.target !== ev.page) parts.push(String(ev.target));
@@ -8924,18 +8938,149 @@ async function tkdLoadTienDo(sdt) {
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
 }
 
+function tkdCandidateProfileKeys(sdt) {
+  const raw = String(sdt || '').trim();
+  const low = raw.toLowerCase();
+  const out = [];
+  const add = (k) => { if (k && !out.includes(k)) out.push(k); };
+  if (low.includes('@')) {
+    add(low.replace(/[.#$\[\]/\s]+/g, '_'));
+    add(low);
+    return out;
+  }
+  const digits = raw.replace(/\D/g, '');
+  const noZero = digits.replace(/^0+/, '');
+  if (digits) add(digits);
+  if (noZero) {
+    add('0' + noZero);
+    add(noZero);
+  }
+  if (raw) add(low);
+  return out;
+}
+
 async function tkdLoadDiem(sdt) {
   const el = document.getElementById('tkd-diem');
   try {
-    const r = await fetch(GAS_URL + '?type=diemthi');
-    const rows = await r.json();
+    const candActorKeys = tkdCandidateActorKeys(sdt);
+    const candProfKeys = tkdCandidateProfileKeys(sdt);
+    const gasPromise = fetch(GAS_URL + '?type=diemthi').then(r => r.json()).catch(() => []);
+    const profPromises = candProfKeys.map(pk =>
+      fetch('https://edu-portal-live-default-rtdb.firebaseio.com/profiles/' + encodeURIComponent(pk) + '/dgnlProgress.json')
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+    );
+    const gpPromises = candActorKeys.map(ak =>
+      fetch(RTDB_SYS + '/growth_profiles/' + encodeURIComponent(ak) + '.json')
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+    );
+    const [rows, profList, gpList, rtdbEvents] = await Promise.all([
+      gasPromise,
+      Promise.all(profPromises),
+      Promise.all(gpPromises),
+      tkdFetchRecentRtdbEvents()
+    ]);
     if (tkdSdt !== sdt) return;
-    const list = (Array.isArray(rows) ? rows : []).filter(x => tkdSameSdt(x.phone, sdt));
-    if (!list.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa có lượt thi nào.</div>'; return; }
-    el.innerHTML = list.slice().reverse().map(x => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
-      <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(x.timestamp)}</span>
-      <span style="font-weight:800;color:var(--blue);white-space:nowrap">${esc(String(x.score||''))}</span>
-      <span style="color:var(--gray)">${esc(x.name||'')} · ${esc(x.studentClass||'')}</span>
+
+    const results = [];
+    (Array.isArray(rows) ? rows : []).filter(x => tkdSameSdt(x.phone, sdt)).forEach(x => {
+      const ts = x.timestamp ? Date.parse(x.timestamp) : 0;
+      results.push({
+        ts: isNaN(ts) ? 0 : ts,
+        thoigian: x.timestamp || '',
+        scoreTxt: String(x.score || '—'),
+        title: String(x.examName || x.tenDe || 'Thi thử THPT hệ thống'),
+        detail: [x.name || '', tkFmtLop(x.studentClass || '')].filter(Boolean).join(' · '),
+        sourceKey: 'gas_' + (x.timestamp || '') + '_' + (x.score || '')
+      });
+    });
+
+    (profList || []).forEach(dp => {
+      if (!dp || typeof dp !== 'object' || !dp.history || typeof dp.history !== 'object') return;
+      Object.keys(dp.history).forEach(eid => {
+        const h = dp.history[eid];
+        if (!h || typeof h !== 'object') return;
+        const ts = Number(h.ts || h.updatedAt || 0);
+        const sc = (h.bestScore !== undefined ? h.bestScore : (h.lastScore !== undefined ? h.lastScore : h.score));
+        const scNum = Number(sc);
+        const scoreTxt = !isNaN(scNum) ? (scNum.toFixed(2).replace(/\.?0+$/, '') + '/10') : (sc ? String(sc) : '—');
+        const parts = [];
+        if (h.attempts) parts.push(`${h.attempts} lượt`);
+        if (h.exactCorrectCount !== undefined) parts.push(`đúng ${h.exactCorrectCount}/${h.totalQuestions || 28} câu`);
+        results.push({
+          ts,
+          thoigian: ts ? new Date(ts).toISOString() : '',
+          scoreTxt,
+          title: h.examTitle || ('Đề ĐGNL ' + eid),
+          detail: parts.join(' · '),
+          sourceKey: 'dgnl_' + eid + '_' + Math.round(ts / 60000)
+        });
+      });
+    });
+
+    (gpList || []).forEach(gp => {
+      if (!gp || typeof gp !== 'object' || !gp.firstExamSummary) return;
+      const fs = gp.firstExamSummary;
+      const ts = Number(fs.ts || 0);
+      const sc = fs.score10 !== undefined ? fs.score10 : fs.score;
+      const exNum = fs.examNumber ? ('Đề ' + String(fs.examNumber).padStart(2, '0')) : (fs.examId || 'Đề ĐGNL');
+      const det = [
+        fs.answeredCount ? (`Hoàn thành ${fs.answeredCount}/28 câu`) : '',
+        fs.spentSeconds ? (`${Math.round(fs.spentSeconds / 60)}p ${fs.spentSeconds % 60}s`) : ''
+      ].filter(Boolean).join(' · ');
+      results.push({
+        ts,
+        thoigian: ts ? new Date(ts).toISOString() : '',
+        scoreTxt: (sc !== undefined && sc !== '') ? `${sc}/10` : 'Đã nộp',
+        title: `Test Điểm Thi THPTQG (${exNum})`,
+        detail: det,
+        sourceKey: 'gp_' + (fs.examId || exNum) + '_' + Math.round(ts / 60000)
+      });
+    });
+
+    (rtdbEvents || []).forEach(ev => {
+      if (!ev || ev.type !== 'exam_submit') return;
+      const matchSdt = ev.sdt && tkdSameSdt(ev.sdt, sdt);
+      const matchKey = ev.actorKey && candActorKeys.includes(String(ev.actorKey));
+      if (!matchSdt && !matchKey) return;
+      const m = (ev.meta && typeof ev.meta === 'object') ? ev.meta : {};
+      const sc = (ev.finalScore !== undefined && ev.finalScore !== '') ? ev.finalScore : (m.finalScore !== undefined ? m.finalScore : (ev.score10 !== undefined ? ev.score10 : m.score10));
+      const rc = (ev.correctCount !== undefined) ? ev.correctCount : m.correctCount;
+      const tq = (ev.totalQuestions !== undefined) ? ev.totalQuestions : (m.totalQuestions || 28);
+      const sp = (ev.spentSeconds !== undefined) ? ev.spentSeconds : m.spentSeconds;
+      const ts = Number(ev.ts || 0);
+      const exId = ev.target || (ev.examNumber ? ('de-' + String(ev.examNumber).padStart(2, '0')) : 'Đề thi');
+      if (sc === undefined && !ev.label) return;
+      const det = [
+        (rc !== undefined && rc !== null) ? `Đúng ${rc}/${tq} câu` : '',
+        sp ? `${Math.round(sp / 60)}p ${sp % 60}s` : ''
+      ].filter(Boolean).join(' · ');
+      results.push({
+        ts,
+        thoigian: ts ? new Date(ts).toISOString() : '',
+        scoreTxt: (sc !== undefined && sc !== '') ? `${sc}/10` : 'Đã nộp',
+        title: `Bài thi ${exId}`,
+        detail: det || (ev.label || ''),
+        sourceKey: 'ev_' + exId + '_' + Math.round(ts / 60000)
+      });
+    });
+
+    results.sort((a, b) => (b.ts - a.ts));
+    const dedup = [];
+    const seen = new Set();
+    for (const r of results) {
+      const k = Math.round((r.ts || 0) / 60000) + '|' + r.scoreTxt;
+      if (seen.has(k) && r.scoreTxt !== 'Đã nộp') continue;
+      if (r.scoreTxt === 'Đã nộp' && results.some(o => o !== r && Math.abs((o.ts || 0) - (r.ts || 0)) < 60000 && o.scoreTxt !== 'Đã nộp')) continue;
+      seen.add(k);
+      dedup.push(r);
+    }
+
+    if (!dedup.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa có lượt thi nào.</div>'; return; }
+    el.innerHTML = dedup.map(x => `<div style="display:flex;gap:10px;align-items:center;padding:7px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+      <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(x.thoigian)}</span>
+      <span style="font-weight:800;color:var(--blue);white-space:nowrap">${esc(x.scoreTxt)}</span>
+      <span style="font-weight:600">${esc(x.title)}</span>
+      <span style="color:var(--gray);font-size:12px">${esc(x.detail)}</span>
     </div>`).join('');
   } catch(e) { if (tkdSdt === sdt) el.innerHTML = '<div style="padding:14px;color:var(--red)">Lỗi tải: ' + e.message + '</div>'; }
 }
