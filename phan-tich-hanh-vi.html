@@ -591,11 +591,163 @@ function objToList(obj) {
     return Object.keys(obj).map(k => Object.assign({ _key: k }, obj[k] || {})).filter(Boolean);
 }
 
+function normActorIdentity(sdt, actorKey) {
+    const rawSdt = String(sdt || '').trim().toLowerCase();
+    if (rawSdt) {
+        if (rawSdt.indexOf('@') !== -1) return 'hs_' + rawSdt.replace(/[.#$\[\]/\s]+/g, '_');
+        const d = rawSdt.replace(/\D/g, '');
+        if (d.length === 9 && /^[1-9]/.test(d)) return 'hs_0' + d;
+        if (d) return 'hs_' + d;
+    }
+    const ak = String(actorKey || '').trim();
+    if (/^hs_[1-9]\d{8}$/.test(ak)) return 'hs_0' + ak.slice(3);
+    return ak;
+}
+
+function flattenEventsByDate(evObj) {
+    if (!evObj || typeof evObj !== 'object') return [];
+    const out = [];
+    Object.keys(evObj).forEach(k => {
+        const val = evObj[k];
+        if (!val || typeof val !== 'object') return;
+        if (val.type && (val.ts || val.id)) {
+            out.push(Object.assign({ _key: k }, val));
+        } else {
+            Object.keys(val).forEach(evId => {
+                const ev = val[evId];
+                if (ev && typeof ev === 'object') {
+                    out.push(Object.assign({ _key: evId, _dateBucket: k }, ev));
+                }
+            });
+        }
+    });
+    return out;
+}
+
+function normalizeEventsList(rawEvents) {
+    const sorted = (rawEvents || []).slice().sort((a, b) => (Number(b.ts || 0) - Number(a.ts || 0)));
+    const out = [];
+    const lastLeaveByActorPage = {};
+    for (const ev of sorted) {
+        if (!ev || typeof ev !== 'object') continue;
+        const normId = normActorIdentity(ev.sdt, ev.actorKey || ev.anonId);
+        if (ev.type === 'page_leave') {
+            const k = (normId || 'anon') + '::' + (ev.page || ev.target || '');
+            const ts = Number(ev.ts || 0);
+            if (lastLeaveByActorPage[k] && Math.abs(lastLeaveByActorPage[k] - ts) <= 2000) continue;
+            lastLeaveByActorPage[k] = ts;
+        }
+        out.push(Object.assign({}, ev, { _normActorKey: normId }));
+    }
+    return out;
+}
+
+function buildNormalizedSessions(journeysObj, legacySessionsObj, flatEvents) {
+    const rawList = objToList(journeysObj).concat(objToList(legacySessionsObj));
+    const pageSecByActor = {};
+    const pagesByActor = {};
+    (flatEvents || []).forEach(ev => {
+        const ak = ev._normActorKey || normActorIdentity(ev.sdt, ev.actorKey || ev.anonId);
+        if (!ak) return;
+        if (!pagesByActor[ak]) pagesByActor[ak] = {};
+        const pg = ev.page || (ev.type === 'page_enter' ? ev.target : '');
+        if (pg && pagesByActor[ak][pg] === undefined) pagesByActor[ak][pg] = 0;
+        if (ev.type === 'page_leave') {
+            const sec = Number((ev.meta && ev.meta.activeSec !== undefined ? ev.meta.activeSec : ev.activeSec) || 0);
+            if (pg && sec > 0) {
+                if (!pageSecByActor[ak]) pageSecByActor[ak] = {};
+                pageSecByActor[ak][pg] = (pageSecByActor[ak][pg] || 0) + sec;
+                pagesByActor[ak][pg] = pageSecByActor[ak][pg];
+            }
+        }
+    });
+
+    const merged = {};
+    rawList.forEach(it => {
+        if (!it || typeof it !== 'object') return;
+        const normKey = normActorIdentity(it.sdt, it.actorKey || it._key || it.anonId || it.sessionId);
+        if (!normKey) return;
+        const lastSeenAt = Number(it.lastSeenAt || it.lastSeen || it.startedAt || 0);
+        const cur = merged[normKey] || {
+            _key: normKey,
+            actorKey: normKey,
+            sdt: '',
+            hoten: 'Khách',
+            lop: '',
+            tier: 'free',
+            firstSource: it.firstSource || 'direct',
+            lastTrigger: it.lastTrigger || '',
+            totalActiveSec: 0,
+            lastSeenAt: 0,
+            pages: {},
+            pagesVisited: []
+        };
+        if (it.sdt) {
+            const d = String(it.sdt).replace(/\D/g, '');
+            cur.sdt = (d.length === 9 && /^[1-9]/.test(d)) ? ('0' + d) : String(it.sdt);
+        }
+        if (it.hoten && it.hoten !== 'Khách') cur.hoten = it.hoten;
+        if (it.lop && !String(it.lop).includes('T17:00:00')) cur.lop = it.lop;
+        else if (it.lop && !cur.lop) cur.lop = it.lop;
+        if (it.tier && it.tier !== 'guest') cur.tier = it.tier;
+        if (it.lastTrigger) cur.lastTrigger = it.lastTrigger;
+        cur.lastSeenAt = Math.max(cur.lastSeenAt, lastSeenAt);
+        cur.totalActiveSec += Number(it.totalActiveSec || 0);
+        if (it.pages && typeof it.pages === 'object') {
+            Object.keys(it.pages).forEach(pg => {
+                cur.pages[pg] = (cur.pages[pg] || 0) + Number(it.pages[pg] || 0);
+            });
+        }
+        if (Array.isArray(it.pagesVisited)) {
+            it.pagesVisited.forEach(pg => {
+                if (pg && cur.pagesVisited.indexOf(pg) === -1) cur.pagesVisited.push(pg);
+                if (pg && cur.pages[pg] === undefined) cur.pages[pg] = 0;
+            });
+        }
+        merged[normKey] = cur;
+    });
+
+    Object.keys(merged).forEach(ak => {
+        const s = merged[ak];
+        if (pagesByActor[ak]) {
+            Object.keys(pagesByActor[ak]).forEach(pg => {
+                s.pages[pg] = Math.max(Number(s.pages[pg] || 0), Number(pagesByActor[ak][pg] || 0));
+            });
+        }
+        const sumPages = Object.values(s.pages).reduce((acc, v) => acc + Number(v || 0), 0);
+        if (sumPages > s.totalActiveSec) s.totalActiveSec = sumPages;
+    });
+
+    return Object.values(merged).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+}
+
+function normalizePresenceList(livePresObj, legacyPresObj) {
+    const raw = objToList(livePresObj).concat(objToList(legacyPresObj));
+    const merged = {};
+    raw.forEach(p => {
+        if (!p || typeof p !== 'object') return;
+        const normKey = normActorIdentity(p.sdt, p.actorKey || p._key || p.anonId);
+        if (!normKey) return;
+        const lastSeenAt = Number(p.lastSeenAt || p.lastSeen || 0);
+        const existing = merged[normKey];
+        if (!existing || lastSeenAt >= existing.lastSeenAt) {
+            merged[normKey] = Object.assign({}, p, {
+                actorKey: normKey,
+                lastSeenAt,
+                activeSec: Number(p.activeSec !== undefined ? p.activeSec : (p.activeSecSession || 0))
+            });
+        }
+    });
+    return Object.values(merged).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+}
+
 async function refreshAllData() {
-    const [cfg, ev, sess, pres, rsv, fb, aud, refs, gps] = await Promise.all([
+    const [cfg, ev, journeys, sess, livePres, pres, rsv, fb, aud, refs, gps] = await Promise.all([
         fetchNode('campaign_config'),
         fetchNode('events'),
+        fetchNode('user_journeys'),
         fetchNode('sessions'),
+        fetchNode('live_presence'),
         fetchNode('presence'),
         fetchNode('vip_reservations'),
         fetchNode('feedback_reports'),
@@ -604,9 +756,9 @@ async function refreshAllData() {
         fetchNode('growth_profiles')
     ]);
     DATA.config = cfg && typeof cfg === 'object' ? cfg : {};
-    DATA.events = objToList(ev).sort((a, b) => (b.ts || 0) - (a.ts || 0));
-    DATA.sessions = objToList(sess).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
-    DATA.presence = objToList(pres).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+    DATA.events = normalizeEventsList(flattenEventsByDate(ev));
+    DATA.sessions = buildNormalizedSessions(journeys, sess, DATA.events);
+    DATA.presence = normalizePresenceList(livePres, pres);
     DATA.reservations = objToList(rsv).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     DATA.feedback = objToList(fb).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     DATA.adminAudit = objToList(aud).sort((a, b) => (b.ts || 0) - (a.ts || 0));
@@ -850,7 +1002,7 @@ function renderFunnel() {
     const ev = getFilteredEvents();
     const s = getFilteredSessions();
     const steps = [
-        { label: '1. Truy cập Web', n: Math.max(s.length, ev.filter(e => e.type === 'page_view').length), color: '#0b84f3' },
+        { label: '1. Truy cập Web', n: Math.max(s.length, ev.filter(e => e.type === 'page_view' || e.type === 'page_enter').length), color: '#0b84f3' },
         { label: '2. Đăng ký / Đăng nhập', n: ev.filter(e => e.type === 'auth_register_success' || e.type === 'auth_login_success').length, color: '#6366f1' },
         { label: '3. Vào Học / Mở Đề', n: ev.filter(e => e.type === 'lesson_open' || e.type === 'exam_start' || e.type === 'ptt_lobby_enter').length, color: '#059669' },
         { label: '4. Chạm Khóa VIP', n: ev.filter(e => e.type === 'paywall_hit').length, color: '#d97706' },
@@ -873,7 +1025,9 @@ function renderOnlineTable() {
         return;
     }
     tb.innerHTML = rows.map(p => {
-        const ctx = p.context && typeof p.context === 'object' ? [p.context.courseName, p.context.lessonTitle, p.context.examTitle, p.context.questionNum ? ('Câu ' + p.context.questionNum) : ''].filter(Boolean).join(' · ') : '—';
+        const ctx = p.context && typeof p.context === 'object'
+            ? [p.context.courseName, p.context.lessonTitle, p.context.examTitle, p.context.questionNum ? ('Câu ' + p.context.questionNum) : ''].filter(Boolean).join(' · ')
+            : (p.contextLabel || [p.courseName, p.lessonKey, p.examNumber ? ('Đề ' + p.examNumber) : '', p.questionNum ? ('Câu ' + p.questionNum) : ''].filter(Boolean).join(' · '));
         return `<tr>
             <td><b>${esc(p.hoten || 'Khách')}</b></td>
             <td>${esc(p.sdt || '—')}</td>
@@ -899,11 +1053,11 @@ function renderContentTables() {
             });
         }
     });
-    events.filter(e => e.type === 'page_view').forEach(e => {
+    events.filter(e => e.type === 'page_view' || e.type === 'page_enter').forEach(e => {
         const pg = e.page || e.target || 'index.html';
         if (!pages[pg]) pages[pg] = { sec: 0, views: 0, actors: new Set() };
         pages[pg].views++;
-        if (e.actorKey) pages[pg].actors.add(e.actorKey);
+        if (e._normActorKey || e.actorKey) pages[pg].actors.add(e._normActorKey || e.actorKey);
     });
     const pgRows = Object.keys(pages).sort((a, b) => pages[b].sec - pages[a].sec);
     document.getElementById('tbody-pages').innerHTML = pgRows.length ? pgRows.map(pg => `<tr>
@@ -932,13 +1086,14 @@ function renderStudentsTab() {
     const events = getFilteredEvents();
     const byActor = {};
     sessions.forEach(s => {
-        const k = s.actorKey || s.sdt || s.anonId || s.sessionId;
+        const k = normActorIdentity(s.sdt, s.actorKey || s.anonId || s.sessionId);
         if (!k) return;
         if (!byActor[k]) byActor[k] = { key: k, sdt: s.sdt || '', hoten: s.hoten || 'Khách', lop: s.lop || '', tier: s.tier || 'free', totalSec: 0, lastSeen: 0, pages: {}, lastTrigger: s.lastTrigger || '' };
         byActor[k].totalSec += Number(s.totalActiveSec || 0);
         byActor[k].lastSeen = Math.max(byActor[k].lastSeen, Number(s.lastSeenAt || 0));
         if (s.hoten && s.hoten !== 'Khách') byActor[k].hoten = s.hoten;
         if (s.sdt) byActor[k].sdt = s.sdt;
+        if (s.lop) byActor[k].lop = s.lop;
         if (s.pages) Object.keys(s.pages).forEach(p => { byActor[k].pages[p] = (byActor[k].pages[p] || 0) + Number(s.pages[p] || 0); });
     });
     const list = Object.values(byActor).sort((a, b) => b.lastSeen - a.lastSeen);
@@ -955,7 +1110,7 @@ function renderStudentsTab() {
 
     if (selectedStudentKey && byActor[selectedStudentKey]) {
         const st = byActor[selectedStudentKey];
-        const stEvents = events.filter(e => (e.actorKey || e.sdt || e.anonId) === selectedStudentKey).slice(0, 60);
+        const stEvents = events.filter(e => (e._normActorKey || normActorIdentity(e.sdt, e.actorKey || e.anonId)) === selectedStudentKey).slice(0, 80);
         const pageSummary = Object.keys(st.pages).sort((a, b) => st.pages[b] - st.pages[a])
             .map(p => `<span class="tag tag-gray">${esc(p)}: ${fmtDur(st.pages[p])}</span>`).join(' ');
         document.getElementById('student-detail').innerHTML = `
@@ -1169,7 +1324,7 @@ function renderViralTab() {
 }
 
 function renderAudit() {
-    const errs = getFilteredEvents().filter(e => e.type === 'js_error').slice(0, 50);
+    const errs = getFilteredEvents().filter(e => e.type === 'js_error' || e.type === 'client_error').slice(0, 50);
     document.getElementById('tbody-js-errors').innerHTML = errs.length ? errs.map(e => `<tr>
         <td>${fmtTime(e.ts)}</td><td>${esc(e.page || '')}</td><td>${esc(e.sdt || e.hoten || '—')}</td>
         <td style="color:var(--red);font-size:12px">${esc(e.label || e.target || '')}</td>
@@ -1204,7 +1359,7 @@ function exportAnalyticsExcel() {
     const wb = XLSX.utils.book_new();
     const rsvRows = DATA.reservations.map(r => ({ ThoiGian: fmtTime(r.createdAt), HoTen: r.hoten, SDT: r.sdt, Lop: r.lop, Goi: r.planCode, LyDo: r.reasonSelected, Trigger: r.lastTrigger, TrangThai: r.status }));
     const fbRows = DATA.feedback.map(f => ({ ThoiGian: fmtTime(f.createdAt), Loai: f.type, NguoiGui: f.hoten || f.contactName, SDT: f.sdt || f.contactPhone, TinhNangYeuThich: f.favoriteFeature || '', MucTieuDiem: f.targetScore || '', Trang: f.page, NoiDung: f.message, TrangThai: f.status }));
-    const sessRows = DATA.sessions.map(s => ({ Phien: s.sessionId, SDT: s.sdt, HoTen: s.hoten, TongGiay: s.totalActiveSec, Nguon: s.firstSource, TriggerCuoi: s.lastTrigger }));
+    const sessRows = DATA.sessions.map(s => ({ Phien: s.sessionId || s.actorKey, SDT: s.sdt, HoTen: s.hoten, TongGiay: s.totalActiveSec, Nguon: s.firstSource, TriggerCuoi: s.lastTrigger }));
     const viralRows = (DATA.growthProfiles || []).map(g => ({ HoTen: g.hoten, SDT: g.sdt, Lop: g.lop, MaGioiThieu: g.refCode, DaDangKy: g.registeredReferralsCount || 0, DaThiThat: g.qualifiedReferralsCount || 0, NgayThuong: g.totalBonusDays || 0, DanhGiaNV1: g.feedbackMissionDone ? 'Co' : 'Chua' }));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rsvRows.length ? rsvRows : [{ Empty: '0' }]), 'GiuSuatVIP');
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(fbRows.length ? fbRows : [{ Empty: '0' }]), 'BaoLoi_GopY');

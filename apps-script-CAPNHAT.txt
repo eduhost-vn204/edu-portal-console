@@ -368,8 +368,9 @@ function registerUser(data) {
   const now          = new Date();
   const trialExpiry  = now.getTime() + 7 * 24 * 60 * 60 * 1000; // 7 ngày
   const loaiTK       = 'vip'; // trial VIP 1 tuần
+  sheet.getRange(sheet.getLastRow() + 1, 1, 1, 3).setNumberFormat('@'); // giữ số 0 đầu SĐT và tránh Sheets biến Lớp 12/1 thành ngày
   sheet.appendRow([
-    data.sdt, data.hoten, data.lop, data.matkhau,
+    String(data.sdt || ''), String(data.hoten || ''), String(data.lop || ''), data.matkhau,
     now.toISOString(), 0, 0, loaiTK, trialExpiry
   ]);
   if (DEVICE_LOCK_ENABLED && deviceId) {
@@ -541,7 +542,11 @@ function loginGoogle(data) {
   for (let i = 1; i < rows.length; i++) {
     if (String(rows[i][0]).trim().toLowerCase() === email) {
       if (hoten && rows[i][1] !== hoten) sheet.getRange(i+1, 2).setValue(hoten);
-      if (data.lop && data.lop !== 'Google') sheet.getRange(i + 1, 3).setValue(String(data.lop));
+      if (data.lop && data.lop !== 'Google') {
+        const lopCell = sheet.getRange(i + 1, 3);
+        lopCell.setNumberFormat('@');
+        lopCell.setValue(String(data.lop));
+      }
       let loaiTK      = rows[i][7] || 'vip';
       let trialExpiry = rows[i][8] ? Number(rows[i][8]) : 0;
       if (!trialExpiry && rows[i][4]) {
@@ -3318,7 +3323,11 @@ function updateAccount(data) {
   const rows  = sheet.getDataRange().getValues();
   for (let i = 1; i < rows.length; i++) {
     if (sameTaiKhoan(rows[i][0], sdt)) {
-      if (data.lop)   sheet.getRange(i + 1, 3).setValue(String(data.lop));
+      if (data.lop) {
+        const lopCell = sheet.getRange(i + 1, 3);
+        lopCell.setNumberFormat('@');
+        lopCell.setValue(String(data.lop));
+      }
       if (data.mienVideo !== undefined) sheet.getRange(i + 1, 10).setValue(!!data.mienVideo);
       if (data.tracNghiemVideo !== undefined) sheet.getRange(i + 1, 11).setValue(!!data.tracNghiemVideo);
       if (data.mienLuyenTap !== undefined) sheet.getRange(i + 1, 12).setValue(!!data.mienLuyenTap);

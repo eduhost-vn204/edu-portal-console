@@ -1996,6 +1996,7 @@
 const ADMIN_PASSWORD_HASH = "686f6158fa0a03813479e8af8552086e175024281cf3353077ca9d7eb6f6f634"; // SHA-256 của mật khẩu đăng nhập giao diện (one-way, khong the giai nguoc)
 const DB_URL = "https://script.google.com/macros/s/AKfycbwF8whuCRmJtodfusehx6CWYS04yRlsVvQWNp0X2dBTCfZF-AmqmJ_KR0MIVLekVFqW/exec";
 const GAS_URL = DB_URL;             // alias dùng trong tab Tài khoản HS
+const RTDB_SYS = 'https://edu-portal-live-default-rtdb.firebaseio.com/support_chats/_vlxt_system';
 const PUBLIC_LESSONS_URL = 'https://vatlyxuantruong.io.vn/data/baihoc.json';
 
 /* ════ QUẢN LÝ KHÓA KẾT NỐI BACKEND (ADMIN_KEY) ════
@@ -8413,6 +8414,19 @@ function tkFmtNgayTao(v) {
   } catch(e) { return '—'; }
 }
 
+function tkFmtLop(v) {
+  const s = String(v || '').trim();
+  if (!s || s === 'Google') return s;
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(s)) {
+    const ms = Date.parse(s);
+    if (!isNaN(ms)) {
+      const vn = new Date(ms + 7 * 3600000);
+      return vn.getUTCDate() + '/' + (vn.getUTCMonth() + 1);
+    }
+  }
+  return s;
+}
+
 async function deleteTK(sdt, hoten) {
   if (!confirm(`⚠️ Xoá vĩnh viễn tài khoản "${hoten}" (SĐT ${sdt})?\nHọc sinh sẽ mất toàn bộ tiến độ, điểm số đã lưu theo tài khoản này. Không thể hoàn tác.`)) return;
   const ok = await postAdminWriteWithRetry({ action:'deleteaccount', sdt });
@@ -8444,7 +8458,7 @@ function renderTK(list) {
       return `<tr style="border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer" title="Bấm để xem chi tiết" onclick="openTkDetail('${esc(r.sdt)}')" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
         <td style="padding:10px 14px;font-weight:600">${esc(r.hoten||'—')}</td>
         <td style="padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px">${esc(r.sdt||'—')}</td>
-        <td style="padding:10px 14px">${esc(r.lop||'—')}</td>
+        <td style="padding:10px 14px">${esc(tkFmtLop(r.lop)||'—')}</td>
         <td style="padding:10px 14px">${badge}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${expTxt}</td>
         <td style="padding:10px 14px;font-size:12px;color:var(--gray2)">${tkFmtNgayTao(r.ngayDK)}</td>
@@ -8633,7 +8647,8 @@ function openTkDetail(sdt) {
   document.getElementById('tkd-name').textContent = r.hoten || '—';
   document.getElementById('tkd-badge').innerHTML = tkdBadgeHtml(r, now);
   document.getElementById('tkd-sdt').textContent = r.sdt || '—';
-  document.getElementById('tkd-lop').value = (r.lop && r.lop !== 'Google') ? r.lop : '';
+  const lopClean = tkFmtLop(r.lop);
+  document.getElementById('tkd-lop').value = (lopClean && lopClean !== 'Google') ? lopClean : '';
   document.getElementById('tkd-lop').placeholder = (r.lop === 'Google') ? 'Chưa có — nhập lớp' : 'Nhập lớp';
   document.getElementById('tkd-ngaytao').textContent = tkFmtNgayTao(r.ngayDK);
   document.getElementById('tkd-hethan').textContent = (r.loaiTK === 'premium') ? 'Vĩnh viễn'
@@ -8663,19 +8678,202 @@ function tkdSameSdt(a, b) {
   return da !== '' && da === db;
 }
 
+function tkdSafeKey(str) {
+  return String(str || '').trim().replace(/[.#$\[\]/\s]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 64) || 'unknown';
+}
+
+function tkdCandidateActorKeys(sdt) {
+  const raw = String(sdt || '').trim();
+  const low = raw.toLowerCase();
+  const keys = [];
+  const push = (k) => { if (k && !keys.includes(k)) keys.push(k); };
+  if (low.includes('@')) {
+    push('hs_' + tkdSafeKey(low));
+    return keys;
+  }
+  const digits = raw.replace(/\D/g, '');
+  const noZero = digits.replace(/^0+/, '');
+  if (digits) push('hs_' + tkdSafeKey(digits));
+  if (noZero) {
+    push('hs_' + tkdSafeKey('0' + noZero));
+    push('hs_' + tkdSafeKey(noZero));
+  }
+  if (raw) push('hs_' + tkdSafeKey(low));
+  return keys;
+}
+
+function tkdMapEventAction(type, ev) {
+  const t = String(type || '').trim();
+  const map = {
+    auth_register_success: 'Đăng ký tài khoản',
+    auth_login_success: 'Đăng nhập',
+    page_enter: 'Vào trang',
+    page_leave: 'Rời trang',
+    lesson_open: 'Xem bài học',
+    exam_start: 'Bắt đầu làm đề',
+    exam_question_view: 'Xem câu hỏi',
+    exam_submit: 'Nộp bài thi',
+    qualified_exam_recorded: 'Hoàn thành đề hợp lệ',
+    paywall_hit: 'Chạm khóa VIP',
+    upgrade_modal_open: 'Mở gói VIP/Pro',
+    vip_reserve_submit: 'Giữ suất VIP',
+    feedback_submitted: 'Góp ý / Báo lỗi',
+    zalo_group_click: 'Vào Nhóm Zalo',
+    zalo_personal_click: 'Mở Zalo Thầy',
+    support_zalo_click: 'Mở Zalo Thầy',
+    ptt_lobby_enter: 'Vào Phòng Thi Thử',
+    client_error: 'Lỗi trình duyệt'
+  };
+  if (t === 'legacy_log') return String((ev && (ev.target || ev.hanhdong)) || 'Hoạt động');
+  return map[t] || t || 'Hoạt động';
+}
+
+function tkdBuildEventDetail(ev) {
+  if (!ev || typeof ev !== 'object') return '';
+  if (ev.type === 'page_leave') {
+    const sec = Number((ev.meta && ev.meta.activeSec !== undefined ? ev.meta.activeSec : ev.activeSec) || 0);
+    const pg = ev.target || ev.page || ev.label || '';
+    return (pg ? pg : 'Trang web') + (sec > 0 ? (' · ' + sec + 's hoạt động') : '');
+  }
+  const parts = [];
+  if (ev.label) parts.push(String(ev.label));
+  else if (ev.target && ev.target !== ev.page) parts.push(String(ev.target));
+  else if (ev.page) parts.push(String(ev.page));
+  if (ev.courseName && !String(parts[0] || '').includes(ev.courseName)) parts.push(String(ev.courseName));
+  if (ev.lessonName && !String(parts[0] || '').includes(ev.lessonName)) parts.push(String(ev.lessonName));
+  return parts.filter(Boolean).join(' — ');
+}
+
+let _tkdRtdbEventsCache = { ts: 0, list: [] };
+async function tkdFetchRecentRtdbEvents() {
+  const now = Date.now();
+  if (_tkdRtdbEventsCache.list.length && (now - _tkdRtdbEventsCache.ts < 120000)) {
+    return _tkdRtdbEventsCache.list;
+  }
+  try {
+    const r = await fetch(RTDB_SYS + '/events.json?shallow=true');
+    if (!r.ok) return _tkdRtdbEventsCache.list || [];
+    const dayObj = await r.json();
+    if (!dayObj || typeof dayObj !== 'object') return [];
+    const days = Object.keys(dayObj).sort().slice(-14);
+    const dayResults = await Promise.all(days.map(d =>
+      fetch(RTDB_SYS + '/events/' + encodeURIComponent(d) + '.json')
+        .then(res => res.ok ? res.json() : null)
+        .catch(() => null)
+    ));
+    const list = [];
+    dayResults.forEach(obj => {
+      if (!obj || typeof obj !== 'object') return;
+      Object.keys(obj).forEach(k => {
+        const it = obj[k];
+        if (it && typeof it === 'object') list.push(it);
+      });
+    });
+    _tkdRtdbEventsCache = { ts: now, list };
+    return list;
+  } catch (e) {
+    return _tkdRtdbEventsCache.list || [];
+  }
+}
+
 async function tkdLoadAct(sdt) {
   const el = document.getElementById('tkd-act');
   try {
-    const r = await fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(getAdminKey()) + '&hs=' + encodeURIComponent(sdt));
-    const d = await r.json();
+    const candKeys = tkdCandidateActorKeys(sdt);
+    const gasPromise = fetch(GAS_URL + '?type=hoatdong&adminKey=' + encodeURIComponent(getAdminKey()) + '&hs=' + encodeURIComponent(sdt))
+      .then(r => r.json()).catch(err => ({ _fetchErr: err }));
+    const journeyPromises = candKeys.map(k =>
+      fetch(RTDB_SYS + '/user_journeys/' + encodeURIComponent(k) + '.json')
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+    );
+    const [d, journeys, rtdbEvents] = await Promise.all([
+      gasPromise,
+      Promise.all(journeyPromises),
+      tkdFetchRecentRtdbEvents()
+    ]);
     if (tkdSdt !== sdt) return;
-    if (d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || d.ok === false && d.msg === 'Unauthorized')) {
+
+    const gasUnauthorized = !!(d && (d.error === 'Unauthorized' || d.msg === 'Unauthorized' || (d.ok === false && d.msg === 'Unauthorized')));
+    const items = [];
+    if (d && d.ok && Array.isArray(d.data)) {
+      d.data.forEach(a => {
+        const ts = a && a.thoigian ? Date.parse(a.thoigian) : 0;
+        items.push({
+          ts: isNaN(ts) ? 0 : ts,
+          thoigian: a.thoigian || '',
+          hanhdong: String(a.hanhdong || ''),
+          chitiet: String(a.chitiet || ''),
+          page: '',
+          rawType: 'gas',
+          source: 'gas'
+        });
+      });
+    }
+
+    (rtdbEvents || []).forEach(ev => {
+      if (!ev || typeof ev !== 'object') return;
+      const matchSdt = ev.sdt && tkdSameSdt(ev.sdt, sdt);
+      const matchKey = ev.actorKey && candKeys.includes(String(ev.actorKey));
+      if (!matchSdt && !matchKey) return;
+      const ts = Number(ev.ts || 0);
+      items.push({
+        ts,
+        thoigian: ts ? new Date(ts).toISOString() : '',
+        hanhdong: tkdMapEventAction(ev.type, ev),
+        chitiet: tkdBuildEventDetail(ev),
+        page: String(ev.page || ''),
+        rawType: String(ev.type || ''),
+        source: 'rtdb_event'
+      });
+    });
+
+    (journeys || []).forEach(j => {
+      if (!j || typeof j !== 'object' || !Array.isArray(j.timeline)) return;
+      j.timeline.forEach(t => {
+        if (!t || typeof t !== 'object') return;
+        const ts = Number(t.ts || 0);
+        items.push({
+          ts,
+          thoigian: ts ? new Date(ts).toISOString() : '',
+          hanhdong: tkdMapEventAction(t.type, { target: t.label, page: t.page }),
+          chitiet: tkdBuildEventDetail({ type: t.type, label: t.label, page: t.page, activeSec: t.activeSec }),
+          page: String(t.page || ''),
+          rawType: String(t.type || ''),
+          source: 'rtdb_journey'
+        });
+      });
+    });
+
+    if (!items.length && gasUnauthorized) {
       el.innerHTML = '<div style="padding:14px;color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Khóa kết nối backend không hợp lệ (Unauthorized).</div>';
       return;
     }
-    if (!d.ok || !Array.isArray(d.data)) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">⚠️ Chưa có dữ liệu hoạt động.</div>'; return; }
-    if (!d.data.length) { el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa ghi nhận hoạt động nào. (Chỉ ghi từ khi web được cập nhật tính năng này)</div>'; return; }
-    el.innerHTML = d.data.map(a => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
+
+    // Sắp xếp mới nhất lên đầu (ưu tiên giữ rtdb_event chi tiết hơn rtdb_journey nếu trùng)
+    const prio = { gas: 1, rtdb_event: 3, rtdb_journey: 2 };
+    items.sort((a, b) => (b.ts - a.ts) || ((prio[b.source] || 0) - (prio[a.source] || 0)));
+
+    const merged = [];
+    const seenExact = new Set();
+    let lastLeave = null;
+    for (const it of items) {
+      const tsBucket = it.ts ? Math.round(it.ts / 2000) : 0;
+      if (it.rawType === 'page_leave') {
+        if (lastLeave && lastLeave.page === it.page && Math.abs(lastLeave.ts - it.ts) <= 2500) continue;
+        lastLeave = it;
+      }
+      const exactKey = tsBucket + '|' + it.hanhdong + '|' + it.chitiet;
+      if (seenExact.has(exactKey)) continue;
+      seenExact.add(exactKey);
+      merged.push(it);
+      if (merged.length >= 200) break;
+    }
+
+    if (!merged.length) {
+      el.innerHTML = '<div style="padding:14px;color:var(--gray2)">Chưa ghi nhận hoạt động nào. (Chỉ ghi từ khi web được cập nhật tính năng này)</div>';
+      return;
+    }
+    el.innerHTML = merged.map(a => `<div style="display:flex;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border)">
       <span style="color:var(--gray2);font-family:'DM Mono',monospace;font-size:11.5px;white-space:nowrap">${tkdFmtTime(a.thoigian)}</span>
       <span style="font-weight:700;white-space:nowrap">${esc(a.hanhdong||'')}</span>
       <span style="color:var(--gray)">${esc(a.chitiet||'')}</span>
